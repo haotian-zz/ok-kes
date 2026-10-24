@@ -21,7 +21,7 @@ class ChaosMode(TriggerTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "自动卡厄思模式"
-        self.description = "1. 请主动打开游戏内自动战斗和自动剧情功能。\n2. 国际服玩家请将本模式配置中的\"游戏语言\"设置为繁体中文。"
+        self.description = "1. 战斗中自动战斗没开时会自动点开；自动剧情请主动打开。\n2. 国际服玩家请将本模式配置中的\"游戏语言\"设置为繁体中文。"
         self.instructions = """<a href="https://github.com/ok-oldking/ok-py">ok-py</a>"""
         self.trigger_interval = 1
         self.all_texts = []
