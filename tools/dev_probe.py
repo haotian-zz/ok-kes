@@ -76,6 +76,12 @@ class DevProbe(BaseTask):
                     self.log_info(f"text not found: {a['text']}")
             elif op == "key":
                 self.send_key(a["key"], after_sleep=a.get("after", 1))
+            elif op == "home":
+                import utils_daily
+                self.log_info(f"go_home -> {utils_daily.go_home(self, a.get('timeout', 60))}")
+            elif op == "call":
+                import utils_daily
+                self.log_info(f"{a['fn']} -> {getattr(utils_daily, a['fn'])(self)}")
             elif op == "sleep":
                 self.sleep(a["s"])
             else:
@@ -88,6 +94,8 @@ if __name__ == "__main__":
     from src.config import config
 
     config["onetime_tasks"] = list(config["onetime_tasks"]) + [["tools.dev_probe", "DevProbe"]]
+    # 探针只连已经开着的游戏；找不到窗口时别让框架去拉起游戏/模拟器
+    config["windows"] = {**config["windows"], "start_exe": False}
     try:
         run_task(config, task="DevProbe")
     finally:

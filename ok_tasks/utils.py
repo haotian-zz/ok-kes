@@ -1927,6 +1927,9 @@ def _dialogue_line(task: TriggerTask):
     texts = getattr(task, "all_texts", None) or []
     if len(texts) > 6:
         return None
+    # 带操作按钮的页面（如「请确认是否可投入主战员。」+ 确认）不是对白
+    if any(re.fullmatch(r"确认|取消|继续|下一步|选择|进入|离开|跳过", b.name.strip()) for b in texts):
+        return None
     for box in texts:
         cx = (box.x + box.width / 2) / task.width
         cy = (box.y + box.height / 2) / task.height
