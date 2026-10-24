@@ -81,7 +81,7 @@ class DevProbe(BaseTask):
                 self.log_info(f"go_home -> {utils_daily.go_home(self, a.get('timeout', 60))}")
             elif op == "call":
                 import utils_daily
-                self.log_info(f"{a['fn']} -> {getattr(utils_daily, a['fn'])(self)}")
+                self.log_info(f"{a['fn']} -> {getattr(utils_daily, a['fn'])(self, **a.get('kwargs', {}))}")
             elif op == "sleep":
                 self.sleep(a["s"])
             else:

@@ -41,6 +41,13 @@ COFFEE_DINE_IN = (0.627, 0.45)
 COFFEE_TAKEOUT = (0.846, 0.45)
 COFFEE_ORDER_BOARD = (0.737, 0.875)
 COFFEE_DINE_IN_ETHER = 120
+# 模拟 → 战斗训练 → 配置队伍：战斗效率 -/+、进入；每次消耗 20×效率 以太
+TRAINING_EFF_MINUS = (0.695, 0.832)
+TRAINING_EFF_PLUS = (0.969, 0.832)
+TRAINING_ENTER = (0.72, 0.913)
+TRAINING_COST_PER_EFF = 20
+# 战斗页右上角自动战斗按钮（关闭时按钮中心是纯白，开启后变成 X 图标）
+BATTLE_AUTO_POINT = (0.880, 0.056)
 
 _template_cache = {}
 
@@ -415,3 +422,97 @@ def drink_coffee(task: BaseTask, choice="自动"):
         task.log_info("点单后没有看到获得道具")
         return False
     return True
+
+
+def battle_auto_off(task: BaseTask):
+    """战斗页：自动战斗按钮中心 4×4 区域纯白占比 >2% 说明没开（与 utils_chaos.handle_battle_auto_check 同一判定）。"""
+    frame = task.frame
+    if frame is None:
+        return False
+    x, y = int(0.877 * task.width), int(0.050 * task.height)
+    patch = frame[y:y + 4, x:x + 4]
+    return float((patch.min(axis=2) >= 255).mean()) > 0.02
+
+
+def _training_efficiency(task: BaseTask):
+    box = find_text(task, r"战斗效率\D*(\d)", region=(0.7, 0.75, 0.95, 0.82))
+    return int(re.search(r"(\d)\s*$", box.name).group(1)) if box else None
+
+
+def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficiency=6, keep_ether=0, max_runs=20,
+                 next_difficulty=True):
+    """模拟 → 战斗训练 → 分类 → 关卡，按战斗效率连续打到以太不够（保留 keep_ether）。
+
+    结算页优先「下个难度」（next_difficulty），不可用时「重来」；战斗失败就停止，不在打不过的难度上继续消耗以太。
+    """
+    if not open_home_entry(task, "模拟"):
+        return False
+    # 第一次进可能弹「挑战」说明
+    if wait_text(task, r"每周3次机会|这里是模拟", timeout=3):
+        click_text(task, r"^确认$", region=(0.4, 0.85, 0.6, 0.97), timeout=2, after=2)
+    if not click_text(task, r"^战斗训练$", region=(0.05, 0.6, 0.25, 0.75), timeout=6, after=3):
+        return False
+    if not click_text(task, f"^{category}$", region=(0.0, 0.1, 0.3, 0.8), timeout=6, after=2):
+        return False
+    if not click_text(task, f"^{stage}$", region=(0.6, 0.15, 1.0, 0.95), timeout=6, after=3):
+        return False
+    if not wait_text(task, r"^配置队伍$", region=(0.05, 0.0, 0.3, 0.1), timeout=8):
+        task.log_info("没有进入配置队伍页面")
+        return False
+    cur, _ = read_ether(task)
+    if cur is None:
+        task.log_info("读不到以太")
+        return False
+    target = min(max(efficiency, 1), 6, (cur - keep_ether) // TRAINING_COST_PER_EFF)
+    if target < 1:
+        task.log_info(f"以太 {cur}，保留 {keep_ether}，不够打一次")
+        return True
+    for _ in range(8):
+        eff = _training_efficiency(task)
+        if eff is None or eff == target:
+            break
+        click_rel(task, *(TRAINING_EFF_PLUS if eff < target else TRAINING_EFF_MINUS), after=0.8)
+        refresh(task)
+    cost = target * TRAINING_COST_PER_EFF
+    task.log_info(f"以太 {cur}，战斗效率 {target}，每次 {cost}")
+    click_rel(task, *TRAINING_ENTER, after=5, reason="进入战斗")
+    runs = 1
+    end = time.time() + 15 * 60
+    last_known = time.time()
+    while time.time() < end:
+        refresh(task)
+        if has_text(task, r"确定要进入当前难度"):
+            # 有更高难度解锁时进入前会弹「高阶难度已经解锁。确定要进入当前难度吗？」（Maa_Kes issue #15）
+            click_text(task, r"^入场$", region=(0.55, 0.7, 0.8, 0.8), timeout=2, after=5)
+            last_known = time.time()
+            continue
+        if has_text(task, r"^重来$", region=(0.55, 0.85, 0.7, 0.97)) and has_text(task, r"^确认$", region=(0.85, 0.85, 1, 0.97)):
+            last_known = time.time()
+            cur, _ = read_ether(task)
+            failed = has_text(task, r"失败")
+            task.log_info(f"第 {runs} 次{'失败' if failed else '结束'}，以太 {cur}")
+            if failed or cur is None or cur - cost < keep_ether or runs >= max_runs:
+                click_text(task, r"^确认$", region=(0.85, 0.85, 1, 0.97), timeout=2, after=3)
+                task.log_info(f"清体力结束，共 {runs} 次" + ("（战斗失败，不再继续）" if failed else ""))
+                return True
+            runs += 1
+            if next_difficulty and click_text(task, r"^下个难度$", region=(0.45, 0.85, 0.56, 0.97), timeout=2, after=4):
+                refresh(task)
+                if not has_text(task, r"^重来$", region=(0.55, 0.85, 0.7, 0.97)):
+                    continue
+                # 点了没反应：已经是最高难度（或下个难度未解锁），之后只重来
+                task.log_info("下个难度不可用，改为重来")
+                next_difficulty = False
+            click_text(task, r"^重来$", region=(0.55, 0.85, 0.7, 0.97), timeout=2, after=5)
+            continue
+        if find_text(task, r"^\d+\s*/\s*10$", region=(0.45, 0.94, 0.58, 1.0)):
+            last_known = time.time()
+            if battle_auto_off(task):
+                click_rel(task, *BATTLE_AUTO_POINT, after=1, reason="开启自动战斗")
+                continue
+        elif time.time() - last_known > 60:
+            task.log_info("清体力：超过 60 秒没识别到战斗/结算页面：" + " | ".join(b.name for b in (task.all_texts or [])[:8]))
+            last_known = time.time()
+        task.sleep(2)
+    task.log_info("清体力超时")
+    return False
