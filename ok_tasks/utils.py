@@ -1905,6 +1905,63 @@ def handle_settlement(task: TriggerTask):
     return False
 
 
+def handle_auto_chat(task: TriggerTask):
+    """自动对话检查: 匹配任一自动对话特征，置信度低于0.96时点击开启。"""
+    search_box = task.box_of_screen(0.655, 0.007, 0.996, 0.097)
+    auto_chat = task.find_one(
+        feature_name=["autochatenable", "autochatenable2"], box=search_box
+    )
+    if auto_chat and auto_chat.confidence < 0.96:
+        task.log_info(f"自动对话未开启，当前匹配置信度: {auto_chat.confidence:.2%}，点击开启")
+        _move_and_click(
+            task,
+            (auto_chat.x + auto_chat.width / 2) / task.width,
+            (auto_chat.y + auto_chat.height / 2) / task.height,
+        )
+        return True
+    return False
+
+
+def _dialogue_line(task: TriggerTask):
+    """剧情对白页面: 画面文字很少，且底部中间有一行较长的台词。"""
+    texts = getattr(task, "all_texts", None) or []
+    if len(texts) > 6:
+        return None
+    for box in texts:
+        cx = (box.x + box.width / 2) / task.width
+        cy = (box.y + box.height / 2) / task.height
+        if 0.78 <= cy <= 0.92 and 0.25 <= cx <= 0.75 and len(box.name) >= 6:
+            return box
+    return None
+
+
+def handle_dialogue(task: TriggerTask):
+    """出击/卡厄思中的剧情对白: 先尝试开启一次自动对话，之后用对话键（空格）推进，避免反复点击开关。"""
+    line = _dialogue_line(task)
+    if not line:
+        return False
+    now = time.time()
+    last_toggle = getattr(task, "_auto_chat_toggle_time", 0)
+    if now - last_toggle > 60:
+        search_box = task.box_of_screen(0.655, 0.007, 0.996, 0.097)
+        auto_chat = task.find_one(feature_name=["autochatenable", "autochatenable2"], box=search_box)
+        if auto_chat and auto_chat.confidence < 0.96:
+            task._auto_chat_toggle_time = now
+            task.log_info(f"剧情对白「{line.name}」：自动对话未开启（匹配置信度 {auto_chat.confidence:.2%}），点击开启一次")
+            _move_and_click(
+                task,
+                (auto_chat.x + auto_chat.width / 2) / task.width,
+                (auto_chat.y + auto_chat.height / 2) / task.height,
+            )
+            return True
+    if now - getattr(task, "_dialogue_key_time", 0) < 1.5:
+        return True
+    task._dialogue_key_time = now
+    task.log_info(f"剧情对白「{line.name}」：按空格推进")
+    task.send_key("space")
+    return True
+
+
 def handle_skip(task: TriggerTask):
     """"跳过"按钮。"""
     box = find_box_at_point(task, 0.941, 0.917)

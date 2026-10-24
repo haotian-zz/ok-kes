@@ -1,6 +1,7 @@
 from ok import TriggerTask
 
 from utils import (
+    handle_dialogue,
     _move_and_click, _simplify_texts, _edit_distance, _get_config_value, _get_card_list, _get_route_priority, _get_game_text,
     find_box_at_point, find_text, recognize_cards,
     _card_has_type_below, select_card, calculate_dominant_hue,
@@ -1045,4 +1046,5 @@ PAGE_HANDLERS = [
     handle_minimizemap,
     handle_held_cards_page,
     handle_escape,
+    handle_dialogue,  #剧情对白：开启一次自动对话，之后按空格推进（最低优先级）
 ]

@@ -1,6 +1,7 @@
 from ok import TriggerTask
 
 from utils import (
+    handle_auto_chat,
     _move_and_click,
     handle_center_confirm,
     handle_confirm,
@@ -57,21 +58,6 @@ def handle_close_dialog(task: TriggerTask):
     return False
 
 
-def handle_auto_chat(task: TriggerTask):
-    """自动对话检查: 匹配任一自动对话特征，置信度低于0.96时点击开启。"""
-    search_box = task.box_of_screen(0.655, 0.007, 0.996, 0.097)
-    auto_chat = task.find_one(
-        feature_name=["autochatenable", "autochatenable2"], box=search_box
-    )
-    if auto_chat and auto_chat.confidence < 0.96:
-        task.log_info(f"自动对话未开启，当前匹配置信度: {auto_chat.confidence:.2%}，点击开启")
-        _move_and_click(
-            task,
-            (auto_chat.x + auto_chat.width / 2) / task.width,
-            (auto_chat.y + auto_chat.height / 2) / task.height,
-        )
-        return True
-    return False
 
 
 def handle_view_event(task: TriggerTask):
