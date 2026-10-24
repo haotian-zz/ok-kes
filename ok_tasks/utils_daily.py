@@ -36,6 +36,11 @@ SUPPLY_REWARD_TAB = (0.053, 0.15)
 SUPPLY_TASK_TAB = (0.053, 0.255)
 # 设置 → 左侧「键盘」页签
 SETTINGS_KEYBOARD_TAB = (0.048, 0.327)
+# 庭院咖啡店菜单板：堂食（立即 +120 以太）、外带（以太补充货币 +1，最多 4 个）、点单按钮
+COFFEE_DINE_IN = (0.627, 0.45)
+COFFEE_TAKEOUT = (0.846, 0.45)
+COFFEE_ORDER_BOARD = (0.737, 0.875)
+COFFEE_DINE_IN_ETHER = 120
 
 _template_cache = {}
 
@@ -352,3 +357,61 @@ def ensure_hotkey_display(task: BaseTask):
         click_text_box(task, state, after=1.5, reason="打开快捷键显示")
         refresh(task)
     return has_text(task, r"^ON$", region=(0.6, 0.2, 1.0, 0.27))
+
+
+def read_ether(task: BaseTask):
+    """右上角以太「当前/上限」，读不到返回 (None, None)。"""
+    box = find_text(task, r"^\d+\s*/\s*\d+", region=(0.88, 0.0, 1.0, 0.1))
+    if not box:
+        return None, None
+    cur, cap = re.match(r"(\d+)\s*/\s*(\d+)", box.name).groups()
+    return int(cur), int(cap)
+
+
+def drink_coffee(task: BaseTask, choice="自动"):
+    """方舟城市 → 庭院咖啡店 → 点单（每天一杯）。
+
+    choice：堂食（立即 +120 以太）/ 外带（存一个以太补充货币）/ 自动（以太加 120 会超上限就外带，否则堂食）。
+    """
+    if not open_home_entry(task, "方舟城市"):
+        return False
+    if not click_text(task, r"^庭院咖啡店$", region=(0.3, 0.85, 0.6, 0.97), timeout=8, after=3):
+        return False
+    end = time.time() + 20
+    order_clicks = 0
+    while True:
+        refresh(task)
+        if has_text(task, r"^菜单板$"):
+            break
+        if has_text(task, r"每天一杯的咖啡因就足够了"):
+            task.log_info("今天已经点过咖啡")
+            return True
+        if has_text(task, r"每日限量一杯"):
+            # 进店说明弹窗
+            if click_text(task, r"^确认$", region=(0.4, 0.85, 0.6, 0.97), timeout=2, after=3):
+                continue
+        box = find_text(task, r"^点单$", region=(0.65, 0.85, 0.9, 0.97))
+        if box:
+            if order_clicks >= 3:
+                # 「每天一杯…」提示只闪一下，可能没截到；点了几次都不出菜单板就当已点过
+                task.log_info("点单后没有出现菜单板，按今天已点过处理")
+                return True
+            order_clicks += 1
+            click_text_box(task, box, after=0.6, reason="打开菜单板")
+            continue
+        if time.time() > end:
+            task.log_info("没有打开咖啡店菜单板")
+            return False
+        task.sleep(0.5)
+    cur, cap = read_ether(task)
+    if choice == "自动":
+        choice = "外带" if cur is None or cur + COFFEE_DINE_IN_ETHER > cap else "堂食"
+    task.log_info(f"以太 {cur}/{cap}，点{choice}")
+    click_rel(task, *(COFFEE_DINE_IN if choice == "堂食" else COFFEE_TAKEOUT), after=1.5, reason=f"选择{choice}")
+    click_rel(task, *COFFEE_ORDER_BOARD, after=3, reason="点单")
+    if click_text(task, r"跳过", region=(0.85, 0.0, 1.0, 0.12), timeout=6, after=2):
+        pass
+    if not close_reward_popup(task, timeout=8):
+        task.log_info("点单后没有看到获得道具")
+        return False
+    return True

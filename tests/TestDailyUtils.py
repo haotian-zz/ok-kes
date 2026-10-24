@@ -113,6 +113,40 @@ class TestClaimAll(unittest.TestCase):
         self.assertEqual([("click", 0.646, 0.919)], task.actions)
 
 
+class TestDrinkCoffee(unittest.TestCase):
+    HOME_CITY = HOME + [box("方舟城市", 0.883, 0.521)]
+    CITY = [box("方舟城市", 0.122, 0.046), box("庭院咖啡店", 0.444, 0.921)]
+    SHOP = [box("庭院咖啡店", 0.13, 0.044), box("点单", 0.776, 0.912)]
+    POPUP = [box("获得道具", 0.5, 0.377), box("点击屏幕可关闭", 0.5, 0.934)]
+
+    def board(self, ether):
+        return [box("菜单板", 0.736, 0.167), box("堂食", 0.627, 0.267), box("外带", 0.845, 0.267),
+                box(ether, 0.943, 0.048), box("0/4", 0.833, 0.049), box("点单", 0.737, 0.875)]
+
+    def run_coffee(self, ether, choice="自动"):
+        pages = [(self.HOME_CITY, 128), (self.HOME_CITY, 128), (self.CITY, 128), (self.SHOP, 128),
+                 (self.board(ether), 128), ([box("跳过", 0.941, 0.05)], 128), (self.POPUP, 128), (self.SHOP, 128)]
+        task = FakeTask(pages)
+        self.assertTrue(utils_daily.drink_coffee(task, choice))
+        return task.actions
+
+    def test_full_ether_takes_out(self):
+        actions = self.run_coffee("265/265+")
+        self.assertIn(("click",) + utils_daily.COFFEE_TAKEOUT, actions)
+        self.assertNotIn(("click",) + utils_daily.COFFEE_DINE_IN, actions)
+
+    def test_low_ether_dines_in(self):
+        actions = self.run_coffee("100/265")
+        self.assertIn(("click",) + utils_daily.COFFEE_DINE_IN, actions)
+
+    def test_already_ordered(self):
+        pages = [(self.HOME_CITY, 128), (self.HOME_CITY, 128), (self.CITY, 128), (self.SHOP, 128),
+                 (self.SHOP + [box("每天一杯的咖啡因就足够了！", 0.502, 0.269)], 128)]
+        task = FakeTask(pages)
+        self.assertTrue(utils_daily.drink_coffee(task))
+        self.assertNotIn(("click",) + utils_daily.COFFEE_ORDER_BOARD, task.actions)
+
+
 class TestDialogueLine(unittest.TestCase):
     def test_dialogue(self):
         task = SimpleNamespace(width=W, height=H, all_texts=[box("趁着炮塔和异形分神之际，众人迅速离开了战斗区域。", 0.5, 0.85)])

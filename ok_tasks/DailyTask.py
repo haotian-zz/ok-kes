@@ -19,12 +19,16 @@ class DailyTask(BaseTask):
             "领取日常活跃奖励": True,
             "领取阿基亚农补给": True,
             "领取邮箱": True,
+            "喝咖啡": True,
+            "咖啡点单": "自动",
         })
         self.config_description.update({
             "检查快捷键显示": "设置→键盘→快捷键显示保持 ON（出击/卡厄思识别手牌要用卡牌上的按键提示）",
             "领取日常活跃奖励": "F3 日常 → 每日任务的日程进度奖励",
             "领取阿基亚农补给": "F2 补给（通行证）任务经验与等级奖励，只点全部领取，不碰付费按钮",
             "领取邮箱": "菜单 → 邮箱 → 全部领取",
+            "喝咖啡": "方舟城市 → 庭院咖啡店，每天一杯",
+            "咖啡点单": "堂食立即 +120 以太；外带存 1 个以太补充货币（最多 4 个）；自动＝以太会溢出时外带，否则堂食",
         })
         # (配置项, 执行函数名)，函数在 utils_daily 里，签名 fn(task) -> bool
         self.steps = [
@@ -32,7 +36,9 @@ class DailyTask(BaseTask):
             ("领取日常活跃奖励", "claim_daily_activity"),
             ("领取阿基亚农补给", "claim_supply"),
             ("领取邮箱", "claim_mail"),
+            ("喝咖啡", "drink_coffee"),
         ]
+        self.config_type = {"咖啡点单": {"type": "drop_down", "options": ["自动", "堂食", "外带"]}}
 
     def run(self):
         results = []
@@ -41,7 +47,8 @@ class DailyTask(BaseTask):
                 continue
             self.log_info(f"开始：{key}")
             try:
-                ok = getattr(utils_daily, fn_name)(self)
+                fn = getattr(utils_daily, fn_name)
+                ok = fn(self, self.config.get("咖啡点单", "自动")) if fn_name == "drink_coffee" else fn(self)
             except Exception as e:
                 self.log_error(f"{key} 出错: {e}\n{traceback.format_exc()}")
                 self.screenshot(f"daily_error_{fn_name}")
