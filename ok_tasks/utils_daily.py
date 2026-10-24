@@ -1,0 +1,354 @@
+"""日常任务公共工具：OCR 刷新、按文字/模板点击、回主页。
+
+模板图放在 ok_tasks/assets/daily/，按 1280x720 截取，运行时按当前分辨率缩放后匹配。
+本文件只放函数，不定义任务类（ok_tasks 下的 .py 会被框架当成任务文件扫描）。
+"""
+
+import os
+import re
+import time
+
+import cv2
+import numpy as np
+from ok import BaseTask
+
+from utils import _simplify_texts
+
+DAILY_ASSET_DIR = os.path.join(os.path.dirname(__file__), "assets", "daily")
+TEMPLATE_BASE_WIDTH = 1280
+
+# 主页右侧入口（UI 未隐藏时能 OCR 到）
+HOME_KEYWORDS = ("出击", "模拟", "卡厄思", "方舟城市", "主战员", "营救")
+# 主页闲置一段时间会隐藏 UI，此时点空白处唤醒（不会触发任何入口）
+HOME_WAKE_POINT = (0.45, 0.42)
+HOME_ICON_REGION = (0.84, 0.0, 0.96, 0.13)
+BACK_ICON_REGION = (0.0, 0.0, 0.08, 0.12)
+PAY_POPUP_CLOSE = (0.937, 0.05)
+
+# 主页右上角 ≡ 菜单（第一次点击可能只是唤醒隐藏的 UI）
+MENU_POINT = (0.959, 0.05)
+MENU_MAIL_POINT = (0.961, 0.285)
+MENU_SETTINGS_POINT = (0.961, 0.835)
+# F3「日常」窗口左侧第 2 个页签（日历图标）=「每日任务」
+DAILY_TASK_TAB = (0.057, 0.229)
+# F2「阿基亚农补给」左侧页签：第 1 个奖励、第 2 个任务
+SUPPLY_REWARD_TAB = (0.053, 0.15)
+SUPPLY_TASK_TAB = (0.053, 0.255)
+# 设置 → 左侧「键盘」页签
+SETTINGS_KEYBOARD_TAB = (0.048, 0.327)
+
+_template_cache = {}
+
+
+# ------------------------- OCR / 点击 -------------------------
+
+def refresh(task: BaseTask, frame=True):
+    """取最新一帧并 OCR（繁体转简体），结果存到 task.all_texts。"""
+    if frame:
+        task.next_frame()
+    task.all_texts = _simplify_texts(task.ocr())
+    return task.all_texts
+
+
+def rel_center(task: BaseTask, box):
+    return (box.x + box.width / 2) / task.width, (box.y + box.height / 2) / task.height
+
+
+def in_region(task: BaseTask, box, region):
+    if not region:
+        return True
+    cx, cy = rel_center(task, box)
+    x1, y1, x2, y2 = region
+    return x1 <= cx <= x2 and y1 <= cy <= y2
+
+
+def find_text(task: BaseTask, pattern, region=None, texts=None):
+    """在当前 OCR 结果里按正则找第一个匹配（可限定相对区域 x1,y1,x2,y2）。"""
+    for box in texts if texts is not None else (getattr(task, "all_texts", None) or []):
+        if re.search(pattern, box.name) and in_region(task, box, region):
+            return box
+    return None
+
+
+def has_text(task: BaseTask, pattern, region=None):
+    return find_text(task, pattern, region) is not None
+
+
+def click_rel(task: BaseTask, x, y, after=1.0, reason=""):
+    """先移动再点击（游戏对 PostMessage 点击需要先有鼠标移动）。"""
+    if reason:
+        task.log_info(f"{reason}：点击 ({x:.3f}, {y:.3f})")
+    task.move_relative(x, y)
+    task.sleep(0.4)
+    task.click(x, y)
+    task.sleep(after)
+
+
+def click_text_box(task: BaseTask, box, after=1.0, reason=""):
+    x, y = rel_center(task, box)
+    click_rel(task, x, y, after=after, reason=reason or f"点击「{box.name}」")
+
+
+def wait_text(task: BaseTask, pattern, region=None, timeout=10.0, interval=0.5):
+    """等待文字出现，返回 box 或 None。"""
+    end = time.time() + timeout
+    while True:
+        refresh(task)
+        box = find_text(task, pattern, region)
+        if box or time.time() > end:
+            return box
+        task.sleep(interval)
+
+
+def click_text(task: BaseTask, pattern, region=None, timeout=10.0, after=1.0):
+    box = wait_text(task, pattern, region, timeout)
+    if box:
+        click_text_box(task, box, after=after)
+        return True
+    task.log_info(f"未找到文字「{pattern}」")
+    return False
+
+
+# ------------------------- 模板匹配 -------------------------
+
+def _load_template(name):
+    if name not in _template_cache:
+        path = os.path.join(DAILY_ASSET_DIR, f"{name}.png")
+        img = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
+        if img is None:
+            raise FileNotFoundError(path)
+        _template_cache[name] = img
+    return _template_cache[name]
+
+
+def match_template(task: BaseTask, name, region=(0, 0, 1, 1), threshold=0.8):
+    """在当前帧的相对区域里匹配模板，返回 (score, (rel_x, rel_y))；低于阈值返回 (score, None)。"""
+    frame = task.frame
+    if frame is None:
+        return 0.0, None
+    h, w = frame.shape[:2]
+    template = _load_template(name)
+    scale = w / TEMPLATE_BASE_WIDTH
+    if abs(scale - 1) > 0.01:
+        template = cv2.resize(template, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+    x1, y1, x2, y2 = int(region[0] * w), int(region[1] * h), int(region[2] * w), int(region[3] * h)
+    crop = frame[y1:y2, x1:x2]
+    th, tw = template.shape[:2]
+    if crop.shape[0] < th or crop.shape[1] < tw:
+        return 0.0, None
+    result = cv2.matchTemplate(crop, template, cv2.TM_CCOEFF_NORMED)
+    _, score, _, loc = cv2.minMaxLoc(result)
+    if score < threshold:
+        return float(score), None
+    return float(score), ((x1 + loc[0] + tw / 2) / w, (y1 + loc[1] + th / 2) / h)
+
+
+# ------------------------- 主页 -------------------------
+
+def is_home(task: BaseTask):
+    """主页（UI 显示中）：右侧入口文字至少命中 3 个。"""
+    hits = {b.name for b in task.all_texts or [] if b.name in HOME_KEYWORDS and rel_center(task, b)[0] > 0.8}
+    return len(hits) >= 3
+
+
+def is_black(task: BaseTask, threshold=8):
+    """整帧几乎全黑（加载/切场景）。"""
+    frame = task.frame
+    return frame is not None and float(frame.mean()) < threshold
+
+
+def go_home(task: BaseTask, timeout=60.0):
+    """从任意页面回到主页：关提示 → 点右上角主页按钮 → 返回键兜底；主页 UI 隐藏时点空白唤醒。"""
+    end = time.time() + timeout
+    esc_count = 0
+    while time.time() < end:
+        refresh(task)
+        if is_home(task):
+            return True
+        if has_text(task, r"卡厄思信息") or has_text(task, r"^逃脱$", region=(0.8, 0.85, 1, 1)):
+            task.log_info("当前在出击/卡厄思局内，局内没有回主页入口（只能逃脱），不自动处理")
+            return False
+        box = find_text(task, r"点击(屏幕|画面)|^点击(开始|以)")
+        if box:
+            click_text_box(task, box, after=1.5, reason="关闭提示")
+            continue
+        if has_text(task, r"退出游戏|结束游戏"):
+            if click_text(task, r"^取消$", timeout=2):
+                continue
+        # 出击/卡厄思结算页（战斗失败/胜利 + 奖励）：右下「确认」，ESC 无效
+        box = find_text(task, r"^确认$", region=(0.7, 0.85, 1, 1))
+        if box and (has_text(task, r"奖励") or has_text(task, r"出击记录")):
+            click_text_box(task, box, after=3, reason="结算页确认")
+            continue
+        if has_text(task, r"^\d+元$"):
+            # 付费推荐弹窗（如 F2 先弹的「特殊资料 68元 / 零之资料 128元」）：ESC 关不掉，点右上角 X，绝不点价格按钮
+            click_rel(task, *PAY_POPUP_CLOSE, after=2, reason="关闭付费推荐弹窗")
+            continue
+        _, home = match_template(task, "home_icon", HOME_ICON_REGION, 0.8)
+        if home:
+            click_rel(task, *home, after=3, reason="点击主页按钮")
+            continue
+        _, back = match_template(task, "back_icon", BACK_ICON_REGION, 0.8)
+        if back:
+            click_rel(task, *back, after=2.5, reason="点击返回按钮")
+            continue
+        if is_black(task):
+            # 结算后切场景会黑屏加载，这时不要乱点/按 ESC
+            task.log_info("黑屏加载中，等待")
+            task.sleep(3)
+            continue
+        if len(task.all_texts or []) <= 2:
+            # 主页 UI 隐藏（只剩立绘）或加载中：点空白处唤醒
+            click_rel(task, *HOME_WAKE_POINT, after=1.5, reason="唤醒主页 UI")
+            continue
+        if esc_count >= 3:
+            task.log_info("连续按 ESC 仍未回到主页，停止")
+            return False
+        esc_count += 1
+        task.log_info("未识别的页面，按 ESC 返回")
+        task.send_key("esc")
+        task.sleep(2)
+    task.log_info("回主页超时")
+    return False
+
+
+def open_home_entry(task: BaseTask, name, timeout=15.0):
+    """在主页点右侧入口（如「方舟城市」「模拟」）。UI 被隐藏时先唤醒再点。"""
+    if not go_home(task):
+        return False
+    box = find_text(task, f"^{name}$", region=(0.8, 0.1, 1.0, 0.8))
+    if not box:
+        click_rel(task, *HOME_WAKE_POINT, after=1.5, reason="唤醒主页 UI")
+        refresh(task)
+        box = find_text(task, f"^{name}$", region=(0.8, 0.1, 1.0, 0.8))
+    if not box:
+        task.log_info(f"主页上没有找到入口「{name}」")
+        return False
+    click_text_box(task, box, after=3, reason=f"进入「{name}」")
+    return True
+
+
+# ------------------------- 领取类日常 -------------------------
+
+def close_reward_popup(task: BaseTask, timeout=4.0):
+    """领取后的「获得道具 / 点击屏幕可关闭」弹窗：点掉，返回是否出现过。"""
+    end = time.time() + timeout
+    seen = False
+    while time.time() < end:
+        refresh(task)
+        box = find_text(task, r"点击屏幕可关闭")
+        if box:
+            seen = True
+            click_text_box(task, box, after=1.5, reason="关闭获得道具")
+            continue
+        if seen:
+            break
+        task.sleep(0.5)
+    return seen
+
+
+def claim_all(task: BaseTask, region, timeout=5.0):
+    """点区域内的「全部领取」（没有可领的时候按钮是灰的，点了也不会有弹窗），返回是否领到东西。"""
+    if not click_text(task, r"^全部领取$", region=region, timeout=timeout, after=1.5):
+        return False
+    got = close_reward_popup(task)
+    task.log_info("领到奖励" if got else "没有可领取的奖励")
+    return got
+
+
+def open_menu(task: BaseTask, tries=3):
+    """主页打开右上角 ≡ 菜单（右侧一列：邮箱/主页/公告/…/设置/结束）。"""
+    if not go_home(task):
+        return False
+    for _ in range(tries):
+        click_rel(task, *MENU_POINT, after=2, reason="打开菜单")
+        refresh(task)
+        if has_text(task, r"^辅战员$", region=(0.7, 0.3, 0.85, 0.45)) and has_text(task, r"^商店$", region=(0.7, 0.55, 0.85, 0.7)):
+            return True
+    task.log_info("没有打开菜单")
+    return False
+
+
+def claim_daily_activity(task: BaseTask):
+    """F3「日常」→「每日任务」页签 → 全部领取活跃度奖励。"""
+    if not go_home(task):
+        return False
+    task.send_key("f3")
+    if not wait_text(task, r"成长指南|每日任务|模拟训练|作战|达成手册", region=(0.08, 0.05, 0.35, 0.17), timeout=8):
+        task.log_info("没有打开日常窗口")
+        return False
+    click_rel(task, *DAILY_TASK_TAB, after=2, reason="切到每日任务")
+    if not wait_text(task, r"每日任务", region=(0.08, 0.05, 0.35, 0.17), timeout=5):
+        task.log_info("没有切到每日任务页签")
+        return False
+    progress = find_text(task, r"^\d+/100$", region=(0.1, 0.55, 0.3, 0.7))
+    if progress:
+        task.log_info(f"日程进度 {progress.name}")
+    claim_all(task, region=(0.08, 0.72, 0.3, 0.88))
+    return True
+
+
+def claim_supply(task: BaseTask):
+    """F2「阿基亚农补给」：先关掉付费推荐弹窗，再在任务页签、奖励页签各点一次全部领取。"""
+    if not go_home(task):
+        return False
+    task.send_key("f2")
+    end = time.time() + 12
+    while True:
+        refresh(task)
+        if has_text(task, r"^阿基亚农补给$", region=(0.05, 0.0, 0.3, 0.1)):
+            break
+        if has_text(task, r"^\d+元$"):
+            click_rel(task, *PAY_POPUP_CLOSE, after=2, reason="关闭付费推荐弹窗")
+            continue
+        if time.time() > end:
+            task.log_info("没有打开阿基亚农补给")
+            return False
+        task.sleep(0.5)
+    exp_before = _supply_exp(task)
+    # 任务页签领经验不弹「获得道具」，用经验值前后对比确认
+    for name, point in (("任务", SUPPLY_TASK_TAB), ("奖励", SUPPLY_REWARD_TAB)):
+        click_rel(task, *point, after=2, reason=f"切到补给{name}页签")
+        claim_all(task, region=(0.55, 0.86, 0.75, 0.97))
+    refresh(task)
+    task.log_info(f"补给经验 {exp_before} → {_supply_exp(task)}")
+    return True
+
+
+def _supply_exp(task: BaseTask):
+    box = find_text(task, r"^\d+/1000$", region=(0.4, 0.1, 0.6, 0.18))
+    return box.name if box else "?"
+
+
+def claim_mail(task: BaseTask):
+    """≡ 菜单 → 邮箱 → 全部领取（主页按 M 没反应，所以走菜单）。"""
+    if not open_menu(task):
+        return False
+    click_rel(task, *MENU_MAIL_POINT, after=2.5, reason="打开邮箱")
+    if not wait_text(task, r"^邮箱$", region=(0.03, 0.05, 0.2, 0.13), timeout=6):
+        task.log_info("没有打开邮箱")
+        return False
+    claim_all(task, region=(0.05, 0.85, 0.25, 0.95))
+    return True
+
+
+def ensure_hotkey_display(task: BaseTask):
+    """设置 → 键盘 →「快捷键显示」保持 ON。出击/卡厄思的手牌识别依赖卡牌上的按键提示。"""
+    if not open_menu(task):
+        return False
+    click_rel(task, *MENU_SETTINGS_POINT, after=3, reason="打开设置")
+    click_rel(task, *SETTINGS_KEYBOARD_TAB, after=2, reason="切到键盘设置")
+    if not wait_text(task, r"快捷键显示", region=(0.05, 0.2, 0.3, 0.26), timeout=5):
+        task.log_info("没有找到「快捷键显示」设置项")
+        return False
+    for _ in range(2):
+        state = find_text(task, r"^(ON|OFF)$", region=(0.6, 0.2, 1.0, 0.27))
+        if state and state.name == "ON":
+            task.log_info("快捷键显示：ON")
+            return True
+        if not state:
+            task.log_info("读不到快捷键显示开关状态")
+            return False
+        click_text_box(task, state, after=1.5, reason="打开快捷键显示")
+        refresh(task)
+    return has_text(task, r"^ON$", region=(0.6, 0.2, 1.0, 0.27))
