@@ -713,3 +713,12 @@ class TestOctopusRush(unittest.TestCase):
             utils.chaos_trace.step = old
         self.assertTrue(t.node_status["octopus_seen"])
         self.assertIn("octopus_seen", utils.RUN_LEVEL_KEYS)
+
+
+class TestOctopusRoute(unittest.TestCase):
+    def test_first_layer_normal_first(self):
+        w = cs.route_weights(cs.MODE_TARGET, 0, None, 0, octopus=True)["types"]
+        self.assertGreater(w["小怪"], max(w["事件"], w["精英"], w["休息"]))
+        w2 = cs.route_weights(cs.MODE_TARGET, 1, None, 0, octopus=True)["types"]
+        self.assertEqual(w2, cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"])
+        self.assertEqual(cs.route_weights(cs.MODE_TARGET, 0)["types"], cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"])

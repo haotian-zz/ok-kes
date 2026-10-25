@@ -37,13 +37,20 @@ EVENT_SOURCE_BONUS = 3     # 本层有只能靠事件拿的目标装备时，事
 AREA_LAYER = {"外围": 0, "核心": 1}   # 事件库 area → 层号（从 0 起）
 
 
-def route_weights(mode, layer=0, hp=None, event_bonus=0):
-    """按本层情况调整路线权重：血量低精英降到普通战、休息 +2；本层有目标装备的来源事件时事件加分。"""
+OCTOPUS_FIRST_LAYER_NORMAL = 7    # 章鱼哥速刷第一层：普通战权重（高于事件/精英），精英降到 2
+
+
+def route_weights(mode, layer=0, hp=None, event_bonus=0, octopus=False):
+    """按本层情况调整路线权重：血量低精英降到普通战、休息 +2；本层有目标装备的来源事件时事件加分。
+    octopus：章鱼哥速刷的第一层普通战优先——章鱼哥（赛内克图斯）基本只在普通战后乱入、精英战极少（社区实测，用户 2026-10-25 定）。"""
     base = ROUTE_WEIGHTS.get(mode)
     if not base:
         return base
     w = {**base, "types": dict(base["types"])}
     t = w["types"]
+    if octopus and layer == 0:
+        t["小怪"] = OCTOPUS_FIRST_LAYER_NORMAL
+        t["精英"] = min(t["精英"], 2)
     if hp is not None and hp is not False and hp < LOW_HP_ROUTE:
         t["精英"] = min(t["精英"], t["小怪"])
         t["休息"] += 2

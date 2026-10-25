@@ -167,7 +167,12 @@ def _migrate_route_boss_to_elite(task: TriggerTask):
 def _get_route_priority(task: TriggerTask):
     """读取路线节点优先级配置，返回列表；解析失败使用默认顺序。"""
     value = _get_config_value(task, '路线优先级', ["休息", "事件", "小怪", "精英"])
-    return list(value) if isinstance(value, (list, tuple)) else ["休息", "事件", "小怪", "精英"]
+    value = list(value) if isinstance(value, (list, tuple)) else ["休息", "事件", "小怪", "精英"]
+    ns = getattr(task, 'node_status', None)
+    if (_get_config_value(task, OCTOPUS_RUSH, False) is True and isinstance(ns, dict)
+            and ns.get('pass_final_boss_count', 0) == 0 and "小怪" in value):
+        value = ["小怪"] + [v for v in value if v != "小怪"]     # 章鱼哥速刷第一层普通战优先（没整层路线时的兜底）
+    return value
 
 
 # ------------------------- 通用工具 -------------------------
@@ -4192,7 +4197,10 @@ def _chaos_route_weights(task: TriggerTask):
             task.log_info(f"本层有目标装备的来源事件（{[s['equipment'] + '←' + s['event'] for s in sources]}），事件节点 +{bonus}")
     except Exception as e:  # noqa: BLE001
         task.log_info(f"目标装备来源事件加权失败: {e}")
-    return chaos_strategy.route_weights(mode, layer, hp, bonus)
+    octopus = _get_config_value(task, OCTOPUS_RUSH, False) is True
+    if octopus and layer == 0:
+        task.log_info("章鱼哥速刷：第一层普通战优先")
+    return chaos_strategy.route_weights(mode, layer, hp, bonus, octopus=octopus)
 
 
 BOSS_PAUSE_FILE = os.path.join("dev_out", "paused_before_boss")
