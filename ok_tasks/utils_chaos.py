@@ -30,6 +30,9 @@ import re
 import random
 import time
 
+import chaos_strategy
+import utils_chaos_prep
+
 
 # ------------------------- 卡厄思模式独有页面处理函数 -------------------------
 
@@ -139,6 +142,28 @@ def _match_storage_data_value(task: TriggerTask, text: str):
     """匹配当前游戏语言中的“存储数据价值+数字”，不要求末尾层级文本。"""
     storage_data_text = re.escape(_get_game_text(task, "存储数据"))
     return re.search(rf"{storage_data_text}[^0-9]*?(\d+)", text)
+
+
+def handle_chaos_team_setup(task: TriggerTask):
+    """配置队伍页（选了卡厄思玩法且开了自动编队）：核对编队＝目标主战员 + 队友，不对就换。每次启用只做一次。"""
+    if getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) == chaos_strategy.MODE_LEGACY:
+        return False
+    if getattr(task, "team_checked", True) or not _get_config_value(task, "自动编队", True):
+        return False
+    title = find_box_at_point(task, 0.121, 0.043)
+    enter = find_box_at_point(task, 0.947, 0.912)
+    if not (title and "配置队伍" in title.name and enter and "进入" in enter.name):
+        return False
+    members = [_get_config_value(task, "目标主战员", "")] + list(_get_config_value(task, "队友", []))[:2]
+    members = [m for m in members if m]
+    task.team_checked = True
+    if len(members) != 3:
+        task.log_info(f"自动编队需要目标主战员 + 2 个队友，当前配置 {members}，跳过")
+        return False
+    ok = utils_chaos_prep.setup_team(task, members)
+    task.log_info(f"自动编队{'完成' if ok else '失败，按现有编队继续'}：{members}")
+    task.all_texts = _simplify_texts(task.ocr())
+    return True
 
 
 def handle_season_chaos_initial_page(task: TriggerTask):
@@ -1216,6 +1241,7 @@ PAGE_HANDLERS = [
     handle_chaos_reward_claim, #卡厄思模式奖励领取页面
     handle_go_to_memory_end, #卡厄思结算页面右下角「前往记忆之末」按钮
     handle_continue,
+    handle_chaos_team_setup, #配置队伍页自动编队（选了玩法时），优先于进入按钮
     handle_season_chaos_initial_page, #赛季卡厄思初始页面，优先于进入按钮
     handle_zero_system_initial_page, #零式系统初始页面，优先于进入按钮
     handle_disable_adaptation_distortion, #刷空档时关闭适应畸变，优先于进入按钮

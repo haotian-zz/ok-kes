@@ -1,6 +1,12 @@
 from ok import TriggerTask, og
 
+import json
+import os
+
+import chaos_strategy
 import utils_chaos
+import utils_chaos_prep
+import utils_daily
 from config_io import (
     make_export_callback,
     make_import_callback,
@@ -29,6 +35,12 @@ class ChaosMode(TriggerTask):
         self.default_config['_enabled'] = False
         self.default_config['配置操作'] = ""
         self.default_config['游戏语言'] = "简体中文"
+        # 玩法：原有逻辑＝按下面各项配置走；其他玩法会自动推出删卡/闪光/复制/路线/事件等配置，覆盖下面对应的项
+        self.default_config['卡厄思玩法'] = chaos_strategy.MODE_LEGACY
+        self.default_config['目标主战员'] = "罗丝薇瑟"
+        self.default_config['目标预设'] = 1
+        self.default_config['队友'] = ["海德玛丽", "米卡"]
+        self.default_config['自动编队'] = True
         self.default_config['刷存档主战员'] = "海德玛丽"
         self.default_config['存储数据保存上限大于多少'] = 120
         self.default_config['保留大于多少TB的存档'] = 62000
@@ -92,6 +104,8 @@ class ChaosMode(TriggerTask):
         self._last_upload_time = 0
         self.config_type = {
             '游戏语言': {'type': 'drop_down', 'options': ['简体中文', '繁体中文']},
+            '卡厄思玩法': {'type': 'drop_down', 'options': chaos_strategy.MODES},
+            '目标预设': {'min': 1, 'max': 3},
             '配置操作': {
                 'type': 'button',
                 'buttons': [
@@ -106,6 +120,12 @@ class ChaosMode(TriggerTask):
             '存储数据保存上限大于多少': {'min': 0, 'max': 170},
         }
         self.config_description['游戏语言'] = "国际服请设置为繁体中文"
+        self.config_description['卡厄思玩法'] = (
+            "探索度：优先没见过的事件选项；刷存档-空存：删光目标主战员的卡，避开闪光/获得卡；"
+            "刷存档-目标卡组：按目标主战员的预设构筑删/复制/闪光。选了玩法后删卡、闪光、复制、路线、任务优先级等项自动生成。"
+        )
+        self.config_description['目标预设'] = "目标卡组读主战员详情 → 卡牌 → 预设构筑里的第几号预设"
+        self.config_description['队友'] = "自动编队时目标主战员之外的两个人（按槽位顺序）"
         self.config_description['闪光优先级'] = (
             "卡牌名称和描述无需完整填写，输入几个关键字即可，但顺序须与游戏原文一致。"
         )
@@ -135,7 +155,51 @@ class ChaosMode(TriggerTask):
             sortie.disable()
         reset_all_status(self)
         _migrate_route_boss_to_elite(self)
+        self.setup_strategy()
         super().enable()
+
+    def setup_strategy(self):
+        """按「卡厄思玩法」算出配置覆盖项；目标卡组读缓存的预设（configs/chaos_target_deck.json）。"""
+        mode = self.config.get('卡厄思玩法', chaos_strategy.MODE_LEGACY)
+        member = self.config.get('目标主战员', '')
+        self.chaos_mode = mode
+        self.chaos_plan = None
+        self.chaos_seen = chaos_strategy.load_seen() if mode == chaos_strategy.MODE_EXPLORE else set()
+        self.team_checked = False
+        if mode == chaos_strategy.MODE_TARGET:
+            preset = load_target_deck(member, self.config.get('目标预设', 1))
+            if preset:
+                self.chaos_plan = chaos_strategy.deck_plan(member, preset)
+            else:
+                self.log_info("目标卡组还没读过预设构筑，开局前会先去读一次")
+        overrides = chaos_strategy.config_overrides(mode, member, self.chaos_plan)
+        if overrides and member:
+            overrides['刷存档主战员'] = member
+        self.chaos_overrides = overrides
+        if overrides:
+            self.log_info(f"卡厄思玩法「{mode}」，自动配置：{overrides}")
+
+    def _prepare_target_deck(self):
+        """目标卡组玩法还没有预设时，在主页先去读一次预设构筑（只读），读完回主页。"""
+        if getattr(self, 'chaos_mode', '') != chaos_strategy.MODE_TARGET or self.chaos_plan is not None:
+            return False
+        if not utils_daily.is_home(self):
+            return False
+        member = self.config.get('目标主战员', '')
+        preset = self.config.get('目标预设', 1)
+        deck = utils_chaos_prep.read_deck_preset(self, member, preset)
+        utils_daily.go_home(self)
+        if not deck or not deck.get('cards'):
+            self.log_error(f"没读到「{member}」的 {preset} 号预设，目标卡组玩法先按原有逻辑跑")
+            self.chaos_mode = chaos_strategy.MODE_LEGACY
+            self.chaos_overrides = {}
+            return True
+        save_target_deck(deck)
+        team_checked = self.team_checked
+        self.setup_strategy()
+        self.team_checked = team_checked
+        self.log_info(f"目标卡组计划：{self.chaos_plan}")
+        return True
 
     def _check_upload_if_needed(self):
         check_upload_if_needed(self, "chaos")
@@ -146,9 +210,33 @@ class ChaosMode(TriggerTask):
     def run(self):
         # 每帧执行一次 OCR 并转简体, 供各页面处理函数复用
         self.all_texts = _simplify_texts(self.ocr())
+        if self._prepare_target_deck():
+            return
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环
         for handle_page in utils_chaos.PAGE_HANDLERS:
             if handle_page(self):
                 return
         # 帧末尾检查是否需要上传配置
         self._check_upload_if_needed()
+
+
+TARGET_DECK_FILE = os.path.join("configs", "chaos_target_deck.json")
+
+
+def load_target_deck(member, preset):
+    """读缓存的预设构筑（read_deck_preset 的结果），主战员和预设号对不上就当没有。"""
+    try:
+        with open(TARGET_DECK_FILE, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return None
+    if data.get("member") != member or int(data.get("preset", 0)) != int(preset):
+        return None
+    return data
+
+
+def save_target_deck(deck):
+    os.makedirs(os.path.dirname(TARGET_DECK_FILE), exist_ok=True)
+    cards = [{k: c.get(k) for k in ("name", "raw_name", "desc", "n", "god_spark")} for c in deck.get("cards", [])]
+    with open(TARGET_DECK_FILE, "w", encoding="utf-8") as f:
+        json.dump(dict(deck, cards=cards), f, ensure_ascii=False, indent=1)

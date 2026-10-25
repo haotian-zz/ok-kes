@@ -9,6 +9,8 @@ import os
 import numpy as np
 from opencc import OpenCC
 
+import chaos_strategy
+
 _jp2t = OpenCC('jp2t')  # 日文新字体转繁体
 _t2s = OpenCC('t2s')  # 繁体转简体
 
@@ -59,8 +61,12 @@ def _simplify_texts(texts):
 
 
 def _get_config_value(task: TriggerTask, key, default):
-    """读取运行时配置，优先从 task.config 读取，其次 default_config，最后使用默认值。返回前将字符串转简体。"""
-    if hasattr(task, 'config') and key in task.config:
+    """读取运行时配置，优先从 task.config 读取，其次 default_config，最后使用默认值。返回前将字符串转简体。
+    卡厄思选了玩法（探索度/刷存档）时，玩法推出来的配置项（task.chaos_overrides）优先。"""
+    overrides = getattr(task, 'chaos_overrides', None)
+    if overrides and key in overrides:
+        value = overrides[key]
+    elif hasattr(task, 'config') and key in task.config:
         value = task.config[key]
     else:
         value = getattr(task, 'default_config', {}).get(key, default)
@@ -922,8 +928,13 @@ def find_best_map_route(map_info, target_node_type):
     }
 
 
-def find_best_map_route_by_priority(map_info, node_type_priority):
-    """按节点类型加权计算最优路线，并返回下一列应选择的节点。"""
+def find_best_map_route_by_priority(map_info, node_type_priority, weights=None):
+    """按节点类型加权计算最优路线（整条路径求和），并返回下一列应选择的节点。
+
+    weights 给了就用它（卡厄思玩法的权重表：{"types": {类型: 分}, "shop": 商店加分, "special": {特征: 分}}），
+    否则按 node_type_priority 的名次换算。
+    """
+    weights = weights or {}
     nodes = map_info.get("nodes", [])
     adjacency = map_info.get("adjacency", {})
     node_by_id = {node["id"]: node for node in nodes}
@@ -935,12 +946,13 @@ def find_best_map_route_by_priority(map_info, node_type_priority):
         return None
 
     route_cache = {}
-    priority_weights = {
+    priority_weights = weights.get("types") or {
         node_type: len(node_type_priority) - index
         for index, node_type in enumerate(node_type_priority)
     }
     highest_priority_weight = max(priority_weights.values(), default=1)
-    shop_bonus = highest_priority_weight * 2
+    shop_bonus = weights.get("shop", highest_priority_weight * 2)
+    special_weights = weights.get("special", {})
 
     def best_route_from(node_id):
         if node_id in route_cache:
@@ -955,7 +967,7 @@ def find_best_map_route_by_priority(map_info, node_type_priority):
             for item in node.get("special_features", [])
         ))
         own_special_score = sum(
-            item["priority"]
+            special_weights.get(item["feature_name"], item["priority"])
             for item in node.get("special_features", [])
             if item["feature_name"] != "shop_in_map"
         )
@@ -1865,6 +1877,10 @@ def handle_refine_equipment_credit(task: TriggerTask):
     return False
 
 
+# 中央确认弹窗里出现这些字就不点：花钱、重置零式升级、删邮件
+_DANGEROUS_CONFIRM = re.compile(r"全部重置|重置所有|\d+元|充值|购买.*礼包|解锁额外数据|删除已读")
+
+
 def handle_center_confirm(task: TriggerTask):
     """页面中央的"确认"按钮。"""
     confirm_region = (0.009, 0.168, 0.977, 0.875)
@@ -1883,6 +1899,10 @@ def handle_center_confirm(task: TriggerTask):
         None,
     )
     if box:
+        danger = next((b.name for b in task.all_texts if _DANGEROUS_CONFIRM.search(b.name)), None)
+        if danger:
+            task.log_info(f"页面中央确认按钮所在弹窗含「{danger}」，属于危险操作，不点确认，交给专门的处理逻辑")
+            return False
         task.log_info("检测到页面中央确认按钮，点击确认")
         task.click_box(box)
         task.sleep(1)
@@ -2096,6 +2116,19 @@ def handle_card_reward(task: TriggerTask):
     cards = recognize_cards(task, page="卡牌奖励页面")
     if not cards:
         task.log_info("卡牌奖励页面未识别到卡牌，等待下一轮处理")
+        return True
+
+    if getattr(task, "chaos_mode", "") == chaos_strategy.MODE_EMPTY:
+        skip_box = next((b for b in task.all_texts
+                         if 0.620 <= (b.x + b.width / 2) / task.width <= 0.990
+                         and 0.883 <= (b.y + b.height / 2) / task.height <= 0.983
+                         and "跳过" in b.name), None)
+        task.log_info("[刷存档-空存] 卡牌奖励一律跳过")
+        if skip_box:
+            task.click_box(skip_box)
+        else:
+            _move_and_click(task, 0.745, 0.933)
+        task.sleep(0.5)
         return True
 
     target_boxes, target_click_positions = find_target_card(task)
@@ -2987,7 +3020,7 @@ def handle_convert_card(task: TriggerTask):
 def handle_negotiation(task: TriggerTask):
     """谈判失败页面: 点击下一步跳过。"""
     title = find_box_at_point(task, 0.498, 0.683)
-    if title and title.name in "失败":
+    if title and "失败" in title.name:
         task.log_info("检测到掷骰子失败，跳过掷骰子")
         _move_and_click(task, 0.665, 0.899)
         return True
@@ -3200,6 +3233,50 @@ def handle_equipment_recast(task: TriggerTask):
     return False
 
 
+def _chaos_strategy_state(task: TriggerTask):
+    """给 chaos_strategy 打分用的本局进度。"""
+    node_status = getattr(task, "node_status", {}) or {}
+    plan = getattr(task, "chaos_plan", None) or {}
+    removed = node_status.get("removed_card_count", 0)
+    hp = _get_current_hp_percent(task)
+    return {
+        "removed": removed,
+        "credit": _get_current_credit(task),
+        "hp_pct": hp if hp is not False else 100,
+        "seen": getattr(task, "chaos_seen", set()),
+        "need_remove": max(0, len(plan.get("remove", [])) - removed),
+        "need_copy": len(plan.get("copy", [])),
+        "need_spark": len(plan.get("flash", [])),
+        "need_god_spark": sum(1 for c in plan.get("flash", []) if c.get("god_spark")),
+    }
+
+
+def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
+    """选了卡厄思玩法时，用事件库 + 选项文字给选项打分，点分数最高的；原有逻辑返回 False 交给关键词匹配。"""
+    mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
+    if mode == chaos_strategy.MODE_LEGACY or not tasks_info:
+        return False
+    descs = [t["description"] for t in tasks_info]
+    best, results = chaos_strategy.pick_event_option(descs, mode, _chaos_strategy_state(task))
+    for t, (score, why, src, _oid) in zip(tasks_info, results):
+        task.log_info(f"[{mode}] 事件选项「{t['description']}」{score:+.1f} ({src}; {' '.join(why) or '无效果'})")
+    if best is None:
+        return False
+    if all(src == "文字解析" and not why for _s, why, src, _o in results):
+        task.log_info("事件库未命中且选项文字里没有可识别的效果，交给原有关键词匹配")
+        return False
+    option_id = results[best][3]
+    if option_id and mode == chaos_strategy.MODE_EXPLORE:
+        seen = getattr(task, "chaos_seen", None)
+        if seen is not None and option_id not in seen:
+            seen.add(option_id)
+            chaos_strategy.save_seen(seen)
+    task.log_info(f"[{mode}] 选择「{tasks_info[best]['description']}」")
+    click_event_option(tasks_info[best])
+    task.sleep(1)
+    return True
+
+
 def handle_event_task(task: TriggerTask):
     """事件任务页面: 识别事件选项特征和描述，按任务优先级选择推进。"""
     bottom_box = find_box_at_point(task, 0.516, 0.971)
@@ -3361,6 +3438,9 @@ def handle_event_task(task: TriggerTask):
     if reroll_empty_deck is True and is_initial_node:
         return handle_initial_node_task("移除2张", "刷空档")
 
+    if _pick_event_by_strategy(task, tasks_info, click_event_option):
+        return True
+
     # 读取拉黑任务列表
     blacklist = _get_config_value(task, '拉黑任务', ["咒术卡牌"])
     blacklist = list(blacklist) if isinstance(blacklist, (list, tuple)) else []
@@ -3428,6 +3508,40 @@ def handle_event_task(task: TriggerTask):
     click_event_option(chosen)
     task.sleep(1)
     return True
+
+
+def _track_layer_route(task: TriggerTask, map_info, route_plan):
+    """每层第一次进路线页时把整层地图建好图、算出整条最佳路径记下来，之后每一步核对还在不在这条路上。
+
+    路径用「类型+特殊标记」序列表示（节点 id 每帧重新编号，不能跨帧比较）。
+    和计划对不上（小地图没显示完整、识别漏了节点）时按新识别的图重新规划并在日志里写明。
+    """
+    node_status = getattr(task, "node_status", None)
+    if not isinstance(node_status, dict) or not route_plan:
+        return
+    node_by_id = {node["id"]: node for node in map_info.get("nodes", [])}
+
+    def describe(node_id):
+        node = node_by_id[node_id]
+        specials = sorted(item["feature_name"].removesuffix("_in_map") for item in node.get("special_features", []))
+        return node["type"] + (f"[{'/'.join(specials)}]" if specials else "")
+
+    steps = [describe(node_id) for node_id in route_plan["route"][1:]]
+    layer = node_status.get("pass_final_boss_count", 0)
+    plan = node_status.get("layer_route")
+    if plan and plan["layer"] == layer:
+        remaining = plan["steps"][plan["done"]:]
+        if steps == remaining:
+            task.log_info(f"第{layer + 1}层按计划走第{plan['done'] + 1}/{len(plan['steps'])}步：{steps[0] if steps else '结束'}")
+            plan["done"] += 1
+            return
+        task.log_info(f"第{layer + 1}层地图和计划不一致，按新识别的图重新规划：计划剩余={remaining}，新路线={steps}")
+    else:
+        task.log_info(
+            f"第{layer + 1}层建图：{len(map_info.get('nodes', []))}个节点，"
+            f"{len(map_info.get('connections', []))}条连线，最佳路线={steps}（总分{route_plan['weighted_score']}）"
+        )
+    node_status["layer_route"] = {"layer": layer, "steps": steps, "done": 1}
 
 
 def handle_route_selection(task: TriggerTask):
@@ -3564,7 +3678,9 @@ def handle_route_selection(task: TriggerTask):
     # 先根据左下角小地图的完整连通关系规划路线，再用右侧当前可点击节点
     # 校验规划结果。两边识别不一致时，使用当前节点识别结果兜底。
     map_info = recognize_map_connections(task)
-    route_plan = find_best_map_route_by_priority(map_info, priority)
+    route_weights = chaos_strategy.ROUTE_WEIGHTS.get(getattr(task, "chaos_mode", ""))
+    route_plan = find_best_map_route_by_priority(map_info, priority, route_weights)
+    _track_layer_route(task, map_info, route_plan)
     visible_nodes = sorted(nodes, key=lambda item: relative_center(item["box"])[1])
     node = None
     if route_plan and route_plan["next_row"] is not None:
@@ -4093,6 +4209,16 @@ def handle_view_original(task: TriggerTask):
                 break
         if chosen_card:
             break
+
+    plan = getattr(task, "chaos_plan", None)
+    if chosen_card is None and plan and getattr(task, "chaos_mode", "") == chaos_strategy.MODE_TARGET:
+        # 目标卡组：选描述和预设里那张卡一致的闪光变体（不管是闪光还是神闪，描述一样就行）
+        for card in cards:
+            index = chaos_strategy.pick_flash_variant(card["name"], cards, plan.get("flash", []))
+            if index is not None:
+                chosen_card = cards[index]
+                task.log_info(f"[目标卡组] 闪光选择和预设一致的「{chosen_card['name']}」：{chosen_card['description']}")
+                break
 
     target_boxes, target_click_positions = find_target_card(task)
     matched_meditation_cards = _matching_meditation_card_names(task, cards)
