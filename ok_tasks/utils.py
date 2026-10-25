@@ -1823,7 +1823,18 @@ def handle_stuck_log(task: TriggerTask):
     from utils_sortie import handle_secret_enemy
     handle_secret_enemy(task)
     cards = recognize_cards(task, page="画面卡住兜底")
-    if cards:
+    if cards and getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) != chaos_strategy.MODE_LEGACY:
+        # 玩法模式不随机拿卡：中立卡每张占 20PT。2026-10-25 第十一局训练后的「请选择卡牌奖励」卡住，
+        # 这里随机点了「全力以赴」「压制」，再被训练的「确认」发给罗丝薇瑟，存档多出 60PT
+        skip = find_text_in_region(task, r"跳过", (0.6, 0.85, 1, 1))
+        if skip:
+            task.log_info("画面卡住兜底: 玩法模式不随机拿卡，点「跳过」")
+            task.click_box(skip)
+            task.sleep(1)
+        else:
+            task.log_info("画面卡住兜底: 玩法模式不随机拿卡，也没有「跳过」，按未知页面处理")
+            handle_unknown_page(task)
+    elif cards:
         chosen_card = random.choice(cards)
         task.log_info(
             f"画面卡住兜底: 随机点击卡牌「{chosen_card['name']}」"
@@ -4355,6 +4366,8 @@ def _wait_for_rest_confirm(task: TriggerTask):
 
 def handle_rest(task: TriggerTask):
     """休息界面: 根据血量、信用点和冥想状态选择休息或冥想。"""
+    if any("卡牌奖励" in b.name for b in task.all_texts or []):
+        return False                         # 训练后弹出的卡牌奖励交给 handle_card_reward
     special_flash = task.find_one(
         feature_name=["special_flash_luosi", "special_flash_luosi2"],
         box=task.box_of_screen(0.219, 0.208, 0.786, 0.814),
@@ -4570,6 +4583,11 @@ def handle_training_select(task: TriggerTask):
         return False
     if any("安全区采取" in b.name for b in task.all_texts or []):
         return False                         # 还在休息页（训练没点进去），交给 handle_rest 重点
+    if any(k in b.name for b in task.all_texts or [] for k in ("卡牌奖励", "接受卡牌的主战员")):
+        # 训练完会弹卡牌奖励；这里的「确认」是把卡发给主战员，不是训练确认（2026-10-25 实录误发了中立卡）
+        ns['training_pending'] = None
+        ns['training_member_clicked'] = False
+        return False
     member = None
     if task.feature_exists("target_member_small"):
         member = task.find_one(feature_name="target_member_small", box=task.box_of_screen(0, 0.1, 1, 0.9), threshold=0.4)
