@@ -538,10 +538,19 @@ def _is_neutral(db, name):
     return bool(card) and db.card_owner(card) is None
 
 
+_VARIANT_SUFFIX = re.compile(r"[（(][^（()）]*[)）]?$")
+
+
+def base_card_name(name):
+    """变体页卡名带后缀：「明灭剑 （闪击)」「明灭剑(强化)」→「明灭剑」（2026-10-25 实录带后缀就对不上预设，随机选了）。"""
+    return _VARIANT_SUFFIX.sub("", re.sub(r"\s+", "", str(name or "")))
+
+
 def pick_flash_variant(card_name, choices, target_cards, db=None, min_sim=0.8):
     """闪光三选一：choices=[{name, description}]，target_cards=预设里同名卡。返回最像预设的下标，没有就 None。"""
     db = db or get_db()
     best, best_s = None, 0.0
+    card_name = base_card_name(card_name)
     for i, ch in enumerate(choices):
         for t in target_cards:
             if t.get("name") != card_name or not t.get("desc"):

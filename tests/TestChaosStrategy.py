@@ -583,6 +583,19 @@ class TestLayerReset(unittest.TestCase):
             utils.RUN_STATE_FILE = old
 
 
+class TestVariantSuffix(unittest.TestCase):
+    def test_base_name(self):
+        self.assertEqual("明灭剑", cs.base_card_name("明灭剑 （闪击)"))
+        self.assertEqual("明灭剑", cs.base_card_name("明灭剑(强化)"))
+        self.assertEqual("黑云奥义：残", cs.base_card_name("黑云奥义：残"))
+
+    def test_pick_with_suffix(self):
+        choices = [{"name": "明灭剑（闪击）", "description": "伤害100%"},
+                   {"name": "明灭剑（强化）", "description": "伤害464%必定触发弱点攻击"}]
+        targets = [{"name": "明灭剑", "desc": "伤害464%必定触发弱点攻击"}]
+        self.assertEqual(1, cs.pick_flash_variant("明灭剑 （强化)", choices, targets))
+
+
 class TestRemoveSplitOcr(unittest.TestCase):
     def test_split_remove(self):
         self.assertEqual(2, cs.parse_effects("开始赎罪所有主战员压力增加20，除2张所选卡牌移").get("remove_card"))

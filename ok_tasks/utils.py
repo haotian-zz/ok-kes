@@ -2469,7 +2469,7 @@ def _matching_meditation_card_names(task: TriggerTask, cards):
     matched_names = []
     for configured_name in meditation_state:
         for card in cards:
-            recognized_name = str(card.get("name", "")).strip()
+            recognized_name = chaos_strategy.base_card_name(card.get("name", ""))
             if (
                 recognized_name
                 and (configured_name in recognized_name or recognized_name in configured_name)
