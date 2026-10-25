@@ -194,7 +194,7 @@ def _neutral_card_limit_reached(task: TriggerTask):
     if limit is None:
         return False
     acquired = getattr(task, "node_status", {}).get("neutral_card_count", 0)
-    return acquired >= limit
+    return acquired >= limit or not _pt_room(task, "中立卡")
 
 
 def _record_removed_cards(task: TriggerTask, count=1):
@@ -3033,6 +3033,47 @@ def _avoid_god_spark(task: TriggerTask):
     return getattr(task, "chaos_mode", "") in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EMPTY)
 
 
+# ---------------- 本局 PT 账（刷存档局内绝不爆 PT，用户 2026-10-25） ----------------
+# 按 czn-chaos-mechanics.md 2.2：移除起始卡 20（保守地把每次移除都当起始卡）、复制第 3 张起 40、中立卡 20、神闪 20。
+PT_COST = {"移除": 20, "复制": 40, "中立卡": 20, "神闪": 20}
+
+
+def _pt_used(task: TriggerTask):
+    ns = getattr(task, "node_status", None) or {}
+    return (PT_COST["移除"] * ns.get("removed_card_count", 0)
+            + PT_COST["复制"] * max(0, ns.get("copy_count", 0) - 2)
+            + PT_COST["中立卡"] * ns.get("neutral_card_count", 0)
+            + PT_COST["神闪"] * ns.get("god_spark_count", 0))
+
+
+def _pt_cost(task: TriggerTask, what):
+    if what == "复制":
+        return PT_COST["复制"] if (getattr(task, "node_status", None) or {}).get("copy_count", 0) >= 2 else 0
+    return PT_COST[what]
+
+
+def _pt_room(task: TriggerTask, what):
+    """刷存档局内：做这件事之后 PT 还在上限内吗。没记到上限（探索度/原有逻辑）就不管。"""
+    cap = getattr(task, "chaos_pt_cap", None)
+    if not cap or not _avoid_god_spark(task):
+        return True
+    used, cost = _pt_used(task), _pt_cost(task, what)
+    if used + cost <= cap:
+        return True
+    task.log_info(f"PT 账：已用 {used}，{what}要 {cost}，上限 {cap}，会爆 PT，不做")
+    return False
+
+
+def _record_copy(task: TriggerTask):
+    ns = task.node_status
+    key = (ns.get("total_rounds", 0), ns.get("pass_final_boss_count", 0), ns.get("node_count", 0))
+    if ns.get("copy_key") == key:
+        return
+    ns["copy_key"] = key
+    ns["copy_count"] = ns.get("copy_count", 0) + 1
+    task.log_info(f"本局复制 {ns['copy_count']} 次，PT 账 {_pt_used(task)}/{getattr(task, 'chaos_pt_cap', None)}")
+
+
 def _click_bottom_skip(task: TriggerTask, reason):
     skip_box = next((b for b in task.all_texts or []
                      if 0.620 <= (b.x + b.width / 2) / task.width <= 0.990
@@ -3070,6 +3111,10 @@ def handle_select_card(task: TriggerTask):
     if action_tip:
         task.log_info(f"右下角选牌操作提示: 「{action_tip.name}」")
 
+    if action in ("移除", "复制") and not _pt_room(task, action):
+        if _click_bottom_skip(task, f"{action}会爆 PT"):
+            return True
+
     if (
         action in ("移除", "复制", "闪光", "灵光")
         and task.name == "自动卡厄思模式"
@@ -3077,6 +3122,8 @@ def handle_select_card(task: TriggerTask):
         _scroll_to_target_member_for_card_removal(task)
 
     result = select_card(task, _get_card_list(task, config_key), count=count, action=action)
+    if result and action == "复制":
+        _record_copy(task)
     if not result and action in ("闪光", "灵光"):
         skip_box = next(
             (
@@ -3102,6 +3149,8 @@ def handle_copy_card_choice(task: TriggerTask):
         return False
 
     task.log_info("检测到复制卡牌选择页面")
+    if not _pt_room(task, "复制") and _click_bottom_skip(task, "复制会爆 PT"):
+        return True
     target_boxes, target_click_positions = find_target_card(task)
     if target_boxes:
         click_position = target_click_positions[0]
@@ -3118,6 +3167,7 @@ def handle_copy_card_choice(task: TriggerTask):
         for card in cards:
             if card["name"] and pri_name in card["name"]:
                 task.log_info(f"复制卡牌选择: 按优先级选择「{card['name']}」(匹配「{pri_name}」)")
+                _record_copy(task)
                 _move_and_click(task, card["x"], card["y"])
                 task.sleep(0.5)
                 return True
@@ -3403,6 +3453,8 @@ def _chaos_strategy_state(task: TriggerTask):
         "need_neutral": len(plan.get("neutral", [])),
         "pending_meditation": sum(1 for v in _member_deck_state(task).get("冥想", {}).values() if v),
         "target_equipment": [n for slot in range(3) for n in _equipment_priority(task, slot)],
+        "copy_count": node_status.get("copy_count", 0),
+        "pt_room": (task.chaos_pt_cap - _pt_used(task)) if getattr(task, "chaos_pt_cap", None) else None,
     }
 
 
@@ -4676,9 +4728,21 @@ def handle_view_original(task: TriggerTask):
         return False
 
     if _avoid_god_spark(task) and any(GOD_SPARK_PAGE.search(b.name) for b in task.all_texts or []):
-        # 变体页底部写「闪光：迪亚洛斯」= 神闪三选一（2026-10-24 实机随机选了，神闪落到剑鸣九霄上）
+        # 变体页底部写「闪光：迪亚洛斯」= 神闪三选一（2026-10-24 实机随机选了，神闪落到剑鸣九霄上）。
+        # 只有和预设一致的神闪、且 PT 账还够才选（用户 2026-10-25：正确的神闪也不能爆 PT）
         task.node_status["god_spark_pending"] = False
-        if _click_bottom_skip(task, "神闪变体页，刷存档局内不神闪"):
+        plan = getattr(task, "chaos_plan", None) or {}
+        god_cards = [c for c in plan.get("flash", []) if c.get("god_spark")]
+        cards = recognize_cards(task, page="神闪变体页") if god_cards and _pt_room(task, "神闪") else []
+        for card in cards:
+            index = chaos_strategy.pick_flash_variant(card["name"], cards, god_cards)
+            if index is not None:
+                pick = cards[index]
+                task.node_status["god_spark_count"] = task.node_status.get("god_spark_count", 0) + 1
+                task.log_info(f"神闪变体页：「{pick['name']}」和预设神闪一致，PT 账够，选它（{pick['description']}）")
+                _move_and_click(task, pick["x"], pick["y"])
+                return True
+        if _click_bottom_skip(task, "神闪变体页，不是预设的神闪或 PT 不够"):
             return True
     cards = recognize_cards(task, page="卡牌闪光页面")
     if not cards:

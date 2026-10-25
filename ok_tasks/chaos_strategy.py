@@ -230,6 +230,14 @@ def score_effects(effects, mode, state=None):
     hp = effects.get("hp_pct") or 0
     stress = effects.get("stress") or 0
 
+    room = state.get("pt_room")
+    if room is not None and mode in (MODE_EMPTY, MODE_TARGET):
+        # 刷存档局内绝不爆 PT（用户 2026-10-25）：删起始卡 20/张、第 3 次起复制 40、中立卡 20、神闪 20
+        need = 20 * rm + (40 if effects.get("copy_card") and state.get("copy_count", 0) >= 2 else 0) \
+            + (20 if effects.get("neutral_card") else 0) + (20 if effects.get("god_spark") else 0)
+        if need > room:
+            add(-500, f"会爆PT（要{need}，剩{room}）")
+
     if mode == MODE_EMPTY:
         if rm and can_remove:
             add(30 * min(rm, REMOVE_LIMIT - removed), f"移除{rm}张")
@@ -621,9 +629,8 @@ def config_overrides(mode, member=None, plan=None, db=None):
 
 # ---------------- 刷存档：观测词条（2026-10-25 调研，2game-helper docs/czn-chaos-option-priority.md 第 9 节） ----------------
 # PT 上限 =（TIER+2）×10，TIER ≈ 难度 + 词条级数之和（实录：Ⅵ+疾病3=110，Ⅶ+疾病3=120，Ⅹ+精英1+不安1=140），观测最高 170；梦境 +10。
-# 预设 180pt = 观测 170 + 梦境，所以目标卡组要观测到 170，难度越低需要的词条级数越多。
-OBSERVE_MAX_PT = 170
-OBSERVE_PRACTICAL_LEVELS = 6    # 一次观测里「能接受的词条」级数之和实际很难超过这个，难度从 15-6=Ⅸ 起
+# 用户 2026-10-25：锁定难度 Ⅷ，最终上限（含梦境）≥150 就行——带出去用过编辑道具上限自动变 180，局外慢慢改。
+OBSERVE_MAX_PT = 150    # 默认「刷存档最低PT」（含梦境）
 # 词条名 → 到这个级数就不接受（单输出 + 自动战斗）；不在表里的（精英/不安…）都接受
 MODIFIER_REJECT_LEVEL = {"松懈": 1, "疏忽": 1, "暴君": 3, "疾病": 2, "愤怒": 2, "硬化": 2, "复仇": 2, "坏疽": 3, "损失": 3}
 MODIFIER_REJECT_TEXT = re.compile(r"无法获得存储数据|正义属性.*减少|抽取卡牌.*减少|打击次数变更|若仍有AP|友军所受伤害")
@@ -655,7 +662,6 @@ def judge_modifiers(mods):
     return not why, why
 
 
-def observe_start_difficulty(configured, target_pt=OBSERVE_MAX_PT):
-    """目标 PT 需要的 TIER 减去实际能凑到的词条级数 = 最低能用的难度；配置的难度更高就用配置的。"""
-    need_tier = target_pt // 10 - 2
-    return max(int(configured or 1), need_tier - OBSERVE_PRACTICAL_LEVELS, 1)
+def observe_start_difficulty(configured):
+    """刷存档锁定配置的难度（默认 Ⅷ），不自动升降。"""
+    return max(int(configured or 8), 1)

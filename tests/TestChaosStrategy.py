@@ -405,9 +405,29 @@ class TestTrace(unittest.TestCase):
         ok, why = cs.judge_modifiers(cs.parse_modifiers("[损失1]战斗信用点减少40%[精英2]无法获得存储数据"))
         self.assertFalse(ok)
         self.assertEqual([], cs.parse_modifiers("[欺诈]威胁他退下"))      # 事件选项的方括号不算词条
-        self.assertEqual(9, cs.observe_start_difficulty(1))              # 170PT = TIER15，词条最多凑 6 级
+        self.assertEqual(8, cs.observe_start_difficulty(None))          # 用户 2026-10-25：锁定 Ⅷ
         self.assertEqual(10, cs.observe_start_difficulty(10))
-        self.assertEqual(170, cs.config_overrides(cs.MODE_TARGET, "罗丝薇瑟", {})["存储数据保存上限大于多少"])
+        self.assertEqual(150, cs.config_overrides(cs.MODE_TARGET, "罗丝薇瑟", {})["存储数据保存上限大于多少"])
+
+    def test_pt_ledger(self):
+        from utils import _pt_used, _pt_room
+        task = SimpleNamespace(chaos_mode=cs.MODE_TARGET, chaos_pt_cap=150, log_info=lambda *a, **k: None,
+                               node_status={"removed_card_count": 3, "copy_count": 2, "neutral_card_count": 0})
+        self.assertEqual(60, _pt_used(task))
+        self.assertTrue(_pt_room(task, "复制"))           # 第 3 次复制 40：60+40=100 ≤ 150
+        task.node_status.update(copy_count=3, god_spark_count=2)
+        self.assertEqual(140, _pt_used(task))
+        self.assertFalse(_pt_room(task, "神闪"))          # 140+20 > 150：正确的神闪也不选
+        self.assertFalse(_pt_room(task, "移除"))
+        task.chaos_mode = cs.MODE_EXPLORE                  # 探索度不记账
+        self.assertTrue(_pt_room(task, "神闪"))
+
+    def test_event_score_pt_room(self):
+        base = {"removed": 0, "need_remove": 3, "need_copy": 1, "copy_count": 2, "pt_room": 30}
+        copy, _ = cs.score_effects({"copy_card": 1}, cs.MODE_TARGET, base)
+        remove, _ = cs.score_effects({"remove_card": 1}, cs.MODE_TARGET, base)
+        self.assertLess(copy, -100)                        # 第 3 次复制要 40 > 剩 30
+        self.assertGreater(remove, 0)                      # 删 1 张 20 ≤ 30
 
     def test_last_shop(self):
         from utils import _is_last_shop

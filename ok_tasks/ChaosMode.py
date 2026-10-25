@@ -44,11 +44,12 @@ class ChaosMode(TriggerTask):
         self.default_config['队友'] = ["海德玛丽", "米卡"]
         self.default_config['自动编队'] = True
         self.default_config['卡厄思地图'] = "活动卡厄思"
-        self.default_config['刷存档难度'] = 1
+        self.default_config['刷存档难度'] = 8
         self.default_config['探索度达到多少级后改刷目标卡组'] = 30
         self.default_config['记录流程追踪'] = True
         self.default_config['调整零式升级'] = True
         self.default_config['刷存档开梦境模式'] = True
+        self.default_config['刷存档最低PT'] = 150
         self.default_config['刷存档主战员'] = "海德玛丽"
         self.default_config['存储数据保存上限大于多少'] = 120
         self.default_config['保留大于多少TB的存档'] = 62000
@@ -118,6 +119,7 @@ class ChaosMode(TriggerTask):
             '目标预设': {'min': 1, 'max': 3},
             '卡厄思地图': {'type': 'drop_down', 'options': ['活动卡厄思', '常驻（探索度→卡厄思具象，刷存档→零式系统）']},
             '刷存档难度': {'min': 0, 'max': 15},
+            '刷存档最低PT': {'min': 30, 'max': 180},
             '配置操作': {
                 'type': 'button',
                 'buttons': [
@@ -151,7 +153,8 @@ class ChaosMode(TriggerTask):
             "用 tools/chaos_trace_report.py 生成 HTML 复盘；只保留最近 10 次")
         self.config_description['探索度达到多少级后改刷目标卡组'] = (
             "玩法是探索度时，开局在卡厄思入口页读左下角「探索度 等级N」，到这个级数就把玩法改成目标卡组并回主页重新进；0=不切换")
-        self.config_description['刷存档难度'] = "活动卡厄思刷存档时选第几档难度（左侧罗马数字，Ⅰ=1），0 或没解锁就选最高"
+        self.config_description['刷存档难度'] = "活动卡厄思刷存档锁定第几档难度（左侧罗马数字，Ⅰ=1），默认 Ⅷ"
+        self.config_description['刷存档最低PT'] = "刷存档时存储数据上限（含梦境 +10）至少多少才进；带出去用过编辑道具上限会变 180。局内按这个上限记 PT 账，绝不爆 PT"
         self.config_description['调整零式升级'] = (
             "刷存档玩法从主页进零式系统时，先把升级调好：高维启示 0 级；认知闪光空存 0 级、目标卡组满级。"
             "要降级时会「全部重置」（花 10 个货币，材料全部返还）再把其他项升满"
