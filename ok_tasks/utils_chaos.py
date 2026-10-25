@@ -1022,6 +1022,14 @@ def handle_go_to_chaos_core(task: TriggerTask):
     return False
 
 
+def _enter_memory_end(task: TriggerTask):
+    """记忆之末是第 3 层。第 2 层末尾是两个「结算」航点、没有首领结算，层数不会 +1（2026-10-25 实录进记忆之末仍记成第 2 层），这里校正。"""
+    status = getattr(task, "node_status", None)
+    if isinstance(status, dict) and status.get("pass_final_boss_count", 0) < 2:
+        task.log_info(f"进入记忆之末，层数 {status.get('pass_final_boss_count', 0) + 1} → 3")
+        status["pass_final_boss_count"] = 2
+
+
 def handle_go_to_memory_end(task: TriggerTask):
     """卡厄思结算页面右下角「前往记忆之末」按钮: 检测到后点击进入记忆之末。"""
     region = (0.740, 0.850, 0.995, 0.980)
@@ -1037,6 +1045,7 @@ def handle_go_to_memory_end(task: TriggerTask):
     )
     if box:
         task.log_info("检测到前往记忆之末按钮，点击进入")
+        _enter_memory_end(task)
         task.click_box(box)
         task.sleep(1)
         return True
@@ -1047,6 +1056,7 @@ def handle_go_to_memory_end(task: TriggerTask):
         return False
 
     task.log_info("检测到前往记忆之末按钮（区域文本匹配），点击进入")
+    _enter_memory_end(task)
     _move_and_click(task, 0.881, 0.908)
     task.sleep(1)
     return True
@@ -1239,7 +1249,8 @@ def handle_chaos_reward_settlement(task: TriggerTask):
     task.log_info("检测到卡厄思奖励结算页面")
     status = task.node_status
     reward_box = find_box_at_point(task, 0.851, 0.389)
-    key = (status.get("total_rounds", 0), status.get("pass_final_boss_count", 0))
+    # 每个结算页一次：首领后层数才 +1，同层的「结算」航点要靠节点计数区分（2026-10-25 第 2 层两个结算航点都被当成已点过）
+    key = (status.get("total_rounds", 0), status.get("pass_final_boss_count", 0), status.get("node_count", 0))
     if reward_box and "获得" in reward_box.name and status.get("reward_claim_tried") != key:
         cards = _verify_cards(task, (0.94, 0.051))
         if _reward_wanted(task, cards):
