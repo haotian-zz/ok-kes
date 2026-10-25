@@ -563,7 +563,7 @@ DIFF_PITCH = 129 / 1080                            # 相邻难度圆的间距
 DIFF_CLICK_Y = (0.17, 0.8)                         # 列表上下两头会被标题和「探索度」按钮挡住
 DIFF_LEVEL_REGION = (0.68, 0.25, 0.76, 0.31)       # 右侧面板「等级NN」（推荐等级）
 # 2026-10-24 天幕实测：难度 → 推荐等级（Ⅷ 以上当时没解锁）
-DIFF_LEVELS = {1: 30, 2: 40, 3: 50, 4: 60, 5: 65, 6: 70, 7: 75, 8: 80}   # Ⅷ 2026-10-24 通关Ⅶ后解锁，实机等级80
+DIFF_LEVELS = {1: 30, 2: 40, 3: 50, 4: 60, 5: 65, 6: 70, 7: 75, 8: 80, 9: 95, 10: 110}   # Ⅷ 2026-10-24 通关Ⅶ后解锁实机80；Ⅸ 95、Ⅹ 110（2026-10-25）
 _LOCK_TEMPLATE = None
 
 
@@ -712,6 +712,9 @@ def enter_event_chaos(task: BaseTask, difficulty=None):
         return False
     title = find_text(task, r"^[\u4e00-\u9fff]{2,6}$", region=(0.68, 0.17, 0.85, 0.25))
     task.log_info(f"活动卡厄思「{title.name if title else '?'}」")
+    on_lobby = getattr(task, "on_chaos_lobby", None)
+    if on_lobby and on_lobby() == "restart":
+        return "restart"
     select_difficulty(task, difficulty)
     if not click_text(task, r"^进入$", region=(0.8, 0.85, 1, 1), timeout=8, after=4):
         return False

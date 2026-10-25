@@ -272,6 +272,8 @@ class ChaosMode(TriggerTask):
                 utils_chaos_prep.enter_zero_system(self, want_zero, want_max)
             difficulty = None if mode == chaos_strategy.MODE_EXPLORE else (int(self.config.get('刷存档难度') or 0) or None)
             ok = utils_chaos_prep.enter_event_chaos(self, difficulty)
+            if ok == "restart":
+                return True     # 玩法刚切换，下一帧从难度页回主页按新玩法重新进
         elif mode == chaos_strategy.MODE_EXPLORE:
             ok = utils_chaos_prep.enter_chaos_figure(self)
         else:
@@ -287,6 +289,19 @@ class ChaosMode(TriggerTask):
         else:
             self.entry_checked = False
         return True
+
+    def on_chaos_lobby(self):
+        """活动卡厄思难度页：读探索度等级，到「探索度达到多少级后改刷目标卡组」就切玩法（用户 2026-10-25：
+        探索度没到 30 一直打最高难度，到了改刷存档）。切了返回 "restart"。"""
+        level = utils_chaos.explore_level(self)
+        switch_at = int(self.config.get('探索度达到多少级后改刷目标卡组') or 0)
+        self.log_info(f"探索度等级 {level}（{switch_at or '不'}级后改刷目标卡组）")
+        if self.chaos_mode != chaos_strategy.MODE_EXPLORE or not switch_at or level is None or level < switch_at:
+            return None
+        self.log_info(f"探索度 {level} 级 ≥ {switch_at}，玩法改成目标卡组，回主页重新进")
+        self.config['卡厄思玩法'] = chaos_strategy.MODE_TARGET
+        self.setup_strategy()
+        return "restart"
 
     def _check_upload_if_needed(self):
         check_upload_if_needed(self, "chaos")
