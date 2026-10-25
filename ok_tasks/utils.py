@@ -4191,6 +4191,9 @@ def handle_shop(task: TriggerTask):
                         f"本局已移除{removed_card_count}张卡牌，"
                         "达到5张上限，不再使用信用点移除卡牌"
                     )
+                elif (getattr(task, "chaos_mode", None) == chaos_strategy.MODE_TARGET
+                      and _chaos_strategy_state(task)["need_remove"] <= 0):
+                    task.log_info("德朗商店: 目标卡组要删的卡已经删够，不付费移除")
                 elif cost <= current_credit and task.node_status['shop'] is True:
                     task.log_info(f"德朗商店: 移除卡牌需{cost}信用点，当前{current_credit}，足够，点击移除")
                     task.click_box(box)
