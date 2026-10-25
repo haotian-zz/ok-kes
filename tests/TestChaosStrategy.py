@@ -478,3 +478,42 @@ class TestTrace(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestRestChoice(unittest.TestCase):
+    """休息页：满血不休息改训练；目标卡组有待冥想的卡、钱够冥想就冥想（2026-10-25 实录）。"""
+
+    def run_rest(self, hp, credit, pending, mode=cs.MODE_TARGET):
+        import utils
+        box = lambda name, x, y: SimpleNamespace(name=name, x=x * 1920 - 20, y=y * 1080 - 10, width=40, height=20)
+        texts = [box("安全区采取", 0.5, 0.1), box("训练", 0.85, 0.18), box("免费", 0.85, 0.23), box("80", 0.8, 0.7)]
+        clicks = []
+        task = SimpleNamespace(width=1920, height=1080, all_texts=texts, chaos_mode=mode,
+                               node_status={"flash_or_rest": True}, log_info=lambda *a, **k: None,
+                               box_of_screen=lambda *a: None, sleep=lambda *a: None, move_relative=lambda *a: None,
+                               click_box=lambda b: clicks.append(b.name))
+        task.find_one = lambda feature_name=None, box=None: (
+            box_("meditate") if feature_name == "meditate" else None)
+        box_ = lambda n: SimpleNamespace(name=n, x=0.8 * 1920 - 20, y=0.62 * 1080, width=40, height=40)
+        patches = {"_find_rest_feature": lambda t: box_("rest"), "_get_region_text": lambda t, r: "免费",
+                   "_member_deck_state": lambda t: {"冥想": {"剑鸣九霄": pending}},
+                   "_get_current_credit": lambda t: credit, "_get_current_hp_percent": lambda t: hp,
+                   "_wait_for_rest_confirm": lambda t: True, "find_box_at_point": lambda *a: None}
+        orig = {k: getattr(utils, k) for k in patches}
+        try:
+            for k, v in patches.items():
+                setattr(utils, k, v)
+            utils.handle_rest(task)
+        finally:
+            for k, v in orig.items():
+                setattr(utils, k, v)
+        return clicks
+
+    def test_full_hp_trains(self):
+        self.assertEqual(["训练"], self.run_rest(hp=100, credit=50, pending=False))
+
+    def test_low_hp_rests(self):
+        self.assertEqual(["rest"], self.run_rest(hp=40, credit=50, pending=False))
+
+    def test_target_meditates_below_config_threshold(self):
+        self.assertEqual(["meditate"], self.run_rest(hp=100, credit=269, pending=True))

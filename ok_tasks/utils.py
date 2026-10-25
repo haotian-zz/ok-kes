@@ -4270,18 +4270,29 @@ def handle_rest(task: TriggerTask):
         meditation_credit_threshold = int(meditation_credit_threshold)
     except (TypeError, ValueError):
         meditation_credit_threshold = 300
+    if getattr(task, "chaos_mode", "") == chaos_strategy.MODE_TARGET and meditation_cost is not None:
+        # 目标卡组：目标卡闪错了只能靠冥想重闪，钱够冥想就冥想，不用等到「多少信用点以上冥想」
+        # （2026-10-25 实录：剑鸣九霄待冥想、269 信用点、冥想 80，因门槛 300 去休息了）
+        meditation_credit_threshold = min(meditation_credit_threshold, meditation_cost)
     can_meditate = bool(
         flash_or_rest
         and meditate_feature
         and meditation_cost is not None
         and has_pending_meditation
-        and current_credit > meditation_credit_threshold
-        and current_credit > meditation_cost
+        and current_credit >= meditation_credit_threshold
+        and current_credit >= meditation_cost
     )
 
     train_box = find_text_in_region(task, r"^训练$", TRAIN_REGION)
     can_train = bool(flash_or_rest and train_box and find_text_in_region(task, r"免费", TRAIN_REGION))
     on_rest_page = any("安全区采取" in b.name for b in task.all_texts or [])
+
+    if can_rest and can_train and not can_meditate:
+        hp_percent = _get_current_hp_percent(task)
+        if hp_percent is not False and hp_percent >= REST_HP_BELOW:
+            # 血量够高时休息白白浪费，改用免费训练（2026-10-25 实录 100% 血还去休息）
+            task.log_info(f"当前血量 {hp_percent}% ≥ {REST_HP_BELOW}%，不休息，改训练")
+            can_rest = False
 
     if can_rest and can_meditate:
         hp_percent = _get_current_hp_percent(task)
@@ -4357,6 +4368,7 @@ def handle_rest(task: TriggerTask):
 
 
 TRAIN_REGION = (0.78, 0.15, 0.92, 0.26)     # 休息页右上「训练 / 免费」
+REST_HP_BELOW = 70                           # 能训练时，血量低于这个才休息
 
 
 def find_text_in_region(task, pattern, region):
