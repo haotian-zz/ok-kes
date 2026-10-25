@@ -54,13 +54,30 @@ class TestEventPick(unittest.TestCase):
         self.assertNotEqual(1, best)
 
 
-    def test_explore_avoids_hp_to_one(self):
-        # 2026-10-24 实机开局「凯尔肯的传令兵」：库里没有效果，三个都是没见过的，不能选生命值变为1
-        descs = ["舍弃世俗高速连射]，普通战斗3次期间异将选择的普通卡牌转换为卡牌[形生命值变为1",
-                 "对祝福表示感谢随机主战员触发1次闪光",
-                 "献上一切信用点减少100%，在随机3张中立传说卡牌中选择1张获得"]
-        best, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {})
-        self.assertEqual(1, best, res)
+    def test_enemy_hp_to_one_is_good(self):
+        # 2026-10-24 实机「凯尔肯的传令兵」：「普通战斗3次期间异形生命值变为1」是异形变 1，不能当成我方生命值变 1 重罚
+        for d in ["接受恩宠获得装备[截骨机]，普通战斗3次期间异形生命值变为1",
+                  "舍弃世俗高速连射]，普通战斗3次期间异将选择的普通卡牌转换为卡牌[形生命值变为1"]:
+            e = cs.parse_effects(d)
+            self.assertTrue(e.get("enemy_hp_to_one"), d)
+            self.assertFalse(e.get("hp_to_one"), d)
+        self.assertTrue(cs.parse_effects("所有主战员生命值变为1").get("hp_to_one"))
+
+    def test_explore_prefers_unpicked(self):
+        # 选过「献上赞美」后，下次优先选没选过的
+        descs = ["接受恩宠获得装备[截骨机]，普通战斗3次期间异形生命值变为1", "献上赞美信用点增加100"]
+        best, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()})
+        seen = {res[1][3]}
+        best, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": seen})
+        self.assertEqual(0, best, res)
+
+    def test_text_key_for_unknown_event(self):
+        # 库里没有的事件也按文字记「选过」，数值变了还是同一个 key
+        a = cs.text_key("打破平静战员闪光1次所有主战员压力增加20")
+        self.assertEqual(a, cs.text_key("打破平静战员闪光2次所有主战员压力增加30"))
+        _, res = cs.pick_event_option(["完全没见过的选项甲恢复生命", "完全没见过的选项乙恢复生命"], cs.MODE_EXPLORE,
+                                      {"seen": {cs.text_key("完全没见过的选项甲恢复生命")}})
+        self.assertGreater(res[1][0], res[0][0])
 
 
 class TestTargetDeck(unittest.TestCase):

@@ -1264,6 +1264,22 @@ def _scroll_card_page(task: TriggerTask, x, y, amount, page, distance=0.25):
         task.sleep(0.5)
 
 
+CARD_PAGE_DUMP_DIR = os.path.join("dev_out", "card_pages")
+
+
+def _dump_card_page(task: TriggerTask, tag):
+    """开发样本：选卡页/闪光三选一页存一张截图（dev_out/card_pages，最多 40 张），用来做游戏「推荐图钉」的识别。"""
+    try:
+        if not os.path.isdir("dev_out"):
+            return
+        os.makedirs(CARD_PAGE_DUMP_DIR, exist_ok=True)
+        if len(os.listdir(CARD_PAGE_DUMP_DIR)) >= 40 or task.frame is None:
+            return
+        cv2.imwrite(os.path.join(CARD_PAGE_DUMP_DIR, f"{time.strftime('%H%M%S')}_{tag}.png"), task.frame)
+    except Exception as e:  # 只是采样本，失败不影响流程
+        task.log_debug(f"存选卡页截图失败: {e}")
+
+
 def select_card(task: TriggerTask, card_names, count=1, action=""):
     """使用卡组特征识别选择卡牌，支持滚动查找、基础牌移除和兜底选择。"""
     selected = 0
@@ -1414,6 +1430,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
         )
 
     cards = refresh_cards()
+    _dump_card_page(task, f"select_{action or 'card'}")
     if not cards:
         if find_action_button():
             task.log_info(
@@ -4280,6 +4297,7 @@ def handle_view_original(task: TriggerTask):
     cards = recognize_cards(task, page="卡牌闪光页面")
     if not cards:
         return False
+    _dump_card_page(task, "view_original")
 
     flash_priority = []
     for keyword in _get_card_list(task, '闪光优先级'):

@@ -74,7 +74,11 @@ def parse_effects(text):
         e["stress"] = int(m.group(2) or 1)
     elif m := re.search(r"压力(减少|降低)(\d+)?", t):
         e["stress"] = -int(m.group(2) or 1)
-    if re.search(r"生命值?(变为|降为|变成)1(?!\d)", t):
+    # OCR 多行乱序时「期间异」「形生命值变为1」会被拆开，所以「战斗N次期间…生命值变为1」也算异形
+    if re.search(r"(异形|敌人|敌方|怪物)\S{0,4}生命值?(变为|降为|变成)1(?!\d)", t) or \
+            (re.search(r"战斗\d*次期间", t) and re.search(r"生命值?(变为|降为|变成)1(?!\d)", t)):
+        e["enemy_hp_to_one"] = True    # 「普通战斗3次期间异形生命值变为1」对我方是好事
+    elif re.search(r"生命值?(变为|降为|变成)1(?!\d)", t):
         e["hp_to_one"] = True
     elif re.search(r"(恢复|回复)\S*生命", t):
         e["hp_pct"] = 1
@@ -206,6 +210,8 @@ def score_effects(effects, mode, state=None):
         add(3 if effects["max_hp_pct"] > 0 else -6, "最大生命")
     if effects.get("hp_to_one"):
         add(-60, "生命值变为1")
+    if effects.get("enemy_hp_to_one"):
+        add(5, "异形生命值变为1")
     if effects.get("equipment_lost"):
         add(-6, "失去装备")
     if effects.get("requires_credit", 0) > state.get("credit", 10 ** 9):
@@ -234,11 +240,12 @@ def pick_event_option(descs, mode, state=None, db=None):
             src = f"库:{event['name']}/{o.get('text')}"
             st = dict(state, unseen=o.get("id") not in seen)
         else:
+            # 库里没有的事件：用选项文字当 key 记「选过」，没选过的同样优先
             effects = parse_effects(d)
             src = "文字解析"
-            st = dict(state, unseen=False)
+            st = dict(state, unseen=text_key(d) not in seen)
         score, why = score_effects(effects, mode, st)
-        results.append((score, why, src, o.get("id") if o else None))
+        results.append((score, why, src, o.get("id") if o else text_key(d)))
     if not results:
         return None, results
     best = max(range(len(results)), key=lambda i: results[i][0])
@@ -246,6 +253,11 @@ def pick_event_option(descs, mode, state=None, db=None):
 
 
 # ---------------- 「已见」记录（探索度） ----------------
+
+def text_key(desc):
+    """事件库匹配不上的选项的「已选」key：去掉数字、空白和标点（数值会随难度变），取前 24 个字。"""
+    return "txt:" + re.sub(r"[\d\s%+\-，。,.、：:；;！!？?\[\]【】()（）~～/·]", "", desc or "")[:24]
+
 
 def load_seen(path=SEEN_FILE):
     try:
@@ -355,7 +367,16 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "进入商店": True,
         }
     if mode == MODE_EXPLORE:
+        # 删卡/闪光/复制也按目标主战员的预设来（用户 2026-10-24：以前沿用旧配置的移除列表，删了别人的卡）
+        plan = plan or {}
+        flash_names = [c["name"] for c in plan.get("flash", [])]
         return {
+            "优先移除基础牌": False,
+            "移除卡牌列表": list(dict.fromkeys(plan.get("remove", []))),
+            "闪光卡牌列表": list(dict.fromkeys(flash_names)),
+            "复制卡牌列表": list(dict.fromkeys(plan.get("copy", []))),
+            "闪光优先级": [],
+            "卡牌奖励优先级": list(dict.fromkeys(flash_names)),
             "刷空档": False,
             "刷初始卡牌": "",
             "任务优先级": [],

@@ -173,6 +173,7 @@ class ChaosMode(TriggerTask):
         reset_all_status(self)
         _migrate_route_boss_to_elite(self)
         self.strategy_ready = False
+        self.start_window = True
         super().enable()
 
     def setup_strategy(self):
@@ -185,7 +186,7 @@ class ChaosMode(TriggerTask):
         self.team_checked = False
         self.entry_checked = False
         self.strategy_ready = True
-        if mode == chaos_strategy.MODE_TARGET:
+        if mode in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EXPLORE):
             preset = load_target_deck(member, self.config.get('目标预设', 1))
             if preset:
                 self.chaos_plan = chaos_strategy.deck_plan(member, preset)
@@ -199,8 +200,9 @@ class ChaosMode(TriggerTask):
             self.log_info(f"卡厄思玩法「{mode}」，自动配置：{overrides}")
 
     def _prepare_target_deck(self):
-        """目标卡组玩法还没有预设时，在主页先去读一次预设构筑（只读），读完回主页。"""
-        if getattr(self, 'chaos_mode', '') != chaos_strategy.MODE_TARGET or self.chaos_plan is not None:
+        """目标卡组/探索度玩法还没有预设时，在主页先去读一次预设构筑（只读），读完回主页。"""
+        if getattr(self, 'chaos_mode', '') not in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EXPLORE) \
+                or self.chaos_plan is not None:
             return False
         if not (utils_daily.is_home(self) or not self.all_texts):
             return False
@@ -209,6 +211,13 @@ class ChaosMode(TriggerTask):
         deck = utils_chaos_prep.read_deck_preset(self, member, preset)
         utils_daily.go_home(self)
         if not deck or not deck.get('cards'):
+            if self.chaos_mode == chaos_strategy.MODE_EXPLORE:
+                # 探索度不依赖预设：卡牌列表留空（不沿用旧配置），删卡/闪光只认游戏标的图钉
+                self.log_error(f"没读到「{member}」的 {preset} 号预设，探索度的删卡/闪光列表留空")
+                self.chaos_plan = {}
+                self.chaos_overrides = chaos_strategy.config_overrides(self.chaos_mode, member, {})
+                self.chaos_overrides['刷存档主战员'] = member
+                return True
             self.log_error(f"没读到「{member}」的 {preset} 号预设，目标卡组玩法先按原有逻辑跑")
             self.chaos_mode = chaos_strategy.MODE_LEGACY
             self.chaos_overrides = {}
@@ -267,8 +276,12 @@ class ChaosMode(TriggerTask):
             return
         if not getattr(self, 'strategy_ready', False):
             self.setup_strategy()
-        if self._prepare_target_deck() or self._enter_chaos_from_home():
-            return
+        # 读预设、从主页进卡厄思只在启动那一刻做：之后的无文字帧（战斗开场、加载）不能当成主页
+        # （2026-10-24 局内重启后首领战开场被当成主页，点了画面中心、按了 6 次 ESC）
+        if getattr(self, 'start_window', True):
+            if self._prepare_target_deck() or self._enter_chaos_from_home():
+                return
+            self.start_window = False
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环
         for handle_page in utils_chaos.PAGE_HANDLERS:
             if handle_page(self):
