@@ -1183,6 +1183,8 @@ def handle_chaos_reward_claim(task: TriggerTask):
     if not (claim_box and "获得" in claim_box.name):
         return False
     texts = _dialog_texts(task)
+    if "战利品" not in texts:     # 闪光变体页等别的页面同一位置也可能有「获得」（2026-10-25 实录误点取消）
+        return False
     cards = _verify_cards(task, (0.959, 0.281))
     task.log_info(f"检测到额外战利品兑换弹窗：验证卡={cards}，文字={texts[:120]}")
     chaos_trace.step(task, "page", "额外战利品兑换弹窗", task.frame, cards=cards, texts=texts[:300])
