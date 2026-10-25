@@ -3424,7 +3424,9 @@ def handle_three_choice_card_remove(task: TriggerTask):
             box for box in task.all_texts
             if region[0] <= (box.x + box.width / 2) / task.width <= region[2]
             and region[1] <= (box.y + box.height / 2) / task.height <= region[3]
-            and "移除" in box.name
+            # 按钮就是「移除」两个字；事件选项「说服先知移除1张所选卡牌」也落在这块，别当成按钮
+            # （2026-10-25 实录点了选项文字还记了一次移除，PT 账多算 20）
+            and "移除" in box.name and len(box.name.strip()) <= 4
         ),
         None,
     )
