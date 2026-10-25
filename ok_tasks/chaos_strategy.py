@@ -120,6 +120,8 @@ def parse_effects(text):
     if "神之闪光" in t or "神闪" in t or ("神之" in t and "闪光" in t) or \
             (re.search(GOD_NAMES, t) and "闪光" in t):
         e["god_spark"] = True
+        if "所选" in t or "选择" in t:
+            e["god_spark_pick"] = True
     elif "闪光" in t:
         e["spark"] = True
     if "复制" in t:
@@ -294,8 +296,13 @@ def score_effects(effects, mode, state=None):
         elif effects.get("spark"):
             add(-3, "多余的闪光")
         if effects.get("god_spark"):
-            # 用户 2026-10-24：局内神闪闪错卡就「爆存档」（局外也撤销不了），局外加神闪更容易，所以局内一律不要
-            add(-40, "神闪")
+            # 用户 2026-10-24：局内神闪闪错卡就「爆存档」（局外也撤销不了）。2026-10-25 用户补充：和预设一致、不爆 PT 的神闪可以拿。
+            # 选卡神闪（所选卡牌）能挑预设要神闪的卡，变体页只选和预设一致的、不一致就跳过，所以值得选；随机卡牌的神闪多半落空
+            room = state.get("pt_room")
+            if state.get("god_spark_wanted", 0) > 0 and (room is None or room >= 20):
+                add(160 if effects.get("god_spark_pick") else 30, "神闪（预设要）")
+            else:
+                add(-40, "神闪")
         for k, v, reason in (("curse_card", -15, "咒术卡"), ("event_card", -8, "获得卡"), ("lumen_card", -8, "获得卡"),
                              ("desire_card", -8, "获得卡"), ("card_choice", -5, "选卡"), ("transform_card", -10, "转换卡")):
             if effects.get(k):
@@ -528,7 +535,7 @@ def _is_neutral(db, name):
     return bool(card) and db.card_owner(card) is None
 
 
-def pick_flash_variant(card_name, choices, target_cards, db=None):
+def pick_flash_variant(card_name, choices, target_cards, db=None, min_sim=0.8):
     """闪光三选一：choices=[{name, description}]，target_cards=预设里同名卡。返回最像预设的下标，没有就 None。"""
     db = db or get_db()
     best, best_s = None, 0.0
@@ -539,7 +546,7 @@ def pick_flash_variant(card_name, choices, target_cards, db=None):
             s = similarity(ch.get("description", ""), t["desc"])
             if s > best_s:
                 best, best_s = i, s
-    return best if best_s >= 0.8 else None
+    return best if best_s >= min_sim else None
 
 
 # ---------------- 零式系统升级 ----------------

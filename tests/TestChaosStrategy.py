@@ -558,3 +558,25 @@ class TestGodNames(unittest.TestCase):
         for d in ("闪光：基尔肯", "赋予1张所选卡牌赛克雷德闪光", "随机卡牌维托尔闪光"):
             self.assertTrue(cs.parse_effects(d).get("god_spark"), d)
         self.assertFalse(cs.parse_effects("选择基尔肯的神眷者闪光").get("god_spark"))
+
+
+class TestGodSparkAllowed(unittest.TestCase):
+    """2026-10-25 用户：和预设一致、不爆 PT 的神闪可以拿。"""
+    st = {"removed": 0, "need_remove": 0, "need_spark": 1, "god_spark_wanted": 1, "pt_room": 40}
+
+    def test_pick_god_spark_when_wanted_and_room(self):
+        e = cs.parse_effects("观察状况赋予1张所选卡牌迪亚洛斯闪光")
+        self.assertTrue(e.get("god_spark_pick"))
+        self.assertGreater(cs.score_effects(e, cs.MODE_TARGET, self.st)[0], 100)
+
+    def test_no_room_or_not_wanted(self):
+        e = cs.parse_effects("观察状况赋予1张所选卡牌迪亚洛斯闪光")
+        self.assertLess(cs.score_effects(e, cs.MODE_TARGET, dict(self.st, pt_room=10))[0], 0)
+        self.assertLess(cs.score_effects(e, cs.MODE_TARGET, dict(self.st, god_spark_wanted=0))[0], 0)
+
+    def test_wanted_list(self):
+        from utils import _god_spark_wanted
+        task = SimpleNamespace(chaos_plan={"flash": [{"name": "明灭剑", "god_spark": "x"}, {"name": "剑鸣九霄", "god_spark": "y"},
+                                                     {"name": "剑鸣九霄", "god_spark": "y"}, {"name": "剑刀破晓"}]},
+                               node_status={"god_ok": ["明灭剑"]})
+        self.assertEqual(["剑鸣九霄"], _god_spark_wanted(task))

@@ -3065,6 +3065,17 @@ def _pt_room(task: TriggerTask, what):
     return False
 
 
+def _god_spark_wanted(task: TriggerTask):
+    """预设里要神闪、本局还没拿到一致神闪的卡名（去重）。"""
+    plan = getattr(task, "chaos_plan", None) or {}
+    done = (getattr(task, "node_status", None) or {}).get("god_ok", [])
+    names = []
+    for c in plan.get("flash", []):
+        if c.get("god_spark") and c["name"] not in done and c["name"] not in names:
+            names.append(c["name"])
+    return names
+
+
 def _copy_needed(task: TriggerTask):
     """目标卡组还要不要复制（首领奖励的复制不经过事件打分，2026-10-25 实录复制成第 4 张剑鸣九霄）。其他模式不管。"""
     if getattr(task, "chaos_mode", "") != chaos_strategy.MODE_TARGET:
@@ -3111,9 +3122,15 @@ def handle_select_card(task: TriggerTask):
     if config_key is None:
         return False
     task.log_info(f"检测到卡牌{action}选择，需选择{count}张，配置key={config_key}")
+    god_pick = False
     if action in ("闪光", "灵光") and _avoid_god_spark(task) and task.node_status.get("god_spark_pending"):
         task.node_status["god_spark_pending"] = False
-        if _click_bottom_skip(task, "刚选的是神闪选项，刷存档局内不神闪"):
+        wanted = _god_spark_wanted(task) if getattr(task, "chaos_mode", "") == chaos_strategy.MODE_TARGET else []
+        if wanted and _pt_room(task, "神闪"):
+            # 2026-10-25 用户：和预设一致、不爆 PT 的神闪可以拿。只选预设要神闪的卡，变体页再核对一致才选
+            task.log_info(f"神闪选卡：只选预设要神闪的卡 {wanted}")
+            god_pick = True
+        elif _click_bottom_skip(task, "刚选的是神闪选项，预设不需要或 PT 不够"):
             return True
 
     # 日志打印右下角选牌操作提示
@@ -3149,7 +3166,9 @@ def handle_select_card(task: TriggerTask):
             return False
         card_list = pending
         task.node_status['meditate_count'] = task.node_status.get('meditate_count', 0) + 1
-    if (action in ("闪光", "灵光") and select_action != "重新闪光"
+    if god_pick:
+        card_list = _god_spark_wanted(task)
+    elif (action in ("闪光", "灵光") and select_action != "重新闪光"
             and getattr(task, "chaos_mode", "") == chaos_strategy.MODE_TARGET):
         # 目标卡组：先选闪错的（免费重闪），再选还没闪对的；都闪对了就跳过（2026-10-25 实录把闪对的剑鸣九霄又闪坏）
         pending = [n for n, v in (_member_deck_state(task).get("冥想", {}) or {}).items() if v is True]
@@ -3492,6 +3511,7 @@ def _chaos_strategy_state(task: TriggerTask):
         "need_copy": max(0, len(plan.get("copy", [])) - node_status.get("copy_count", 0)),
         "need_spark": len(plan.get("flash", [])),
         "need_god_spark": sum(1 for c in plan.get("flash", []) if c.get("god_spark")),
+        "god_spark_wanted": len(_god_spark_wanted(task)),
         "need_neutral": len(plan.get("neutral", [])),
         "pending_meditation": sum(1 for v in _member_deck_state(task).get("冥想", {}).values() if v),
         "target_equipment": [n for slot in range(3) for n in _equipment_priority(task, slot)],
@@ -4829,10 +4849,14 @@ def handle_view_original(task: TriggerTask):
         god_cards = [c for c in plan.get("flash", []) if c.get("god_spark")]
         cards = recognize_cards(task, page="神闪变体页") if god_cards and _pt_room(task, "神闪") else []
         for card in cards:
-            index = chaos_strategy.pick_flash_variant(card["name"], cards, god_cards)
+            # 神闪选错存档就废，比普通闪光要求更像（0.9）
+            index = chaos_strategy.pick_flash_variant(card["name"], cards, god_cards, min_sim=0.9)
             if index is not None:
                 pick = cards[index]
                 task.node_status["god_spark_count"] = task.node_status.get("god_spark_count", 0) + 1
+                ok = task.node_status.setdefault("god_ok", [])
+                if pick["name"] not in ok:
+                    ok.append(pick["name"])
                 task.log_info(f"神闪变体页：「{pick['name']}」和预设神闪一致，PT 账够，选它（{pick['description']}）")
                 _move_and_click(task, pick["x"], pick["y"])
                 return True
@@ -5087,7 +5111,7 @@ def reset_layer_status(task: TriggerTask):
                 task.node_status[k] = ns[k]
 
 
-RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok")
+RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok")
 
 
 def handle_close_button(task: TriggerTask):
