@@ -44,8 +44,8 @@ class ChaosMode(TriggerTask):
         self.default_config['队友'] = ["海德玛丽", "米卡"]
         self.default_config['自动编队'] = True
         self.default_config['卡厄思地图'] = "活动卡厄思"
-        self.default_config['刷存档难度'] = 0
-        self.default_config['探索度达到多少级后改刷目标卡组'] = 0
+        self.default_config['刷存档难度'] = 1
+        self.default_config['探索度达到多少级后改刷目标卡组'] = 30
         self.default_config['记录流程追踪'] = True
         self.default_config['调整零式升级'] = True
         self.default_config['刷存档开梦境模式'] = True
