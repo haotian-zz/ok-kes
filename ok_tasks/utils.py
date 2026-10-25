@@ -3128,9 +3128,13 @@ def handle_select_card(task: TriggerTask):
         # 冥想的「重新闪光」只该重闪待冥想（闪错）的卡；按闪光列表顺序会把已经闪对的卡重闪掉
         # （2026-10-25 实录：待冥想的是循环之刃，却重闪了剑鸣九霄）
         pending = [n for n, v in (_member_deck_state(task).get("冥想", {}) or {}).items() if v is True]
-        task.log_info(f"冥想重新闪光：只选待冥想的卡 {pending}")
-        if pending:
-            card_list = pending
+        task.log_info(f"重新闪光：只选待冥想的卡 {pending}")
+        if not pending:
+            # 训练后也会给一次重新闪光（2026-10-25 实录）：没有闪错的卡就别动，免得把闪对的卡重闪坏
+            if _click_bottom_skip(task, "没有待冥想（闪错）的卡，不重新闪光"):
+                return True
+            return False
+        card_list = pending
     result = select_card(task, card_list, count=count, action=select_action)
     if result and action == "复制":
         _record_copy(task)
