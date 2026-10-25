@@ -380,6 +380,17 @@ class TestTrace(unittest.TestCase):
         self.assertEqual(0, cs.event_source_bonus(src, 0, ["凝结的光辉残片"]))
         w = cs.route_weights(cs.MODE_TARGET, 0, 80, cs.event_source_bonus(src, 0))["types"]
         self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"]["事件"] + cs.EVENT_SOURCE_BONUS, w["事件"])
+    def test_want_last_shop_once(self):
+        from utils import _want_shop
+        plan = {"layer": 2, "done": 1, "steps": [{"type": "休息"}, {"type": "首领"}]}
+        task = SimpleNamespace(node_status={"pass_final_boss_count": 2, "full_route": plan, "shop": False,
+                                            "total_rounds": 0, "node_count": 2})
+        self.assertTrue(_want_shop(task))                      # 「进入商店」没开也进最后一个商店
+        task.node_status["shop_visited"] = (0, 2, 2)
+        self.assertFalse(_want_shop(task))                     # 出来后不再进
+        task.node_status["shop"] = True
+        self.assertTrue(_want_shop(task))
+
     def test_last_shop(self):
         from utils import _is_last_shop
         plan = {"layer": 2, "done": 1, "steps": [{"type": "休息"}, {"type": "首领"}]}

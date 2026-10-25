@@ -4269,12 +4269,29 @@ def handle_rest(task: TriggerTask):
 
     # 检测是否需要进入德朗商店
     shop_box = find_box_at_point(task, 0.360, 0.138)
-    if shop_box and "德朗商店" in shop_box.name and hasattr(task, 'node_status') and task.node_status.get('shop', False):
-        task.log_info("检测到德朗商店，且 node_status['shop']=True，进入商店")
+    if shop_box and "德朗商店" in shop_box.name and _want_shop(task):
+        task.log_info("检测到德朗商店，进入商店" + ("（最后一个商店，钱全部花掉）" if _is_last_shop(task) else ""))
+        task.node_status['shop_visited'] = _shop_key(task)
         task.click_box(shop_box)
         task.sleep(2)
         return True
     return False
+
+
+def _shop_key(task):
+    ns = task.node_status
+    return (ns.get("total_rounds", 0), ns.get("pass_final_boss_count", 0), ns.get("node_count", 0))
+
+
+def _want_shop(task):
+    """休息页上的德朗商店进不进：配置「进入商店」（路线页置 shop=True），或最后一个商店（不管配置，钱留着没用）。
+    最后一个商店只进一次：出来后 _is_last_shop 仍为 True，按 (轮, 层, 节点) 记下已进过。"""
+    ns = getattr(task, "node_status", None)
+    if not isinstance(ns, dict):
+        return False
+    if ns.get("shop", False):
+        return True
+    return _is_last_shop(task) and ns.get("shop_visited") != _shop_key(task)
 
 
 def _is_last_shop(task: TriggerTask):
