@@ -1109,6 +1109,20 @@ def _memory_shards(task: TriggerTask):
     return int(m.group(1)) if m else None
 
 
+def _memory_shards_now(task: TriggerTask):
+    """重新 OCR 顶栏残片数（all_texts 只在主循环刷新）。读不到返回 None。"""
+    x, y = MEMORY_SHARD_COUNT
+    try:
+        boxes = task.ocr(x - 0.025, y - 0.025, x + 0.025, y + 0.025)
+    except Exception:  # noqa: BLE001
+        return None
+    for b in boxes or []:
+        m = re.fullmatch(r"\s*(\d+)\s*", b.name)
+        if m:
+            return int(m.group(1))
+    return None
+
+
 def handle_precision_memory_process(task: TriggerTask):
     """记忆之末「精密加工记忆」按钮: 可用时优先点击，变灰（材料耗尽）后交给离开按钮处理。"""
     title_text = _get_region_text(task, (0.400, 0.080, 0.600, 0.170)).replace(" ", "")
@@ -1167,6 +1181,14 @@ def handle_precision_memory_process(task: TriggerTask):
     # 精密加工成功率只有 30%/20%（失败卡面不变），所以不能按「卡面没变」判断材料用完（2026-10-24 有 8 张残片
     # 点 2 次就走了）。读顶栏的记忆残片数：0 张就离开；点了残片数却没减少（按钮其实灰着/已到上限）连续 2 次也离开
     shards = _memory_shards(task)
+    # 读不到残片数 = 加工动画还没播完，这时点会落空、可能不计保底（2026-10-25 第 6 次才成功，保底是第 5 次）：先等
+    if status is not None:
+        waits = status.get("precision_wait", 0) + 1 if shards is None else 0
+        status["precision_wait"] = waits
+        if 0 < waits <= 5:
+            task.log_info("精密加工动画未结束（读不到残片数），等一下再点")
+            task.sleep(1)
+            return True
     if shards is not None and shards <= 0:
         task.log_info("记忆残片 0 张，不再精密加工")
         return False
@@ -1183,7 +1205,13 @@ def handle_precision_memory_process(task: TriggerTask):
 
     task.log_info("检测到精密加工记忆按钮，点击精密加工")
     task.click_box(box)
-    task.sleep(1)
+    # 等残片数真的减少（这次加工已结算）再进下一轮，最多 4 秒；成功时会弹结果框，交给确认按钮处理
+    for _ in range(8):
+        task.sleep(0.5)
+        task.next_frame()
+        now = _memory_shards_now(task)
+        if shards is not None and now is not None and now < shards:
+            break
     return True
 
 
