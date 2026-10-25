@@ -3772,6 +3772,8 @@ def handle_route_selection(task: TriggerTask):
     # 更新节点状态：进入路线选择页面时 flash_or_rest 置为 True
     if hasattr(task, 'node_status'):
         task.node_status['flash_or_rest'] = True
+        task.node_status['rest_page_frames'] = 0
+        task.node_status['training_logged'] = False
         task.log_info("检测到路线选择页面，更新 node_status['flash_or_rest']=True")
         # 检查"进入商店"配置，若为 True 则同时更新 shop 状态
         if _get_config_value(task, '进入商店', False):
@@ -4225,6 +4227,10 @@ def handle_rest(task: TriggerTask):
         and current_credit > meditation_cost
     )
 
+    train_box = find_text_in_region(task, r"^训练$", TRAIN_REGION)
+    can_train = bool(flash_or_rest and train_box and find_text_in_region(task, r"免费", TRAIN_REGION))
+    on_rest_page = any("安全区采取" in b.name for b in task.all_texts or [])
+
     if can_rest and can_meditate:
         hp_percent = _get_current_hp_percent(task)
         # 目标卡组：目标卡闪错了要靠冥想重闪，优先于休息（用户 2026-10-24），血量太低才休息
@@ -4264,8 +4270,18 @@ def handle_rest(task: TriggerTask):
         task.node_status['flash_or_rest'] = False
         return True
 
+    if can_train:
+        # 训练（免费）：所选战斗员所有能力值 +1；休息/冥想都不选时用掉，不白跳过（2026-10-25 实录两次直接跳过）
+        task.log_info("休息/冥想不需要或不可用，点击免费「训练」（选目标主战员）")
+        task.click_box(train_box)
+        task.sleep(1.5)
+        task.node_status['training_pending'] = time.time()
+        task.node_status['flash_or_rest'] = False
+        return True
+
     if rest_feature and "免费" not in free_text:
         task.log_info("检测到rest特征，但休息区域未找到「免费」，跳过点击休息")
+
 
     # 检测是否需要进入德朗商店
     shop_box = find_box_at_point(task, 0.360, 0.138)
@@ -4275,6 +4291,63 @@ def handle_rest(task: TriggerTask):
         task.click_box(shop_box)
         task.sleep(2)
         return True
+    if on_rest_page and flash_or_rest:
+        # 进页面有动画，休息/训练/冥想按钮可能还没认出来，先别让通用「跳过」抢先：稳定看 2 帧再放行
+        seen = task.node_status.get('rest_page_frames', 0)
+        if seen < 2:
+            task.node_status['rest_page_frames'] = seen + 1
+            task.sleep(0.8)
+            return True
+    if on_rest_page:
+        task.log_info(f"休息页：休息{'可用' if can_rest else '不可用'}、冥想{'需要' if can_meditate else '不需要/不可用'}、"
+                      f"训练{'可用' if can_train else '不可用'}，交给「跳过」")
+    return False
+
+
+TRAIN_REGION = (0.78, 0.15, 0.92, 0.26)     # 休息页右上「训练 / 免费」
+
+
+def find_text_in_region(task, pattern, region):
+    x1, y1, x2, y2 = region
+    for b in task.all_texts or []:
+        cx, cy = (b.x + b.width / 2) / task.width, (b.y + b.height / 2) / task.height
+        if x1 <= cx <= x2 and y1 <= cy <= y2 and re.search(pattern, b.name):
+            return b
+    return None
+
+
+def handle_training_select(task: TriggerTask):
+    """点了「训练」之后的选战斗员页：点目标主战员头像，再点确认。认不出就截图留证、放给别的处理函数。"""
+    ns = getattr(task, 'node_status', None)
+    started = ns.get('training_pending') if isinstance(ns, dict) else None
+    if not started:
+        return False
+    if time.time() - started > 20:
+        task.log_info("训练选战斗员超时，放弃（截图见流程追踪）")
+        chaos_trace.step(task, "page", "训练选战斗员超时", task.frame)
+        ns['training_pending'] = None
+        return False
+    member = None
+    if task.feature_exists("target_member_small"):
+        member = task.find_one(feature_name="target_member_small", box=task.box_of_screen(0, 0.1, 1, 0.9), threshold=0.4)
+    confirm = find_text_in_region(task, r"^(确认|训练|选择)$", (0.6, 0.8, 1, 1))
+    if member and not ns.get('training_member_clicked'):
+        task.log_info(f"训练：选目标主战员（头像相似度 {member.confidence:.2f}）")
+        task.click_box(member)
+        task.sleep(1)
+        ns['training_member_clicked'] = True
+        return True
+    if confirm and ns.get('training_member_clicked'):
+        task.log_info(f"训练：点「{confirm.name}」")
+        task.click_box(confirm)
+        task.sleep(1.5)
+        ns['training_pending'] = None
+        ns['training_member_clicked'] = False
+        return True
+    if not ns.get('training_logged'):
+        chaos_trace.step(task, "page", "训练选战斗员页（待标定）", task.frame,
+                         texts=[b.name for b in (task.all_texts or [])][:30])
+        ns['training_logged'] = True
     return False
 
 

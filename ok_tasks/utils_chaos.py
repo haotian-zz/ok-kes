@@ -13,7 +13,7 @@ from utils import (
     handle_convert_card,
     handle_negotiation, handle_continue, handle_confirm, handle_enter,
     handle_event_task, handle_route_selection, handle_obtain_reward,
-    handle_leave, handle_next_step, handle_select, handle_rest, handle_view_original, handle_weakness_info,
+    handle_leave, handle_next_step, handle_select, handle_rest, handle_training_select, handle_view_original, handle_weakness_info,
     handle_close_button,
     handle_card_assign, handle_non_battle_page, handle_minimizemap, handle_held_cards_page, handle_craft,
     handle_remove, handle_three_choice_card_remove, handle_flash, handle_reflash, handle_grant_flash, handle_copy, handle_convert,
@@ -1362,6 +1362,7 @@ PAGE_HANDLERS = [
     log_node_status,
     handle_stuck_log, #画面卡住检测及兜底处理
     handle_close_page, #点击屏幕关闭页面，优先于其他普通页面处理
+    handle_training_select, #休息页点了训练后的选战斗员（要先于通用确认，没选人前别点确认）
 
     handle_refine_equipment_credit, #提炼装备信用点页面，优先于确认按钮
     handle_center_confirm, #页面中央确认按钮
