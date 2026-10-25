@@ -1408,8 +1408,8 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
 
     chaos_mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
     # 空存不要闪光，图钉只在删卡时用
-    use_pins = chaos_mode in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EXPLORE) or (
-        chaos_mode == chaos_strategy.MODE_EMPTY and action == "移除")
+    use_pins = action != "重新闪光" and (chaos_mode in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EXPLORE) or (
+        chaos_mode == chaos_strategy.MODE_EMPTY and action == "移除"))
 
     def click_priority_cards(cards):
         nonlocal selected
@@ -3121,7 +3121,17 @@ def handle_select_card(task: TriggerTask):
     ):
         _scroll_to_target_member_for_card_removal(task)
 
-    result = select_card(task, _get_card_list(task, config_key), count=count, action=action)
+    card_list = _get_card_list(task, config_key)
+    select_action = action
+    if action in ("闪光", "灵光") and action_tip and _get_game_text(task, '重新闪光') in action_tip.name:
+        select_action = "重新闪光"      # 不按图钉/闪光优先级兜底，只选待冥想的卡
+        # 冥想的「重新闪光」只该重闪待冥想（闪错）的卡；按闪光列表顺序会把已经闪对的卡重闪掉
+        # （2026-10-25 实录：待冥想的是循环之刃，却重闪了剑鸣九霄）
+        pending = [n for n, v in (_member_deck_state(task).get("冥想", {}) or {}).items() if v is True]
+        task.log_info(f"冥想重新闪光：只选待冥想的卡 {pending}")
+        if pending:
+            card_list = pending
+    result = select_card(task, card_list, count=count, action=select_action)
     if result and action == "复制":
         _record_copy(task)
     if not result and action in ("闪光", "灵光"):
