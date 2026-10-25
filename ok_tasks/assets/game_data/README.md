@@ -65,7 +65,7 @@ wiki 标记、颜色、tooltip 都已去掉。**数值按 1 级卡面**，实机
     「第0研究所：事件-矿脉之心」）、`season_name` gamekee 标的赛季名（如 禁忌催化剂、雪上凝结的约定）、
     `desc_gamekee`（gamekee 效果文本和 bwiki 不一样时给出，多为译法差异）。
   - `icon`：本地图标相对路径（相对 game_data/），如 `equipment_icons/gk_683031.png`，124×124 PNG，来自 gamekee 图鉴；
-    出击版（`_ca_`）共用普通版的图标。没有图标的：时间调节器（gamekee 图鉴没收录）和它对应的出击版等 47 件出击专用装备。
+    出击版（`_ca_`）共用普通版的图标。没有图标的 47 件：时间调节器（gamekee 图鉴没收录）和 46 件出击版（普通版不在 gamekee 图鉴里，或 id 对不上普通版）。
 - `equipment_icons/`：`gk_<gk_content_id>.png`，249 张（gamekee 图鉴全部条目；`gk_683913.png` 是 gamekee 重复录入的 群体之翼，库里不引用）。
 - `memory_fragment_sets[]` 记忆碎片套装 18 个：`id`、`name`、`set`（2/4 件）、`desc`。
 
