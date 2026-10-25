@@ -45,6 +45,7 @@ class ChaosMode(TriggerTask):
         self.default_config['自动编队'] = True
         self.default_config['卡厄思地图'] = "活动卡厄思"
         self.default_config['刷存档难度'] = 0
+        self.default_config['探索度达到多少级后改刷目标卡组'] = 0
         self.default_config['记录流程追踪'] = True
         self.default_config['调整零式升级'] = True
         self.default_config['刷存档开梦境模式'] = True
@@ -148,6 +149,8 @@ class ChaosMode(TriggerTask):
         self.config_description['记录流程追踪'] = (
             "每局把整层地图、选的路线、每次分支的打分和选择、各页面截图存到 dev_out/chaos_trace/<时间>/，"
             "用 tools/chaos_trace_report.py 生成 HTML 复盘；只保留最近 10 次")
+        self.config_description['探索度达到多少级后改刷目标卡组'] = (
+            "玩法是探索度时，开局在卡厄思入口页读左下角「探索度 等级N」，到这个级数就把玩法改成目标卡组并回主页重新进；0=不切换")
         self.config_description['刷存档难度'] = "活动卡厄思刷存档时选第几档难度（左侧罗马数字，Ⅰ=1），0 或没解锁就选最高"
         self.config_description['调整零式升级'] = (
             "刷存档玩法从主页进零式系统时，先把升级调好：高维启示 0 级；认知闪光空存 0 级、目标卡组满级。"

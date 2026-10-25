@@ -34,6 +34,7 @@ import chaos_strategy
 import game_db
 import chaos_trace
 import utils_chaos_prep
+import utils_daily
 
 
 # ------------------------- 卡厄思模式独有页面处理函数 -------------------------
@@ -176,6 +177,29 @@ def handle_chaos_team_setup(task: TriggerTask):
     return True
 
 
+def explore_level(task: TriggerTask):
+    """卡厄思入口页左下角「探索度 等级27」。"""
+    text = _get_region_text(task, (0.020, 0.860, 0.215, 0.945))
+    m = re.search(r"等级\s*(\d+)", text)
+    return int(m.group(1)) if m else None
+
+
+def _switch_explore_to_target(task: TriggerTask):
+    """探索度到配置的级数就改刷目标卡组（用户 2026-10-25：探索度 30 级后正式刷存档）：改玩法、重算覆盖项、回主页重新进。"""
+    level = explore_level(task)
+    if level is None:
+        return False
+    switch_at = int(_get_config_value(task, "探索度达到多少级后改刷目标卡组", 0) or 0)
+    task.log_info(f"探索度等级 {level}（{switch_at or '不'}级后改刷目标卡组）")
+    if getattr(task, "chaos_mode", "") != chaos_strategy.MODE_EXPLORE or not switch_at or level < switch_at:
+        return False
+    task.log_info(f"探索度 {level} 级 ≥ {switch_at}，玩法改成目标卡组，回主页重新进")
+    task.config["卡厄思玩法"] = chaos_strategy.MODE_TARGET
+    task.setup_strategy()
+    utils_daily.go_home(task)
+    return True
+
+
 def handle_season_chaos_initial_page(task: TriggerTask):
     """赛季卡厄思初始页面：存储数据价值层级不足时再次观测。"""
     title_text = _get_region_text(task, (0.075, 0.014, 0.305, 0.090))
@@ -193,6 +217,8 @@ def handle_season_chaos_initial_page(task: TriggerTask):
         return False
 
     task.log_info("检测到赛季卡厄思初始页面")
+    if _switch_explore_to_target(task):
+        return True
     value_text = _get_region_text(task, (0.684, 0.308, 0.982, 0.754))
     value_match = _match_storage_data_value(task, value_text)
     if not value_match:
