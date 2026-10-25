@@ -237,6 +237,12 @@ def build_map(frames, offsets, line_threshold=0.75):
     by_col = {}
     for k in keys:
         by_col.setdefault(k[0], []).append(k)
+    current = ids.get(cur_key) if cur_key else None
+    if current is None:
+        # 刚进新的一层：人还在第一列之前，地图上没有图钉。补一个虚拟起点连到最左列的所有节点
+        current = len(nodes)
+        nodes.append({"id": current, "type": "当前位置", "row": 2, "col": min_col - 1, "special_features": []})
+        adjacency[current] = [ids[k] for k in by_col[min_col]]
     for col, ks in by_col.items():
         for a in ks:
             for b in by_col.get(col + 1, []):
@@ -254,7 +260,7 @@ def build_map(frames, offsets, line_threshold=0.75):
         adjacency[boss_id] = []
         for k in by_col[last_col]:
             adjacency[ids[k]].append(boss_id)
-    return {"nodes": nodes, "adjacency": adjacency, "current": ids.get(cur_key) if cur_key else None}
+    return {"nodes": nodes, "adjacency": adjacency, "current": current}
 
 
 def successors_rank(map_info, node_id):

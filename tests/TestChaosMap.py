@@ -58,6 +58,17 @@ class TestLayerScan(unittest.TestCase):
         self.assertEqual(13, len(types))
 
 
+class TestLayerStart(unittest.TestCase):
+    def test_virtual_start_without_pin(self):
+        # 刚进新的一层没有图钉：补虚拟起点，连到最左列全部节点（用不含图钉的后两帧模拟）
+        frames = TestLayerScan.frames[1:]
+        info = cm.build_map(frames, [0.0, cm.strip_shift(*frames)[0]])
+        cur = info["nodes"][info["current"]]
+        self.assertEqual("当前位置", cur["type"])
+        first = sorted(info["nodes"][i]["row"] for i in info["adjacency"][info["current"]])
+        self.assertEqual([3, 4], first)
+
+
 class TestPin(unittest.TestCase):
     def test_pin_at_dark_edge(self):
         # 拖到最左端时当前位置在画面右下边缘，图钉偏暗（V 150~190），以前认不出
