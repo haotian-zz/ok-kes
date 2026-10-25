@@ -302,7 +302,7 @@ def pick_flash_variant(card_name, choices, target_cards, db=None):
 
 # ---------------- 零式系统升级 ----------------
 
-GOD_SPARK_UPGRADE = "高维启示"   # 神之闪光触发率，所有玩法都要 0 级
+GOD_SPARK_UPGRADE = "高维启示"   # 神之闪光触发率，空存 0 级、目标卡组满级（用户 2026-10-24 改）
 SPARK_UPGRADE = "认知闪光"       # 闪光触发率，空存 0 级、目标卡组满级
 
 
@@ -311,7 +311,7 @@ def zero_upgrade_wants(mode):
     if mode == MODE_EMPTY:
         return [GOD_SPARK_UPGRADE, SPARK_UPGRADE], []
     if mode == MODE_TARGET:
-        return [GOD_SPARK_UPGRADE], [SPARK_UPGRADE]
+        return [], [GOD_SPARK_UPGRADE, SPARK_UPGRADE]
     return [], []
 
 
@@ -361,5 +361,6 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "任务优先级": [],
             "拉黑任务": ["咒术卡牌"],
             "路线优先级": ["事件", "小怪", "精英", "休息"],
+            "存储数据保存上限大于多少": 0,   # 探索度不要存档，别花货币「再次观测」
         }
     return {}

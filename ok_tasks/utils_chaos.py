@@ -145,23 +145,26 @@ def _match_storage_data_value(task: TriggerTask, text: str):
 
 
 def handle_chaos_team_setup(task: TriggerTask):
-    """配置队伍页（选了卡厄思玩法且开了自动编队）：核对编队＝目标主战员 + 队友，不对就换。每次启用只做一次。"""
-    if getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) == chaos_strategy.MODE_LEGACY:
-        return False
-    if getattr(task, "team_checked", True) or not _get_config_value(task, "自动编队", True):
+    """配置队伍页（选了卡厄思玩法）：开了自动编队就核对编队＝目标主战员 + 队友，不对就换；
+    刷存档玩法再把梦境模式打开（存档 +1 阶，PT 上限 +10）。每次启用只做一次。"""
+    mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
+    if mode == chaos_strategy.MODE_LEGACY or getattr(task, "team_checked", True):
         return False
     title = find_box_at_point(task, 0.121, 0.043)
     enter = find_box_at_point(task, 0.947, 0.912)
     if not (title and "配置队伍" in title.name and enter and "进入" in enter.name):
         return False
-    members = [_get_config_value(task, "目标主战员", "")] + list(_get_config_value(task, "队友", []))[:2]
-    members = [m for m in members if m]
     task.team_checked = True
-    if len(members) != 3:
-        task.log_info(f"自动编队需要目标主战员 + 2 个队友，当前配置 {members}，跳过")
-        return False
-    ok = utils_chaos_prep.setup_team(task, members)
-    task.log_info(f"自动编队{'完成' if ok else '失败，按现有编队继续'}：{members}")
+    if _get_config_value(task, "自动编队", True):
+        members = [_get_config_value(task, "目标主战员", "")] + list(_get_config_value(task, "队友", []))[:2]
+        members = [m for m in members if m]
+        if len(members) != 3:
+            task.log_info(f"自动编队需要目标主战员 + 2 个队友，当前配置 {members}，跳过")
+        else:
+            ok = utils_chaos_prep.setup_team(task, members)
+            task.log_info(f"自动编队{'完成' if ok else '失败，按现有编队继续'}：{members}")
+    if mode in (chaos_strategy.MODE_EMPTY, chaos_strategy.MODE_TARGET) and _get_config_value(task, "刷存档开梦境模式", True):
+        utils_chaos_prep.ensure_dream_mode(task, True)
     task.all_texts = _simplify_texts(task.ocr())
     return True
 

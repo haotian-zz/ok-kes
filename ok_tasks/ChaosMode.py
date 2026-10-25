@@ -42,7 +42,10 @@ class ChaosMode(TriggerTask):
         self.default_config['目标预设'] = 1
         self.default_config['队友'] = ["海德玛丽", "米卡"]
         self.default_config['自动编队'] = True
+        self.default_config['卡厄思地图'] = "活动卡厄思"
+        self.default_config['刷存档难度'] = 0
         self.default_config['调整零式升级'] = True
+        self.default_config['刷存档开梦境模式'] = True
         self.default_config['刷存档主战员'] = "海德玛丽"
         self.default_config['存储数据保存上限大于多少'] = 120
         self.default_config['保留大于多少TB的存档'] = 62000
@@ -108,6 +111,8 @@ class ChaosMode(TriggerTask):
             '游戏语言': {'type': 'drop_down', 'options': ['简体中文', '繁体中文']},
             '卡厄思玩法': {'type': 'drop_down', 'options': chaos_strategy.MODES},
             '目标预设': {'min': 1, 'max': 3},
+            '卡厄思地图': {'type': 'drop_down', 'options': ['活动卡厄思', '常驻（探索度→卡厄思具象，刷存档→零式系统）']},
+            '刷存档难度': {'min': 0, 'max': 15},
             '配置操作': {
                 'type': 'button',
                 'buttons': [
@@ -128,6 +133,12 @@ class ChaosMode(TriggerTask):
         )
         self.config_description['目标预设'] = "目标卡组读主战员详情 → 卡牌 → 预设构筑里的第几号预设"
         self.config_description['队友'] = "自动编队时目标主战员之外的两个人（按槽位顺序）"
+        self.config_description['刷存档开梦境模式'] = "刷存档玩法在配置队伍页打开梦境模式（存档 +1 阶、PT 上限 +10），要队伍里有经历过深层创伤的主战员"
+        self.config_description['卡厄思地图'] = (
+            "活动卡厄思：主页右下角活动横幅 → 卡厄思（如 2026-10 的「天幕」），探索度打最高难度，刷存档按「刷存档难度」；"
+            "常驻：探索度去卡厄思具象探索度最低的区域，刷存档去零式系统法典"
+        )
+        self.config_description['刷存档难度'] = "活动卡厄思刷存档时选第几档难度（左侧罗马数字，Ⅰ=1），0 或没解锁就选最高"
         self.config_description['调整零式升级'] = (
             "刷存档玩法从主页进零式系统时，先把升级调好：高维启示 0 级；认知闪光空存 0 级、目标卡组满级。"
             "要降级时会「全部重置」（花 10 个货币，材料全部返还）再把其他项升满"
@@ -218,10 +229,15 @@ class ChaosMode(TriggerTask):
             return False
         if not utils_daily.go_home(self):
             return False
-        if mode == chaos_strategy.MODE_EXPLORE:
+        want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode) if self.config.get('调整零式升级') else ([], [])
+        if self.config.get('卡厄思地图', '活动卡厄思') == '活动卡厄思':
+            if want_zero or want_max:
+                utils_chaos_prep.enter_zero_system(self, want_zero, want_max)
+            difficulty = None if mode == chaos_strategy.MODE_EXPLORE else (int(self.config.get('刷存档难度') or 0) or None)
+            ok = utils_chaos_prep.enter_event_chaos(self, difficulty)
+        elif mode == chaos_strategy.MODE_EXPLORE:
             ok = utils_chaos_prep.enter_chaos_figure(self)
         else:
-            want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode) if self.config.get('调整零式升级') else ([], [])
             ok = utils_chaos_prep.enter_zero_system(self, want_zero, want_max)
         if ok:
             self.enter_failures = 0

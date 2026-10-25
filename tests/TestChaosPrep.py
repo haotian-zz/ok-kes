@@ -55,7 +55,7 @@ class TestZeroUpgrade(unittest.TestCase):
     def test_wants(self):
         import chaos_strategy as cs
         self.assertEqual((["高维启示", "认知闪光"], []), cs.zero_upgrade_wants(cs.MODE_EMPTY))
-        self.assertEqual((["高维启示"], ["认知闪光"]), cs.zero_upgrade_wants(cs.MODE_TARGET))
+        self.assertEqual(([], ["高维启示", "认知闪光"]), cs.zero_upgrade_wants(cs.MODE_TARGET))
         self.assertEqual(([], []), cs.zero_upgrade_wants(cs.MODE_EXPLORE))
 
     def test_levels_ok(self):
@@ -78,6 +78,42 @@ class TestZeroUpgrade(unittest.TestCase):
         texts = " ".join(b.name for b in load_ocr("chaos_zero_reset_dialog.ocr.txt"))
         self.assertIn("将重置全部技能", texts)
         self.assertIsNone(_PAID_DIALOG.search(texts))
+
+
+class TestDreamMode(unittest.TestCase):
+    def test_toggle_state(self):
+        # 2026-10-24 实机配置队伍页，点开关前后（缩到 960×540）
+        import cv2
+        from utils_chaos_prep import dream_mode_on
+        for name, want in (("team_dream_off", False), ("team_dream_on", True), ("team_event_dream_off", False)):
+            frame = cv2.imread(os.path.join(ROOT, "tests", "fixtures", "chaos_map", name + ".png"))
+            self.assertEqual(want, dream_mode_on(SimpleNamespace(frame=frame)), name)
+
+
+class TestEventDifficulty(unittest.TestCase):
+    # 2026-10-24 活动卡厄思「天幕」难度列：拖到底时 Ⅶ 选中、下面 4 个锁；拖到顶 Ⅰ～Ⅴ（+半个 Ⅵ），点了 Ⅴ 后 Ⅴ 选中
+    def circles(self, name):
+        import cv2
+        from utils_chaos_prep import difficulty_circles
+        return difficulty_circles(cv2.imread(os.path.join(ROOT, "tests", "fixtures", "chaos_map", name + ".jpg")))
+
+    def test_bottom(self):
+        c = [(round(y, 2), sel, lock) for y, sel, lock in self.circles("event_diff_bottom_vii") if 0.17 < y < 0.8]
+        self.assertEqual([(0.27, True, False), (0.39, False, True), (0.51, False, True), (0.63, False, True), (0.75, False, True)], c)
+
+    def test_top(self):
+        c = self.circles("event_diff_top")
+        self.assertEqual(6, len(c))
+        self.assertAlmostEqual(0.233, c[0][0], places=2)
+        self.assertFalse(any(sel or lock for _, sel, lock in c[:5]))
+        c = self.circles("event_diff_top_v")
+        self.assertEqual([False, False, False, False, True], [sel for _, sel, _ in c[:5]])
+
+    def test_level_map(self):
+        from utils_chaos_prep import _diff_of_level
+        self.assertEqual(7, _diff_of_level(75))
+        self.assertEqual(1, _diff_of_level(30))
+        self.assertIsNone(_diff_of_level(99))
 
 
 class TestDialogue(unittest.TestCase):

@@ -6,7 +6,7 @@ from ok import BaseTask
 
 from game_db import get_db, norm
 from utils_daily import (refresh, find_text, click_rel, click_text, click_text_box, wait_text, open_home_entry,
-                         rel_center, in_region)
+                         rel_center, in_region, go_home, HOME_WAKE_POINT)
 
 # ------------------------- 预设构筑 -------------------------
 
@@ -331,6 +331,82 @@ def apply_zero_upgrades(task: BaseTask, want_zero, want_max):
     return not bad
 
 
+# ------------------------- 梦境模式 -------------------------
+
+# 配置队伍页右上角紫色开关。位置不固定：常驻卡厄思右边有体力条（开关在 x≈0.78），活动卡厄思没有（x≈0.93）
+DREAM_SEARCH = (1250, 10, 1920, 95)           # 1920×1080 下的搜索范围
+
+
+def dream_toggle(frame):
+    """找梦境模式开关：返回 (中心相对 x, 中心相对 y, 是否开着)，找不到为 None。
+    2026-10-24 实机：开关右半关着是灰色轨道 BGR≈(205,205,205)，开着是淡紫色圆钮 ≈(206,161,189)～(249,209,235)。"""
+    import cv2
+    import numpy as np
+    if frame.shape[:2] != (1080, 1920):
+        frame = cv2.resize(frame, (1920, 1080))
+    x0, y0, x1, y1 = DREAM_SEARCH
+    hsv = cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2HSV)
+    mask = ((hsv[..., 0] > 120) & (hsv[..., 0] < 160) & (hsv[..., 1] > 120) & (hsv[..., 2] > 80)).astype(np.uint8)
+    n, _, stats, _ = cv2.connectedComponentsWithStats(mask)
+    if n < 2:
+        return None
+    i = max(range(1, n), key=lambda k: stats[k, 4])
+    x, y, w, h, area = stats[i]
+    if area < 1500:
+        return None
+    x, y = x + x0, y + y0
+    track = frame[y + h // 3:y + 2 * h // 3, x + int(w * 0.68):x + int(w * 0.9)].reshape(-1, 3).astype(int)
+    b, g, r = track.mean(axis=0)
+    return (x + w / 2) / 1920, (y + h / 2) / 1080, bool(b - g > 20 and r - g > 10)
+
+
+def dream_mode_on(task: BaseTask):
+    found = dream_toggle(task.frame)
+    return bool(found and found[2])
+
+
+def _back_to_team_page(task: BaseTask, timeout=12):
+    """等回到配置队伍页。2026-10-24 实机：第一次开梦境模式会插一段「战斗失败 / 同步失败」画面，右下角只有「确认」，点掉。"""
+    import time
+    end = time.time() + timeout
+    while time.time() < end:
+        refresh(task)
+        if find_text(task, r"^配置队伍$", region=(0, 0, 0.3, 0.1)):
+            return True
+        ok_box = find_text(task, r"^确认$", region=(0.8, 0.85, 1, 1))
+        if ok_box:
+            shown = " ".join(b.name for b in task.all_texts if len(b.name) >= 2)[:80]
+            task.log_info(f"开关梦境模式后弹出「{shown}」，点确认")
+            click_text_box(task, ok_box, after=2)
+            continue
+        task.sleep(1)
+    return False
+
+
+def ensure_dream_mode(task: BaseTask, want=True):
+    """把梦境模式开关调到 want。开不了（队伍里没有经历过深层创伤的主战员）就记日志返回 False。"""
+    if not _back_to_team_page(task, timeout=3):
+        task.log_info("不在配置队伍页，不动梦境模式")
+        return False
+    if dream_mode_on(task) == want:
+        task.log_info(f"梦境模式已经{'开着' if want else '关着'}")
+        return True
+    found = dream_toggle(task.frame)
+    if not found:
+        task.log_info("配置队伍页没找到梦境模式开关")
+        return False
+    click_rel(task, found[0], found[1], after=2.5, reason=f"{'开启' if want else '关闭'}梦境模式")
+    if not _back_to_team_page(task):
+        task.log_info("开关梦境模式后没回到配置队伍页")
+        return False
+    if dream_mode_on(task) == want:
+        cap = find_text(task, r"\d+\s*PT", region=(0.85, 0.78, 0.99, 0.85))
+        task.log_info(f"梦境模式已{'开启' if want else '关闭'}，存储数据存储上限 {cap.name if cap else '?'}")
+        return True
+    task.log_info(f"梦境模式{'开' if want else '关'}不了（开梦境要队伍里有经历过深层创伤的主战员），按现状继续")
+    return False
+
+
 # ------------------------- 编队 -------------------------
 
 TEAM_SLOTS = [(0.12, 0.55), (0.34, 0.55), (0.555, 0.55)]   # 配置队伍页三个主战员卡
@@ -470,6 +546,173 @@ def enter_chaos_figure(task: BaseTask, max_explore=30):
         return False
     target = min(todo, key=lambda r: r["explore"])
     click_text_box(task, target["box"], after=4, reason=f"选择区域「{target['name']}」（探索度 {target['explore']}）")
+    if not click_text(task, r"^进入$", region=(0.8, 0.85, 1, 1), timeout=8, after=4):
+        return False
+    return bool(wait_text(task, r"^配置队伍$", region=(0, 0, 0.3, 0.1), timeout=10))
+
+
+# ------------------------- 活动卡厄思 -------------------------
+
+# 主页右下角活动横幅上的倒计时（左上角也有别的活动倒计时，所以限定右下）；横幅本体在倒计时下方一点
+EVENT_COUNTDOWN_REGION = (0.7, 0.72, 1.0, 0.88)
+EVENT_BANNER_BELOW = 0.07
+EVENT_CHAOS_REGION = (0.0, 0.4, 0.4, 0.65)         # 活动页左侧「卡厄思」大字
+# 活动卡厄思难度：左侧一列罗马数字圆圈（OCR 认不出），选中的实心粉色，没解锁的是锁
+DIFF_COLUMN_X = 0.0714
+DIFF_PITCH = 129 / 1080                            # 相邻难度圆的间距
+DIFF_CLICK_Y = (0.17, 0.8)                         # 列表上下两头会被标题和「探索度」按钮挡住
+DIFF_LEVEL_REGION = (0.68, 0.25, 0.76, 0.31)       # 右侧面板「等级NN」（推荐等级）
+# 2026-10-24 天幕实测：难度 → 推荐等级（Ⅷ 以上当时没解锁）
+DIFF_LEVELS = {1: 30, 2: 40, 3: 50, 4: 60, 5: 65, 6: 70, 7: 75}
+_LOCK_TEMPLATE = None
+
+
+def _lock_template():
+    global _LOCK_TEMPLATE
+    if _LOCK_TEMPLATE is None:
+        import os
+        import cv2
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "chaos_map", "ref_diff_lock.png")
+        _LOCK_TEMPLATE = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    return _LOCK_TEMPLATE
+
+
+def difficulty_circles(frame):
+    """左侧难度圆圈：[(相对 y, 是否选中, 是否上锁)]，从上到下。"""
+    import cv2
+    h, w = frame.shape[:2]
+    sx, sy = w / 1920, h / 1080
+    x0, x1, y0, y1 = int(60 * sx), int(220 * sx), int(160 * sy), int(940 * sy)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    if (w, h) != (1920, 1080):
+        frame = cv2.resize(frame, (1920, 1080))
+        gray = cv2.resize(gray, (1920, 1080))
+        x0, x1, y0, y1 = 60, 220, 160, 940
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    found = cv2.HoughCircles(cv2.medianBlur(gray[y0:y1, x0:x1], 5), cv2.HOUGH_GRADIENT, dp=1, minDist=90,
+                             param1=80, param2=30, minRadius=30, maxRadius=50)
+    if found is None:
+        return []
+    lock = _lock_template()
+    out = []
+    for cx, cy, _ in sorted(found[0], key=lambda c: c[1]):
+        x, y = int(cx) + x0, int(cy) + y0
+        if not 100 < x < 175:
+            continue
+        selected = hsv[y - 25:y + 25, x - 25:x + 25, 2].mean() > 180
+        crop = gray[max(0, y - 35):y + 35, x - 30:x + 30]
+        locked = (lock is not None and crop.shape[0] >= lock.shape[0] and crop.shape[1] >= lock.shape[1]
+                  and cv2.matchTemplate(crop, lock, cv2.TM_CCOEFF_NORMED).max() > 0.8)
+        out.append((y / 1080, bool(selected), bool(locked)))
+    return out
+
+
+def _difficulty_level(task: BaseTask):
+    refresh(task)
+    for b in task.all_texts or []:
+        m = re.search(r"等级\s*(\d+)", b.name)
+        if m and in_region(task, b, DIFF_LEVEL_REGION):
+            return int(m.group(1))
+    return None
+
+
+def _diff_of_level(level):
+    return next((d for d, lv in DIFF_LEVELS.items() if lv == level), None)
+
+
+def _swipe_difficulty_list(task: BaseTask, to_top, times=2):
+    for _ in range(times):
+        if to_top:
+            task.swipe_relative(DIFF_COLUMN_X, 0.3, DIFF_COLUMN_X, 0.75, duration=0.6)
+        else:
+            task.swipe_relative(DIFF_COLUMN_X, 0.75, DIFF_COLUMN_X, 0.3, duration=0.6)
+        task.sleep(1.5)
+
+
+def _click_difficulty(task: BaseTask, y):
+    click_rel(task, DIFF_COLUMN_X, y, after=2, reason="选择卡厄思难度")
+    refresh(task)
+    return any(abs(cy - y) < 0.03 and sel for cy, sel, _ in difficulty_circles(task.frame))
+
+
+def select_difficulty(task: BaseTask, want=None):
+    """活动卡厄思首页选难度：want=None 选已解锁的最高难度，否则选第 want 档（Ⅰ=1）。
+    选不到 want（没解锁或认不出）就退回最高难度。返回最后选中的难度（认不出为 None）。"""
+    if want:
+        _swipe_difficulty_list(task, to_top=True)
+        refresh(task)
+        circles = [c for c in difficulty_circles(task.frame) if DIFF_CLICK_Y[0] - 0.05 < c[0] < DIFF_CLICK_Y[1] + 0.1]
+        # 拖到顶后第一个圆是 Ⅰ
+        if len(circles) >= want and not circles[want - 1][2] and DIFF_CLICK_Y[0] < circles[want - 1][0] < DIFF_CLICK_Y[1]:
+            _click_difficulty(task, circles[want - 1][0])
+        else:
+            # 在屏幕下方：先点一个可见的已解锁圆，按推荐等级认出它是第几档，再按间距算出目标的位置，不在可点范围就小幅拖动再算
+            for _ in range(6):
+                refresh(task)
+                circles = [c for c in difficulty_circles(task.frame) if DIFF_CLICK_Y[0] < c[0] < DIFF_CLICK_Y[1]]
+                ref = next((c for c in circles if not c[2]), None)
+                if not ref or not _click_difficulty(task, ref[0]):
+                    break
+                base = _diff_of_level(_difficulty_level(task))
+                if not base:
+                    break
+                y = ref[0] + (want - base) * DIFF_PITCH
+                if DIFF_CLICK_Y[0] < y < DIFF_CLICK_Y[1]:
+                    _click_difficulty(task, y)
+                    break
+                # 目标在上面 → 往下拖（列表向上翻）；在下面 → 往上拖
+                dy = 0.08 if y < DIFF_CLICK_Y[0] else -0.08
+                task.swipe_relative(DIFF_COLUMN_X, 0.5 - dy / 2, DIFF_COLUMN_X, 0.5 + dy / 2, duration=0.6)
+                task.sleep(1.5)
+        got = _diff_of_level(_difficulty_level(task))
+        if got == want:
+            task.log_info(f"卡厄思难度：选了第 {want} 档（推荐等级 {DIFF_LEVELS[want]}）")
+            return want
+        task.log_info(f"卡厄思难度：没选到第 {want} 档（当前 {got}），改选最高难度")
+    _swipe_difficulty_list(task, to_top=False)
+    refresh(task)
+    circles = [c for c in difficulty_circles(task.frame) if DIFF_CLICK_Y[0] < c[0] < DIFF_CLICK_Y[1]]
+    unlocked = [c for c in circles if not c[2]]
+    if not unlocked:
+        _swipe_difficulty_list(task, to_top=True, times=1)
+        refresh(task)
+        unlocked = [c for c in difficulty_circles(task.frame) if DIFF_CLICK_Y[0] < c[0] < DIFF_CLICK_Y[1] and not c[2]]
+    if not unlocked:
+        task.log_info("卡厄思难度：没找到已解锁的难度，按游戏当前选择")
+        return _diff_of_level(_difficulty_level(task))
+    y, selected, _ = unlocked[-1]
+    if not selected:
+        _click_difficulty(task, y)
+    level = _difficulty_level(task)
+    task.log_info(f"卡厄思难度：选了最高难度（推荐等级 {level}，第 {_diff_of_level(level)} 档）")
+    return _diff_of_level(level)
+
+
+def enter_event_chaos(task: BaseTask, difficulty=None):
+    """主页 → 右下角活动横幅 → 活动页「卡厄思」→ 选难度 → 进入，停在配置队伍页。"""
+    if not go_home(task):
+        return False
+    box = None
+    for _ in range(2):
+        refresh(task)
+        box = find_text(task, r"\d+天\d*小时", region=EVENT_COUNTDOWN_REGION)
+        if box:
+            break
+        click_rel(task, *HOME_WAKE_POINT, after=1.5, reason="唤醒主页 UI")
+    if box:
+        x, y = rel_center(task, box)
+        click_rel(task, x, y + EVENT_BANNER_BELOW, after=4, reason=f"进入活动（倒计时 {box.name}）")
+    elif not click_text(task, r"凝结.*约", region=(0.7, 0.8, 1, 1), timeout=3, after=4):
+        task.log_info("主页右下角没找到活动入口")
+        return False
+    if not click_text(task, r"^卡厄思$", region=EVENT_CHAOS_REGION, timeout=10, after=4):
+        task.log_info("活动页没找到「卡厄思」")
+        return False
+    if not wait_text(task, r"再次观测|^难度$", timeout=10):
+        return False
+    title = find_text(task, r"^[\u4e00-\u9fff]{2,6}$", region=(0.68, 0.17, 0.85, 0.25))
+    task.log_info(f"活动卡厄思「{title.name if title else '?'}」")
+    select_difficulty(task, difficulty)
     if not click_text(task, r"^进入$", region=(0.8, 0.85, 1, 1), timeout=8, after=4):
         return False
     return bool(wait_text(task, r"^配置队伍$", region=(0, 0, 0.3, 0.1), timeout=10))
