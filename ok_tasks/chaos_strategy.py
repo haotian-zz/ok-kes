@@ -40,6 +40,9 @@ def _num(s):
     return int(s) if s.isdigit() else _CN_NUM.get(s, 1)
 
 
+GOD_NAMES = r"迪亚洛斯|尼希勒姆|瑟克洛斯|维托尔|CALIGO|caligo|卡利戈|戴奥斯"
+
+
 def parse_effects(text):
     """从画面上的选项文字（选项名 + 结果说明）粗略解析出效果，键名和 events.json 的 effects 一致。"""
     t = norm(text)
@@ -56,19 +59,25 @@ def parse_effects(text):
         e["credit"] = int(m.group(2))
     elif m := re.search(r"信用点(减少|消耗|-)(\d+)", t):
         e["credit"] = -int(m.group(2))
-    if "神之闪光" in t or "神闪" in t:
+    # OCR 多行乱序会把「神之闪光」拆成「神之滚动骰子10闪光」（2026-10-24 实机），所以「神之」+「闪光」也算
+    # 带神名的闪光也是神闪：「赋予1张所选卡牌迪亚洛斯闪光」（2026-10-24 实机当成普通闪光选了，神闪落到剑鸣九霄上，存档报废）
+    if "神之闪光" in t or "神闪" in t or ("神之" in t and "闪光" in t) or \
+            (re.search(GOD_NAMES, t) and "闪光" in t):
         e["god_spark"] = True
     elif "闪光" in t:
         e["spark"] = True
     if "复制" in t:
         e["copy_card"] = 1
+        if "随机" in t or re.search(r"\d张\S{0,6}中选", t):
+            e["copy_random"] = True      # 随机 3 张稀有里选 1：不一定有要复制的卡
     if "中立" in t:
         e["neutral_card"] = 1
     if "咒术" in t and "移除" not in t:
         e["curse_card"] = 1
     if "转换" in t:
         e["transform_card"] = 1
-    if "战斗" in t or "攻击" in t:
+    # 「普通战斗3次期间…」是之后战斗的 buff，不是这个选项要打一场
+    if re.search(r"攻击|战斗(?!\d*次期间)", re.sub(r"(普通|精英)?战斗\d*次期间", "", t)):
         e["battle"] = True
     if m := re.search(r"压力(增加|上升)(\d+)?", t):
         e["stress"] = int(m.group(2) or 1)
@@ -93,6 +102,8 @@ def parse_effects(text):
             e["spark_card"] = True       # 自己挑 1 张卡闪光（用户 2026-10-24：优先于挑主战员）
         elif "选中" in t or "选择" in t:
             e["spark_choose"] = True     # 选一个主战员闪光
+        elif "随机" in t and "卡牌" in t and "主战员" not in t:
+            e["spark_random_card"] = True  # 随机 1 张卡闪光（可能闪到队友的卡）
         elif "随机" in t:
             e["spark_random"] = True     # 随机主战员闪光
     return e
@@ -192,7 +203,13 @@ def score_effects(effects, mode, state=None):
         elif equip:
             add(40, "装备")
         if effects.get("copy_card"):
-            add(300 if state.get("need_copy", 0) > 0 else -5, "复制")
+            # 用户 2026-10-24：复制会带上卡的一切（闪光等）；随机 3 选 1 的复制放到选择闪光后面
+            if state.get("need_copy", 0) <= 0:
+                add(-5, "复制")
+            elif effects.get("copy_random"):
+                add(140, "随机复制")
+            else:
+                add(300, "复制")
         if effects.get("neutral_card"):
             add(250 if state.get("need_neutral", 0) > 0 else -10, "中立卡")
         if rm and can_remove and state.get("need_remove", 0) > 0:
@@ -211,19 +228,23 @@ def score_effects(effects, mode, state=None):
         elif effects.get("spark"):
             add(-3, "多余的闪光")
         if effects.get("god_spark"):
-            add(15 if state.get("need_god_spark", 0) > 0 else -15, "神闪")
+            # 用户 2026-10-24：局内神闪闪错卡就「爆存档」（局外也撤销不了），局外加神闪更容易，所以局内一律不要
+            add(-40, "神闪")
         for k, v, reason in (("curse_card", -15, "咒术卡"), ("event_card", -8, "获得卡"), ("lumen_card", -8, "获得卡"),
                              ("desire_card", -8, "获得卡"), ("card_choice", -5, "选卡"), ("transform_card", -10, "转换卡")):
             if effects.get(k):
                 add(v, reason)
+        # 信用点按用途估值：有待冥想的卡（重闪闪错的目标卡）或还要删卡（商店付费删）时才值钱
+        useful = state.get("pending_meditation", 0) > 0 or state.get("need_remove", 0) > 0
         if credit >= 200:
-            add(100, "信用点≥200")
+            add(100 if useful else 45, "信用点≥200" + ("" if useful else "（暂无用处）"))
         elif credit > 0:
-            add(20 + credit * 15 / 200, "信用点<200")
+            add((20 + credit * 15 / 200) if useful else (15 + credit * 10 / 200), "信用点<200")
         elif credit:
             add(max(-15, credit / 4), "信用点")
         if effects.get("battle"):
-            add(10, "战斗")
+            # 认知闪光满级后战斗中目标卡会自然闪光，战斗也是闪光来源（用户 2026-10-24 同意）
+            add(55, "战斗")
     elif mode == MODE_EXPLORE:
         # 用户 2026-10-24：推进探索度时，没触发过的选项 / 没拿过的装备高于一切
         if state.get("unseen"):
@@ -241,8 +262,10 @@ def score_effects(effects, mode, state=None):
         if effects.get("battle"):
             add(2, "战斗（新怪物）")
     if hp and mode == MODE_TARGET and hp > 0:
-        # 回血按缺血程度动态排名，最高不超过 ≥200 信用点（100）
-        add(min(95, max(2, (100 - state.get("hp_pct", 100)) * 1.4)), "回血")
+        # 回血按缺血程度动态排名，一般不超过 ≥200 信用点（100）；血量 <25% 时死了就只能带出最近航路点的存档，
+        # 回血排到仅次于目标装备和复制
+        cur = state.get("hp_pct", 100)
+        add(250 if cur < 25 else min(95, max(2, (100 - cur) * 1.4)), "回血")
     elif hp:
         low = state.get("hp_pct", 100) < 50
         add((8 if low else 2) * (1 if hp > 0 else -1) * (2 if hp < 0 and low else 1), "生命")
@@ -266,6 +289,8 @@ def _effects_of(option):
     req = option.get("requires") or ""
     if m := re.search(r"(\d+)以上的信用点", req):
         e["requires_credit"] = int(m.group(1))
+    if e.get("copy_card") and e.get("copy_mode"):
+        e["copy_random"] = e["copy_mode"] != "选择任意卡"
     target = e.get("spark_target") or ""
     if e.get("spark") and target:
         e["spark_card"] = target == "选择卡牌"

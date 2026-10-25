@@ -2990,6 +2990,26 @@ def _scroll_to_target_member_for_card_removal(task: TriggerTask):
         scroll_count += 1
 
 
+GOD_SPARK_PAGE = re.compile(r"神之闪光|闪光[:：]?\s*(" + chaos_strategy.GOD_NAMES + r")")
+
+
+def _avoid_god_spark(task: TriggerTask):
+    """刷存档（目标卡组/空存）局内一律不神闪：神闪闪错卡会「爆存档」，局外也撤销不了（用户 2026-10-24）。"""
+    return getattr(task, "chaos_mode", "") in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EMPTY)
+
+
+def _click_bottom_skip(task: TriggerTask, reason):
+    skip_box = next((b for b in task.all_texts or []
+                     if 0.620 <= (b.x + b.width / 2) / task.width <= 0.990
+                     and 0.850 <= (b.y + b.height / 2) / task.height <= 0.990 and "跳过" in b.name), None)
+    if not skip_box:
+        return False
+    task.log_info(f"{reason}，点击「跳过」")
+    task.click_box(skip_box)
+    task.sleep(1)
+    return True
+
+
 def handle_select_card(task: TriggerTask):
     """统一卡牌选择页面: 在(0.198,0.039)处检测文本，按移除/复制/闪光等关键字匹配配置并选择卡牌。"""
     box = find_box_at_point(task, 0.198, 0.039)
@@ -3005,6 +3025,10 @@ def handle_select_card(task: TriggerTask):
     if config_key is None:
         return False
     task.log_info(f"检测到卡牌{action}选择，需选择{count}张，配置key={config_key}")
+    if action in ("闪光", "灵光") and _avoid_god_spark(task) and task.node_status.get("god_spark_pending"):
+        task.node_status["god_spark_pending"] = False
+        if _click_bottom_skip(task, "刚选的是神闪选项，刷存档局内不神闪"):
+            return True
 
     # 日志打印右下角选牌操作提示
     action_tip = find_box_at_point(task, 0.945, 0.918)
@@ -3342,6 +3366,7 @@ def _chaos_strategy_state(task: TriggerTask):
         "need_spark": len(plan.get("flash", [])),
         "need_god_spark": sum(1 for c in plan.get("flash", []) if c.get("god_spark")),
         "need_neutral": len(plan.get("neutral", [])),
+        "pending_meditation": sum(1 for v in _member_deck_state(task).get("冥想", {}).values() if v),
         "target_equipment": [n for slot in range(3) for n in _equipment_priority(task, slot)],
     }
 
@@ -3368,6 +3393,8 @@ def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
             seen.update(keys)
             chaos_strategy.save_seen(seen)
     task.log_info(f"[{mode}] 选择「{tasks_info[best]['description']}」")
+    # 选了神闪选项（只能选它、或分数仍最高时）：之后的选卡页/变体页要跳过，避免神闪落到目标卡上
+    task.node_status["god_spark_pending"] = any("神闪" in w for w in results[best][1])
     chaos_trace.step(task, "event", results[best][2], task.frame, chosen=best,
                      options=[{"desc": d, "score": round(sc, 1), "why": why, "src": src}
                               for d, (sc, why, src, _o) in zip(descs, results)])
@@ -4358,6 +4385,11 @@ def handle_view_original(task: TriggerTask):
     if not ((box1 and (_get_game_text(task, '查看原件') in box1.name or _get_game_text(task, '查看之前的闪光') in box1.name)) or (box2 and (_get_game_text(task, '查看原件') in box2.name or _get_game_text(task, '查看之前的闪光') in box2.name))):
         return False
 
+    if _avoid_god_spark(task) and any(GOD_SPARK_PAGE.search(b.name) for b in task.all_texts or []):
+        # 变体页底部写「闪光：迪亚洛斯」= 神闪三选一（2026-10-24 实机随机选了，神闪落到剑鸣九霄上）
+        task.node_status["god_spark_pending"] = False
+        if _click_bottom_skip(task, "神闪变体页，刷存档局内不神闪"):
+            return True
     cards = recognize_cards(task, page="卡牌闪光页面")
     if not cards:
         return False

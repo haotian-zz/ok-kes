@@ -112,16 +112,50 @@ class TestPriorities(unittest.TestCase):
                          self.rank(["移除1张卡牌", "获得1张中立卡牌", "复制选中的1张卡牌"], state=st))
         self.assertEqual("移除1张卡牌", self.rank(["获得1张中立卡牌", "移除1张卡牌"])[0])
 
-    def test_target_god_spark_and_battle_after_small_credit(self):
+    def test_target_god_spark_never_and_battle_over_small_credit(self):
+        # 用户 2026-10-24：局内神闪会爆存档，一律不要；战斗是闪光来源，排在 <200 信用点前
         st = dict(self.need, need_god_spark=1)
-        self.assertEqual(["信用点增加100", "选择1张卡牌触发神之闪光", "发起攻击进入战斗"],
-                         self.rank(["发起攻击进入战斗", "选择1张卡牌触发神之闪光", "信用点增加100"], state=st))
+        self.assertEqual(["发起攻击进入战斗", "信用点增加100", "选择1张卡牌触发神之闪光"],
+                         self.rank(["选择1张卡牌触发神之闪光", "发起攻击进入战斗", "信用点增加100"], state=st))
+        self.assertLess(cs.score_effects(cs.parse_effects("观察使者赋豫1张所选卡牌迪亚洛斯闪光"), cs.MODE_TARGET, st)[0], 0)
 
-    def test_target_heal_capped_below_big_credit(self):
-        st = dict(self.need, hp_pct=5)
+    def test_battle_buff_is_not_battle(self):
+        self.assertNotIn("battle", cs.parse_effects("将选择的普通卡牌转换为卡牌冰封启示，普通战斗3次期间异形生命值变为1"))
+        self.assertTrue(cs.parse_effects("发起攻击进入战斗").get("battle"))
+
+    def test_god_names_are_god_spark(self):
+        for d in ("观察使者赋豫1张所选卡牌迪亚洛斯闪光", "随机[CALIGO]闪光", "拔出相连的针成功时，赋豫1张随机卡牌神之滚动骰子10闪光"):
+            e = cs.parse_effects(d)
+            self.assertTrue(e.get("god_spark"), d)
+            self.assertFalse(e.get("spark"), d)
+
+    def test_god_spark_page_text(self):
+        from utils import GOD_SPARK_PAGE
+        self.assertTrue(GOD_SPARK_PAGE.search("闪光：迪亚洛斯"))
+        self.assertTrue(GOD_SPARK_PAGE.search("闪光:尼希勒姆"))
+        self.assertIsNone(GOD_SPARK_PAGE.search("请决定闪光效果。"))
+        self.assertIsNone(GOD_SPARK_PAGE.search("请选择1张要赋予闪光的卡牌。"))
+
+    def test_target_heal(self):
+        st = dict(self.need, hp_pct=60)
         self.assertEqual(["信用点增加300", "恢复50%生命值", "信用点增加100"],
                          self.rank(["信用点增加100", "恢复50%生命值", "信用点增加300"], state=st))
-        self.assertEqual("信用点增加100", self.rank(["恢复50%生命值", "信用点增加100"])[0])
+        # 血量 <25%：死了只能带出最近航路点的存档，回血仅次于目标装备和复制
+        st = dict(self.need, hp_pct=10)
+        self.assertEqual(["复制选中的1张卡牌", "恢复50%生命值", "移除1张卡牌"],
+                         self.rank(["移除1张卡牌", "恢复50%生命值", "复制选中的1张卡牌"], state=st))
+
+    def test_target_random_copy_after_spark(self):
+        self.assertEqual(["选中主战员闪光1次", "在随机3张稀有卡牌中选择1张复制"],
+                         self.rank(["在随机3张稀有卡牌中选择1张复制", "选中主战员闪光1次"]))
+        e = cs._effects_of({"effects": {"copy_card": 1, "copy_mode": "随机3张稀有+中选1"}})
+        self.assertTrue(e["copy_random"])
+
+    def test_target_credit_value_depends_on_use(self):
+        done = dict(self.need, need_remove=0, pending_meditation=0)
+        self.assertEqual("随机主战员触发1次闪光", self.rank(["信用点增加300", "随机主战员触发1次闪光"], state=done)[0])
+        self.assertEqual("信用点增加300", self.rank(["信用点增加300", "随机主战员触发1次闪光"],
+                                                 state=dict(done, pending_meditation=1))[0])
 
     def test_followup_target_equipment(self):
         # 后续事件里能拿到目标装备 → 这个选项第一优先级
