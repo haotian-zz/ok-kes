@@ -270,7 +270,8 @@ class ChaosMode(TriggerTask):
         if self.config.get('卡厄思地图', '活动卡厄思') == '活动卡厄思':
             if want_zero or want_max:
                 utils_chaos_prep.enter_zero_system(self, want_zero, want_max)
-            difficulty = None if mode == chaos_strategy.MODE_EXPLORE else (int(self.config.get('刷存档难度') or 0) or None)
+            difficulty = None if mode == chaos_strategy.MODE_EXPLORE else \
+                chaos_strategy.observe_start_difficulty(self.config.get('刷存档难度'))
             ok = utils_chaos_prep.enter_event_chaos(self, difficulty)
             if ok == "restart":
                 return True     # 玩法刚切换，下一帧从难度页回主页按新玩法重新进

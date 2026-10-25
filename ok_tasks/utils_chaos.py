@@ -229,16 +229,48 @@ def handle_season_chaos_initial_page(task: TriggerTask):
     required_level = int(
         _get_config_value(task, "存储数据保存上限大于多少", 120)
     )
+    mods = chaos_strategy.parse_modifiers(value_text) if required_level else []
+    mods_ok, why = chaos_strategy.judge_modifiers(mods)
     task.log_info(
         f"当前存储数据保存上限={data_value_level}，"
         f"要求大于等于{required_level}"
+        + (f"；词条 {' '.join(f'{n}{lv}' for n, lv, _ in mods) or '无'}" if required_level else "")
+        + ("" if mods_ok else f"（不接受：{'、'.join(why)}）")
     )
-    if data_value_level >= required_level:
+    if data_value_level >= required_level and mods_ok:
+        task._observe_tries = {}
         return False
 
-    task.log_info("存储数据保存上限不足，点击再次观测")
-    task.click_box(observe_boxes[0])
-    task.sleep(1)
+    return _observe_again(task, observe_boxes[0], data_value_level)
+
+
+OBSERVE_TRIES_PER_DIFFICULTY = 20
+OBSERVE_TRIES_TOTAL = 150      # 每次 10 冰封文明的遗产
+
+
+def _observe_again(task: TriggerTask, observe_box, pt):
+    """刷存档观测：当前难度观测够 20 次还不行就升一档（难度越高需要的词条级数越少），总数到上限就停任务。"""
+    tries = getattr(task, "_observe_tries", None) or {}
+    task._observe_tries = tries
+    diff = utils_chaos_prep._diff_of_level(utils_chaos_prep._difficulty_level(task))
+    total = sum(tries.values())
+    if total >= OBSERVE_TRIES_TOTAL:
+        task.log_error(f"再次观测已经 {total} 次还没刷到能用的词条，停止（请手动选词条后再开）", notify=True)
+        task.disable()
+        return True
+    want = chaos_strategy.observe_start_difficulty(_get_config_value(task, "刷存档难度", 1))
+    if diff and diff < want:
+        task.log_info(f"第 {diff} 档难度凑不到 {chaos_strategy.OBSERVE_MAX_PT}PT（词条级数不够），改到第 {want} 档")
+        utils_chaos_prep.select_difficulty(task, want)
+        return True
+    if diff and tries.get(diff, 0) >= OBSERVE_TRIES_PER_DIFFICULTY and diff < max(utils_chaos_prep.DIFF_LEVELS):
+        task.log_info(f"第 {diff} 档观测了 {tries[diff]} 次都不行，升到第 {diff + 1} 档")
+        utils_chaos_prep.select_difficulty(task, diff + 1)
+        return True
+    tries[diff] = tries.get(diff, 0) + 1
+    task.log_info(f"存储数据保存上限 {pt} 或词条不满足，点击再次观测（第 {diff} 档第 {tries[diff]} 次，共 {total + 1} 次）")
+    task.click_box(observe_box)
+    task.sleep(1.5)
     return True
 
 

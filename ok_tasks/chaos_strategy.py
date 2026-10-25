@@ -594,6 +594,7 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "拉黑任务": ["咒术卡牌", "压力"],
             "路线优先级": ["精英", "事件", "休息", "小怪"],
             "进入商店": True,
+            "存储数据保存上限大于多少": OBSERVE_MAX_PT,   # 预设 180pt = 观测 170 + 梦境
             **_memory_override(plan),
         }
     if mode == MODE_EXPLORE:
@@ -616,3 +617,45 @@ def config_overrides(mode, member=None, plan=None, db=None):
             **_memory_override(plan),
         }
     return {}
+
+
+# ---------------- 刷存档：观测词条（2026-10-25 调研，2game-helper docs/czn-chaos-option-priority.md 第 9 节） ----------------
+# PT 上限 =（TIER+2）×10，TIER ≈ 难度 + 词条级数之和（实录：Ⅵ+疾病3=110，Ⅶ+疾病3=120，Ⅹ+精英1+不安1=140），观测最高 170；梦境 +10。
+# 预设 180pt = 观测 170 + 梦境，所以目标卡组要观测到 170，难度越低需要的词条级数越多。
+OBSERVE_MAX_PT = 170
+OBSERVE_PRACTICAL_LEVELS = 6    # 一次观测里「能接受的词条」级数之和实际很难超过这个，难度从 15-6=Ⅸ 起
+# 词条名 → 到这个级数就不接受（单输出 + 自动战斗）；不在表里的（精英/不安…）都接受
+MODIFIER_REJECT_LEVEL = {"松懈": 1, "疏忽": 1, "暴君": 3, "疾病": 2, "愤怒": 2, "硬化": 2, "复仇": 2, "坏疽": 3, "损失": 3}
+MODIFIER_REJECT_TEXT = re.compile(r"无法获得存储数据|正义属性.*减少|抽取卡牌.*减少|打击次数变更|若仍有AP|友军所受伤害")
+MODIFIER_RE = re.compile(r"[\[【]([一-鿿]{1,4})(\d)[\]】]")
+
+
+def parse_modifiers(text):
+    """观测面板文字 → [(词条名, 级数, 描述)]。描述是到下一个词条之前的文字。"""
+    marks = list(MODIFIER_RE.finditer(text or ""))
+    out = []
+    for i, m in enumerate(marks):
+        end = marks[i + 1].start() if i + 1 < len(marks) else len(text)
+        out.append((m.group(1), int(m.group(2)), text[m.end():end]))
+    return out
+
+
+def judge_modifiers(mods):
+    """返回 (能不能接受, 原因列表)。"""
+    why = []
+    names = {n: lv for n, lv, _ in mods}
+    for name, level, desc in mods:
+        limit = MODIFIER_REJECT_LEVEL.get(name)
+        if limit and level >= limit:
+            why.append(f"{name}{level}")
+        if MODIFIER_REJECT_TEXT.search(desc):
+            why.append(f"{name}{level}「{desc}」")
+    if "暴君" in names and "疾病" in names:
+        why.append("暴君+疾病")
+    return not why, why
+
+
+def observe_start_difficulty(configured, target_pt=OBSERVE_MAX_PT):
+    """目标 PT 需要的 TIER 减去实际能凑到的词条级数 = 最低能用的难度；配置的难度更高就用配置的。"""
+    need_tier = target_pt // 10 - 2
+    return max(int(configured or 1), need_tier - OBSERVE_PRACTICAL_LEVELS, 1)

@@ -716,6 +716,9 @@ def enter_event_chaos(task: BaseTask, difficulty=None):
     if on_lobby and on_lobby() == "restart":
         return "restart"
     select_difficulty(task, difficulty)
+    if (getattr(task, "chaos_overrides", None) or {}).get("存储数据保存上限大于多少"):
+        # 刷存档要先观测词条：停在难度页，交给 utils_chaos.handle_season_chaos_initial_page（再次观测 → 进入）
+        return True
     if not click_text(task, r"^进入$", region=(0.8, 0.85, 1, 1), timeout=8, after=4):
         return False
     return bool(wait_text(task, r"^配置队伍$", region=(0, 0, 0.3, 0.1), timeout=10))

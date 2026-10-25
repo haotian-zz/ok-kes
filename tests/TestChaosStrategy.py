@@ -391,6 +391,24 @@ class TestTrace(unittest.TestCase):
         task.node_status["shop"] = True
         self.assertTrue(_want_shop(task))
 
+    def test_observe_modifiers(self):
+        # 实录观测面板文字（OCR 拼接）
+        e4 = ("存储数据保存上限140PT[暴君3]精英、首领区异形的攻击与生命[疾病3]生命值上限减少40%"
+              "[愤怒1]异形每3回合获得士气1[疏忽1]回合开始时，随机丢掉1张卡牌")
+        mods = cs.parse_modifiers(e4)
+        self.assertEqual([("暴君", 3), ("疾病", 3), ("愤怒", 1), ("疏忽", 1)], [(n, lv) for n, lv, _ in mods])
+        ok, why = cs.judge_modifiers(mods)
+        self.assertFalse(ok)
+        self.assertIn("暴君+疾病", why)
+        ok, _ = cs.judge_modifiers(cs.parse_modifiers("存储数据保存上限140PT·稀有命运触发率增加50%[精英1]追加2个精英区[不安1]无法在安全区休息"))
+        self.assertTrue(ok)
+        ok, why = cs.judge_modifiers(cs.parse_modifiers("[损失1]战斗信用点减少40%[精英2]无法获得存储数据"))
+        self.assertFalse(ok)
+        self.assertEqual([], cs.parse_modifiers("[欺诈]威胁他退下"))      # 事件选项的方括号不算词条
+        self.assertEqual(9, cs.observe_start_difficulty(1))              # 170PT = TIER15，词条最多凑 6 级
+        self.assertEqual(10, cs.observe_start_difficulty(10))
+        self.assertEqual(170, cs.config_overrides(cs.MODE_TARGET, "罗丝薇瑟", {})["存储数据保存上限大于多少"])
+
     def test_last_shop(self):
         from utils import _is_last_shop
         plan = {"layer": 2, "done": 1, "steps": [{"type": "休息"}, {"type": "首领"}]}
