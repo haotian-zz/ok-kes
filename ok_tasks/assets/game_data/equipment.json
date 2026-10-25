@@ -1725,7 +1725,8 @@
    "area": "全地区",
    "mode": "出击",
    "assault_type": "畸变",
-   "source": "bwiki"
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683335.png"
   },
   {
    "id": "eq_g01_007",
@@ -1745,7 +1746,14 @@
    ],
    "area": "第零研究所",
    "season": "S1",
-   "source": "bwiki"
+   "source": "bwiki",
+   "gk_content_id": 683335,
+   "rarity_gamekee": "神话",
+   "obtain": "第0研究所：事件-矿脉之心",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683335.png",
+   "name_gamekee": "奇梅尔奈特",
+   "desc_gamekee": "使用能力抽取时，自己的攻击卡牌伤害量持续1回合增加35%（每回合1次）"
   },
   {
    "id": "eq_dll_ca_017",
@@ -10825,49 +10833,6 @@
    "area": "全地区",
    "mode": "出击",
    "source": "bwiki"
-  },
-  {
-   "id": "gk_eq_683335",
-   "name": "奇梅尔奈特",
-   "slot": 1,
-   "slot_name": "武器",
-   "rarity": "独特",
-   "desc": "使用能力抽取时，自己的攻击卡牌伤害量持续1回合增加35%（每回合1次）",
-   "stat": "攻击力",
-   "stat_values": [
-    31,
-    50,
-    68,
-    81,
-    90
-   ],
-   "source": "gamekee",
-   "gk_content_id": 683335,
-   "rarity_gamekee": "神话",
-   "obtain": "第0研究所：事件-矿脉之心",
-   "season_name": "禁忌催化剂",
-   "icon": "equipment_icons/gk_683335.png"
-  },
-  {
-   "id": "gk_eq_683913",
-   "name": "群体之翼",
-   "slot": 3,
-   "slot_name": "饰品",
-   "rarity": "稀有",
-   "desc": "战斗开始时，免疫2",
-   "stat": "生命值",
-   "stat_values": [
-    20,
-    37,
-    54,
-    66,
-    75
-   ],
-   "source": "gamekee",
-   "gk_content_id": 683913,
-   "rarity_gamekee": "稀有",
-   "obtain": "双星之影",
-   "icon": "equipment_icons/gk_683913.png"
   },
   {
    "id": "gk_eq_724859",

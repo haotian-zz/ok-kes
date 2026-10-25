@@ -357,6 +357,10 @@ def pick_event_option(descs, mode, state=None, db=None):
             src = "文字解析"
             st = dict(state, unseen=text_key(d) not in seen and _legacy_text_key(d) not in seen)
         score, why = score_effects(effects, mode, st)
+        if o is None and mode == MODE_EXPLORE and st["unseen"] and "发生事件" in d:
+            # 库里没有的后续事件：只能经这个选项进去，这个没选过时后续的选项大概率也都没见过（库里有后续树的同类选项
+            # 实测 +2054），按「后续还有一个没选过的选项」算，略低于确定的新装备
+            score, why = score + 900, why + ["后续事件（库里没有，大概率没见过）+900"]
         if o is not None:
             fs, fwhy = followup_best(o, mode, state)
             score, why = score + fs, why + fwhy

@@ -230,6 +230,10 @@ class TestPriorities(unittest.TestCase):
         s, _ = cs.score_effects(e, cs.MODE_EXPLORE, {"seen": set()})
         self.assertGreaterEqual(s, 50)
 
+    def test_explore_text_followup_event(self):
+        descs = ["尝试对话发生事件[无法给出答案之人]", "袭击白使者信用点增加160"]
+        self.assertEqual(descs[0], self.rank(descs, cs.MODE_EXPLORE, {"seen": set()})[0])
+
     def test_explore_followup_unseen(self):
         opt = {"id": "a", "text": "进入", "effects": {},
                "next": [{"id": "a1", "text": "x", "effects": {}}, {"id": "a2", "text": "y", "effects": {}}]}
