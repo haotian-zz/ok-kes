@@ -77,5 +77,13 @@ class TestPin(unittest.TestCase):
         self.assertEqual([(4, "小怪")], cur)
 
 
+class TestGlowSuccessor(unittest.TestCase):
+    def test_glowing_successors_detected(self):
+        # 天幕第 1 层：当前位置后面两个可选节点带白色光晕在闪，饱和度掉到 129，以前间歇漏掉上面那个小怪；左下的暗节点不能算
+        frame = cv2.imread(os.path.join(FIX, "tianmu_glow_succ.png"))
+        got = sorted((round(n["x"]), n["row"], n["type"], bool(n["current"])) for n in cm.detect_nodes(frame) if n["x"] < 1000)
+        self.assertEqual([(512, 2, "小怪", True), (758, 0, "小怪", False), (758, 2, "事件", False)], got)
+
+
 if __name__ == "__main__":
     unittest.main()

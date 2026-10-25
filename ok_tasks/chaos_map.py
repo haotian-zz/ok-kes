@@ -56,7 +56,9 @@ def _is_node(cell, s):
     if cell is None:
         return False
     (h, sat, v), white = cell
-    return sat >= 130 and v >= 80 and white >= 120 * s * s
+    # 可选的下一步节点带白色光晕、在闪，饱和度会掉到 129～130（2026-10-24 天幕实测，以前卡 130 时间歇漏检）；
+    # 暗的不可达节点饱和度 ≤105、亮度 ≤105，所以亮的放宽到 110
+    return (sat >= 130 or (sat >= 110 and v >= 180)) and v >= 80 and white >= 120 * s * s
 
 
 def _orange_kind(hsv, x, y, s):

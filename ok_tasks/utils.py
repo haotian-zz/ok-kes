@@ -1925,21 +1925,44 @@ def handle_settlement(task: TriggerTask):
     return False
 
 
-def handle_auto_chat(task: TriggerTask):
-    """自动对话检查: 匹配任一自动对话特征，置信度低于0.96时点击开启。"""
+AUTO_CHAT_THRESHOLD = 0.96
+
+
+def _find_auto_chat(task: TriggerTask):
+    task.next_frame()
     search_box = task.box_of_screen(0.655, 0.007, 0.996, 0.097)
-    auto_chat = task.find_one(
-        feature_name=["autochatenable", "autochatenable2"], box=search_box
-    )
-    if auto_chat and auto_chat.confidence < 0.96:
-        task.log_info(f"自动对话未开启，当前匹配置信度: {auto_chat.confidence:.2%}，点击开启")
-        _move_and_click(
-            task,
-            (auto_chat.x + auto_chat.width / 2) / task.width,
-            (auto_chat.y + auto_chat.height / 2) / task.height,
-        )
-        return True
-    return False
+    return task.find_one(feature_name=["autochatenable", "autochatenable2"], box=search_box)
+
+
+def _ensure_auto_chat(task: TriggerTask, context=""):
+    """自动对话按钮匹配置信度低于阈值就点一下开启。点完立刻再匹配：置信度反而降了说明原本就开着（2026-10-24 实机
+    开着时只有 83%～95%，被 0.96 误判过），马上点回去，并把阈值降到这次的置信度以下，本次运行不再误点。返回是否点过。"""
+    search_box = task.box_of_screen(0.655, 0.007, 0.996, 0.097)
+    auto_chat = task.find_one(feature_name=["autochatenable", "autochatenable2"], box=search_box)
+    threshold = getattr(task, "_auto_chat_threshold", AUTO_CHAT_THRESHOLD)
+    if not auto_chat or auto_chat.confidence >= threshold:
+        return False
+    before = auto_chat.confidence
+    task.log_info(f"{context}自动对话可能未开启（匹配置信度 {before:.2%}），点击开启")
+    cx = (auto_chat.x + auto_chat.width / 2) / task.width
+    cy = (auto_chat.y + auto_chat.height / 2) / task.height
+    _move_and_click(task, cx, cy)
+    task.sleep(0.8)
+    after = _find_auto_chat(task)
+    after_conf = after.confidence if after else 0
+    if after_conf < before - 0.02:
+        task.log_info(f"点击后置信度降到 {after_conf:.2%}，原本是开着的，点回去；阈值改为 {before - 0.01:.2%}")
+        _move_and_click(task, cx, cy)
+        task.sleep(0.8)
+        task._auto_chat_threshold = before - 0.01
+    elif after_conf > before + 0.02:
+        task._auto_chat_threshold = min(threshold, (before + after_conf) / 2)
+    return True
+
+
+def handle_auto_chat(task: TriggerTask):
+    """自动对话检查: 匹配任一自动对话特征，置信度低于阈值时点击开启（点错会自己纠正）。"""
+    return _ensure_auto_chat(task)
 
 
 def _dialogue_line(task: TriggerTask):
@@ -1972,16 +1995,8 @@ def handle_dialogue(task: TriggerTask):
     now = time.time()
     last_toggle = getattr(task, "_auto_chat_toggle_time", 0)
     if now - last_toggle > 60:
-        search_box = task.box_of_screen(0.655, 0.007, 0.996, 0.097)
-        auto_chat = task.find_one(feature_name=["autochatenable", "autochatenable2"], box=search_box)
-        if auto_chat and auto_chat.confidence < 0.96:
+        if _ensure_auto_chat(task, f"剧情对白「{line.name}」："):
             task._auto_chat_toggle_time = now
-            task.log_info(f"剧情对白「{line.name}」：自动对话未开启（匹配置信度 {auto_chat.confidence:.2%}），点击开启一次")
-            _move_and_click(
-                task,
-                (auto_chat.x + auto_chat.width / 2) / task.width,
-                (auto_chat.y + auto_chat.height / 2) / task.height,
-            )
             return True
     if now - getattr(task, "_dialogue_key_time", 0) < 1.5:
         return True
