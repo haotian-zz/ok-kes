@@ -765,11 +765,22 @@ class TestSaveCleanup(unittest.TestCase):
             self.assertTrue(sc.handle_save_cleanup(t))
             self.assertEqual(clicks, [sc.CANCEL])
             sc.start(t)
-            t.save_cleanup["pending"] = time.time()
-            t.save_cleanup["need"] = 30
+            t.save_cleanup.update(phase="confirm", pending=time.time(), need=30, selected={3, 5})
             clicks.clear()
             self.assertTrue(sc.handle_save_cleanup(t))
             self.assertEqual(clicks, [sc.CONFIRM])
-            self.assertEqual(t.save_cleanup["deleted"], 1)
+            self.assertEqual(t.save_cleanup["deleted"], 2)
         finally:
             sc._move_and_click = old
+
+
+    def test_align(self):
+        import save_cleanup as sc
+        tbs = [8400, 8400, 8400, 8400, 8400, 9000, 9000, 9600, 10400, 10560, 11520, 11750, 12000, 12720]
+        cells = {0: (8400, 0, 0), 1: (8400, 0, 0), 2: (8400, 0, 0), 3: (8400, 0, 0), 4: (8400, 0, 0), 5: (9000, 0, 0)}
+        self.assertEqual(sc.align(cells, tbs, 0, 0), 0)
+        later = {0: (9600, 0, 0), 1: (10400, 0, 0), 2: (10560, 0, 0), 3: (11520, 0, 0), 4: (11750, 0, 0)}
+        self.assertIsNone(sc.align(later, tbs, 0, 6))       # 9600 在序号 7，不是一行的开头
+        later = {0: (9000, 0, 0), 1: (9600, 0, 0), 2: (10400, 0, 0), 3: (10560, 0, 0)}
+        self.assertEqual(sc.align(later, tbs, 0, 6), 6)
+        self.assertIsNone(sc.align({0: (99999, 0, 0)}, tbs, 0, 0))
