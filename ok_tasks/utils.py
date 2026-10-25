@@ -4388,6 +4388,8 @@ def handle_shop(task: TriggerTask):
                     task.sleep(1)
                     task.node_status['shop'] = False
                     return True
+                elif cost <= current_credit:
+                    task.log_info("德朗商店: 没开「进入商店」（只因最后一个商店进来），不付费移除，只买装备")
                 else:
                     task.log_info(f"德朗商店: 移除卡牌需{cost}信用点，当前{current_credit}，不足，继续挑选其他商品")
             else:
