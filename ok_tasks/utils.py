@@ -1432,7 +1432,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
                 if card["selected"]:
                     continue
                 card_name = card["name"].strip()
-                if target not in card_name and card_name not in target:
+                if target not in card_name and card_name not in target and not _ocr_name_matches(card_name, target):
                     continue
                 task.log_info(
                     f"{page}: 命中优先级「{target}」，点击目标卡牌「{card['name']}」"
@@ -3074,6 +3074,27 @@ def _god_spark_wanted(task: TriggerTask):
         if c.get("god_spark") and c["name"] not in done and c["name"] not in names:
             names.append(c["name"])
     return names
+
+
+_REAL_CARD_NAMES = None
+
+
+def _ocr_name_matches(ocr_name, target):
+    """OCR 卡名错一个字也算目标卡：等长（≥3 字）、只差一个字、且 OCR 出的不是库里另一张真卡的名字。
+    2026-10-25 实录重新闪光页把「明灭剑」认成「明灰剑」，没选上就点了跳过，冥想的 80 信用点白花。
+    「黑云奥义：残」是真卡名，不会被当成「黑云奥义：灭」。"""
+    global _REAL_CARD_NAMES
+    if len(ocr_name) != len(target) or len(target) < 3:
+        return False
+    if sum(1 for x, y in zip(ocr_name, target) if x != y) != 1:
+        return False
+    if _REAL_CARD_NAMES is None:
+        try:
+            db = game_db.get_db()
+            _REAL_CARD_NAMES = {c["name"] for c in list(db.cards) + list(db.neutral_cards)}
+        except Exception:  # noqa: BLE001
+            _REAL_CARD_NAMES = set()
+    return ocr_name not in _REAL_CARD_NAMES
 
 
 def _flash_done(task: TriggerTask, name):

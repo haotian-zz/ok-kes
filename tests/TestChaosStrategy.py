@@ -554,6 +554,12 @@ class TestLayerReset(unittest.TestCase):
         task.node_status["flash_ok"] += ["剑鸣九霄", "剑鸣九霄"]
         self.assertTrue(_flash_done(task, "剑鸣九霄"))
 
+    def test_ocr_name_one_char_off(self):
+        from utils import _ocr_name_matches
+        self.assertTrue(_ocr_name_matches("明灰剑", "明灭剑"))
+        self.assertFalse(_ocr_name_matches("黑云奥义：残", "黑云奥义：灭"))
+        self.assertFalse(_ocr_name_matches("明剑", "灭剑"))
+
 
 class TestModifierOcr(unittest.TestCase):
     def test_variant_char(self):
