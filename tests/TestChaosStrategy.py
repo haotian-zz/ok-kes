@@ -136,6 +136,13 @@ class TestPriorities(unittest.TestCase):
         self.assertIsNone(GOD_SPARK_PAGE.search("请决定闪光效果。"))
         self.assertIsNone(GOD_SPARK_PAGE.search("请选择1张要赋予闪光的卡牌。"))
 
+    def test_same_option_text(self):
+        from utils import _same_option_text
+        a = "守望先知最大生命值增加20%，信用点增加40"
+        self.assertTrue(_same_option_text("1守望先知加40最大生命值增加20%，信用点增", a))
+        self.assertFalse(_same_option_text("回答先知选择1张卡牌闪光，信用点增加40", a))
+        self.assertFalse(_same_option_text("拯救先知获得装备[绯刃]，信用点增加40", a))
+
     def test_deck_stat_not_event_option(self):
         from utils import NOT_EVENT_OPTION
         self.assertTrue(NOT_EVENT_OPTION.search("独特卡牌平均费用0.9"))

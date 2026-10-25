@@ -1,5 +1,6 @@
 from ok import TriggerTask
 
+import difflib
 import re
 import random
 import time
@@ -3382,6 +3383,13 @@ def _chaos_strategy_state(task: TriggerTask):
     }
 
 
+def _same_option_text(a, b):
+    """抬起后的选项文字和刚选的是不是同一个（OCR 会抖：「1守望先知加40…」/「守望先知…」）。"""
+    if not a or not b:
+        return False
+    return difflib.SequenceMatcher(None, a, b).ratio() >= 0.7
+
+
 def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
     """选了卡厄思玩法时，用事件库 + 选项文字给选项打分，点分数最高的；原有逻辑返回 False 交给关键词匹配。"""
     mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
@@ -3404,6 +3412,7 @@ def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
         seen.update(keys)
         chaos_strategy.save_seen(seen)
     task.log_info(f"[{mode}] 选择「{tasks_info[best]['description']}」")
+    task.node_status["event_pending_choice"] = tasks_info[best]["description"]
     # 选了神闪选项（只能选它、或分数仍最高时）：之后的选卡页/变体页要跳过，避免神闪落到目标卡上
     task.node_status["god_spark_pending"] = any("神闪" in w for w in results[best][1])
     chaos_trace.step(task, "event", results[best][2], task.frame, chosen=best,
@@ -3558,6 +3567,13 @@ def handle_event_task(task: TriggerTask):
         (task_info for task_info in tasks_info if task_info["y"] < 0.925),
         None,
     )
+    # 选了卡厄思玩法时，只有抬起的正是策略刚选的选项才直接确认：有的事件选项本来就排得高（2026-10-24 实录
+    # 「守望/拯救/回答先知」），会被当成已选中直接点掉，绕过打分
+    if (upper_event_task is not None
+            and getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) != chaos_strategy.MODE_LEGACY
+            and len(tasks_info) > 1
+            and not _same_option_text(upper_event_task["description"], task.node_status.get("event_pending_choice"))):
+        upper_event_task = None
     if upper_event_task is not None:
         task.log_info(
             f"检测到Y坐标小于0.925的任务，立即选择: {upper_event_task['description']}"

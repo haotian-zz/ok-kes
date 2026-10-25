@@ -20,7 +20,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_sec_ca_020",
@@ -39,7 +40,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_sec_ca_013",
@@ -59,7 +61,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682282.png"
   },
   {
    "id": "eq_sec_ca_010",
@@ -79,7 +83,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682281.png"
   },
   {
    "id": "eq_sec_013",
@@ -97,7 +103,12 @@
     80,
     91
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682282,
+   "rarity_gamekee": "神话",
+   "obtain": "审判之沼：事件-森林疑问2",
+   "icon": "equipment_icons/gk_682282.png"
   },
   {
    "id": "eq_sec_010",
@@ -115,7 +126,13 @@
     81,
     90
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682281,
+   "rarity_gamekee": "神话",
+   "obtain": "审判之沼：事件-间隙之树3",
+   "icon": "equipment_icons/gk_682281.png",
+   "desc_gamekee": "以能力治愈或恢复时，对所有敌人造成相当于恢复量50%的固定伤害"
   },
   {
    "id": "eq_pub_ca_050",
@@ -135,7 +152,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_049",
@@ -155,7 +173,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_047",
@@ -174,7 +193,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_046",
@@ -193,7 +213,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_045",
@@ -213,7 +234,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_044",
@@ -232,7 +254,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_043",
@@ -252,7 +275,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683033.png"
   },
   {
    "id": "eq_pub_ca_042",
@@ -272,7 +297,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683903.png"
   },
   {
    "id": "eq_pub_ca_041",
@@ -292,7 +319,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683932.png"
   },
   {
    "id": "eq_pub_ca_040",
@@ -312,7 +341,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683933.png"
   },
   {
    "id": "eq_pub_ca_039",
@@ -332,7 +363,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683032.png"
   },
   {
    "id": "eq_pub_ca_038",
@@ -352,7 +385,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683031.png"
   },
   {
    "id": "eq_pub_043",
@@ -370,7 +405,13 @@
     80,
     91
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683033,
+   "rarity_gamekee": "神话",
+   "obtain": "梦境模式限定：击杀赛内克图斯",
+   "icon": "equipment_icons/gk_683033.png",
+   "desc_gamekee": "HP上限+8%。战斗结束时若HP低于50%，恢复8%HP，反之则压力最高者压力减少5"
   },
   {
    "id": "eq_pub_042",
@@ -388,7 +429,13 @@
     80,
     91
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683903,
+   "rarity_gamekee": "神话",
+   "obtain": "梦境模式限定：击杀赛内克图斯",
+   "icon": "equipment_icons/gk_683903.png",
+   "desc_gamekee": "HP上限+10%，战斗开始时，获得AP1，抽取1"
   },
   {
    "id": "eq_pub_041",
@@ -406,7 +453,14 @@
     30,
     34
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683932,
+   "rarity_gamekee": "神话",
+   "obtain": "梦境模式限定：击杀赛内克图斯",
+   "icon": "equipment_icons/gk_683932.png",
+   "name_gamekee": "祸之圣袍",
+   "desc_gamekee": "防御力+12%，所有战斗员崩溃恢复时，所需卡牌数减少1张"
   },
   {
    "id": "eq_pub_040",
@@ -424,7 +478,13 @@
     30,
     34
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683933,
+   "rarity_gamekee": "神话",
+   "obtain": "梦境模式限定：击杀赛内克图斯",
+   "icon": "equipment_icons/gk_683933.png",
+   "desc_gamekee": "防御力+12%，压力增加时。有50%几率少增加1"
   },
   {
    "id": "eq_pub_039",
@@ -442,7 +502,13 @@
     81,
     90
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683032,
+   "rarity_gamekee": "神话",
+   "obtain": "梦境模式限定：击杀赛内克图斯",
+   "icon": "equipment_icons/gk_683032.png",
+   "desc_gamekee": "友军攻击力+8%；击杀时，压力高的战斗员压力减少2"
   },
   {
    "id": "eq_pub_038",
@@ -460,7 +526,13 @@
     81,
     90
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683031,
+   "rarity_gamekee": "神话",
+   "obtain": "梦境模式限定：击杀赛内克图斯",
+   "icon": "equipment_icons/gk_683031.png",
+   "desc_gamekee": "攻击力+18%；击破时，友军压力减少1"
   },
   {
    "id": "eq_p_var_ca_010",
@@ -480,7 +552,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682304.png"
   },
   {
    "id": "eq_p_var_ca_006",
@@ -500,7 +574,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682303.png"
   },
   {
    "id": "eq_p_var_ca_005",
@@ -519,7 +595,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682302.png"
   },
   {
    "id": "eq_p_var_ca_001",
@@ -539,7 +617,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682301.png"
   },
   {
    "id": "eq_p_var_010",
@@ -557,7 +637,14 @@
     80,
     91
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 682304,
+   "rarity_gamekee": "神话",
+   "obtain": "蓝壶：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682304.png",
+   "name_gamekee": "阴郁首领之眼",
+   "desc_gamekee": "护盾获得量+20%"
   },
   {
    "id": "eq_p_var_006",
@@ -574,7 +661,13 @@
     30,
     34
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 682303,
+   "rarity_gamekee": "神话",
+   "obtain": "蓝壶：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682303.png",
+   "desc_gamekee": "友军护盾获得量增加15%"
   },
   {
    "id": "eq_p_var_005",
@@ -591,7 +684,12 @@
     30,
     34
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 682302,
+   "rarity_gamekee": "神话",
+   "obtain": "蓝壶：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682302.png"
   },
   {
    "id": "eq_p_var_001",
@@ -608,7 +706,13 @@
     81,
     90
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 682301,
+   "rarity_gamekee": "神话",
+   "obtain": "蓝壶：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682301.png",
+   "desc_gamekee": "全体攻击伤害量增加25%"
   },
   {
    "id": "eq_p_sec_ca_009",
@@ -627,7 +731,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682280.png"
   },
   {
    "id": "eq_p_sec_ca_007",
@@ -647,7 +753,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682279.png"
   },
   {
    "id": "eq_p_sec_ca_005",
@@ -666,7 +774,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682278.png"
   },
   {
    "id": "eq_p_sec_009",
@@ -683,7 +793,13 @@
     80,
     91
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682280,
+   "rarity_gamekee": "神话",
+   "obtain": "审判之沼：击杀核心层以上boss/燃烧的生命：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682280.png",
+   "desc_gamekee": "透过卡牌获得护盾时，固定护盾100%（每回合1次）"
   },
   {
    "id": "eq_p_sec_007",
@@ -701,7 +817,13 @@
     30,
     34
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682279,
+   "rarity_gamekee": "神话",
+   "obtain": "审判之沼：击杀核心层以上boss/燃烧的生命：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682279.png",
+   "desc_gamekee": "对拥有脆弱的目标造成的伤害量增加35%"
   },
   {
    "id": "eq_p_sec_005",
@@ -718,7 +840,13 @@
     30,
     34
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682278,
+   "rarity_gamekee": "神话",
+   "obtain": "审判之沼：击杀核心层以上boss/燃烧的生命：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682278.png",
+   "desc_gamekee": "所受伤害量减少10%（每回合1次）"
   },
   {
    "id": "eq_p_nih_ca_010",
@@ -737,7 +865,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_p_nih_ca_005",
@@ -755,7 +884,9 @@
     34
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682327.png"
   },
   {
    "id": "eq_p_nih_ca_001",
@@ -775,7 +906,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682326.png"
   },
   {
    "id": "eq_p_nih_005",
@@ -793,7 +926,13 @@
     30,
     34
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682327,
+   "rarity_gamekee": "神话",
+   "obtain": "雾之城市：击杀核心层以上boss/第0研究所：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682327.png",
+   "desc_gamekee": "战斗开始时，最多丢弃3张，并按照相应数量抽取"
   },
   {
    "id": "eq_p_nih_001",
@@ -810,7 +949,13 @@
     81,
     90
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682326,
+   "rarity_gamekee": "神话",
+   "obtain": "雾之城市：击杀核心层以上boss/第0研究所：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682326.png",
+   "desc_gamekee": "费用为0的攻击卡牌伤害量增加40%"
   },
   {
    "id": "eq_p_inv_ca_008",
@@ -830,7 +975,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682254.png"
   },
   {
    "id": "eq_p_inv_ca_007",
@@ -850,7 +997,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682253.png"
   },
   {
    "id": "eq_p_inv_ca_002",
@@ -869,7 +1018,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682252.png"
   },
   {
    "id": "eq_p_inv_ca_001",
@@ -889,7 +1040,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682251.png"
   },
   {
    "id": "eq_p_inv_008",
@@ -907,7 +1060,13 @@
     80,
     91
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682254,
+   "rarity_gamekee": "神话",
+   "obtain": "双星之影：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682254.png",
+   "desc_gamekee": "攻击力+15%，HP+10%"
   },
   {
    "id": "eq_p_inv_007",
@@ -925,7 +1084,12 @@
     30,
     34
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682253,
+   "rarity_gamekee": "神话",
+   "obtain": "双星之影：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682253.png"
   },
   {
    "id": "eq_p_inv_002",
@@ -942,7 +1106,12 @@
     81,
     90
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682252,
+   "rarity_gamekee": "神话",
+   "obtain": "双星之影：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682252.png"
   },
   {
    "id": "eq_p_inv_001",
@@ -960,7 +1129,13 @@
     81,
     90
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682251,
+   "rarity_gamekee": "神话",
+   "obtain": "双星之影：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682251.png",
+   "desc_gamekee": "对拥有击破状态的目标造成的伤害量增加30%"
   },
   {
    "id": "eq_p_dll_ca_008",
@@ -980,7 +1155,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682340.png"
   },
   {
    "id": "eq_p_dll_ca_004",
@@ -1000,7 +1177,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682339.png"
   },
   {
    "id": "eq_p_dll_ca_002",
@@ -1019,7 +1198,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682338.png"
   },
   {
    "id": "eq_p_dll_008",
@@ -1037,7 +1218,13 @@
     80,
     91
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682340,
+   "rarity_gamekee": "神话",
+   "obtain": "降临的混沌：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682340.png",
+   "desc_gamekee": "只有单个敌人时，伤害量增加30%"
   },
   {
    "id": "eq_p_dll_004",
@@ -1055,7 +1242,13 @@
     30,
     34
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682339,
+   "rarity_gamekee": "神话",
+   "obtain": "降临的混沌：击杀核心层以上boss",
+   "icon": "equipment_icons/gk_682339.png",
+   "desc_gamekee": "护盾获得量增加25%"
   },
   {
    "id": "eq_p_dll_002",
@@ -1072,7 +1265,13 @@
     81,
     90
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682338,
+   "rarity_gamekee": "神话",
+   "obtain": "双星之影：事件-融合姿态/降临的混沌：击杀核心层以上的boss",
+   "icon": "equipment_icons/gk_682338.png",
+   "desc_gamekee": "对持有护盾的目标造成的伤害量增加25%"
   },
   {
    "id": "eq_nih_ca_017",
@@ -1092,7 +1291,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_nih_ca_011",
@@ -1112,7 +1312,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682325.png"
   },
   {
    "id": "eq_nih_ca_007",
@@ -1132,7 +1334,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682324.png"
   },
   {
    "id": "eq_nih_ca_006",
@@ -1152,7 +1356,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682323.png"
   },
   {
    "id": "eq_nih_011",
@@ -1170,7 +1376,13 @@
     81,
     90
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682325,
+   "rarity_gamekee": "神话",
+   "obtain": "雾之城市：事件-记忆片段2",
+   "icon": "equipment_icons/gk_682325.png",
+   "desc_gamekee": "消灭卡牌时，接下来使用的卡牌伤害量增加35%（最多叠加1层）。"
   },
   {
    "id": "eq_nih_007",
@@ -1187,7 +1399,13 @@
     80,
     91
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682324,
+   "rarity_gamekee": "神话",
+   "obtain": "雾之城市：事件-虚无之幕2",
+   "icon": "equipment_icons/gk_682324.png",
+   "desc_gamekee": "伤害量+40%，回合结束时有30%的机率消灭手牌中的1张卡牌"
   },
   {
    "id": "eq_nih_006",
@@ -1205,7 +1423,12 @@
     80,
     91
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682323,
+   "rarity_gamekee": "神话",
+   "obtain": "雾之城市：事件-虚无牧者",
+   "icon": "equipment_icons/gk_682323.png"
   },
   {
    "id": "eq_inv_ca_015",
@@ -1224,7 +1447,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_inv_ca_006",
@@ -1244,7 +1468,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682250.png"
   },
   {
    "id": "eq_inv_ca_003",
@@ -1263,7 +1489,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682249.png"
   },
   {
    "id": "eq_inv_006",
@@ -1281,7 +1509,13 @@
     81,
     90
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682250,
+   "rarity_gamekee": "神话",
+   "obtain": "双星之影：事件-败兵2",
+   "icon": "equipment_icons/gk_682250.png",
+   "desc_gamekee": "费用为1以下的攻击卡牌伤害量增加25%"
   },
   {
    "id": "eq_inv_003",
@@ -1298,7 +1532,13 @@
     81,
     90
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682249,
+   "rarity_gamekee": "神话",
+   "obtain": "双星之影：事件-群体的目标1",
+   "icon": "equipment_icons/gk_682249.png",
+   "desc_gamekee": "按照敌人的数量，伤害量增加7%；全体攻击的伤害量增加10%"
   },
   {
    "id": "eq_g04_008",
@@ -1316,7 +1556,15 @@
     34
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714624,
+   "rarity_gamekee": "神话",
+   "obtain": "万花筒孵化场：事件-空王座的回声（稀有）",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714624.png",
+   "name_gamekee": "继承的残痕",
+   "desc_gamekee": "发动2次攻击卡牌时，使所有敌人造成灼烧4(每回合1次)"
   },
   {
    "id": "eq_g03_009",
@@ -1335,7 +1583,14 @@
     91
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703606,
+   "rarity_gamekee": "神话",
+   "obtain": "虚像剧场：事件-晚钟湿壁画（稀有）",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703606.png",
+   "desc_gamekee": "回合开始时，依友军手牌的人格面具卡牌数量,持续1回合自身的伤害量增加20%"
   },
   {
    "id": "eq_g02_ca_012",
@@ -1355,7 +1610,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_g02_ca_011",
@@ -1373,7 +1629,9 @@
     91
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692663.png"
   },
   {
    "id": "eq_g02_ca_010",
@@ -1393,7 +1651,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692662.png"
   },
   {
    "id": "eq_g02_011",
@@ -1411,7 +1671,14 @@
     91
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692663,
+   "rarity_gamekee": "神话",
+   "obtain": "燃烧的生命：事件-遗忘踪迹1&3（需用审判之剑、闪耀的里拉或金色钟交换）",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692663.png",
+   "desc_gamekee": "回合开始时，手牌中随机1张消灭卡牌费用减少1，持续1回合"
   },
   {
    "id": "eq_g02_010",
@@ -1430,7 +1697,14 @@
     90
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692662,
+   "rarity_gamekee": "神话",
+   "obtain": "燃烧的生命：事件-永劫之火",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692662.png",
+   "desc_gamekee": "费用2以上的消灭卡牌伤害量增加40%"
   },
   {
    "id": "eq_g01_ca_007",
@@ -1450,7 +1724,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki"
   },
   {
    "id": "eq_g01_007",
@@ -1469,7 +1744,8 @@
     90
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki"
   },
   {
    "id": "eq_dll_ca_017",
@@ -1489,7 +1765,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_dll_ca_009",
@@ -1509,7 +1786,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682337.png"
   },
   {
    "id": "eq_dll_ca_006",
@@ -1529,7 +1808,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682336.png"
   },
   {
    "id": "eq_dll_009",
@@ -1546,7 +1827,13 @@
     80,
     91
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682337,
+   "rarity_gamekee": "神话",
+   "obtain": "降临的混沌:事件-研究堕落3-选择尝试启动圣物",
+   "icon": "equipment_icons/gk_682337.png",
+   "desc_gamekee": "防御力+15%，保留护盾20%"
   },
   {
    "id": "eq_dll_006",
@@ -1564,7 +1851,12 @@
     30,
     34
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682336,
+   "rarity_gamekee": "神话",
+   "obtain": "降临的混沌：事件-最初的堕落2-选择启动符文回路",
+   "icon": "equipment_icons/gk_682336.png"
   },
   {
    "id": "eq_chr_ca_029",
@@ -1583,7 +1875,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_chr_ca_023",
@@ -1603,7 +1896,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682307.png"
   },
   {
    "id": "eq_chr_ca_017",
@@ -1623,7 +1918,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682306.png"
   },
   {
    "id": "eq_chr_ca_015",
@@ -1642,7 +1939,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_chr_ca_007",
@@ -1662,7 +1960,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682305.png"
   },
   {
    "id": "eq_chr_023",
@@ -1679,7 +1979,13 @@
     80,
     91
    ],
-   "area": "蓝罐,幻象剧场"
+   "area": "蓝罐,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682307,
+   "rarity_gamekee": "神话",
+   "obtain": "蓝壶：事件-混沌祭坛2\n虚像剧场",
+   "icon": "equipment_icons/gk_682307.png",
+   "desc_gamekee": "每回合结束时，随机对敌人造成2-6次40%的固定伤害或对友军造成200%的固定伤害"
   },
   {
    "id": "eq_chr_017",
@@ -1696,7 +2002,13 @@
     81,
     90
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682306,
+   "rarity_gamekee": "神话",
+   "obtain": "蓝壶：事件-合而为一的意识",
+   "icon": "equipment_icons/gk_682306.png",
+   "desc_gamekee": "对未行动的目标造成的伤害量增加25%"
   },
   {
    "id": "eq_chr_007",
@@ -1714,7 +2026,13 @@
     80,
     91
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682305,
+   "rarity_gamekee": "神话",
+   "obtain": "蓝壶：事件-禁书监视者2",
+   "icon": "equipment_icons/gk_682305.png",
+   "desc_gamekee": "第4次回合开始时，所有敌人固定伤害550%"
   },
   {
    "id": "eq_arena_ca_011",
@@ -1732,7 +2050,9 @@
     34
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_694705.png"
   },
   {
    "id": "eq_arena_011",
@@ -1751,7 +2071,14 @@
     34
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 694705,
+   "rarity_gamekee": "神话",
+   "obtain": "燃烧的生命：击杀核心层竞技场隐藏boss",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_694705.png",
+   "desc_gamekee": "友军竞技场卡牌伤害量增加20%，战斗开始时生成1张被遗忘的剑"
   },
   {
    "id": "eq_sec_ca_021",
@@ -1770,7 +2097,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_sec_ca_019",
@@ -1789,7 +2117,8 @@
     83
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_sec_ca_012",
@@ -1809,7 +2138,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682271.png"
   },
   {
    "id": "eq_sec_ca_011",
@@ -1829,7 +2160,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682270.png"
   },
   {
    "id": "eq_sec_ca_009",
@@ -1849,7 +2182,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682269.png"
   },
   {
    "id": "eq_sec_ca_008",
@@ -1869,7 +2204,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682268.png"
   },
   {
    "id": "eq_sec_ca_003",
@@ -1889,7 +2226,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682267.png"
   },
   {
    "id": "eq_sec_012",
@@ -1907,7 +2246,13 @@
     73,
     83
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682271,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼:/事件-森林疑问1",
+   "icon": "equipment_icons/gk_682271.png",
+   "desc_gamekee": "在偶数回合攻击力+12%，防御力+8%"
   },
   {
    "id": "eq_sec_011",
@@ -1925,7 +2270,14 @@
     73,
     83
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682270,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼:/事件-森林疑问1",
+   "icon": "equipment_icons/gk_682270.png",
+   "name_gamekee": "翠绿之书",
+   "desc_gamekee": "在奇数回合攻击力+8%，防御力+12%"
   },
   {
    "id": "eq_sec_009",
@@ -1943,7 +2295,13 @@
     74,
     82
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682269,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼:/事件-间隙之树2",
+   "icon": "equipment_icons/gk_682269.png",
+   "desc_gamekee": "以能力治愈或恢复时，对随机敌人造成相当于恢复量50%的固定伤害"
   },
   {
    "id": "eq_sec_008",
@@ -1960,7 +2318,13 @@
     74,
     82
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682268,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼:/事件-生命之花2",
+   "icon": "equipment_icons/gk_682268.png",
+   "desc_gamekee": "达到HP上限状态时，伤害量+50%"
   },
   {
    "id": "eq_sec_003",
@@ -1978,7 +2342,13 @@
     74,
     82
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682267,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼:/事件-间隙之树1",
+   "icon": "equipment_icons/gk_682267.png",
+   "desc_gamekee": "友军以能力治愈或恢复时，对所有敌人造成相当于治愈量35%的固定伤害"
   },
   {
    "id": "eq_pub_ca_051",
@@ -1997,7 +2367,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_048",
@@ -2016,7 +2387,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "绽放"
+   "assault_type": "绽放",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_037",
@@ -2036,7 +2408,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683029.png"
   },
   {
    "id": "eq_pub_ca_036",
@@ -2056,7 +2430,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_685029.png"
   },
   {
    "id": "eq_pub_ca_034",
@@ -2076,7 +2452,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683028.png"
   },
   {
    "id": "eq_pub_ca_033",
@@ -2096,7 +2474,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683908.png"
   },
   {
    "id": "eq_pub_ca_032",
@@ -2116,7 +2496,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683907.png"
   },
   {
    "id": "eq_pub_ca_028",
@@ -2136,7 +2518,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683910.png"
   },
   {
    "id": "eq_pub_ca_027",
@@ -2156,7 +2540,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683909.png"
   },
   {
    "id": "eq_pub_ca_023",
@@ -2176,7 +2562,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683918.png"
   },
   {
    "id": "eq_pub_ca_020",
@@ -2196,7 +2584,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683916.png"
   },
   {
    "id": "eq_pub_ca_018",
@@ -2216,7 +2606,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683915.png"
   },
   {
    "id": "eq_pub_ca_014",
@@ -2236,7 +2628,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683917.png"
   },
   {
    "id": "eq_pub_ca_008",
@@ -2256,7 +2650,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683012.png"
   },
   {
    "id": "eq_pub_ca_007",
@@ -2276,7 +2672,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_685030.png"
   },
   {
    "id": "eq_pub_ca_004",
@@ -2296,7 +2694,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683008.png"
   },
   {
    "id": "eq_pub_ca_003",
@@ -2316,7 +2716,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683928.png"
   },
   {
    "id": "eq_pub_ca_001",
@@ -2336,7 +2738,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683007.png"
   },
   {
    "id": "eq_pub_037",
@@ -2354,7 +2758,13 @@
     73,
     83
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683029,
+   "rarity_gamekee": "传说",
+   "obtain": "降临的混沌：LV30解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683029.png",
+   "desc_gamekee": "战斗开始时，伤害减少3"
   },
   {
    "id": "eq_pub_036",
@@ -2372,7 +2782,13 @@
     73,
     83
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 685029,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_685029.png",
+   "desc_gamekee": "X套用X+1"
   },
   {
    "id": "eq_pub_034",
@@ -2389,7 +2805,13 @@
     73,
     83
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683028,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：LV25解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683028.png",
+   "desc_gamekee": "战斗开始时，所有敌人固定伤害200%"
   },
   {
    "id": "eq_pub_033",
@@ -2407,7 +2829,14 @@
     73,
     83
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683908,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼：LV30解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683908.png",
+   "name_gamekee": "女神之滴",
+   "desc_gamekee": "战斗开始时，储存1"
   },
   {
    "id": "eq_pub_032",
@@ -2424,7 +2853,13 @@
     73,
     83
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683907,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：LV30解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683907.png",
+   "desc_gamekee": "友军丢弃卡牌时，持续1回合伤害量+15%（最多叠加3）"
   },
   {
    "id": "eq_pub_028",
@@ -2441,7 +2876,13 @@
     73,
     83
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683910,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683910.png",
+   "desc_gamekee": "战斗结束时，HP 50%以下时恢复8%"
   },
   {
    "id": "eq_pub_027",
@@ -2458,7 +2899,13 @@
     73,
     83
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683909,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683909.png",
+   "desc_gamekee": "友军使用强化卡牌时，1回合内伤害量、护盾获得量、治愈量增加20%"
   },
   {
    "id": "eq_pub_023",
@@ -2476,7 +2923,13 @@
     27,
     31
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683918,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市：LV30解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683918.png",
+   "desc_gamekee": "消灭卡牌时，固定护盾30%（每回合5次）"
   },
   {
    "id": "eq_pub_020",
@@ -2493,7 +2946,13 @@
     27,
     31
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683916,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683916.png",
+   "desc_gamekee": "回合结束时，若未持有护盾，固定护盾60%"
   },
   {
    "id": "eq_pub_018",
@@ -2511,7 +2970,13 @@
     27,
     31
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683915,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683915.png",
+   "desc_gamekee": "第2次回合开始时，固定护盾200%"
   },
   {
    "id": "eq_pub_014",
@@ -2529,7 +2994,14 @@
     27,
     31
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683917,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683917.png",
+   "name_gamekee": "踏云之靴",
+   "desc_gamekee": "友军击破时，固定护盾40%"
   },
   {
    "id": "eq_pub_008",
@@ -2547,7 +3019,13 @@
     74,
     82
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683012,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683012.png",
+   "desc_gamekee": "对使用锁定攻击卡牌造成伤害的目标痛苦3（每回合1次）"
   },
   {
    "id": "eq_pub_007",
@@ -2565,7 +3043,13 @@
     74,
     82
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 685030,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_685030.png",
+   "desc_gamekee": "击杀敌人时，使所有敌人脆弱2"
   },
   {
    "id": "eq_pub_004",
@@ -2583,7 +3067,13 @@
     74,
     82
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683008,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影：LV30解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683008.png",
+   "desc_gamekee": "攻击卡牌的伤害量增加25%（每回合1次）"
   },
   {
    "id": "eq_pub_003",
@@ -2600,7 +3090,12 @@
     74,
     82
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683928,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683928.png"
   },
   {
    "id": "eq_pub_001",
@@ -2618,7 +3113,12 @@
     74,
     82
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683007,
+   "rarity_gamekee": "传说",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683007.png"
   },
   {
    "id": "eq_p_var_ca_009",
@@ -2638,7 +3138,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682293.png"
   },
   {
    "id": "eq_p_var_ca_008",
@@ -2658,7 +3160,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682292.png"
   },
   {
    "id": "eq_p_var_ca_007",
@@ -2678,7 +3182,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682291.png"
   },
   {
    "id": "eq_p_var_ca_004",
@@ -2698,7 +3204,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682290.png"
   },
   {
    "id": "eq_p_var_ca_003",
@@ -2718,7 +3226,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682289.png"
   },
   {
    "id": "eq_p_var_ca_002",
@@ -2738,7 +3248,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682288.png"
   },
   {
    "id": "eq_p_var_009",
@@ -2755,7 +3267,13 @@
     73,
     83
    ],
-   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682293,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶 雾之城市 燃烧的生命",
+   "icon": "equipment_icons/gk_682293.png",
+   "desc_gamekee": "回合开始时，按照敌人数量固定护盾25%"
   },
   {
    "id": "eq_p_var_008",
@@ -2772,7 +3290,12 @@
     73,
     83
    ],
-   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682292,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶 雾之城市 第0研究所 燃烧的生命",
+   "icon": "equipment_icons/gk_682292.png"
   },
   {
    "id": "eq_p_var_007",
@@ -2790,7 +3313,12 @@
     27,
     31
    ],
-   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682291,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶 雾之城市 第0研究所 燃烧的生命",
+   "icon": "equipment_icons/gk_682291.png"
   },
   {
    "id": "eq_p_var_004",
@@ -2808,7 +3336,12 @@
     27,
     31
    ],
-   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682290,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶 雾之城市 第0研究所 燃烧的生命",
+   "icon": "equipment_icons/gk_682290.png"
   },
   {
    "id": "eq_p_var_003",
@@ -2826,7 +3359,13 @@
     74,
     82
    ],
-   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682289,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶 雾之城市 第0研究所 燃烧的生命",
+   "icon": "equipment_icons/gk_682289.png",
+   "desc_gamekee": "抽取状态异常、诅咒卡牌时，1回合内伤害量+15%"
   },
   {
    "id": "eq_p_var_002",
@@ -2843,7 +3382,13 @@
     74,
     82
    ],
-   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682288,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶 雾之城市 第0研究所 燃烧的生命",
+   "icon": "equipment_icons/gk_682288.png",
+   "desc_gamekee": "击杀时，所有敌人固定伤害200%"
   },
   {
    "id": "eq_p_sec_ca_010",
@@ -2863,7 +3408,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682266.png"
   },
   {
    "id": "eq_p_sec_ca_008",
@@ -2883,7 +3430,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682264.png"
   },
   {
    "id": "eq_p_sec_ca_006",
@@ -2903,7 +3452,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682263.png"
   },
   {
    "id": "eq_p_sec_ca_004",
@@ -2921,7 +3472,9 @@
     31
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682262.png"
   },
   {
    "id": "eq_p_sec_ca_003",
@@ -2940,7 +3493,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682261.png"
   },
   {
    "id": "eq_p_sec_ca_002",
@@ -2960,7 +3515,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682260.png"
   },
   {
    "id": "eq_p_sec_ca_001",
@@ -2980,7 +3537,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682259.png"
   },
   {
    "id": "eq_p_sec_010",
@@ -2998,7 +3557,12 @@
     73,
     83
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682266,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/燃烧的生命",
+   "icon": "equipment_icons/gk_682266.png"
   },
   {
    "id": "eq_p_sec_008",
@@ -3015,7 +3579,12 @@
     73,
     83
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682264,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/燃烧的生命",
+   "icon": "equipment_icons/gk_682264.png"
   },
   {
    "id": "eq_p_sec_006",
@@ -3033,7 +3602,12 @@
     27,
     31
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682263,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/燃烧的生命",
+   "icon": "equipment_icons/gk_682263.png"
   },
   {
    "id": "eq_p_sec_004",
@@ -3051,7 +3625,13 @@
     27,
     31
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682262,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/燃烧的生命",
+   "icon": "equipment_icons/gk_682262.png",
+   "desc_gamekee": "透过能力获得反击时，额外反击1"
   },
   {
    "id": "eq_p_sec_003",
@@ -3068,7 +3648,13 @@
     74,
     82
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682261,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼:/事件-轮回仪式2/攻击小精灵/燃烧的生命",
+   "icon": "equipment_icons/gk_682261.png",
+   "desc_gamekee": "费用为2以上的攻击卡牌伤害量增加30%（每回合1次）"
   },
   {
    "id": "eq_p_sec_002",
@@ -3086,7 +3672,13 @@
     74,
     82
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682260,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/燃烧的生命",
+   "icon": "equipment_icons/gk_682260.png",
+   "desc_gamekee": "手牌中的卡牌有6张以上时，伤害量增加25%"
   },
   {
    "id": "eq_p_sec_001",
@@ -3103,7 +3695,12 @@
     74,
     82
    ],
-   "area": "裁决之沼,无间烬土"
+   "area": "裁决之沼,无间烬土",
+   "source": "bwiki",
+   "gk_content_id": 682259,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/燃烧的生命",
+   "icon": "equipment_icons/gk_682259.png"
   },
   {
    "id": "eq_p_nih_ca_009",
@@ -3123,7 +3720,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682322.png"
   },
   {
    "id": "eq_p_nih_ca_008",
@@ -3142,7 +3741,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682321.png"
   },
   {
    "id": "eq_p_nih_ca_007",
@@ -3162,7 +3763,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682320.png"
   },
   {
    "id": "eq_p_nih_ca_006",
@@ -3182,7 +3785,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682319.png"
   },
   {
    "id": "eq_p_nih_ca_004",
@@ -3202,7 +3807,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682318.png"
   },
   {
    "id": "eq_p_nih_ca_003",
@@ -3222,7 +3829,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682317.png"
   },
   {
    "id": "eq_p_nih_ca_002",
@@ -3242,7 +3851,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682316.png"
   },
   {
    "id": "eq_p_nih_009",
@@ -3259,7 +3870,13 @@
     73,
     83
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682322,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市/第0研究所",
+   "icon": "equipment_icons/gk_682322.png",
+   "desc_gamekee": "若持有护盾，回合开始时固定护盾80%"
   },
   {
    "id": "eq_p_nih_008",
@@ -3276,7 +3893,13 @@
     73,
     83
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682321,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市/第0研究所",
+   "icon": "equipment_icons/gk_682321.png",
+   "desc_gamekee": "透过卡牌赋予脆弱时，削弱目标1"
   },
   {
    "id": "eq_p_nih_007",
@@ -3293,7 +3916,13 @@
     73,
     83
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682320,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市：事件-虚无之幕1/第0研究所",
+   "icon": "equipment_icons/gk_682320.png",
+   "desc_gamekee": "基本攻击卡牌的伤害量增加40%"
   },
   {
    "id": "eq_p_nih_006",
@@ -3311,7 +3940,13 @@
     27,
     31
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682319,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市/第0研究所",
+   "icon": "equipment_icons/gk_682319.png",
+   "desc_gamekee": "受到伤害时，1回合后的回合开始时，固定护盾80%"
   },
   {
    "id": "eq_p_nih_004",
@@ -3328,7 +3963,13 @@
     27,
     31
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682318,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市 第0研究所",
+   "icon": "equipment_icons/gk_682318.png",
+   "desc_gamekee": "HP上限+12%"
   },
   {
    "id": "eq_p_nih_003",
@@ -3346,7 +3987,13 @@
     74,
     82
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682317,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市 第0研究所",
+   "icon": "equipment_icons/gk_682317.png",
+   "desc_gamekee": "击破时，对目标造成150%的固定伤害"
   },
   {
    "id": "eq_p_nih_002",
@@ -3364,7 +4011,14 @@
     74,
     82
    ],
-   "area": "雾之都市,第零研究所"
+   "area": "雾之都市,第零研究所",
+   "source": "bwiki",
+   "gk_content_id": 682316,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市 第0研究所",
+   "icon": "equipment_icons/gk_682316.png",
+   "name_gamekee": "未引爆的电浆轰炸机",
+   "desc_gamekee": "消灭卡牌时，随机敌人固定伤害40%"
   },
   {
    "id": "eq_p_inv_ca_010",
@@ -3383,7 +4037,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682243.png"
   },
   {
    "id": "eq_p_inv_ca_009",
@@ -3403,7 +4059,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682242.png"
   },
   {
    "id": "eq_p_inv_ca_006",
@@ -3423,7 +4081,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682241.png"
   },
   {
    "id": "eq_p_inv_ca_005",
@@ -3443,7 +4103,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682240.png"
   },
   {
    "id": "eq_p_inv_ca_004",
@@ -3463,7 +4125,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682239.png"
   },
   {
    "id": "eq_p_inv_ca_003",
@@ -3483,7 +4147,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682238.png"
   },
   {
    "id": "eq_p_inv_010",
@@ -3500,7 +4166,12 @@
     73,
     83
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682243,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影",
+   "icon": "equipment_icons/gk_682243.png"
   },
   {
    "id": "eq_p_inv_009",
@@ -3517,7 +4188,13 @@
     73,
     83
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682242,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影",
+   "icon": "equipment_icons/gk_682242.png",
+   "desc_gamekee": "击破时，接下来使用的1张攻击卡牌的伤害量+100%"
   },
   {
    "id": "eq_p_inv_006",
@@ -3534,7 +4211,12 @@
     27,
     31
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682241,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影",
+   "icon": "equipment_icons/gk_682241.png"
   },
   {
    "id": "eq_p_inv_005",
@@ -3552,7 +4234,12 @@
     27,
     31
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682240,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影",
+   "icon": "equipment_icons/gk_682240.png"
   },
   {
    "id": "eq_p_inv_004",
@@ -3570,7 +4257,13 @@
     74,
     82
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682239,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影",
+   "icon": "equipment_icons/gk_682239.png",
+   "desc_gamekee": "使用攻击卡牌时，有5%的机率额外攻击1次"
   },
   {
    "id": "eq_p_inv_003",
@@ -3588,7 +4281,13 @@
     74,
     82
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682238,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影",
+   "icon": "equipment_icons/gk_682238.png",
+   "desc_gamekee": "暴击时，有50%的机率赋予目标痛苦1"
   },
   {
    "id": "eq_p_dll_ca_010",
@@ -3608,7 +4307,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682277.png"
   },
   {
    "id": "eq_p_dll_ca_009",
@@ -3628,7 +4329,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682276.png"
   },
   {
    "id": "eq_p_dll_ca_007",
@@ -3648,7 +4351,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682275.png"
   },
   {
    "id": "eq_p_dll_ca_006",
@@ -3668,7 +4373,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682274.png"
   },
   {
    "id": "eq_p_dll_ca_005",
@@ -3687,7 +4394,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682273.png"
   },
   {
    "id": "eq_p_dll_010",
@@ -3704,7 +4413,12 @@
     73,
     83
    ],
-   "area": "裁决之沼,降临的混沌,幻象剧场"
+   "area": "裁决之沼,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682277,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682277.png"
   },
   {
    "id": "eq_p_dll_009",
@@ -3722,7 +4436,14 @@
     73,
     83
    ],
-   "area": "裁决之沼,降临的混沌,幻象剧场"
+   "area": "裁决之沼,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682276,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682276.png",
+   "name_gamekee": "维亚迪乌斯反应堆",
+   "desc_gamekee": "使用强化卡牌时，伤害减少1"
   },
   {
    "id": "eq_p_dll_007",
@@ -3740,7 +4461,13 @@
     73,
     83
    ],
-   "area": "裁决之沼,降临的混沌,幻象剧场"
+   "area": "裁决之沼,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682275,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682275.png",
+   "desc_gamekee": "击破时，使目标损伤2"
   },
   {
    "id": "eq_p_dll_006",
@@ -3758,7 +4485,12 @@
     27,
     31
    ],
-   "area": "裁决之沼,降临的混沌,幻象剧场"
+   "area": "裁决之沼,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682274,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682274.png"
   },
   {
    "id": "eq_p_dll_005",
@@ -3776,7 +4508,13 @@
     27,
     31
    ],
-   "area": "裁决之沼,降临的混沌,幻象剧场"
+   "area": "裁决之沼,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682273,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682273.png",
+   "desc_gamekee": "若自我意识点数为3以下，暴击时获得0.2点自我意识点数"
   },
   {
    "id": "eq_p_dll_001",
@@ -3794,7 +4532,13 @@
     74,
     82
    ],
-   "area": "裁决之沼,降临的混沌,幻象剧场"
+   "area": "裁决之沼,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682272,
+   "rarity_gamekee": "传说",
+   "obtain": "审判之沼/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682272.png",
+   "desc_gamekee": "对持有护盾的目标造成伤害时，接下来使用的攻击卡牌伤害量+100%"
   },
   {
    "id": "eq_nih_ca_010",
@@ -3814,7 +4558,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682315.png"
   },
   {
    "id": "eq_nih_ca_009",
@@ -3834,7 +4580,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682314.png"
   },
   {
    "id": "eq_nih_ca_008",
@@ -3854,7 +4602,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682313.png"
   },
   {
    "id": "eq_nih_ca_001",
@@ -3874,7 +4624,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682312.png"
   },
   {
    "id": "eq_nih_010",
@@ -3892,7 +4644,13 @@
     74,
     82
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682315,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市：事件-记忆片段1",
+   "icon": "equipment_icons/gk_682315.png",
+   "desc_gamekee": "消灭卡牌时，接下来使用的卡牌伤害量增加25%（最多叠加1层）。"
   },
   {
    "id": "eq_nih_009",
@@ -3910,7 +4668,14 @@
     27,
     31
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682314,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市：事件-猝死洞窟2",
+   "icon": "equipment_icons/gk_682314.png",
+   "name_gamekee": "M.S.S瞄准镜",
+   "desc_gamekee": "1回合内若赋予减益效果，回合结束时固定护盾80%"
   },
   {
    "id": "eq_nih_008",
@@ -3928,7 +4693,13 @@
     73,
     83
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682313,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市：事件-调查尼希隆5-选择救出机器人",
+   "icon": "equipment_icons/gk_682313.png",
+   "desc_gamekee": "尼希隆战斗开始时，所有敌人脆弱3"
   },
   {
    "id": "eq_nih_001",
@@ -3945,7 +4716,13 @@
     73,
     83
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682312,
+   "rarity_gamekee": "传说",
+   "obtain": "雾之城市：事件-亡魂之花",
+   "icon": "equipment_icons/gk_682312.png",
+   "desc_gamekee": "自每回合第二张攻击卡牌起，伤害量增加20%"
   },
   {
    "id": "eq_inv_ca_008",
@@ -3965,7 +4742,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682237.png"
   },
   {
    "id": "eq_inv_ca_004",
@@ -3985,7 +4764,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682236.png"
   },
   {
    "id": "eq_inv_ca_002",
@@ -4005,7 +4786,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682232.png"
   },
   {
    "id": "eq_inv_ca_001",
@@ -4025,7 +4808,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682229.png"
   },
   {
    "id": "eq_inv_008",
@@ -4043,7 +4828,13 @@
     73,
     83
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682237,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影:/事件-骇人的粮食",
+   "icon": "equipment_icons/gk_682237.png",
+   "desc_gamekee": "回合开始时，未满HP上限的40%时恢复5%"
   },
   {
    "id": "eq_inv_004",
@@ -4061,7 +4852,12 @@
     73,
     83
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682236,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影:/事件-侵略者的中枢",
+   "icon": "equipment_icons/gk_682236.png"
   },
   {
    "id": "eq_inv_002",
@@ -4078,7 +4874,13 @@
     74,
     82
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682232,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影:/事件-群体的目标",
+   "icon": "equipment_icons/gk_682232.png",
+   "desc_gamekee": "按照敌人的数量，伤害量增加6%"
   },
   {
    "id": "eq_inv_001",
@@ -4096,7 +4898,13 @@
     74,
     82
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682229,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影:/事件-败兵2",
+   "icon": "equipment_icons/gk_682229.png",
+   "desc_gamekee": "费用为1以下的攻击卡牌伤害量增加20%"
   },
   {
    "id": "eq_g04_010",
@@ -4114,7 +4922,15 @@
     83
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714623,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场：事件-理性的残渣1",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714623.png",
+   "name_gamekee": "侵略者观察记录",
+   "desc_gamekee": "攻击卡牌伤害量+20%,依敌人数量使暴击率+2%"
   },
   {
    "id": "eq_g04_009",
@@ -4132,7 +4948,14 @@
     83
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714621,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场：事件-银色遗骸瀑布",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714621.png",
+   "desc_gamekee": "回合结束时，若HP未满50%,则进行70%的固定治愈(每场战斗3次)"
   },
   {
    "id": "eq_g04_007",
@@ -4150,7 +4973,15 @@
     31
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714617,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场：事件-智能消化器官3",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714617.png",
+   "name_gamekee": "被污染的无人机镜头",
+   "desc_gamekee": "回合开始时，若手牌中有欲望卡牌,随机友军压力减少2"
   },
   {
    "id": "eq_g04_006",
@@ -4168,7 +4999,15 @@
     83
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714616,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场：事件-智能消化器官2",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714616.png",
+   "name_gamekee": "封闭回路端子",
+   "desc_gamekee": "使用友军能力进行全体攻击时，赋予随机敌人脆弱1(每回合1次)"
   },
   {
    "id": "eq_g04_005",
@@ -4186,7 +5025,15 @@
     82
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714615,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场：事件-智能消化器官1",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714615.png",
+   "name_gamekee": "扭曲钻头刀",
+   "desc_gamekee": "发动友军的欲望卡牌时，对所有敌人造成100%的固定伤害(每回合3次)"
   },
   {
    "id": "eq_g04_004",
@@ -4204,7 +5051,15 @@
     82
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714614,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场：事件-本能领土（稀有）",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714614.png",
+   "name_gamekee": "永恒楔子",
+   "desc_gamekee": "回合开始时，对持有持续伤害效果的随机敌人造成100%的固定伤害"
   },
   {
    "id": "eq_g04_003",
@@ -4222,7 +5077,14 @@
     83
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714613,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714613.png",
+   "desc_gamekee": "使用能力赋予削弱时，对目标赋予削弱1、灼热3(每回合1次)"
   },
   {
    "id": "eq_g03_008",
@@ -4241,7 +5103,14 @@
     31
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703605,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场：事件-晚钟湿壁画",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703605.png",
+   "desc_gamekee": "使用友军的连结卡牌时，使所有敌人行动次数增加1(每回合1次)"
   },
   {
    "id": "eq_g03_007",
@@ -4260,7 +5129,14 @@
     83
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703604,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场：事件-支离破碎的偶像2",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703604.png",
+   "desc_gamekee": "使用能力丢弃卡牌时，对所有敌人造成共鸣1(每回合3次)"
   },
   {
    "id": "eq_g03_006",
@@ -4278,7 +5154,14 @@
     82
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703603,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场：事件-支离破碎的偶像1",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703603.png",
+   "desc_gamekee": "对处于震荡波状态的目标造成的伤害量增加30%"
   },
   {
    "id": "eq_g03_005",
@@ -4297,7 +5180,14 @@
     31
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703602,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场：事件-支离破碎的偶像3",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703602.png",
+   "desc_gamekee": "回合开始时，若友军手牌中有人格面具卡牌，友军压力减少2"
   },
   {
    "id": "eq_g03_004",
@@ -4316,7 +5206,14 @@
     31
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703601,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场：事件-扭曲的恋心",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703601.png",
+   "desc_gamekee": "每当使用能力丢弃安息卡牌时，获得80%固定护盾(每回合2次)"
   },
   {
    "id": "eq_g02_ca_009",
@@ -4336,7 +5233,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692664.png"
   },
   {
    "id": "eq_g02_ca_008",
@@ -4356,7 +5255,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692666.png"
   },
   {
    "id": "eq_g02_ca_007",
@@ -4376,7 +5277,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692665.png"
   },
   {
    "id": "eq_g02_ca_006",
@@ -4396,7 +5299,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692667.png"
   },
   {
    "id": "eq_g02_009",
@@ -4415,7 +5320,14 @@
     82
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692664,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：事件-永劫之火",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692664.png",
+   "desc_gamekee": "卡牌消灭时，友军伤害量增加10%，持续1回合(每回合1次)"
   },
   {
    "id": "eq_g02_008",
@@ -4434,7 +5346,14 @@
     31
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692666,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：事件-扭曲生命1",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692666.png",
+   "desc_gamekee": "因友军能力抽取消灭卡牌时，获得固定护盾80%(每回合2次)"
   },
   {
    "id": "eq_g02_007",
@@ -4453,7 +5372,14 @@
     31
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692665,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：事件-遗忘踪迹2",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692665.png",
+   "desc_gamekee": "借由消灭卡牌获得护盾时，伤害量增加20%，持续1回合(每回合1次)"
   },
   {
    "id": "eq_g02_006",
@@ -4472,7 +5398,14 @@
     83
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692667,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：事件-生命线2",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692667.png",
+   "desc_gamekee": "治疗量增加25%"
   },
   {
    "id": "eq_g01_ca_006",
@@ -4492,7 +5425,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683334.png"
   },
   {
    "id": "eq_g01_ca_005",
@@ -4512,7 +5447,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683333.png"
   },
   {
    "id": "eq_g01_ca_004",
@@ -4532,7 +5469,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683332.png"
   },
   {
    "id": "eq_g01_ca_003",
@@ -4552,7 +5491,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683331.png"
   },
   {
    "id": "eq_g01_ca_002",
@@ -4570,7 +5511,9 @@
     31
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683330.png"
   },
   {
    "id": "eq_g01_006",
@@ -4589,7 +5532,14 @@
     83
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683334,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所:事件-逻辑错误",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683334.png",
+   "desc_gamekee": "受击时，对攻击者在脆弱、削弱、损伤中随机造成1个（每回合3次）"
   },
   {
    "id": "eq_g01_005",
@@ -4608,7 +5558,14 @@
     82
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683333,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所:事件-悲剧的展览",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683333.png",
+   "desc_gamekee": "使用能力抽取自己的攻击卡牌时，该卡牌1回合内伤害量+50%"
   },
   {
    "id": "eq_g01_004",
@@ -4627,7 +5584,14 @@
     83
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683332,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所:事件-配餐时间-选择战斗测试",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683332.png",
+   "desc_gamekee": "伤害量+30%\n所受压力变更为0（每场战斗1次）"
   },
   {
    "id": "eq_g01_003",
@@ -4645,7 +5609,14 @@
     31
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683331,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所:事件-备忘录2",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683331.png",
+   "desc_gamekee": "受击时，伤害量增加10%（最多叠加3层）"
   },
   {
    "id": "eq_g01_002",
@@ -4663,7 +5634,14 @@
     31
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683330,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所:事件-备忘录1",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683330.png",
+   "desc_gamekee": "战斗开始时，伤害减少1，抽取1"
   },
   {
    "id": "eq_ds04_007",
@@ -4681,7 +5659,14 @@
     83
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714611,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714611.png",
+   "desc_gamekee": "持续1回合，友军击杀敌人3次时，获得AP1(每回合1次)"
   },
   {
    "id": "eq_ds04_006",
@@ -4699,7 +5684,15 @@
     31
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714610,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714610.png",
+   "name_gamekee": "被污染的茧披风",
+   "desc_gamekee": "受击时，对攻击者从痛苦、脆弱、灼热中随机赋予1个(每回合3次)"
   },
   {
    "id": "eq_ds04_004",
@@ -4717,7 +5710,15 @@
     31
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714609,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714609.png",
+   "name_gamekee": "几丁质护盾",
+   "desc_gamekee": "反击3\n反击时对目标造成冲击波1(每回合1次)"
   },
   {
    "id": "eq_ds04_002",
@@ -4735,7 +5736,15 @@
     82
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714607,
+   "rarity_gamekee": "传说",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714607.png",
+   "name_gamekee": "庇护之拳甲",
+   "desc_gamekee": "直接使用原始费用为3以上的攻击卡牌时，对所有敌人造成250%的固定伤害(每回合2次)"
   },
   {
    "id": "eq_ds03_007",
@@ -4754,7 +5763,15 @@
     31
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703600,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703600.png",
+   "name_gamekee": "噩梦发夹",
+   "desc_gamekee": "使用单一攻击卡牌时，目标的行动次数增加1(每回合1次)"
   },
   {
    "id": "eq_ds03_006",
@@ -4773,7 +5790,14 @@
     82
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703586,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703586.png",
+   "desc_gamekee": "攻击卡牌伤害+40%。\n攻击卡牌的目标数量为2以上时，依目标数伤害量-10%(最多-30%)"
   },
   {
    "id": "eq_ds03_005",
@@ -4792,7 +5816,14 @@
     83
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703585,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703585.png",
+   "desc_gamekee": "友军使用能力每丢弃3张卡牌时，赋予敌人随机1个脆弱或标记(每回合5次)"
   },
   {
    "id": "eq_ds03_003",
@@ -4811,7 +5842,14 @@
     31
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703584,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703584.png",
+   "desc_gamekee": "受击时对攻击者造成共鸣2(每回合3次)"
   },
   {
    "id": "eq_ds03_001",
@@ -4830,7 +5868,14 @@
     82
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703583,
+   "rarity_gamekee": "传说",
+   "obtain": "虚像剧场",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703583.png",
+   "desc_gamekee": "每次生成卡牌时，持续1回合伤害量+20%(每回合2次)"
   },
   {
    "id": "eq_ds02_ca_008",
@@ -4849,7 +5894,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692644.png"
   },
   {
    "id": "eq_ds02_ca_006",
@@ -4869,7 +5916,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692643.png"
   },
   {
    "id": "eq_ds02_ca_003",
@@ -4889,7 +5938,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692641.png"
   },
   {
    "id": "eq_ds02_ca_002",
@@ -4909,7 +5960,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692636.png"
   },
   {
    "id": "eq_ds02_008",
@@ -4927,7 +5980,14 @@
     83
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692644,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692644.png",
+   "desc_gamekee": "第6张生成的攻击卡牌持续1回合孢子增殖效果变为2倍"
   },
   {
    "id": "eq_ds02_006",
@@ -4945,7 +6005,14 @@
     83
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692643,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692643.png",
+   "desc_gamekee": "使用3张费用2以上的卡牌时，储存1"
   },
   {
    "id": "eq_ds02_003",
@@ -4964,7 +6031,14 @@
     31
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692641,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692641.png",
+   "desc_gamekee": "获得护盾时，持续1回合下一次发动的攻击卡牌1张的伤害量增加20%（每回合2次）"
   },
   {
    "id": "eq_ds02_002",
@@ -4983,7 +6057,14 @@
     82
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692636,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692636.png",
+   "desc_gamekee": "若1回合内友军未以卡牌对敌人造成伤害，于下回合开始时，持续1回合伤害量增加50%"
   },
   {
    "id": "eq_ds01_ca_010",
@@ -5001,7 +6082,9 @@
     83
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683327.png"
   },
   {
    "id": "eq_ds01_ca_009",
@@ -5021,7 +6104,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683326.png"
   },
   {
    "id": "eq_ds01_ca_008",
@@ -5041,7 +6126,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683325.png"
   },
   {
    "id": "eq_ds01_ca_007",
@@ -5061,7 +6148,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683324.png"
   },
   {
    "id": "eq_ds01_ca_006",
@@ -5081,7 +6170,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683323.png"
   },
   {
    "id": "eq_ds01_010",
@@ -5100,7 +6191,13 @@
     83
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683327,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683327.png"
   },
   {
    "id": "eq_ds01_009",
@@ -5119,7 +6216,14 @@
     82
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683326,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所：LV30解锁",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683326.png",
+   "desc_gamekee": "手牌有4张以上时，伤害量增加30%"
   },
   {
    "id": "eq_ds01_008",
@@ -5137,7 +6241,14 @@
     82
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683325,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683325.png",
+   "desc_gamekee": "使用能力抽牌时，1回合内伤害量增加20%（每回合2次）"
   },
   {
    "id": "eq_ds01_007",
@@ -5156,7 +6267,14 @@
     82
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683324,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683324.png",
+   "desc_gamekee": "抽取状态异常、诅咒卡牌时，1回合内伤害量+12%"
   },
   {
    "id": "eq_ds01_006",
@@ -5175,7 +6293,14 @@
     83
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683323,
+   "rarity_gamekee": "传说",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683323.png",
+   "desc_gamekee": "我军使用禁忌卡牌时，恢复最大生命值的3%，固定护盾80%"
   },
   {
    "id": "eq_dll_ca_016",
@@ -5194,7 +6319,8 @@
     83
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_dll_ca_010",
@@ -5213,7 +6339,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682335.png"
   },
   {
    "id": "eq_dll_ca_008",
@@ -5232,7 +6360,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682334.png"
   },
   {
    "id": "eq_dll_ca_005",
@@ -5252,7 +6382,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682333.png"
   },
   {
    "id": "eq_dll_ca_004",
@@ -5272,7 +6404,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682332.png"
   },
   {
    "id": "eq_dll_ca_003",
@@ -5291,7 +6425,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682331.png"
   },
   {
    "id": "eq_dll_ca_002",
@@ -5311,7 +6447,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682330.png"
   },
   {
    "id": "eq_dll_ca_001",
@@ -5330,7 +6468,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682329.png"
   },
   {
    "id": "eq_dll_010",
@@ -5347,7 +6487,13 @@
     74,
     82
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682335,
+   "rarity_gamekee": "传说",
+   "obtain": "降临的混沌：事件-最初的堕落3-选择尝试拔剑(3次必成功)",
+   "icon": "equipment_icons/gk_682335.png",
+   "desc_gamekee": "攻击力+15%，对持有护盾的目标造成伤害时，对目标造成惩戒1"
   },
   {
    "id": "eq_dll_008",
@@ -5364,7 +6510,13 @@
     73,
     83
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682334,
+   "rarity_gamekee": "传说",
+   "obtain": "降临的混沌:/事件-研究堕落2&3",
+   "icon": "equipment_icons/gk_682334.png",
+   "desc_gamekee": "使用护盾完全格挡攻击时，所有敌人损伤1（每回合1次）"
   },
   {
    "id": "eq_dll_005",
@@ -5382,7 +6534,13 @@
     27,
     31
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682333,
+   "rarity_gamekee": "传说",
+   "obtain": "降临的混沌:/事件-最初的堕落",
+   "icon": "equipment_icons/gk_682333.png",
+   "desc_gamekee": "使用10点以上AP时，免疫2（每场战斗1次）"
   },
   {
    "id": "eq_dll_004",
@@ -5399,7 +6557,13 @@
     74,
     82
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682332,
+   "rarity_gamekee": "传说",
+   "obtain": "降临的混沌:/事件-启示",
+   "icon": "equipment_icons/gk_682332.png",
+   "desc_gamekee": "使用卡牌抽取时，1回合内伤害量+20%（每回合2次）"
   },
   {
    "id": "eq_dll_003",
@@ -5416,7 +6580,13 @@
     74,
     82
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682331,
+   "rarity_gamekee": "传说",
+   "obtain": "降临的混沌",
+   "icon": "equipment_icons/gk_682331.png",
+   "desc_gamekee": "消灭卡牌时，惩戒随机敌人1（每回合2次）"
   },
   {
    "id": "eq_dll_002",
@@ -5433,7 +6603,13 @@
     74,
     82
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682330,
+   "rarity_gamekee": "传说",
+   "obtain": "降临的混沌:/事件-复仇剧",
+   "icon": "equipment_icons/gk_682330.png",
+   "desc_gamekee": "使用5点以上AP时，伤害量、护盾获得量、治愈量+25%（每场战斗1次）"
   },
   {
    "id": "eq_dll_001",
@@ -5450,7 +6626,13 @@
     73,
     83
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682329,
+   "rarity_gamekee": "传说",
+   "obtain": "降临的混沌：事件-歌唱圣物3",
+   "icon": "equipment_icons/gk_682329.png",
+   "desc_gamekee": "若敌人行动预告为攻击时，固定护盾60%（每回合1次）"
   },
   {
    "id": "eq_chr_ca_028",
@@ -5469,7 +6651,8 @@
     83
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_chr_ca_022",
@@ -5489,7 +6672,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682248.png"
   },
   {
    "id": "eq_chr_ca_021",
@@ -5509,7 +6694,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682247.png"
   },
   {
    "id": "eq_chr_ca_020",
@@ -5527,7 +6714,9 @@
     31
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682246.png"
   },
   {
    "id": "eq_chr_ca_019",
@@ -5547,7 +6736,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682245.png"
   },
   {
    "id": "eq_chr_ca_018",
@@ -5567,7 +6758,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682244.png"
   },
   {
    "id": "eq_chr_ca_013",
@@ -5587,7 +6780,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682300.png"
   },
   {
    "id": "eq_chr_ca_012",
@@ -5607,7 +6802,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682299.png"
   },
   {
    "id": "eq_chr_ca_011",
@@ -5627,7 +6824,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682298.png"
   },
   {
    "id": "eq_chr_ca_010",
@@ -5647,7 +6846,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682297.png"
   },
   {
    "id": "eq_chr_ca_008",
@@ -5667,7 +6868,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682296.png"
   },
   {
    "id": "eq_chr_ca_005",
@@ -5687,7 +6890,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682295.png"
   },
   {
    "id": "eq_chr_ca_002",
@@ -5707,7 +6912,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682294.png"
   },
   {
    "id": "eq_chr_022",
@@ -5725,7 +6932,13 @@
     73,
     83
    ],
-   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682248,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影/蓝壶/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682248.png",
+   "desc_gamekee": "复制的卡牌触发时，所有敌人行动次数增加3（每场战斗1次）"
   },
   {
    "id": "eq_chr_021",
@@ -5743,7 +6956,13 @@
     27,
     31
    ],
-   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682247,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影/蓝壶/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682247.png",
+   "desc_gamekee": "使用攻击卡牌时，HP减少1%，固定护盾60%"
   },
   {
    "id": "eq_chr_020",
@@ -5760,7 +6979,13 @@
     27,
     31
    ],
-   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682246,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影/蓝壶/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682246.png",
+   "desc_gamekee": "回合开始时，所有敌人行动次数增加1"
   },
   {
    "id": "eq_chr_019",
@@ -5778,7 +7003,14 @@
     27,
     31
    ],
-   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682245,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影/蓝壶/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682245.png",
+   "name_gamekee": "受诅咒的人偶",
+   "desc_gamekee": "回合开始时，按照手牌的状态异常、诅咒卡牌数量，治愈60%"
   },
   {
    "id": "eq_chr_018",
@@ -5796,7 +7028,13 @@
     74,
     82
    ],
-   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场",
+   "source": "bwiki",
+   "gk_content_id": 682244,
+   "rarity_gamekee": "传说",
+   "obtain": "双星之影/蓝壶/降临的混沌/虚像剧场",
+   "icon": "equipment_icons/gk_682244.png",
+   "desc_gamekee": "对拥有痛苦状态目标造成的伤害量增加20%"
   },
   {
    "id": "eq_chr_013",
@@ -5814,7 +7052,13 @@
     27,
     31
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682300,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：事件-卡厄思的审判官-选择挑战审判",
+   "icon": "equipment_icons/gk_682300.png",
+   "desc_gamekee": "第3次回合开始时，固定护盾250%"
   },
   {
    "id": "eq_chr_012",
@@ -5832,7 +7076,13 @@
     73,
     83
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682299,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：事件-教徒们的休息处2-选择触发教徒们的召唤仪式",
+   "icon": "equipment_icons/gk_682299.png",
+   "desc_gamekee": "卡厄思教团战斗时，防御力+15%"
   },
   {
    "id": "eq_chr_011",
@@ -5849,7 +7099,13 @@
     74,
     82
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682298,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：事件-混沌祭坛1",
+   "icon": "equipment_icons/gk_682298.png",
+   "desc_gamekee": "击杀敌人时，攻击卡牌的伤害量+25%（最多2次）"
   },
   {
    "id": "eq_chr_010",
@@ -5866,7 +7122,13 @@
     74,
     82
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682297,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：事件-罪与罚",
+   "icon": "equipment_icons/gk_682297.png",
+   "desc_gamekee": "对HP上限50%以下的目标造成的伤害量增加35%"
   },
   {
    "id": "eq_chr_008",
@@ -5884,7 +7146,13 @@
     73,
     83
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682296,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：事件-供品祭坛2",
+   "icon": "equipment_icons/gk_682296.png",
+   "desc_gamekee": "使用攻击卡牌时，按照造成伤害量的9%恢复HP(每回合1次）"
   },
   {
    "id": "eq_chr_005",
@@ -5902,7 +7170,13 @@
     73,
     83
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682295,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：事件-禁书监视者1-一直选择选项1",
+   "icon": "equipment_icons/gk_682295.png",
+   "desc_gamekee": "第4次回合开始时，所有敌人固定伤害400%"
   },
   {
    "id": "eq_chr_002",
@@ -5920,7 +7194,12 @@
     73,
     83
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682294,
+   "rarity_gamekee": "传说",
+   "obtain": "蓝壶：事件-疯狂艺术家1&3",
+   "icon": "equipment_icons/gk_682294.png"
   },
   {
    "id": "eq_arena_ca_010",
@@ -5940,7 +7219,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692652.png"
   },
   {
    "id": "eq_arena_ca_009",
@@ -5960,7 +7241,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692655.png"
   },
   {
    "id": "eq_arena_ca_008",
@@ -5980,7 +7263,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692654.png"
   },
   {
    "id": "eq_arena_ca_007",
@@ -6000,7 +7285,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692650.png"
   },
   {
    "id": "eq_arena_ca_006",
@@ -6020,7 +7307,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692653.png"
   },
   {
    "id": "eq_arena_010",
@@ -6039,7 +7328,14 @@
     31
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692652,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692652.png",
+   "desc_gamekee": "反击伤害量增加40%"
   },
   {
    "id": "eq_arena_009",
@@ -6058,7 +7354,14 @@
     83
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692655,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692655.png",
+   "desc_gamekee": "发动4次攻击卡牌时，下一次发动的攻击卡牌伤害量增加40%"
   },
   {
    "id": "eq_arena_008",
@@ -6077,7 +7380,14 @@
     83
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692654,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692654.png",
+   "desc_gamekee": "以卡牌获得3次护盾时，对所有敌人造成固定伤害100%"
   },
   {
    "id": "eq_arena_007",
@@ -6095,7 +7405,14 @@
     82
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692650,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692650.png",
+   "desc_gamekee": "持续1回合，当友军以卡牌发动过伤害、护盾和治疗效果时，1回合内友军伤害量增加15%"
   },
   {
    "id": "eq_arena_006",
@@ -6113,7 +7430,14 @@
     83
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692653,
+   "rarity_gamekee": "传说",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692653.png",
+   "desc_gamekee": "生成5张技能卡牌时，使下一次发动的友军卡牌伤害量增加20%（最多叠加1）"
   },
   {
    "id": "eq_sec_ca_007",
@@ -6133,7 +7457,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682258.png"
   },
   {
    "id": "eq_sec_ca_006",
@@ -6152,7 +7478,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682257.png"
   },
   {
    "id": "eq_sec_ca_005",
@@ -6172,7 +7500,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682256.png"
   },
   {
    "id": "eq_sec_ca_004",
@@ -6191,7 +7521,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682255.png"
   },
   {
    "id": "eq_sec_007",
@@ -6209,7 +7541,13 @@
     67,
     74
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682258,
+   "rarity_gamekee": "稀有",
+   "obtain": "审判之沼:/事件-生命之花1",
+   "icon": "equipment_icons/gk_682258.png",
+   "desc_gamekee": "达到HP上限状态时，伤害量+40%"
   },
   {
    "id": "eq_sec_006",
@@ -6226,7 +7564,13 @@
     24,
     28
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682257,
+   "rarity_gamekee": "稀有",
+   "obtain": "审判之沼：事件-贪婪代价2",
+   "icon": "equipment_icons/gk_682257.png",
+   "desc_gamekee": "受到伤害时，1回合后的回合开始时，固定护盾60%"
   },
   {
    "id": "eq_sec_005",
@@ -6244,7 +7588,13 @@
     66,
     75
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682256,
+   "rarity_gamekee": "稀有",
+   "obtain": "审判之沼:/事件-警告2",
+   "icon": "equipment_icons/gk_682256.png",
+   "desc_gamekee": "与赛克瑞德战斗时，伤害量+25%，所有敌人脆弱2"
   },
   {
    "id": "eq_sec_004",
@@ -6261,7 +7611,13 @@
     66,
     75
    ],
-   "area": "裁决之沼"
+   "area": "裁决之沼",
+   "source": "bwiki",
+   "gk_content_id": 682255,
+   "rarity_gamekee": "稀有",
+   "obtain": "审判之沼:/事件-奋斗",
+   "icon": "equipment_icons/gk_682255.png",
+   "desc_gamekee": "使用卡牌恢复时，1回合友军的攻击力+10%（最多叠加1层）"
   },
   {
    "id": "eq_pub_ca_035",
@@ -6281,7 +7637,8 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_ca_031",
@@ -6301,7 +7658,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683027.png"
   },
   {
    "id": "eq_pub_ca_030",
@@ -6321,7 +7680,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683911.png"
   },
   {
    "id": "eq_pub_ca_029",
@@ -6339,7 +7700,9 @@
     75
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683902.png"
   },
   {
    "id": "eq_pub_ca_026",
@@ -6359,7 +7722,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683912.png"
   },
   {
    "id": "eq_pub_ca_024",
@@ -6379,7 +7744,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683920.png"
   },
   {
    "id": "eq_pub_ca_022",
@@ -6399,7 +7766,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683919.png"
   },
   {
    "id": "eq_pub_ca_021",
@@ -6419,7 +7788,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683922.png"
   },
   {
    "id": "eq_pub_ca_019",
@@ -6439,7 +7810,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683017.png"
   },
   {
    "id": "eq_pub_ca_017",
@@ -6459,7 +7832,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683923.png"
   },
   {
    "id": "eq_pub_ca_016",
@@ -6479,7 +7854,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683921.png"
   },
   {
    "id": "eq_pub_ca_015",
@@ -6498,7 +7875,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683016.png"
   },
   {
    "id": "eq_pub_ca_013",
@@ -6517,7 +7896,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683014.png"
   },
   {
    "id": "eq_pub_ca_012",
@@ -6535,7 +7916,9 @@
     74
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683927.png"
   },
   {
    "id": "eq_pub_ca_011",
@@ -6555,7 +7938,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683013.png"
   },
   {
    "id": "eq_pub_ca_010",
@@ -6575,7 +7960,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683924.png"
   },
   {
    "id": "eq_pub_ca_009",
@@ -6595,7 +7982,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683926.png"
   },
   {
    "id": "eq_pub_ca_006",
@@ -6615,7 +8004,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683011.png"
   },
   {
    "id": "eq_pub_ca_005",
@@ -6635,7 +8026,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683010.png"
   },
   {
    "id": "eq_pub_ca_002",
@@ -6653,7 +8046,9 @@
     74
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683925.png"
   },
   {
    "id": "eq_pub_035",
@@ -6671,7 +8066,8 @@
     66,
     75
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki"
   },
   {
    "id": "eq_pub_031",
@@ -6689,7 +8085,12 @@
     66,
     75
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683027,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683027.png"
   },
   {
    "id": "eq_pub_030",
@@ -6707,7 +8108,12 @@
     66,
     75
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683911,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683911.png"
   },
   {
    "id": "eq_pub_029",
@@ -6725,7 +8131,13 @@
     66,
     75
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683902,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683902.png",
+   "desc_gamekee": "回合开始时，发动1张手牌中的随机主导卡牌"
   },
   {
    "id": "eq_pub_026",
@@ -6743,7 +8155,13 @@
     66,
     75
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683912,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683912.png",
+   "desc_gamekee": "战斗开始时，若手牌中有开战牌，所有敌人韧性伤害1"
   },
   {
    "id": "eq_pub_024",
@@ -6761,7 +8179,13 @@
     24,
     28
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683920,
+   "rarity_gamekee": "稀有",
+   "obtain": "审判之沼：LV15解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683920.png",
+   "desc_gamekee": "透过卡牌获得护盾时，固定护盾30%"
   },
   {
    "id": "eq_pub_022",
@@ -6779,7 +8203,12 @@
     24,
     28
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683919,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683919.png"
   },
   {
    "id": "eq_pub_021",
@@ -6797,7 +8226,13 @@
     24,
     28
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683922,
+   "rarity_gamekee": "稀有",
+   "obtain": "双星之影：LV15解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683922.png",
+   "desc_gamekee": "受到伤害时，HP恢复2%（1回合1次）"
   },
   {
    "id": "eq_pub_019",
@@ -6815,7 +8250,12 @@
     24,
     28
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683017,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683017.png"
   },
   {
    "id": "eq_pub_017",
@@ -6832,7 +8272,12 @@
     24,
     28
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683923,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683923.png"
   },
   {
    "id": "eq_pub_016",
@@ -6850,7 +8295,13 @@
     24,
     28
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683921,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683921.png",
+   "desc_gamekee": "击杀时，固定护盾60%"
   },
   {
    "id": "eq_pub_015",
@@ -6867,7 +8318,13 @@
     24,
     28
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683016,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683016.png",
+   "desc_gamekee": "战斗开始时，伤害减少2"
   },
   {
    "id": "eq_pub_013",
@@ -6884,7 +8341,13 @@
     67,
     74
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683014,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683014.png",
+   "desc_gamekee": "战斗开始时，赋予随机敌人削弱3"
   },
   {
    "id": "eq_pub_012",
@@ -6902,7 +8365,12 @@
     67,
     74
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683927,
+   "rarity_gamekee": "稀有",
+   "obtain": "降临的混沌：LV15解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683927.png"
   },
   {
    "id": "eq_pub_011",
@@ -6920,7 +8388,13 @@
     74
    ],
    "area": "全地区",
-   "assault_type": "命令"
+   "assault_type": "命令",
+   "source": "bwiki",
+   "gk_content_id": 683013,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683013.png",
+   "desc_gamekee": "攻击卡牌的伤害量增加40%（每场战斗1次）"
   },
   {
    "id": "eq_pub_010",
@@ -6938,7 +8412,13 @@
     67,
     74
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683924,
+   "rarity_gamekee": "稀有",
+   "obtain": "雾之城市：LV15解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683924.png",
+   "desc_gamekee": "攻击拥有削弱状态的目标时，伤害量+30%"
   },
   {
    "id": "eq_pub_009",
@@ -6956,7 +8436,13 @@
     67,
     74
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683926,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683926.png",
+   "desc_gamekee": "每场首次使用的攻击卡牌韧性伤害100%"
   },
   {
    "id": "eq_pub_006",
@@ -6973,7 +8459,13 @@
     67,
     74
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683011,
+   "rarity_gamekee": "稀有",
+   "obtain": "蓝壶：LV15解锁后，所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683011.png",
+   "desc_gamekee": "伤害量增加12%"
   },
   {
    "id": "eq_pub_005",
@@ -6990,7 +8482,13 @@
     67,
     74
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683010,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683010.png",
+   "desc_gamekee": "使用强化卡牌时，所有敌人固定伤害150%"
   },
   {
    "id": "eq_pub_002",
@@ -7008,7 +8506,13 @@
     67,
     74
    ],
-   "area": "全地区"
+   "area": "全地区",
+   "source": "bwiki",
+   "gk_content_id": 683925,
+   "rarity_gamekee": "稀有",
+   "obtain": "所有卡厄思可获取",
+   "icon": "equipment_icons/gk_683925.png",
+   "desc_gamekee": "使用费用2以上的攻击卡牌时，赋予目标痛苦3"
   },
   {
    "id": "eq_nih_ca_005",
@@ -7028,7 +8532,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682311.png"
   },
   {
    "id": "eq_nih_ca_004",
@@ -7048,7 +8554,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682310.png"
   },
   {
    "id": "eq_nih_ca_003",
@@ -7068,7 +8576,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682309.png"
   },
   {
    "id": "eq_nih_ca_002",
@@ -7088,7 +8598,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682308.png"
   },
   {
    "id": "eq_nih_005",
@@ -7106,7 +8618,13 @@
     66,
     75
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682311,
+   "rarity_gamekee": "稀有",
+   "obtain": "雾之城市:/事件-调查尼希隆1&3",
+   "icon": "equipment_icons/gk_682311.png",
+   "desc_gamekee": "尼希隆战斗开始时，所有敌人脆弱2"
   },
   {
    "id": "eq_nih_004",
@@ -7124,7 +8642,13 @@
     24,
     28
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682310,
+   "rarity_gamekee": "稀有",
+   "obtain": "雾之城市:/事件-虚无病2",
+   "icon": "equipment_icons/gk_682310.png",
+   "desc_gamekee": "HP上限+6%，防御力+12%"
   },
   {
    "id": "eq_nih_003",
@@ -7142,7 +8666,13 @@
     66,
     75
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682309,
+   "rarity_gamekee": "稀有",
+   "obtain": "雾之城市:/事件-食客",
+   "icon": "equipment_icons/gk_682309.png",
+   "desc_gamekee": "消灭卡牌时，伤害量+25%，恢复5%（每场战斗1次）"
   },
   {
    "id": "eq_nih_002",
@@ -7160,7 +8690,13 @@
     66,
     75
    ],
-   "area": "雾之都市"
+   "area": "雾之都市",
+   "source": "bwiki",
+   "gk_content_id": 682308,
+   "rarity_gamekee": "稀有",
+   "obtain": "雾之城市:/事件-贪食者1",
+   "icon": "equipment_icons/gk_682308.png",
+   "desc_gamekee": "消灭卡牌时，所有敌人韧性伤害1（每场战斗1次）"
   },
   {
    "id": "eq_inv_ca_009",
@@ -7180,7 +8716,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682227.png"
   },
   {
    "id": "eq_inv_ca_007",
@@ -7200,7 +8738,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682225.png"
   },
   {
    "id": "eq_inv_ca_005",
@@ -7220,7 +8760,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682219.png"
   },
   {
    "id": "eq_inv_009",
@@ -7237,7 +8779,13 @@
     66,
     75
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682227,
+   "rarity_gamekee": "稀有",
+   "obtain": "双星之影:/事件-侵略者的废弃场",
+   "icon": "equipment_icons/gk_682227.png",
+   "desc_gamekee": "战斗结束时，恢复5%"
   },
   {
    "id": "eq_inv_007",
@@ -7254,7 +8802,13 @@
     24,
     28
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682225,
+   "rarity_gamekee": "稀有",
+   "obtain": "双星之影:/事件-孵化场1",
+   "icon": "equipment_icons/gk_682225.png",
+   "desc_gamekee": "受到伤害时，1回合后的回合开始时，固定护盾60%"
   },
   {
    "id": "eq_inv_005",
@@ -7272,7 +8826,13 @@
     67,
     74
    ],
-   "area": "双星的暗影"
+   "area": "双星的暗影",
+   "source": "bwiki",
+   "gk_content_id": 682219,
+   "rarity_gamekee": "稀有",
+   "obtain": "双星之影:/事件-侵略者的蜂蜜4",
+   "icon": "equipment_icons/gk_682219.png",
+   "desc_gamekee": "使用攻击卡牌时，赋予目标痛苦1(每回合1次)\n与侵略者战斗时，追加痛苦2"
   },
   {
    "id": "eq_g04_002",
@@ -7290,7 +8850,14 @@
     75
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714606,
+   "rarity_gamekee": "稀有",
+   "obtain": "万花筒孵化场：事件-孵化摇篮",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714606.png",
+   "desc_gamekee": "回合开始时，随机友军压力增加2，对所有敌人造成150%的固定伤害"
   },
   {
    "id": "eq_g04_001",
@@ -7308,7 +8875,15 @@
     28
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714605,
+   "rarity_gamekee": "稀有",
+   "obtain": "万花筒孵化场：事件-费洛蒙迷宫",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714605.png",
+   "name_gamekee": "帕格纳蘑菇",
+   "desc_gamekee": "受击时,对攻击者从脆弱、削弱、痛苦、灼烧中随机赋予1个效果(每回合2次)"
   },
   {
    "id": "eq_g03_003",
@@ -7326,7 +8901,14 @@
     75
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703582,
+   "rarity_gamekee": "稀有",
+   "obtain": "虚像剧场：事件-撕裂的真心",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703582.png",
+   "desc_gamekee": "回合结束时，若友军手牌中有人格面具卡牌，对随机敌人造成150%固定伤害"
   },
   {
    "id": "eq_g03_002",
@@ -7345,7 +8927,14 @@
     75
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703581,
+   "rarity_gamekee": "稀有",
+   "obtain": "虚像剧场：事件-遗物摊贩",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703581.png",
+   "desc_gamekee": "回合开始时，丢弃手牌中1张随机友军安息卡牌"
   },
   {
    "id": "eq_g03_001",
@@ -7364,7 +8953,14 @@
     74
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703580,
+   "rarity_gamekee": "稀有",
+   "obtain": "虚像剧场：事件-无情的批判家/唯美主义者",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703580.png",
+   "desc_gamekee": "使用能力丢弃连结卡牌时，持续1回合伤害量增加20%(每回合1次)"
   },
   {
    "id": "eq_g02_ca_005",
@@ -7384,7 +8980,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692673.png"
   },
   {
    "id": "eq_g02_ca_004",
@@ -7404,7 +9002,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692671.png"
   },
   {
    "id": "eq_g02_ca_003",
@@ -7422,7 +9022,9 @@
     75
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692670.png"
   },
   {
    "id": "eq_g02_ca_002",
@@ -7442,7 +9044,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692669.png"
   },
   {
    "id": "eq_g02_ca_001",
@@ -7462,7 +9066,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692668.png"
   },
   {
    "id": "eq_g02_005",
@@ -7481,7 +9087,14 @@
     75
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692673,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：事件-生命线1",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692673.png",
+   "desc_gamekee": "治疗量增加15%"
   },
   {
    "id": "eq_g02_004",
@@ -7500,7 +9113,14 @@
     75
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692671,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：事件-拥抱光芒的精灵1",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692671.png",
+   "desc_gamekee": "第3张生成的攻击卡牌持续1回合伤害量增加30%"
   },
   {
    "id": "eq_g02_003",
@@ -7519,7 +9139,14 @@
     75
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692670,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：攻击黄色路米纳斯",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692670.png",
+   "desc_gamekee": "战斗开始时，随机友军压力减少3"
   },
   {
    "id": "eq_g02_002",
@@ -7538,7 +9165,15 @@
     28
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692669,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：攻击蓝色路米纳斯",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692669.png",
+   "name_gamekee": "闪耀的里拉",
+   "desc_gamekee": "回合开始时，若友军的消灭卡牌在手牌中，则获得固定护盾60%"
   },
   {
    "id": "eq_g02_001",
@@ -7556,7 +9191,14 @@
     74
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692668,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：攻击红色路米纳斯",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692668.png",
+   "desc_gamekee": "卡牌消灭时，伤害量增加10%，持续1回合(每回合1次)"
   },
   {
    "id": "eq_g01_ca_001",
@@ -7574,7 +9216,9 @@
     75
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683322.png"
   },
   {
    "id": "eq_g01_001",
@@ -7593,7 +9237,13 @@
     75
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683322,
+   "rarity_gamekee": "稀有",
+   "obtain": "第0研究所:/事件-佩尔提翁的清道夫",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683322.png"
   },
   {
    "id": "eq_ds04_008",
@@ -7611,7 +9261,15 @@
     75
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714603,
+   "rarity_gamekee": "稀有",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714603.png",
+   "name_gamekee": "掠夺者的扫描装置",
+   "desc_gamekee": "回合开始时，首次发动的攻击卡牌暴击伤害+30%"
   },
   {
    "id": "eq_ds04_005",
@@ -7629,7 +9287,14 @@
     28
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714602,
+   "rarity_gamekee": "稀有",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714602.png",
+   "desc_gamekee": "使用能力获得护盾时,持续1回合，至发动前攻击卡牌的暴击率+30%(每回合1次)"
   },
   {
    "id": "eq_ds04_003",
@@ -7647,7 +9312,15 @@
     74
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714600,
+   "rarity_gamekee": "稀有",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714600.png",
+   "name_gamekee": "掠夺者的鱼叉炮",
+   "desc_gamekee": "造成暴击时，对所有敌人造成150%的固定伤害(每回合3次)"
   },
   {
    "id": "eq_ds04_001",
@@ -7665,7 +9338,15 @@
     74
    ],
    "area": "万花筒孵化场",
-   "season": "S4"
+   "season": "S4",
+   "source": "bwiki",
+   "gk_content_id": 714599,
+   "rarity_gamekee": "稀有",
+   "obtain": "万花筒孵化场",
+   "season_name": "破碎之光与利爪",
+   "icon": "equipment_icons/gk_714599.png",
+   "name_gamekee": "出血的双手剑",
+   "desc_gamekee": "发动攻击卡牌时，对目标造成灼热2(每回合1次)"
   },
   {
    "id": "eq_ds03_008",
@@ -7684,7 +9365,14 @@
     75
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703578,
+   "rarity_gamekee": "稀有",
+   "obtain": "虚像剧场",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703578.png",
+   "desc_gamekee": "敌方行动次数增加时，持续1回合伤害量+30%(每回合1次)"
   },
   {
    "id": "eq_ds03_004",
@@ -7703,7 +9391,14 @@
     28
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703577,
+   "rarity_gamekee": "稀有",
+   "obtain": "虚像剧场",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703577.png",
+   "desc_gamekee": "友军使用能力丢弃卡牌时，伤害减少1(每回合1次)"
   },
   {
    "id": "eq_ds03_002",
@@ -7722,7 +9417,14 @@
     74
    ],
    "area": "回荡在银河中的歌声",
-   "season": "S3"
+   "season": "S3",
+   "source": "bwiki",
+   "gk_content_id": 703576,
+   "rarity_gamekee": "稀有",
+   "obtain": "虚像剧场",
+   "season_name": "回荡在银河中的歌声",
+   "icon": "equipment_icons/gk_703576.png",
+   "desc_gamekee": "额外攻击时，持续1回合，暴击率增加2%（每回合5次）"
   },
   {
    "id": "eq_ds02_ca_007",
@@ -7742,7 +9444,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692648.png"
   },
   {
    "id": "eq_ds02_ca_005",
@@ -7762,7 +9466,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692647.png"
   },
   {
    "id": "eq_ds02_ca_004",
@@ -7782,7 +9488,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692646.png"
   },
   {
    "id": "eq_ds02_ca_001",
@@ -7801,7 +9509,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692645.png"
   },
   {
    "id": "eq_ds02_007",
@@ -7820,7 +9530,14 @@
     75
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692648,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692648.png",
+   "desc_gamekee": "消灭4张技能卡牌时，随机友军压力减少1"
   },
   {
    "id": "eq_ds02_005",
@@ -7839,7 +9556,14 @@
     28
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692647,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692647.png",
+   "desc_gamekee": "持续1回合，未发动友军攻击卡牌而回合结束时，获得固定护盾100%"
   },
   {
    "id": "eq_ds02_004",
@@ -7858,7 +9582,14 @@
     28
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692646,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692646.png",
+   "desc_gamekee": "回合开始时，若HP为30%以下，获得闪避1（每场战斗2次）"
   },
   {
    "id": "eq_ds02_001",
@@ -7876,7 +9607,14 @@
     74
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692645,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692645.png",
+   "desc_gamekee": "发动费用3以上的卡牌时，对随机敌人造成脆弱1"
   },
   {
    "id": "eq_ds01_ca_005",
@@ -7896,7 +9634,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683321.png"
   },
   {
    "id": "eq_ds01_ca_004",
@@ -7916,7 +9656,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683320.png"
   },
   {
    "id": "eq_ds01_ca_003",
@@ -7936,7 +9678,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683318.png"
   },
   {
    "id": "eq_ds01_ca_002",
@@ -7956,7 +9700,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683319.png"
   },
   {
    "id": "eq_ds01_ca_001",
@@ -7976,7 +9722,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_683315.png"
   },
   {
    "id": "eq_ds01_005",
@@ -7995,7 +9743,14 @@
     28
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683321,
+   "rarity_gamekee": "稀有",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683321.png",
+   "desc_gamekee": "回合结束时，手牌中若有3张以上卡牌，固定护盾140%"
   },
   {
    "id": "eq_ds01_004",
@@ -8014,7 +9769,14 @@
     75
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683320,
+   "rarity_gamekee": "稀有",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683320.png",
+   "desc_gamekee": "使用能力抽取时，1回合内护盾获得量+25%（每回合2次）"
   },
   {
    "id": "eq_ds01_003",
@@ -8033,7 +9795,14 @@
     28
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683318,
+   "rarity_gamekee": "稀有",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683318.png",
+   "desc_gamekee": "通过能力抽取时，固定护盾40%（每回合5次）"
   },
   {
    "id": "eq_ds01_002",
@@ -8052,7 +9821,14 @@
     75
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683319,
+   "rarity_gamekee": "稀有",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683319.png",
+   "desc_gamekee": "友军使用禁忌卡牌时，1回合内伤害量+20%，护盾获得量+20%（每回合2次）"
   },
   {
    "id": "eq_ds01_001",
@@ -8071,7 +9847,14 @@
     74
    ],
    "area": "第零研究所",
-   "season": "S1"
+   "season": "S1",
+   "source": "bwiki",
+   "gk_content_id": 683315,
+   "rarity_gamekee": "稀有",
+   "obtain": "第0研究所",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683315.png",
+   "desc_gamekee": "通过能力抽取时，随机敌人固定伤害50%"
   },
   {
    "id": "eq_dll_ca_007",
@@ -8091,7 +9874,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "协调"
+   "assault_type": "协调",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682328.png"
   },
   {
    "id": "eq_dll_007",
@@ -8109,7 +9894,13 @@
     66,
     75
    ],
-   "area": "降临的混沌"
+   "area": "降临的混沌",
+   "source": "bwiki",
+   "gk_content_id": 682328,
+   "rarity_gamekee": "稀有",
+   "obtain": "降临的混沌",
+   "icon": "equipment_icons/gk_682328.png",
+   "desc_gamekee": "回合结束时，若有保留的卡牌，固定护盾60%"
   },
   {
    "id": "eq_chr_ca_016",
@@ -8129,7 +9920,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682287.png"
   },
   {
    "id": "eq_chr_ca_014",
@@ -8148,7 +9941,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682286.png"
   },
   {
    "id": "eq_chr_ca_006",
@@ -8168,7 +9963,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682285.png"
   },
   {
    "id": "eq_chr_ca_003",
@@ -8187,7 +9984,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "变异"
+   "assault_type": "变异",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682284.png"
   },
   {
    "id": "eq_chr_ca_001",
@@ -8207,7 +10006,9 @@
    ],
    "area": "全地区",
    "mode": "出击",
-   "assault_type": "畸变"
+   "assault_type": "畸变",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_682283.png"
   },
   {
    "id": "eq_chr_016",
@@ -8225,7 +10026,13 @@
     66,
     75
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682287,
+   "rarity_gamekee": "稀有",
+   "obtain": "蓝壶:/事件-教徒的休息处3/选择进入帐篷",
+   "icon": "equipment_icons/gk_682287.png",
+   "desc_gamekee": "卡厄思教团战斗时，防御力+10%"
   },
   {
    "id": "eq_chr_014",
@@ -8242,7 +10049,13 @@
     24,
     28
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682286,
+   "rarity_gamekee": "稀有",
+   "obtain": "蓝壶:事件-定罪者2",
+   "icon": "equipment_icons/gk_682286.png",
+   "desc_gamekee": "卡厄思教团战斗开始时，伤害量+20%，伤害减少1"
   },
   {
    "id": "eq_chr_006",
@@ -8260,7 +10073,13 @@
     66,
     75
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682285,
+   "rarity_gamekee": "稀有",
+   "obtain": "蓝壶:/事件-供品祭坛1",
+   "icon": "equipment_icons/gk_682285.png",
+   "desc_gamekee": "使用攻击卡牌时，按照造成伤害量的6%恢复HP(每回合1次）"
   },
   {
    "id": "eq_chr_003",
@@ -8277,7 +10096,13 @@
     67,
     74
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682284,
+   "rarity_gamekee": "稀有",
+   "obtain": "蓝壶:/事件-教徒的休息处1/选择进入帐篷",
+   "icon": "equipment_icons/gk_682284.png",
+   "desc_gamekee": "攻击力10%、暴击率-5%"
   },
   {
    "id": "eq_chr_001",
@@ -8294,7 +10119,13 @@
     67,
     74
    ],
-   "area": "蓝罐"
+   "area": "蓝罐",
+   "source": "bwiki",
+   "gk_content_id": 682283,
+   "rarity_gamekee": "稀有",
+   "obtain": "蓝壶:/事件-小偷们1",
+   "icon": "equipment_icons/gk_682283.png",
+   "desc_gamekee": "击杀时，获得5~10信用点数（每场战斗1次）"
   },
   {
    "id": "eq_arena_ca_005",
@@ -8312,7 +10143,9 @@
     75
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692661.png"
   },
   {
    "id": "eq_arena_ca_004",
@@ -8330,7 +10163,9 @@
     75
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692659.png"
   },
   {
    "id": "eq_arena_ca_003",
@@ -8348,7 +10183,9 @@
     28
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692658.png"
   },
   {
    "id": "eq_arena_ca_002",
@@ -8366,7 +10203,9 @@
     74
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692657.png"
   },
   {
    "id": "eq_arena_ca_001",
@@ -8384,7 +10223,9 @@
     74
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki",
+   "icon": "equipment_icons/gk_692656.png"
   },
   {
    "id": "eq_arena_005",
@@ -8403,7 +10244,14 @@
     75
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692661,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692661.png",
+   "desc_gamekee": "若在持有AP1以上的状态下回合结束，下一回合开始时生成1张充能一击"
   },
   {
    "id": "eq_arena_004",
@@ -8422,7 +10270,13 @@
     75
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692659,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692659.png"
   },
   {
    "id": "eq_arena_003",
@@ -8440,7 +10294,14 @@
     28
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692658,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692658.png",
+   "desc_gamekee": "若完全抵抗伤害，下一回合开始时生成1张盾牌爆炸"
   },
   {
    "id": "eq_arena_002",
@@ -8459,7 +10320,14 @@
     74
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692657,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692657.png",
+   "name_gamekee": "受挫意志的鱼叉筒"
   },
   {
    "id": "eq_arena_001",
@@ -8477,7 +10345,14 @@
     74
    ],
    "area": "无间烬土",
-   "season": "S2"
+   "season": "S2",
+   "source": "bwiki",
+   "gk_content_id": 692656,
+   "rarity_gamekee": "稀有",
+   "obtain": "燃烧的生命：竞技场过关奖励",
+   "season_name": "业火种子",
+   "icon": "equipment_icons/gk_692656.png",
+   "desc_gamekee": "持续1回合未发动攻击卡牌而回合结束时，生成1张火箭拳"
   },
   {
    "id": "eq_sec_ca_018",
@@ -8495,7 +10370,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_sec_ca_017",
@@ -8514,7 +10390,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_sec_ca_016",
@@ -8532,7 +10409,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_sec_ca_015",
@@ -8551,7 +10429,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_sec_ca_014",
@@ -8569,7 +10448,8 @@
     57
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_nih_ca_016",
@@ -8588,7 +10468,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_nih_ca_015",
@@ -8606,7 +10487,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_nih_ca_014",
@@ -8625,7 +10507,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_nih_ca_013",
@@ -8643,7 +10526,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_nih_ca_012",
@@ -8661,7 +10545,8 @@
     57
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_inv_ca_014",
@@ -8680,7 +10565,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_inv_ca_013",
@@ -8698,7 +10584,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_inv_ca_012",
@@ -8717,7 +10604,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_inv_ca_011",
@@ -8736,7 +10624,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_inv_ca_010",
@@ -8755,7 +10644,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_dll_ca_015",
@@ -8774,7 +10664,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_dll_ca_014",
@@ -8793,7 +10684,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_dll_ca_013",
@@ -8812,7 +10704,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_dll_ca_012",
@@ -8831,7 +10724,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_dll_ca_011",
@@ -8850,7 +10744,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_chr_ca_027",
@@ -8869,7 +10764,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_chr_ca_026",
@@ -8888,7 +10784,8 @@
     57
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_chr_ca_025",
@@ -8907,7 +10804,8 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
   },
   {
    "id": "eq_chr_ca_024",
@@ -8925,7 +10823,403 @@
     58
    ],
    "area": "全地区",
-   "mode": "出击"
+   "mode": "出击",
+   "source": "bwiki"
+  },
+  {
+   "id": "gk_eq_683335",
+   "name": "奇梅尔奈特",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "使用能力抽取时，自己的攻击卡牌伤害量持续1回合增加35%（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "source": "gamekee",
+   "gk_content_id": 683335,
+   "rarity_gamekee": "神话",
+   "obtain": "第0研究所：事件-矿脉之心",
+   "season_name": "禁忌催化剂",
+   "icon": "equipment_icons/gk_683335.png"
+  },
+  {
+   "id": "gk_eq_683913",
+   "name": "群体之翼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，免疫2",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "source": "gamekee",
+   "gk_content_id": 683913,
+   "rarity_gamekee": "稀有",
+   "obtain": "双星之影",
+   "icon": "equipment_icons/gk_683913.png"
+  },
+  {
+   "id": "gk_eq_724859",
+   "name": "最后的指令声",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "以自身卡牌或自我意识技能获得AP时，持续1回合友军攻击力+3%(最多叠加6)",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724859,
+   "rarity_gamekee": "神话",
+   "obtain": "天上防护墙：事件-最深处",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724859.png"
+  },
+  {
+   "id": "gk_eq_724882",
+   "name": "裂开的设计核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合开始时友军伤害量增加8%(每场战斗3次)",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724882,
+   "rarity_gamekee": "传说",
+   "obtain": "天上防护墙：事件-创世前的计划1、2",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724882.png"
+  },
+  {
+   "id": "gk_eq_724883",
+   "name": "被模仿的手",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "战斗开始时，获得伤害减少2受击时，获得80%的固定治愈(每回合1次)",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724883,
+   "rarity_gamekee": "传说",
+   "obtain": "天上防护墙：事件-无法拒绝的触摸",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724883.png"
+  },
+  {
+   "id": "gk_eq_724884",
+   "name": "断绝的运算者之针",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "以自身攻击卡牌进行弱点攻击时，伤害量+40%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724884,
+   "rarity_gamekee": "传说",
+   "obtain": "天上防护墙：事件-黑色洗礼3",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724884.png"
+  },
+  {
+   "id": "gk_eq_724885",
+   "name": "凝结的光辉残片",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "自身凝聚攻击卡牌的暴击伤害+50%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724885,
+   "rarity_gamekee": "传说",
+   "obtain": "天上防护墙：事件-前往更深之处",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724885.png"
+  },
+  {
+   "id": "gk_eq_724886",
+   "name": "超负荷动力机关",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "依本回合自身凝聚卡牌的叠加数，自身攻击卡牌的暴击伤害+3%(最多30%)",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724886,
+   "rarity_gamekee": "传说",
+   "obtain": "天上防护墙",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724886.png"
+  },
+  {
+   "id": "gk_eq_724888",
+   "name": "坠落的王冠",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "最大HP减少10%，自身正义属性攻击卡牌的暴击率+10%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724888,
+   "rarity_gamekee": "传说",
+   "obtain": "天上防护墙",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724888.png"
+  },
+  {
+   "id": "gk_eq_724889",
+   "name": "符文图样之锤",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "友军唯一攻击卡牌的暴击伤害+20%(不可叠加)",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724889,
+   "rarity_gamekee": "传说",
+   "obtain": "天上防护墙",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724889.png"
+  },
+  {
+   "id": "gk_eq_724890",
+   "name": "平衡坠饰",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "友军使用攻击卡牌时，获得20%的固定护盾(每回合5次)",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724890,
+   "rarity_gamekee": "稀有",
+   "obtain": "天上防护墙：事件-各异的信念1",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724890.png"
+  },
+  {
+   "id": "gk_eq_724891",
+   "name": "凝结的燃料",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合结束时，获得100%的固定治愈(每场战斗3次)",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724891,
+   "rarity_gamekee": "稀有",
+   "obtain": "天上防护墙：事件-各异的信念2",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724891.png"
+  },
+  {
+   "id": "gk_eq_724892",
+   "name": "审判的特里盖昂",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "受击时，下一次触发的自身攻击卡牌伤害量增加20%(每回合1次)",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724892,
+   "rarity_gamekee": "稀有",
+   "obtain": "天上防护墙：事件-既定的判决2",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724892.png"
+  },
+  {
+   "id": "gk_eq_724893",
+   "name": "执行之约",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合结束时，依手牌中的卡牌数量,获得20%的固定治愈(最多100%)",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724893,
+   "rarity_gamekee": "稀有",
+   "obtain": "天上防护墙",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724893.png"
+  },
+  {
+   "id": "gk_eq_724894",
+   "name": "白衣",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合开始时，若友军处于减益效果状态，获得50%的固定护盾",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724894,
+   "rarity_gamekee": "稀有",
+   "obtain": "天上防护墙",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724894.png"
+  },
+  {
+   "id": "gk_eq_724896",
+   "name": "忏悔之盾",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合结束时，使所有有护盾的敌人脆弱2(每场战斗1次)",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724896,
+   "rarity_gamekee": "稀有",
+   "obtain": "天上防护墙",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724896.png"
+  },
+  {
+   "id": "gk_eq_724897",
+   "name": "幻影匕首",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "使用自身攻击卡牌时，对随机敌人造成等同于费用60%的固定伤害(每回合2次)",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724897,
+   "rarity_gamekee": "稀有",
+   "obtain": "天上防护墙",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724897.png"
+  },
+  {
+   "id": "gk_eq_724898",
+   "name": "核心拆解机",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "自身打击带有护盾的敌人时,造成韧性伤害2(每回合1次)",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "source": "gamekee",
+   "gk_content_id": 724898,
+   "rarity_gamekee": "稀有",
+   "obtain": "天上防护墙",
+   "season_name": "雪上凝结的约定",
+   "icon": "equipment_icons/gk_724898.png"
   }
  ],
  "memory_fragment_sets": [
