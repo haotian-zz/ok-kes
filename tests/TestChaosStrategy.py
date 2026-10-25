@@ -148,6 +148,7 @@ class TestPriorities(unittest.TestCase):
         self.assertTrue(NOT_EVENT_OPTION.search("独特卡牌平均费用0.9"))
         self.assertTrue(NOT_EVENT_OPTION.search("4368 TB"))
         self.assertTrue(NOT_EVENT_OPTION.search("39823TB"))
+        self.assertTrue(NOT_EVENT_OPTION.search("B3813 TB."))
         self.assertIsNone(NOT_EVENT_OPTION.search("收起有用的东西随机获得稀有~传说装备"))
 
     def test_target_heal(self):
