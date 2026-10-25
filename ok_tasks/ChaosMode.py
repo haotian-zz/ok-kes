@@ -42,6 +42,7 @@ class ChaosMode(TriggerTask):
         self.default_config['目标预设'] = 1
         self.default_config['队友'] = ["海德玛丽", "米卡"]
         self.default_config['自动编队'] = True
+        self.default_config['调整零式升级'] = True
         self.default_config['刷存档主战员'] = "海德玛丽"
         self.default_config['存储数据保存上限大于多少'] = 120
         self.default_config['保留大于多少TB的存档'] = 62000
@@ -127,6 +128,10 @@ class ChaosMode(TriggerTask):
         )
         self.config_description['目标预设'] = "目标卡组读主战员详情 → 卡牌 → 预设构筑里的第几号预设"
         self.config_description['队友'] = "自动编队时目标主战员之外的两个人（按槽位顺序）"
+        self.config_description['调整零式升级'] = (
+            "刷存档玩法从主页进零式系统时，先把升级调好：高维启示 0 级；认知闪光空存 0 级、目标卡组满级。"
+            "要降级时会「全部重置」（花 10 个货币，材料全部返还）再把其他项升满"
+        )
         self.config_description['闪光优先级'] = (
             "卡牌名称和描述无需完整填写，输入几个关键字即可，但顺序须与游戏原文一致。"
         )
@@ -216,7 +221,8 @@ class ChaosMode(TriggerTask):
         if mode == chaos_strategy.MODE_EXPLORE:
             ok = utils_chaos_prep.enter_chaos_figure(self)
         else:
-            ok = utils_chaos_prep.enter_zero_system(self)
+            want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode) if self.config.get('调整零式升级') else ([], [])
+            ok = utils_chaos_prep.enter_zero_system(self, want_zero, want_max)
         if ok:
             self.enter_failures = 0
             return True

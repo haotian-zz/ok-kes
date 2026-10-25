@@ -51,6 +51,35 @@ class TestChaosFigure(unittest.TestCase):
                          {r["name"]: r["explore"] for r in regions})
 
 
+class TestZeroUpgrade(unittest.TestCase):
+    def test_wants(self):
+        import chaos_strategy as cs
+        self.assertEqual((["高维启示", "认知闪光"], []), cs.zero_upgrade_wants(cs.MODE_EMPTY))
+        self.assertEqual((["高维启示"], ["认知闪光"]), cs.zero_upgrade_wants(cs.MODE_TARGET))
+        self.assertEqual(([], []), cs.zero_upgrade_wants(cs.MODE_EXPLORE))
+
+    def test_levels_ok(self):
+        from utils_chaos_prep import _levels_ok
+        self.assertEqual([], _levels_ok({"高维启示": (0, 5), "认知闪光": (3, 3)}, ["高维启示"], ["认知闪光"]))
+        self.assertEqual(["认知闪光"], _levels_ok({"高维启示": (0, 5), "认知闪光": (3, 3)}, ["高维启示", "认知闪光"], []))
+        self.assertEqual(["认知闪光"], _levels_ok({"高维启示": (0, 5)}, ["高维启示"], ["认知闪光"]))
+
+    def test_unmaxed_rows(self):
+        # 2026-10-24 实机管理员模式页：只有高维启示没满级（行尾显示材料 100 而不是「已达等级上限」）
+        from utils_chaos_prep import _visible_upgrade_rows, _UPGRADE_ROW_NAME
+        task = SimpleNamespace(all_texts=load_ocr("chaos_zero_upgrade_admin.ocr.txt"), width=W, height=H)
+        rows = _visible_upgrade_rows(task)
+        unmaxed = [n for n, (_, maxed) in rows.items() if not maxed and _UPGRADE_ROW_NAME.fullmatch(n)]
+        self.assertEqual(["高维启示"], unmaxed)
+        self.assertTrue(rows["交涉权扩展"][1])
+
+    def test_reset_dialog_not_paid(self):
+        from utils_chaos_prep import _PAID_DIALOG
+        texts = " ".join(b.name for b in load_ocr("chaos_zero_reset_dialog.ocr.txt"))
+        self.assertIn("将重置全部技能", texts)
+        self.assertIsNone(_PAID_DIALOG.search(texts))
+
+
 class TestDialogue(unittest.TestCase):
     def test_chaos_dialogue_with_hud(self):
         # 2026-10-24 实机：卡厄思局内事件对白，顶栏 HUD + Space 提示共 8 个框，以前因为 >6 认不出对白而卡住

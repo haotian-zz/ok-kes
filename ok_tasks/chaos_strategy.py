@@ -300,6 +300,21 @@ def pick_flash_variant(card_name, choices, target_cards, db=None):
     return best if best_s >= 0.8 else None
 
 
+# ---------------- 零式系统升级 ----------------
+
+GOD_SPARK_UPGRADE = "高维启示"   # 神之闪光触发率，所有玩法都要 0 级
+SPARK_UPGRADE = "认知闪光"       # 闪光触发率，空存 0 级、目标卡组满级
+
+
+def zero_upgrade_wants(mode):
+    """零式系统升级要求：(必须 0 级的项, 必须满级的项)。探索度和原有逻辑不在零式系统刷，不管。"""
+    if mode == MODE_EMPTY:
+        return [GOD_SPARK_UPGRADE, SPARK_UPGRADE], []
+    if mode == MODE_TARGET:
+        return [GOD_SPARK_UPGRADE], [SPARK_UPGRADE]
+    return [], []
+
+
 # ---------------- 玩法 → 现有配置项 ----------------
 
 def config_overrides(mode, member=None, plan=None, db=None):

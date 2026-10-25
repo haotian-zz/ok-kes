@@ -142,8 +142,9 @@ def _visible_upgrade_rows(task: BaseTask):
     return rows
 
 
-def read_upgrade_levels(task: BaseTask, names):
-    """在升级页里读指定项目的等级：{名字: (a, b)}，找不到的不出现在结果里。会切页、拖动列表。"""
+def read_upgrade_levels(task: BaseTask, names, tab_of=None):
+    """在升级页里读指定项目的等级：{名字: (a, b)}，找不到的不出现在结果里。会切页、拖动列表。
+    给了 tab_of 字典就顺便记下每项在哪个分页。"""
     found = {}
     for tab in UPGRADE_TABS:
         refresh(task)
@@ -162,40 +163,172 @@ def read_upgrade_levels(task: BaseTask, names):
                     lv = _level_of_selected(task)
                     if lv:
                         found[name] = lv
+                        if tab_of is not None:
+                            tab_of[name] = tab
             if half == 0:
                 task.swipe_relative(0.47, 0.85, 0.47, 0.3, duration=0.8)
                 task.sleep(2)
     return found
 
 
-def check_zero_upgrades(task: BaseTask, want_zero, want_max):
-    """检查零式升级是否符合：want_zero 里的项必须 0 级，want_max 里的项必须满级。返回 (是否符合, 等级表)。
+def _open_upgrade_page(task: BaseTask):
+    """零式系统首页 → 升级页。刚回到首页时按钮还在动画里，点了没反应，所以按文字找、再试一次。"""
+    for _ in range(2):
+        box = wait_text(task, r"^升级$", region=(0, 0.55, 0.2, 0.7), timeout=8)
+        if box:
+            click_text_box(task, box, after=3, reason="零式系统：升级")
+        else:
+            click_rel(task, *UPGRADE_ENTRY, after=3, reason="零式系统：升级")
+        if wait_text(task, r"全部重置", timeout=6):
+            return True
+    task.log_info("没有进入零式系统升级页")
+    return False
 
-    只检查不改：「全部重置」要花货币并有确认弹窗，第一版只报告，由用户确认后再做自动重置。
-    """
+
+def _levels_ok(levels, want_zero, want_max):
+    bad = [n for n in want_zero if levels.get(n, (None,))[0] != 0]
+    bad += [n for n in want_max if not levels.get(n) or levels[n][0] != levels[n][1]]
+    return bad
+
+
+def check_zero_upgrades(task: BaseTask, want_zero, want_max):
+    """检查零式升级是否符合：want_zero 里的项必须 0 级，want_max 里的项必须满级。返回 (是否符合, 等级表)。只读不改。"""
     if not open_home_entry(task, "卡厄思"):
         return False, {}
     box = wait_text(task, r"^零式系统$", timeout=8)
     if not box:
         return False, {}
     click_text_box(task, box, after=4, reason="进入零式系统")
-    click_rel(task, *UPGRADE_ENTRY, after=3, reason="零式系统：升级")
-    if not wait_text(task, r"全部重置", timeout=8):
-        task.log_info("没有进入零式系统升级页")
+    if not _open_upgrade_page(task):
         return False, {}
     levels = read_upgrade_levels(task, list(want_zero) + list(want_max))
-    ok = True
-    for n in want_zero:
-        if levels.get(n, (None,))[0] != 0:
-            ok = False
-            task.log_info(f"零式升级：「{n}」应为 0 级，当前 {levels.get(n)}")
-    for n in want_max:
-        lv = levels.get(n)
-        if not lv or lv[0] != lv[1]:
-            ok = False
-            task.log_info(f"零式升级：「{n}」应满级，当前 {lv}")
-    task.log_info(f"零式升级检查：{'符合' if ok else '不符合'} {levels}")
-    return ok, levels
+    bad = _levels_ok(levels, want_zero, want_max)
+    task.log_info(f"零式升级检查：{'不符合 ' + str(bad) if bad else '符合'} {levels}")
+    return not bad, levels
+
+
+_UPGRADE_ROW_NAME = re.compile(r"[*＊]?[\u4e00-\u9fff]{2,}")
+_PAID_DIALOG = re.compile(r"\d+元|充值|购买|礼包")
+
+
+def _row_matches(name, names):
+    return any(norm(n) in norm(name) for n in names)
+
+
+def _confirm_center_dialog(task: BaseTask, what):
+    """点掉升级/重置弹出的确认框；带付费字样的不点。返回是否点了确认。"""
+    refresh(task)
+    ok_box = find_text(task, r"^确认$", region=(0.55, 0.55, 0.8, 0.7))
+    if not ok_box:
+        return False
+    text = " ".join(b.name for b in task.all_texts if in_region(task, b, (0.2, 0.3, 0.8, 0.55)))
+    if _PAID_DIALOG.search(text):
+        task.log_error(f"{what}弹出的确认框像是付费「{text}」，不点，按取消")
+        click_rel(task, 0.347, 0.631, after=1.5, reason="取消")
+        return False
+    task.log_info(f"{what}确认框「{text}」，点确认")
+    click_text_box(task, ok_box, after=2.5)
+    return True
+
+
+def _upgrade_selected_to_max(task: BaseTask, name):
+    """已选中某项：》加到最大 → 升级。返回升级后的 (a, b)，读不到为 None。"""
+    before = _level_of_selected(task)
+    if not before or before[0] >= before[1]:
+        return before
+    click_rel(task, *UPGRADE_MAX_BUTTON, after=1, reason=f"「{name}」加到最大")
+    click_rel(task, *UPGRADE_BUTTON, after=2.5, reason=f"升级「{name}」")
+    _confirm_center_dialog(task, f"升级「{name}」")
+    refresh(task)
+    after = _level_of_selected(task)
+    task.log_info(f"零式升级：「{name}」{before} → {after}")
+    return after
+
+
+def upgrade_rows(task: BaseTask, only=None, skip=(), passes=2, tabs=UPGRADE_TABS):
+    """在升级页把没满级的项升满：only 给了就只升这些，skip 里的永远不升，tabs 限定分页。
+    重置后有的项可能要同页别的项升了才解锁，所以整体走 passes 遍，某遍没有任何变化就停。返回升过的项目名。"""
+    done = []
+    for _ in range(passes):
+        changed = False
+        for tab in tabs:
+            refresh(task)
+            tab_box = find_text(task, rf"^{tab}$", region=(0, 0.1, 0.17, 0.95))
+            if tab_box:
+                click_text_box(task, tab_box, after=2)
+            for half in range(2):
+                refresh(task)
+                for name, (box, maxed) in _visible_upgrade_rows(task).items():
+                    if maxed or not _UPGRADE_ROW_NAME.fullmatch(name) or "等级上限" in name:
+                        continue
+                    if _row_matches(name, skip) or (only is not None and not _row_matches(name, only)):
+                        continue
+                    click_text_box(task, box, after=1.5)
+                    refresh(task)
+                    before = _level_of_selected(task)
+                    after = _upgrade_selected_to_max(task, name)
+                    if before and after and after[0] > before[0]:
+                        changed = True
+                        done.append(name)
+                if half == 0:
+                    task.swipe_relative(0.47, 0.85, 0.47, 0.3, duration=0.8)
+                    task.sleep(2)
+        if not changed:
+            break
+    return done
+
+
+def reset_all_upgrades(task: BaseTask, tab):
+    """升级页「全部重置」：只重置**当前分页**（2026-10-24 实机：在管理员模式点，访问许可和扩展权限不变），
+    花 10 个货币，已消耗的材料全部返还。"""
+    tab_box = wait_text(task, rf"^{tab}$", region=(0, 0.1, 0.17, 0.95), timeout=5)
+    if not tab_box:
+        task.log_info(f"升级页找不到分页「{tab}」，不重置")
+        return False
+    click_text_box(task, tab_box, after=2)
+    click_rel(task, *RESET_ALL_BUTTON, after=2, reason="零式系统：全部重置")
+    if not wait_text(task, r"将重置全部技能", timeout=5):
+        task.log_info("没有弹出全部重置确认框")
+        return False
+    return _confirm_center_dialog(task, "全部重置")
+
+
+def apply_zero_upgrades(task: BaseTask, want_zero, want_max):
+    """零式系统首页进升级页，把等级调成要求的样子，再退回零式系统首页。返回最后是否符合。
+
+    want_zero 有项不是 0 级 → 把它所在的分页全部重置，再把那页除 want_zero 外的项升满（重置会返还已消耗的材料）；
+    只是 want_max 没满 → 只升这几项。"""
+    if not want_zero and not want_max:
+        return True
+    if not _open_upgrade_page(task):
+        return False
+    names = list(want_zero) + list(want_max)
+    tab_of = {}
+    levels = read_upgrade_levels(task, names, tab_of)
+    missing = [n for n in names if n not in levels]
+    if missing:
+        task.log_error(f"零式升级页找不到 {missing}，不调整")
+        bad = missing
+    elif any(levels[n][0] > 0 for n in want_zero):
+        tabs = list(dict.fromkeys(tab_of[n] for n in want_zero if levels[n][0] > 0))
+        task.log_info(f"零式升级 {levels}：{[n for n in want_zero if levels[n][0] > 0]} 要 0 级，重置分页 {tabs} 后重新升满其他项")
+        for tab in tabs:
+            if reset_all_upgrades(task, tab):
+                upgrade_rows(task, skip=want_zero, passes=3, tabs=[tab])
+        # 前面分页没满时后面分页会不会受影响还没摸清，统一再补一遍
+        upgrade_rows(task, skip=want_zero, passes=1)
+        levels = read_upgrade_levels(task, names)
+        bad = _levels_ok(levels, want_zero, want_max)
+    else:
+        if _levels_ok(levels, want_zero, want_max):
+            upgrade_rows(task, only=want_max)
+            levels = read_upgrade_levels(task, names)
+        bad = _levels_ok(levels, want_zero, want_max)
+    task.log_info(f"零式升级调整：{'仍不符合 ' + str(bad) if bad else '符合'} {levels}")
+    task.send_key("esc")
+    task.sleep(2)
+    wait_text(task, r"^法典$", timeout=8)
+    return not bad
 
 
 # ------------------------- 编队 -------------------------
@@ -342,10 +475,14 @@ def enter_chaos_figure(task: BaseTask, max_explore=30):
     return bool(wait_text(task, r"^配置队伍$", region=(0, 0, 0.3, 0.1), timeout=10))
 
 
-def enter_zero_system(task: BaseTask):
-    """主页 → 卡厄思 → 零式系统首页（之后由卡厄思模式原有的法典流程接手）。"""
+def enter_zero_system(task: BaseTask, want_zero=(), want_max=()):
+    """主页 → 卡厄思 → 零式系统首页（之后由卡厄思模式原有的法典流程接手）。给了升级要求就先去升级页调好。"""
     if not open_home_entry(task, "卡厄思"):
         return False
     if not click_text(task, r"^零式系统$", timeout=8, after=4):
         return False
-    return bool(wait_text(task, r"零式系统", region=(0, 0, 0.3, 0.1), timeout=10))
+    if not wait_text(task, r"零式系统", region=(0, 0, 0.3, 0.1), timeout=10):
+        return False
+    if want_zero or want_max:
+        apply_zero_upgrades(task, want_zero, want_max)
+    return True
