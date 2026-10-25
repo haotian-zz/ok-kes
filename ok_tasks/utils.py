@@ -1803,6 +1803,7 @@ def is_frame_stuck(task: TriggerTask, stuck_threshold_seconds=30, change_thresho
 
 
 STUCK_STOP_SECONDS = 300
+GAME_RESTART_MAX = 3
 
 
 def handle_stuck_log(task: TriggerTask):
@@ -1812,9 +1813,19 @@ def handle_stuck_log(task: TriggerTask):
 
     stuck_seconds = int(time.time() - task._last_change_time)
     if stuck_seconds >= STUCK_STOP_SECONDS and getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) != chaos_strategy.MODE_LEGACY:
-        # 画面几分钟纹丝不动、点什么都没反应（2026-10-25 实录：兑换战利品后游戏 UI 锁死），继续乱点没有意义，停下来等人看
-        task.log_info(f"画面已经 {stuck_seconds} 秒没有任何变化，游戏可能无响应，停止任务", notify=True)
-        chaos_trace.step(task, "page", "画面长时间不变，停止", task.frame)
+        # 画面几分钟纹丝不动、点什么都没反应（2026-10-25 实录：兑换战利品后游戏 UI 锁死），自动重开游戏（用户同意）；
+        # 本次运行重开过 GAME_RESTART_MAX 次还卡就停下来等人看
+        chaos_trace.step(task, "page", "画面长时间不变", task.frame)
+        restarts = getattr(task, "game_restarts", 0)
+        if restarts < GAME_RESTART_MAX:
+            import game_restart
+            task.game_restarts = restarts + 1
+            ok = game_restart.restart_game(task, f"画面 {stuck_seconds} 秒没有变化")
+            task._last_change_time = time.time()
+            if ok:
+                task.entry_checked = False      # 交回 ChaosMode：主页就重新进卡厄思，局内就读回 PT 账
+                return True
+        task.log_info(f"画面已经 {stuck_seconds} 秒没有任何变化，自动重开 {restarts} 次后仍不行，停止任务", notify=True)
         task.disable()
         return True
     close_page = task.find_one(

@@ -657,3 +657,17 @@ class TestGodSparkAllowed(unittest.TestCase):
                                                      {"name": "剑鸣九霄", "god_spark": "y"}, {"name": "剑刀破晓"}]},
                                node_status={"god_ok": ["明灭剑"]})
         self.assertEqual(["剑鸣九霄"], _god_spark_wanted(task))
+
+
+class TestGameRestart(unittest.TestCase):
+    def test_launcher_path(self):
+        import tempfile
+        from game_restart import launcher_path
+        root = tempfile.mkdtemp()
+        os.makedirs(os.path.join(root, "bin"))
+        os.makedirs(os.path.join(root, "WeGameLauncher"))
+        exe = os.path.join(root, "bin", "ssr-xcent.exe")
+        self.assertIsNone(launcher_path(exe))
+        open(os.path.join(root, "WeGameLauncher", "launcher.exe"), "w").close()
+        self.assertEqual(launcher_path(exe), os.path.join(root, "WeGameLauncher", "launcher.exe"))
+        self.assertIsNone(launcher_path(None))
