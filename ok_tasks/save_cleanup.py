@@ -11,7 +11,7 @@ import game_db
 from utils import _get_config_value, _move_and_click, _simplify_texts, find_box_at_point, find_text
 
 DEV_START_FILE = os.path.join("dev_out", "save_cleanup_now")
-FREE_SLOTS = 30          # 每次腾出的位置
+FREE_SLOTS = 50          # 每次腾出的位置（用户 2026-10-25：一次可以删 50 个）
 MAX_VIEWED = 150         # 最多看这么多个存档（都不能删就放弃）
 SAME_LIMIT = 12          # 翻页后连续这么多次一模一样才算到最后一个
 SORT_TOGGLE = (0.232, 0.931)
