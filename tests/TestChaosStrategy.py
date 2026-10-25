@@ -209,6 +209,15 @@ class TestPriorities(unittest.TestCase):
                                       dict(self.need, target_equipment=["祝圣光轮"]), db=db)
         self.assertGreaterEqual(res[0][0], 1000)
 
+    def test_text_key_ignores_bracket_content(self):
+        # 同一个选项每局给的装备不同，不能因此算成没选过
+        self.assertEqual(cs.text_key("把伊欧娜拉下来获得装备[标准型防毒面具]"),
+                         cs.text_key("把伊欧娜拉下来获得装备[幸存者的兜帽]"))
+        old_key = cs._legacy_text_key("把伊欧娜拉下来获得装备[标准型防毒面具]")
+        _, res = cs.pick_event_option(["把伊欧娜拉下来获得装备[标准型防毒面具]"], cs.MODE_EXPLORE,
+                                      {"seen": {old_key, cs.equipment_key("标准型防毒面具")}}, db=self.no_events)
+        self.assertLess(res[0][0], 1000)
+
     def test_explore_followup_unseen(self):
         opt = {"id": "a", "text": "进入", "effects": {},
                "next": [{"id": "a1", "text": "x", "effects": {}}, {"id": "a2", "text": "y", "effects": {}}]}

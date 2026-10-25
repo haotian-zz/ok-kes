@@ -354,7 +354,7 @@ def pick_event_option(descs, mode, state=None, db=None):
             # 库里没有的事件：用选项文字当 key 记「选过」，没选过的同样优先
             effects = parse_effects(d)
             src = "文字解析"
-            st = dict(state, unseen=text_key(d) not in seen)
+            st = dict(state, unseen=text_key(d) not in seen and _legacy_text_key(d) not in seen)
         score, why = score_effects(effects, mode, st)
         if o is not None:
             fs, fwhy = followup_best(o, mode, state)
@@ -388,9 +388,18 @@ def option_seen_keys(desc, option_id):
     return keys
 
 
+_KEY_NOISE = r"[\d\s%+\-，。,.、：:；;！!？?\[\]【】()（）~～/·]"
+
+
 def text_key(desc):
-    """事件库匹配不上的选项的「已选」key：去掉数字、空白和标点（数值会随难度变），取前 24 个字。"""
-    return "txt:" + re.sub(r"[\d\s%+\-，。,.、：:；;！!？?\[\]【】()（）~～/·]", "", desc or "")[:24]
+    """事件库匹配不上的选项的「已选」key：去掉方括号里的内容（「获得装备[标准型防毒面具]」每局随机，2026-10-24 实录
+    同一个选项换了装备就被当成没选过）、数字、空白和标点（数值会随难度变），取前 24 个字。"""
+    return "txt:" + re.sub(_KEY_NOISE, "", re.sub(r"[\[【][^\]】]*[\]】]", "", desc or ""))[:24]
+
+
+def _legacy_text_key(desc):
+    """10-24 之前记下的 key（方括号内容没去掉），读旧记录时也认。"""
+    return "txt:" + re.sub(_KEY_NOISE, "", desc or "")[:24]
 
 
 def load_seen(path=SEEN_FILE):
