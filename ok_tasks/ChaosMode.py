@@ -187,7 +187,8 @@ class ChaosMode(TriggerTask):
         member = self.config.get('目标主战员', '')
         self.chaos_mode = mode
         self.chaos_plan = None
-        self.chaos_seen = chaos_strategy.load_seen() if mode == chaos_strategy.MODE_EXPLORE else set()
+        # 不分玩法都读：所有玩法选过的选项都记在同一个文件（探索度只算第一次选的选项）
+        self.chaos_seen = chaos_strategy.load_seen()
         self.team_checked = False
         self.entry_checked = False
         self.strategy_ready = True

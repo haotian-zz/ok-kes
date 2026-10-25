@@ -250,9 +250,12 @@ def score_effects(effects, mode, state=None):
         if state.get("unseen"):
             add(1000, "没选过的选项")
         seen = state.get("seen") or set()
-        new_equip = [n for n in effects.get("equipment") or [] if n != "?" and equipment_key(n) not in seen]
+        equip = effects.get("equipment") or []
+        new_equip = [n for n in equip if is_specific_equipment(n) and equipment_key(n) not in seen]
         if new_equip:
             add(1000, f"没拿过的装备{new_equip}")
+        elif any(n != "?" and not is_specific_equipment(n) for n in equip):
+            add(50, "随机装备（可能是没拿过的）")
         if credit:
             add(max(-10, min(10, credit / 10)), "信用点")
         if effects.get("equipment"):
@@ -311,9 +314,11 @@ def followup_best(option, mode, state, depth=FOLLOWUP_DEPTH):
     children = option.get("next") or []
     if not children or depth <= 0:
         return 0.0, []
-    st = dict(state, unseen=False)
+    seen = state.get("seen") or set()
     best = None
     for c in children:
+        # 探索度：后续事件里没选过的选项也加探索度（用户 2026-10-24：第一次选的选项才算）
+        st = dict(state, unseen=mode == MODE_EXPLORE and c.get("id") not in seen)
         s, why = score_effects(_effects_of(c), mode, st)
         fs, fwhy = followup_best(c, mode, state, depth - 1)
         if best is None or s + fs > best[0]:
@@ -351,6 +356,14 @@ def pick_event_option(descs, mode, state=None, db=None):
 
 # ---------------- 「已见」记录（探索度） ----------------
 
+_EQUIPMENT_POOL = re.compile(r"装备$|随机|~|～|稀有度")
+
+
+def is_specific_equipment(name):
+    """事件库里随机装备池写成「随机商店稀有装备」「商店或尼希勒姆稀有~传说装备」，不是具体装备。"""
+    return bool(name) and name != "?" and not _EQUIPMENT_POOL.search(name)
+
+
 def equipment_key(name):
     """探索度「拿过的装备」记录 key。"""
     return "eq:" + norm(name)
@@ -359,7 +372,7 @@ def equipment_key(name):
 def option_seen_keys(desc, option_id):
     """选中一个选项后要记进「已选」的 key：选项本身 + 里面的装备。"""
     keys = [option_id or text_key(desc)]
-    keys += [equipment_key(n) for n in parse_effects(desc).get("equipment") or [] if n != "?"]
+    keys += [equipment_key(n) for n in parse_effects(desc).get("equipment") or [] if is_specific_equipment(n)]
     return keys
 
 

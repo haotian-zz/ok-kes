@@ -177,6 +177,20 @@ class TestPriorities(unittest.TestCase):
         seen = {res[0][3]}
         self.assertEqual(descs[1], self.rank(descs, cs.MODE_EXPLORE, {"seen": seen})[0])
 
+    def test_explore_random_equipment_pool_not_new(self):
+        # 「随机获得稀有~传说装备」是装备池，不保证是没拿过的装备（2026-10-24 实跑被当成新装备 +1000）
+        self.assertFalse(cs.is_specific_equipment("随机商店稀有装备"))
+        self.assertFalse(cs.is_specific_equipment("商店或尼希勒姆稀有~传说装备"))
+        self.assertTrue(cs.is_specific_equipment("平行宇宙耦合体"))
+        s, why = cs.score_effects({"equipment": ["商店稀有~传说装备"]}, cs.MODE_EXPLORE, {"seen": set()})
+        self.assertLess(s, 1000)
+
+    def test_explore_followup_unseen(self):
+        opt = {"id": "a", "text": "进入", "effects": {},
+               "next": [{"id": "a1", "text": "x", "effects": {}}, {"id": "a2", "text": "y", "effects": {}}]}
+        self.assertGreaterEqual(cs.followup_best(opt, cs.MODE_EXPLORE, {"seen": {"a1"}})[0], 1000)
+        self.assertLess(cs.followup_best(opt, cs.MODE_EXPLORE, {"seen": {"a1", "a2"}})[0], 1000)
+
     def test_explore_new_equipment(self):
         descs = ["接受A获得装备[截骨机]", "接受B获得装备[女神之泪]"]
         _, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()}, db=self.no_events)

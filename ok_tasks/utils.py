@@ -3392,12 +3392,12 @@ def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
         task.log_info("事件库未命中且选项文字里没有可识别的效果，交给原有关键词匹配")
         return False
     option_id = results[best][3]
-    if mode == chaos_strategy.MODE_EXPLORE:
-        seen = getattr(task, "chaos_seen", None)
-        keys = chaos_strategy.option_seen_keys(tasks_info[best]["description"], option_id)
-        if seen is not None and not set(keys) <= seen:
-            seen.update(keys)
-            chaos_strategy.save_seen(seen)
+    # 「选过的选项」不分玩法都记：第一次选中的选项才加探索度，刷存档时选过的之后探索也不算新（用户 2026-10-24）
+    seen = getattr(task, "chaos_seen", None)
+    keys = chaos_strategy.option_seen_keys(tasks_info[best]["description"], option_id)
+    if seen is not None and not set(keys) <= seen:
+        seen.update(keys)
+        chaos_strategy.save_seen(seen)
     task.log_info(f"[{mode}] 选择「{tasks_info[best]['description']}」")
     # 选了神闪选项（只能选它、或分数仍最高时）：之后的选卡页/变体页要跳过，避免神闪落到目标卡上
     task.node_status["god_spark_pending"] = any("神闪" in w for w in results[best][1])
