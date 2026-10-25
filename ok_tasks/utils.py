@@ -2662,6 +2662,19 @@ def _find_target_member_index(
     return target_member_index
 
 
+def _mark_equipment_obtained(task: TriggerTask, name):
+    """装备页上读到的实际装备记为「拿过」：随机装备池抽到的具体装备，选项文字里看不到（2026-10-24 实录
+    「非典型立方体」从随机池拿过，下一局「获得装备[非典型立方体]」又被当成没拿过）。"""
+    seen = getattr(task, "chaos_seen", None)
+    if seen is None or not chaos_strategy.is_specific_equipment(name):
+        return
+    key = chaos_strategy.equipment_key(name)
+    if key not in seen:
+        seen.add(key)
+        chaos_strategy.save_seen(seen)
+        task.log_info(f"记下拿过的装备「{name}」")
+
+
 def handle_equipment(task: TriggerTask):
     """装备选择/安装界面: 按装备位优先级选择，并维护目标主战员的装备状态。"""
     title = find_box_at_point(task, 0.499, 0.126)
@@ -2743,6 +2756,8 @@ def handle_equipment(task: TriggerTask):
             return False
         equipment_desc = new_equipment["description"]
         task.log_info(f"待安装装备描述: 「{equipment_desc}」")
+        if not is_purchase_page:
+            _mark_equipment_obtained(task, new_equipment.get("name"))
 
         lv_texts = _find_member_level_tags(
             task,
