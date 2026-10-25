@@ -722,3 +722,19 @@ class TestOctopusRoute(unittest.TestCase):
         w2 = cs.route_weights(cs.MODE_TARGET, 1, None, 0, octopus=True)["types"]
         self.assertEqual(w2, cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"])
         self.assertEqual(cs.route_weights(cs.MODE_TARGET, 0)["types"], cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"])
+
+
+class TestStorageFull(unittest.TestCase):
+    def test_stop_on_storage_full(self):
+        import types
+        import utils
+        box = lambda n: types.SimpleNamespace(name=n, x=0, y=0, width=1, height=1)
+        state = {"disabled": False, "clicks": []}
+        t = types.SimpleNamespace(config={}, frame=None, all_texts=[box("存储空间不足"), box("确认")],
+                                  log_info=lambda *a, **k: None, click_box=lambda b: state["clicks"].append(b.name),
+                                  disable=lambda: state.update(disabled=True))
+        self.assertTrue(utils.handle_storage_full(t))
+        self.assertTrue(state["disabled"])
+        self.assertEqual(state["clicks"], ["确认"])
+        t.all_texts = [box("进入")]
+        self.assertFalse(utils.handle_storage_full(t))

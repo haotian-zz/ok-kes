@@ -5583,8 +5583,25 @@ def handle_minimizemap(task: TriggerTask):
         return True
     return False
 
+def handle_storage_full(task: TriggerTask):
+    """「存储空间不足：你已超出存储数据的保留限制，请清理并重新进入」——存档满了进不去卡厄思。
+    2026-10-25 实录：玩法模式不自动分解存档，攒满后脚本在「进入」和这个弹窗的「确认」之间循环 10 分钟。
+    删哪个存档由用户决定，这里关掉弹窗、通知并停止任务。"""
+    if not any("存储空间不足" in b.name or "超出存储数据的保留限制" in b.name for b in task.all_texts or []):
+        return False
+    chaos_trace.step(task, "page", "存储空间不足", task.frame)
+    box = next((b for b in task.all_texts if _clean_match(b.name, "确认")), None)
+    if box:
+        task.click_box(box)
+    task.log_info("存档存储空间已满，进不去卡厄思：请在存档收集里清理存档后再开始，停止任务", notify=True)
+    task.disable()
+    return True
+
+
 def handle_non_battle_page(task: TriggerTask):
     """非出击/卡厄思页面: 检测到故事/营救/方舟城市时自动停止当前模式，优先级最高。"""
+    if handle_storage_full(task):
+        return True
     box = find_box_at_point(task, 0.887, 0.160)
     if box and box.name == "故事":
         task.log_info("检测到故事页面，停止当前模式")
