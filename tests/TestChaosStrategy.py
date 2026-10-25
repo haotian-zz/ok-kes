@@ -696,6 +696,9 @@ class TestOctopusRush(unittest.TestCase):
             clicks.clear()
             self.assertFalse(utils._finish_only_first_layer(self._task(seen=True)))
             self.assertFalse(utils._finish_only_first_layer(self._task(layers=2)))
+            got = self._task()
+            got.node_status["target_equip_got"] = "堕落之冠"
+            self.assertFalse(utils._finish_only_first_layer(got))
             self.assertEqual(clicks, [])
         finally:
             utils._move_and_click = old

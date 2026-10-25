@@ -2813,6 +2813,10 @@ def handle_equipment(task: TriggerTask):
         task.log_info(f"待安装装备描述: 「{equipment_desc}」")
         if not is_purchase_page:
             _mark_equipment_obtained(task, new_equipment.get("name"))
+            if new_equipment.get("rank") is not None and isinstance(getattr(task, "node_status", None), dict):
+                if not task.node_status.get("target_equip_got"):
+                    task.log_info(f"本局拿到目标装备「{new_equipment.get('name')}」")
+                task.node_status["target_equip_got"] = new_equipment.get("name")
 
         lv_texts = _find_member_level_tags(
             task,
@@ -5216,9 +5220,17 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
         task.sleep(1)
         return True
 
+    got = task.node_status.get('target_equip_got')
     if (_get_config_value(task, OCTOPUS_RUSH, False) is True
             and task.node_status.get('pass_final_boss_count', 0) == 1
-            and not task.node_status.get('octopus_seen')):
+            and not task.node_status.get('octopus_seen') and got):
+        # 用户 2026-10-25：拿到过目标装备的局，速刷也不跳过，打完全部
+        if not task.node_status.get('octopus_rush_kept_logged'):
+            task.node_status['octopus_rush_kept_logged'] = True
+            task.log_info(f"章鱼哥速刷：本局拿到了目标装备「{got}」，不退出，继续打完")
+    if (_get_config_value(task, OCTOPUS_RUSH, False) is True
+            and task.node_status.get('pass_final_boss_count', 0) == 1
+            and not task.node_status.get('octopus_seen') and not got):
         task.log_info("章鱼哥速刷：第一层没遇到章鱼哥（赛内克图斯），退出重进")
         _move_and_click(task, 0.959, 0.051)
         task.sleep(1)
@@ -5287,7 +5299,7 @@ def reset_layer_status(task: TriggerTask):
 
 
 RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok",
-                  "octopus_seen")
+                  "octopus_seen", "target_equip_got", "octopus_rush_kept_logged")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")
