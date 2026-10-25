@@ -343,7 +343,11 @@ def pick_event_option(descs, mode, state=None, db=None):
     for d, o in zip(descs, matched):
         if o is not None:
             # 库里只有选项名没有效果（如开局的凯尔肯的传令兵）时，用画面上的效果说明补
-            effects = {**parse_effects(d), **_effects_of(o)}
+            shown = parse_effects(d)
+            effects = {**shown, **_effects_of(o)}
+            # 库里写随机装备池（「随机装备（稀有度：稀有）」），画面上已经显示了这次抽到的具体装备，以画面为准
+            if any(is_specific_equipment(n) for n in shown.get("equipment") or []):
+                effects["equipment"] = shown["equipment"]
             src = f"库:{event['name']}/{o.get('text')}"
             st = dict(state, unseen=o.get("id") not in seen)
         else:

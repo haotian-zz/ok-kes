@@ -198,6 +198,15 @@ class TestPriorities(unittest.TestCase):
         self.assertGreater(spark, conv)
         self.assertLess(spark, 1050)
 
+    def test_shown_equipment_over_db_pool(self):
+        # 2026-10-24 实跑：库里「破坏石碑」是随机装备池，画面显示了这次的具体装备[祝圣光轮]
+        db = SimpleNamespace(iter_events=lambda region=None: [
+            {"name": "最后的纪律", "options": [{"id": "x1", "text": "破坏石碑",
+                                              "effects": {"equipment": ["随机装备（稀有度：稀有）"]}}]}])
+        _, res = cs.pick_event_option(["破坏石碑获得装备[祝圣光轮]"], cs.MODE_TARGET,
+                                      dict(self.need, target_equipment=["祝圣光轮"]), db=db)
+        self.assertGreaterEqual(res[0][0], 1000)
+
     def test_explore_followup_unseen(self):
         opt = {"id": "a", "text": "进入", "effects": {},
                "next": [{"id": "a1", "text": "x", "effects": {}}, {"id": "a2", "text": "y", "effects": {}}]}
