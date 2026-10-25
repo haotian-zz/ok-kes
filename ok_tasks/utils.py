@@ -2188,9 +2188,14 @@ def handle_main_member_flash(task: TriggerTask):
     task.log_info("检测主战员闪光选择，进行相应操作")
     confirm_box = task.box_of_screen(0.145, 0.044, 0.856, 0.214)
     click_positions = [(0.228, 0.510), (0.504, 0.504), (0.755, 0.508)]
-    click_positions = _prioritize_target_member_click(
+    prioritized = _prioritize_target_member_click(
         task, click_positions, (0.173, 0.232, 0.858, 0.508)
     )
+    if prioritized != click_positions:
+        # 认出了目标主战员：先在她身上多点两次再退到别人。点击有动画，2 秒内没出确认就换人，
+        # 2026-10-25 实录闪光给了第 2 位辅战员
+        prioritized = [prioritized[0]] * 3 + prioritized[1:]
+    click_positions = prioritized
 
     for cx, cy in click_positions:
         task.log_info(f"点击位置({cx}, {cy})")
