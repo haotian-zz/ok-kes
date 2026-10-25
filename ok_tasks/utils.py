@@ -4950,7 +4950,8 @@ def handle_card_assign(task: TriggerTask):
         _record_neutral_card(task)
         task.sleep(1)
         return True
-    _record_neutral_card(task)
+    if not chaos_strategy.memory_name(card_name):   # 赛季记忆卡也走分配页，不算中立牌
+        _record_neutral_card(task)
     return False
 
 def handle_held_cards_page(task: TriggerTask):
