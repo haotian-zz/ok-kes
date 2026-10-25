@@ -218,6 +218,11 @@ class TestPriorities(unittest.TestCase):
                                       {"seen": {old_key, cs.equipment_key("标准型防毒面具")}}, db=self.no_events)
         self.assertLess(res[0][0], 1000)
 
+    def test_explore_text_random_equipment_pool(self):
+        e = cs.parse_effects("错误也是计算随机获得稀有~传说装备")
+        s, _ = cs.score_effects(e, cs.MODE_EXPLORE, {"seen": set()})
+        self.assertGreaterEqual(s, 50)
+
     def test_explore_followup_unseen(self):
         opt = {"id": "a", "text": "进入", "effects": {},
                "next": [{"id": "a1", "text": "x", "effects": {}}, {"id": "a2", "text": "y", "effects": {}}]}

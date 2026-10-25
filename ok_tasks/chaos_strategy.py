@@ -96,7 +96,8 @@ def parse_effects(text):
     if "装备" in t and "失去" not in t:
         # norm 会去掉方括号，装备名要从原文抽
         names = [norm(n) for n in re.findall(r"装备\s*[\[［【]([^\]］】]+)[\]］】]", text or "")]
-        e["equipment"] = names or ["?"]
+        # 「随机获得稀有~传说装备」：没有名字的随机池，记成池子（探索度 +50，和库里匹配上的一致）
+        e["equipment"] = names or (["随机装备"] if "随机" in t else ["?"])
     if e.get("spark"):
         if re.search(r"(选择|选中)\S{0,3}张?卡牌?\S{0,4}闪光|卡牌闪光", t) and "主战员" not in t:
             e["spark_card"] = True       # 自己挑 1 张卡闪光（用户 2026-10-24：优先于挑主战员）
