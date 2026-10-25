@@ -85,5 +85,21 @@ class TestGlowSuccessor(unittest.TestCase):
         self.assertEqual([(512, 2, "小怪", True), (758, 0, "小怪", False), (758, 2, "事件", False)], got)
 
 
+class TestCardPins(unittest.TestCase):
+    # 2026-10-24 天幕实机选卡页：游戏按预设在该删/该闪的卡右上角标橙色图钉；卡牌识别给的 x/y 是左上类型图标
+    ICONS = [(626, 187), (946, 187), (1262, 187), (1578, 187), (626, 640), (946, 640), (1262, 640), (1578, 640)]
+
+    def pinned(self, name):
+        from utils import find_card_pins, card_has_pin
+        pins = find_card_pins(cv2.imread(os.path.join(FIX, name + ".jpg")))
+        return [i for i, (x, y) in enumerate(self.ICONS) if card_has_pin({"x": x / 1920, "y": y / 1080}, pins)]
+
+    def test_remove_page(self):
+        self.assertEqual([0, 1, 4], self.pinned("cards_remove_pins"))      # 斩念、入鞘、酷寒斗士
+
+    def test_flash_page(self):
+        self.assertEqual([0, 1, 3, 4, 5], self.pinned("cards_flash_pins"))  # 除了酷寒斗士都标了
+
+
 if __name__ == "__main__":
     unittest.main()

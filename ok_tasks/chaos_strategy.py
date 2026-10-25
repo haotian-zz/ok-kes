@@ -89,8 +89,10 @@ def parse_effects(text):
         names = [norm(n) for n in re.findall(r"装备\s*[\[［【]([^\]］】]+)[\]］】]", text or "")]
         e["equipment"] = names or ["?"]
     if e.get("spark"):
-        if "选中" in t or "选择" in t:
-            e["spark_choose"] = True     # 选中主战员闪光（自己挑卡）
+        if re.search(r"(选择|选中)\S{0,3}张?卡牌?\S{0,4}闪光|卡牌闪光", t) and "主战员" not in t:
+            e["spark_card"] = True       # 自己挑 1 张卡闪光（用户 2026-10-24：优先于挑主战员）
+        elif "选中" in t or "选择" in t:
+            e["spark_choose"] = True     # 选一个主战员闪光
         elif "随机" in t:
             e["spark_random"] = True     # 随机主战员闪光
     return e
@@ -197,6 +199,8 @@ def score_effects(effects, mode, state=None):
         if effects.get("spark") and state.get("need_spark", 0) > 0:
             if effects.get("spark_random"):
                 add(60, "随机主战员闪光")
+            elif effects.get("spark_card"):
+                add(170, "选择卡牌闪光")
             else:
                 add(150, "选中主战员闪光")
         elif effects.get("spark"):

@@ -1280,6 +1280,41 @@ def _dump_card_page(task: TriggerTask, tag):
         task.log_debug(f"存选卡页截图失败: {e}")
 
 
+_CARD_PIN_TEMPLATE = None
+CARD_PIN_OFFSET = (0.097, -0.053)    # 图钉中心相对卡牌类型图标中心（卡牌识别的 x/y）
+
+
+def find_card_pins(frame):
+    """游戏按预设构筑在该选的卡右上角标的橙色图钉（删卡/闪光/复制选卡页）。返回 [(相对x, 相对y)]。
+    2026-10-24 实机：模板分 0.76～1.0，图钉处橙色占比约 0.72，没图钉的卡角是 0。"""
+    global _CARD_PIN_TEMPLATE
+    if _CARD_PIN_TEMPLATE is None:
+        _CARD_PIN_TEMPLATE = cv2.imread(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                     "assets", "chaos_map", "ref_card_pin.png"))
+    if frame is None or _CARD_PIN_TEMPLATE is None:
+        return []
+    h, w = frame.shape[:2]
+    img = frame[:, :, :3] if (w, h) == (1920, 1080) else cv2.resize(frame[:, :, :3], (1920, 1080))
+    res = cv2.matchTemplate(img, _CARD_PIN_TEMPLATE, cv2.TM_CCOEFF_NORMED)
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    pins = []
+    ys, xs = np.where(res > 0.6)
+    for x, y in sorted(zip(xs, ys), key=lambda p: -res[p[1], p[0]]):
+        cx, cy = int(x) + 16, int(y) + 16
+        if any(abs(cx - px) < 24 and abs(cy - py) < 24 for px, py in pins):
+            continue
+        p = hsv[cy - 12:cy + 12, cx - 12:cx + 12]
+        if ((p[..., 0] < 20) & (p[..., 1] > 150) & (p[..., 2] > 200)).mean() < 0.4:
+            continue
+        pins.append((cx, cy))
+    return [(x / 1920, y / 1080) for x, y in pins]
+
+
+def card_has_pin(card, pins):
+    px, py = card["x"] + CARD_PIN_OFFSET[0], card["y"] + CARD_PIN_OFFSET[1]
+    return any(abs(px - x) < 0.035 and abs(py - y) < 0.035 for x, y in pins)
+
+
 def select_card(task: TriggerTask, card_names, count=1, action=""):
     """使用卡组特征识别选择卡牌，支持滚动查找、基础牌移除和兜底选择。"""
     selected = 0
@@ -1356,9 +1391,19 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
             clicked = True
         return clicked
 
+    chaos_mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
+    # 空存不要闪光，图钉只在删卡时用
+    use_pins = chaos_mode in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EXPLORE) or (
+        chaos_mode == chaos_strategy.MODE_EMPTY and action == "移除")
+
     def click_priority_cards(cards):
         nonlocal selected
         clicked = False
+        if use_pins and selected < count:
+            # 游戏按预设标了图钉的卡最优先（用户 2026-10-24）
+            pins = find_card_pins(task.frame)
+            if pins and click_cards(cards, lambda card: card_has_pin(card, pins), "游戏推荐图钉，点击"):
+                clicked = True
         for target in card_names:
             if selected >= count:
                 break

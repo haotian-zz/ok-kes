@@ -89,7 +89,7 @@ class TestPriorities(unittest.TestCase):
         return [d for _, d in sorted(zip([r[0] for r in res], descs), reverse=True)]
 
     def test_target_order(self):
-        descs = ["要他回去获得装备[截骨机]", "复制选中的1张卡牌", "移除1张卡牌", "选中主战员闪光1次",
+        descs = ["要他回去获得装备[截骨机]", "复制选中的1张卡牌", "移除1张卡牌", "选择1张卡牌闪光", "选中主战员闪光1次",
                  "信用点增加300", "随机主战员触发1次闪光", "信用点增加100"]
         self.assertEqual(descs, self.rank(list(reversed(descs))))
 
