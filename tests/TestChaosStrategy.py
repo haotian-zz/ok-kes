@@ -551,3 +551,10 @@ class TestModifierOcr(unittest.TestCase):
         mods = cs.parse_modifiers("【精英2】多2个精英【疎忽1】某效果")
         self.assertEqual("疏忽", mods[1][0])
         self.assertFalse(cs.judge_modifiers(mods)[0])
+
+
+class TestGodNames(unittest.TestCase):
+    def test_all_gods(self):
+        for d in ("闪光：基尔肯", "赋予1张所选卡牌赛克雷德闪光", "随机卡牌维托尔闪光"):
+            self.assertTrue(cs.parse_effects(d).get("god_spark"), d)
+        self.assertFalse(cs.parse_effects("选择基尔肯的神眷者闪光").get("god_spark"))

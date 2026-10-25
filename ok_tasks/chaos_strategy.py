@@ -93,7 +93,10 @@ def _num(s):
     return int(s) if s.isdigit() else _CN_NUM.get(s, 1)
 
 
-GOD_NAMES = r"迪亚洛斯|尼希勒姆|瑟克洛斯|维托尔|CALIGO|caligo|卡利戈|戴奥斯"
+# 六位神（国服名|繁中名，gamekee 闪光表 type=3）：迪亚洛斯/戴奥斯、基尔肯/凯尔肯、尼希勒姆/尼希隆、维托尔/维托、赛克雷德/赛克瑞德、卡利戈
+# 2026-10-25 实录「闪光：基尔肯」没认成神闪。「基尔肯的神眷者」是卡名，不算
+GOD_NAMES = (r"迪亚洛斯|戴奥斯|(?:基尔肯|凯尔肯)(?!的神眷者)|尼希勒姆|尼希隆|维托尔|维托|赛克雷德|赛克瑞德|瑟克洛斯"
+             r"|CALIGO|caligo|卡利戈")
 
 
 def parse_effects(text):
