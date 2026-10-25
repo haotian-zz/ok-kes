@@ -22,6 +22,16 @@ def box(text, cx, cy, w=0.05, h=0.03):
 HOME = [box("出击", 0.899, 0.266), box("模拟", 0.899, 0.351), box("卡厄思", 0.891, 0.438), box("主战员", 0.891, 0.616)]
 
 
+def paste_template(frame, name, cx, cy):
+    """把 assets/daily 的模板按当前分辨率缩放后贴到相对中心 (cx, cy)。"""
+    import cv2
+    t = utils_daily._load_template(name)
+    t = cv2.resize(t, None, fx=W / utils_daily.TEMPLATE_BASE_WIDTH, fy=W / utils_daily.TEMPLATE_BASE_WIDTH)
+    th, tw = t.shape[:2]
+    x, y = int(cx * W - tw / 2), int(cy * H - th / 2)
+    frame[y:y + th, x:x + tw] = t
+
+
 class FakeTask:
     """每次 next_frame 取下一页 (texts, brightness)；最后一页一直重复。记录点击和按键。"""
 
@@ -34,9 +44,12 @@ class FakeTask:
         self._texts = []
 
     def next_frame(self):
-        texts, brightness = self.pages.pop(0) if len(self.pages) > 1 else self.pages[0]
+        page = self.pages.pop(0) if len(self.pages) > 1 else self.pages[0]
+        texts, brightness = page[:2]
         self._texts = list(texts)
         self.frame = np.full((H, W, 3), brightness, dtype=np.uint8)
+        for name, cx, cy in (page[2] if len(page) > 2 else []):
+            paste_template(self.frame, name, cx, cy)
         return self.frame
 
     def ocr(self):
@@ -55,6 +68,12 @@ class FakeTask:
         pass
 
     def log_info(self, msg, notify=False):
+        pass
+
+    def mouse_down(self, x, y, key="left"):
+        self.actions.append(("hold", round(x / W, 3), round(y / H, 3)))
+
+    def mouse_up(self, key="left"):
         pass
 
 
@@ -145,6 +164,39 @@ class TestDrinkCoffee(unittest.TestCase):
         task = FakeTask(pages)
         self.assertTrue(utils_daily.drink_coffee(task))
         self.assertNotIn(("click",) + utils_daily.COFFEE_ORDER_BOARD, task.actions)
+
+
+class TestTreatPatients(unittest.TestCase):
+    HOME_CITY = HOME + [box("方舟城市", 0.883, 0.521)]
+    CITY = ([box("方舟城市", 0.122, 0.046), box("庭院咖啡店", 0.444, 0.921)], 128, [("heal_city_enter", 0.555, 0.86)])
+    TRAUMA = ([box("创伤中心", 0.122, 0.046)], 128, [("heal_trauma_center", 0.845, 0.685)])
+    PATIENT = (0.30, 0.49)
+
+    def ward(self, patient):
+        marks = [("heal_center", 0.045, 0.92)]
+        marks.append(("heal_has_patient",) + self.PATIENT if patient else ("heal_no_patient", 0.575, 0.515))
+        return ([box("疗愈中心", 0.12, 0.046)], 128, marks)
+
+    def test_report_only(self):
+        task = FakeTask([(self.HOME_CITY, 128), (self.HOME_CITY, 128), self.CITY, self.TRAUMA, self.ward(True)])
+        self.assertTrue(utils_daily.treat_patients(task, "不处理"))
+        self.assertIn(("click", 0.791, 0.736), task.actions)
+        self.assertFalse([a for a in task.actions if a[0] == "click" and a[2] < 0.4])
+
+    def test_no_patient(self):
+        task = FakeTask([(self.HOME_CITY, 128), (self.HOME_CITY, 128), self.CITY, self.TRAUMA, self.ward(False)])
+        self.assertTrue(utils_daily.treat_patients(task, "记忆消除"))
+        self.assertNotIn(("click",) + utils_daily.HEAL_PLAN_BUTTON["记忆消除"], task.actions)
+
+    def test_memory_erase(self):
+        selected = ([box("确认", 0.6625, 0.706)], 128, [("heal_selected", 0.535, 0.235)])
+        pages = [(self.HOME_CITY, 128), (self.HOME_CITY, 128), self.CITY, self.TRAUMA,
+                 self.ward(True), self.ward(True), self.ward(True), selected, selected, self.ward(False)]
+        task = FakeTask(pages)
+        self.assertTrue(utils_daily.treat_patients(task, "记忆消除"))
+        x = round(self.PATIENT[0] + utils_daily.HEAL_PATIENT_OFFSET[0], 3)
+        self.assertIn(x, [a[1] for a in task.actions if a[0] == "click"])
+        self.assertIn(("click",) + utils_daily.HEAL_PLAN_BUTTON["记忆消除"], task.actions)
 
 
 class TestDialogueLine(unittest.TestCase):

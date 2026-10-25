@@ -26,6 +26,8 @@ class DailyTask(BaseTask):
             "清体力关卡": "单元币",
             "清体力战斗效率": 6,
             "清体力保留以太": 0,
+            "疗愈中心": True,
+            "疗愈中心治疗方式": "不处理",
         })
         self.config_description.update({
             "检查快捷键显示": "设置→键盘→快捷键显示保持 ON（出击/卡厄思识别手牌要用卡牌上的按键提示）",
@@ -39,6 +41,8 @@ class DailyTask(BaseTask):
             "清体力关卡": "分类里的关卡名（按画面文字点，如 单元币）",
             "清体力战斗效率": "每次消耗 20×效率 以太，以太不够时自动降到打得起的效率",
             "清体力保留以太": "留这么多以太不用（比如留给卡厄思）",
+            "疗愈中心": "方舟城市 → 创伤中心，查看卡厄思里精神崩溃住院的战斗员（住院期间不能出战）",
+            "疗愈中心治疗方式": "不处理＝只提示；记忆消除花单元币；咨询花旅行券，对话自动选左边回答后批准出院",
         })
         # (配置项, 执行函数名)，函数在 utils_daily 里，签名 fn(task) -> bool
         self.steps = [
@@ -46,6 +50,7 @@ class DailyTask(BaseTask):
             ("领取日常活跃奖励", "claim_daily_activity"),
             ("领取阿基亚农补给", "claim_supply"),
             ("领取邮箱", "claim_mail"),
+            ("疗愈中心", "treat_patients"),
             ("喝咖啡", "drink_coffee"),
             ("清体力", "farm_stamina"),      # 放在喝咖啡后面：堂食咖啡先补以太
         ]
@@ -53,6 +58,7 @@ class DailyTask(BaseTask):
             "咖啡点单": {"type": "drop_down", "options": ["自动", "堂食", "外带"]},
             "清体力分类": {"type": "drop_down", "options": ["成长", "主战员", "辅战员", "潜能", "记忆碎片"]},
             "清体力战斗效率": {"type": "drop_down", "options": [1, 2, 3, 4, 5, 6]},
+            "疗愈中心治疗方式": {"type": "drop_down", "options": list(utils_daily.HEAL_PLANS)},
         }
 
     def _step_kwargs(self, fn_name):
@@ -62,6 +68,8 @@ class DailyTask(BaseTask):
             return {"category": self.config.get("清体力分类", "成长"), "stage": self.config.get("清体力关卡", "单元币"),
                     "efficiency": int(self.config.get("清体力战斗效率", 6)),
                     "keep_ether": int(self.config.get("清体力保留以太", 0))}
+        if fn_name == "treat_patients":
+            return {"plan": self.config.get("疗愈中心治疗方式", "不处理")}
         return {}
 
     def run(self):

@@ -516,3 +516,125 @@ def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficienc
         task.sleep(2)
     task.log_info("清体力超时")
     return False
+
+
+# ------------------------- 疗愈中心 -------------------------
+# 方舟城市 → 创伤中心 → 疗愈中心。卡厄思里精神崩溃的战斗员会住院，治好之前不能出战。
+# 画面上全是图标，用 Maa_Kes 的 720p 模板（assets/daily/heal_*.png）和它的点击位置。
+HEAL_PLANS = ("不处理", "记忆消除", "咨询")
+HEAL_CITY_ENTER_REGION = (0.50, 0.78, 0.61, 0.94)        # 方舟城市底部去创伤中心的图标
+HEAL_TRAUMA_REGION = (0.78, 0.58, 0.91, 0.79)            # 创伤中心建筑上的标志
+HEAL_TRAUMA_CLICK = (0.791, 0.736)
+HEAL_CENTER_REGION = (0.0, 0.85, 0.10, 1.0)              # 疗愈中心左下角标志
+HEAL_PATIENT_REGION = (0.25, 0.42, 0.35, 0.57)           # 有病人：病床上的崩溃图标
+HEAL_PATIENT_OFFSET = (0.110, -0.151)                    # 从崩溃图标到病人卡片的偏移
+HEAL_NO_PATIENT_REGION = (0.46, 0.35, 0.69, 0.68)        # 没病人：中间的空床标志
+HEAL_SELECTED_REGION = (0.49, 0.17, 0.58, 0.30)
+HEAL_PLAN_BUTTON = {"记忆消除": (0.609, 0.926), "咨询": (0.859, 0.929)}
+HEAL_PLAN_CONFIRM = {"记忆消除": (0.6625, 0.706), "咨询": (0.6625, 0.632)}
+HEAL_CHOICE_LEFT = (0.230, 0.467)                        # 咨询对话的二选一，点左边
+HEAL_DISCHARGE_REGION = (0.27, 0.40, 0.37, 0.55)
+HEAL_DISCHARGE_HOLD = (0.775, 0.856)                     # 批准出院：长按 0.5 秒
+
+
+def _enter_heal_center(task: BaseTask, timeout=30.0):
+    if not open_home_entry(task, "方舟城市"):
+        return False
+    end = time.time() + timeout
+    while time.time() < end:
+        refresh(task)
+        if match_template(task, "heal_center", HEAL_CENTER_REGION)[1] or has_text(task, r"^疗愈中心$"):
+            return True
+        box = find_text(task, r"^(创伤中心|疗愈中心)$", region=(0.3, 0.85, 0.7, 0.97))
+        if box:
+            click_text_box(task, box, after=3, reason="进入创伤中心")
+            continue
+        if match_template(task, "heal_trauma_center", HEAL_TRAUMA_REGION)[1]:
+            click_rel(task, *HEAL_TRAUMA_CLICK, after=3, reason="进入疗愈中心")
+            continue
+        _, pos = match_template(task, "heal_city_enter", HEAL_CITY_ENTER_REGION)
+        if pos:
+            click_rel(task, *pos, after=3, reason="前往创伤中心")
+            continue
+        task.sleep(1)
+    task.log_info("没有进入疗愈中心：" + " | ".join(b.name for b in (task.all_texts or [])[:8]))
+    return False
+
+
+def _heal_consult_until_discharge(task: BaseTask, timeout=120.0):
+    """咨询：推进对话、二选一点左边，直到出现「批准出院」并长按。"""
+    end = time.time() + timeout
+    while time.time() < end:
+        refresh(task)
+        if match_template(task, "heal_discharge", HEAL_DISCHARGE_REGION)[1] or has_text(task, r"批准出院"):
+            x, y = HEAL_DISCHARGE_HOLD
+            task.log_info("批准出院（长按）")
+            task.mouse_down(int(x * task.width), int(y * task.height), key="left")
+            task.sleep(0.6)
+            task.mouse_up(key="left")
+            task.sleep(2)
+            return True
+        if match_template(task, "heal_center", HEAL_CENTER_REGION)[1]:
+            return True
+        if has_text(task, r"跳过", region=(0.85, 0.0, 1.0, 0.12)):
+            click_text(task, r"跳过", region=(0.85, 0.0, 1.0, 0.12), timeout=1, after=1.5)
+            continue
+        if len(task.all_texts or []) >= 2 and _is_two_choice(task):
+            click_rel(task, *HEAL_CHOICE_LEFT, after=1.5, reason="咨询回答（左）")
+            continue
+        task.send_key("space")
+        task.sleep(1)
+    task.log_info("咨询超时，没等到批准出院")
+    return False
+
+
+def _is_two_choice(task: BaseTask):
+    """咨询对话的左右两个白底回答框：上半屏左右两侧都有文字。"""
+    left = [b for b in task.all_texts or [] if in_region(task, b, (0.07, 0.23, 0.48, 0.81))]
+    right = [b for b in task.all_texts or [] if in_region(task, b, (0.52, 0.23, 0.93, 0.81))]
+    frame = task.frame
+    if not left or not right or frame is None:
+        return False
+    x, y = int(HEAL_CHOICE_LEFT[0] * task.width), int(HEAL_CHOICE_LEFT[1] * task.height)
+    return float(frame[y - 5:y + 5, x - 30:x + 30].min()) >= 230
+
+
+def treat_patients(task: BaseTask, plan="不处理", max_patients=4):
+    """疗愈中心：有住院的战斗员就按 plan 治疗（记忆消除花单元币，咨询花旅行券）；不处理＝只报告。"""
+    if not _enter_heal_center(task):
+        return False
+    treated = 0
+    for _ in range(max_patients + 2):
+        refresh(task)
+        task.sleep(1)
+        refresh(task)
+        if match_template(task, "heal_no_patient", HEAL_NO_PATIENT_REGION)[1]:
+            task.log_info(f"疗愈中心没有病人（本次治疗 {treated} 位）")
+            return True
+        _, pos = match_template(task, "heal_has_patient", HEAL_PATIENT_REGION)
+        if not pos:
+            task.log_info("疗愈中心：没认出有没有病人：" + " | ".join(b.name for b in (task.all_texts or [])[:8]))
+            return treated > 0
+        if plan not in HEAL_PLAN_BUTTON:
+            task.log_info("疗愈中心有病人，按配置不处理", notify=True)
+            return True
+        if treated >= max_patients:
+            break
+        click_rel(task, pos[0] + HEAL_PATIENT_OFFSET[0], pos[1] + HEAL_PATIENT_OFFSET[1], after=1.5, reason="选中病人")
+        refresh(task)
+        if not match_template(task, "heal_selected", HEAL_SELECTED_REGION)[1]:
+            task.log_info("点了病人但没有进入治疗方案页")
+            return False
+        click_rel(task, *HEAL_PLAN_BUTTON[plan], after=1.5, reason=plan)
+        if not click_text(task, r"^确认$", region=(0.4, 0.5, 0.8, 0.8), timeout=3, after=2):
+            click_rel(task, *HEAL_PLAN_CONFIRM[plan], after=2, reason=f"{plan}确认")
+        refresh(task)
+        if has_text(task, r"不足"):
+            task.log_info(f"{plan}的材料不足，停止治疗", notify=True)
+            return treated > 0
+        if plan == "咨询" and not _heal_consult_until_discharge(task):
+            return False
+        treated += 1
+        task.sleep(2)
+    task.log_info(f"疗愈中心本次治疗 {treated} 位")
+    return True
