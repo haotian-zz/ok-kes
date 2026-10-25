@@ -439,6 +439,20 @@ def _training_efficiency(task: BaseTask):
     return int(re.search(r"(\d)\s*$", box.name).group(1)) if box else None
 
 
+def _click_training_stage(task: BaseTask, stage, scrolls=4):
+    """关卡名可以写全名「潜能材料-正义」或后半截「正义」；列表一屏放 4 个，不在屏上就往下滚（潜能的正义在第 5 个）。"""
+    pattern = f"(^|[-－]){re.escape(stage)}$"
+    region = (0.6, 0.15, 1.0, 0.99)              # 列表最后一项（潜能-正义）滑到底也只在 y≈0.95
+    for i in range(scrolls + 1):
+        if click_text(task, pattern, region=region, timeout=3 if i else 6, after=3):
+            return True
+        if i < scrolls:
+            # 滚轮（PostMessage）滚不动这个列表，要按住往上拖；一次只挪一小段（实测 0.85→0.35 挪了约 0.13 屏）
+            task.swipe_relative(0.72, 0.85, 0.72, 0.30, duration=0.8)
+            task.sleep(1.5)
+    return False
+
+
 def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficiency=6, keep_ether=0, max_runs=20,
                  next_difficulty=True):
     """模拟 → 战斗训练 → 分类 → 关卡，按战斗效率连续打到以太不够（保留 keep_ether）。
@@ -454,7 +468,7 @@ def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficienc
         return False
     if not click_text(task, f"^{category}$", region=(0.0, 0.1, 0.3, 0.8), timeout=6, after=2):
         return False
-    if not click_text(task, f"^{stage}$", region=(0.6, 0.15, 1.0, 0.95), timeout=6, after=3):
+    if not _click_training_stage(task, stage):
         return False
     if not wait_text(task, r"^配置队伍$", region=(0.05, 0.0, 0.3, 0.1), timeout=8):
         task.log_info("没有进入配置队伍页面")
