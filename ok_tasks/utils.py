@@ -3076,6 +3076,13 @@ def _god_spark_wanted(task: TriggerTask):
     return names
 
 
+def _flash_done(task: TriggerTask, name):
+    """预设里同名卡全部闪对了没有（2026-10-25 实录剑鸣九霄 3 张只闪对 1 张就不再选）。"""
+    plan = getattr(task, "chaos_plan", None) or {}
+    need = sum(1 for c in plan.get("flash", []) if c.get("name") == name) or 1
+    return (getattr(task, "node_status", None) or {}).get("flash_ok", []).count(name) >= need
+
+
 def _copy_needed(task: TriggerTask):
     """目标卡组还要不要复制（首领奖励的复制不经过事件打分，2026-10-25 实录复制成第 4 张剑鸣九霄）。其他模式不管。"""
     if getattr(task, "chaos_mode", "") != chaos_strategy.MODE_TARGET:
@@ -3173,7 +3180,7 @@ def handle_select_card(task: TriggerTask):
         # 目标卡组：先选闪错的（免费重闪），再选还没闪对的；都闪对了就跳过（2026-10-25 实录把闪对的剑鸣九霄又闪坏）
         pending = [n for n, v in (_member_deck_state(task).get("冥想", {}) or {}).items() if v is True]
         ok = task.node_status.get("flash_ok", [])
-        card_list = pending + [n for n in card_list if n not in ok and n not in pending]
+        card_list = pending + [n for n in card_list if not _flash_done(task, n) and n not in pending]
         task.log_info(f"选卡闪光：闪错待重闪 {pending}，已闪对 {ok} → 候选 {card_list}")
         if not card_list:
             if _click_bottom_skip(task, "目标卡都闪对了，不再闪光"):
@@ -4914,9 +4921,8 @@ def handle_view_original(task: TriggerTask):
         for configured_name in matched_meditation_cards:
             meditation_state[configured_name] = meditation_completed
             if not meditation_completed:
-                ok = task.node_status.setdefault("flash_ok", [])
-                if configured_name not in ok:
-                    ok.append(configured_name)      # 这张卡闪对了，后面「选卡闪光」别再选它
+                # 每闪对一张记一次：预设里同名有几张（剑鸣九霄 3 张）就要闪对几次，后面「选卡闪光」才不再选它
+                task.node_status.setdefault("flash_ok", []).append(configured_name)
             task.log_info(
                 f"冥想卡牌「{configured_name}」状态更新为"
                 f"{'待冥想' if meditation_completed else '无需冥想'}"

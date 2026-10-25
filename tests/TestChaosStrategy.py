@@ -545,6 +545,15 @@ class TestLayerReset(unittest.TestCase):
         task.node_status["copy_count"] = 2
         self.assertFalse(_copy_needed(task))
 
+    def test_flash_done_counts_copies(self):
+        from utils import _flash_done
+        plan = {"flash": [{"name": "剑鸣九霄"}] * 3 + [{"name": "明灭剑"}]}
+        task = SimpleNamespace(chaos_plan=plan, node_status={"flash_ok": ["剑鸣九霄", "明灭剑"]})
+        self.assertFalse(_flash_done(task, "剑鸣九霄"))
+        self.assertTrue(_flash_done(task, "明灭剑"))
+        task.node_status["flash_ok"] += ["剑鸣九霄", "剑鸣九霄"]
+        self.assertTrue(_flash_done(task, "剑鸣九霄"))
+
 
 class TestModifierOcr(unittest.TestCase):
     def test_variant_char(self):
