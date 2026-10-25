@@ -80,8 +80,20 @@ class DevProbe(BaseTask):
                 import utils_daily
                 self.log_info(f"go_home -> {utils_daily.go_home(self, a.get('timeout', 60))}")
             elif op == "call":
-                import utils_daily
-                self.log_info(f"{a['fn']} -> {getattr(utils_daily, a['fn'])(self, **a.get('kwargs', {}))}")
+                import importlib
+                mod = importlib.import_module(a.get("mod", "utils_daily"))
+                self.log_info(f"{a['fn']} -> {getattr(mod, a['fn'])(self, **a.get('kwargs', {}))}")
+            elif op == "scroll":
+                self.scroll_relative(a["x"], a["y"], a.get("n", -3))
+                self.sleep(a.get("after", 1))
+            elif op == "swipe":
+                self.swipe_relative(a["x1"], a["y1"], a["x2"], a["y2"], duration=a.get("d", 0.5))
+                self.sleep(a.get("after", 1))
+            elif op == "ocr":
+                self.next_frame()
+                r = a["r"]
+                boxes = self.ocr(r[0], r[1], r[2], r[3])
+                self.log_info("ocr %s: %s" % (r, [(b.name, round((b.x + b.width / 2) / self.width, 3)) for b in boxes]))
             elif op == "sleep":
                 self.sleep(a["s"])
             else:

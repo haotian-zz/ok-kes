@@ -52,6 +52,23 @@ def similarity(a, b):
     return 2.0 * hit / (len(ga) + len(gb))
 
 
+def containment(part, text):
+    """part 的二元组有多少比例出现在 text 里（0~1）。"""
+    a, b = norm(part), norm(text)
+    if not a or not b:
+        return 0.0
+    ga = _bigrams(a)
+    pool = {}
+    for g in _bigrams(b):
+        pool[g] = pool.get(g, 0) + 1
+    hit = 0
+    for g in ga:
+        if pool.get(g, 0) > 0:
+            pool[g] -= 1
+            hit += 1
+    return hit / len(ga)
+
+
 def _load(name):
     with open(os.path.join(DATA_DIR, name), encoding="utf-8") as f:
         return json.load(f)
@@ -125,7 +142,7 @@ class GameDB:
             score = similarity(vd, text)
             residual = _strip_common(text, vd)
             god, god_score = self._match_god_spark(card, residual)
-            if god and god_score >= 0.7:
+            if god and god_score >= 0.8:
                 # 同样的文字既可能是闪光变体也可能是神闪时，优先认成闪光（神闪更少见）
                 score = similarity(vd + norm(self.god_sparks[god]["desc"]), text) - 0.02
             else:
@@ -143,7 +160,8 @@ class GameDB:
         if len(residual) < 3:
             return None, 0.0
         ids = card.get("god_sparks") or list(self.god_sparks)
-        scored = [(similarity(self.god_sparks[i]["desc"], residual), i) for i in ids if i in self.god_sparks]
+        # 剩余文字里还可能混着丢了括号的天赋标签等噪声，所以按「神闪文字有多少被包含」算，不用 Dice
+        scored = [(containment(self.god_sparks[i]["desc"], residual), i) for i in ids if i in self.god_sparks]
         if not scored:
             return None, 0.0
         s, i = max(scored)
