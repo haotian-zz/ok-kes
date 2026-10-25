@@ -7,7 +7,7 @@ from types import SimpleNamespace
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "ok_tasks"))
 
-from utils_chaos_prep import parse_preset_cards, parse_preset_counts  # noqa: E402
+from utils_chaos_prep import parse_explore_regions, parse_preset_cards, parse_preset_counts  # noqa: E402
 
 W, H = 1920, 1080
 
@@ -42,6 +42,13 @@ class TestPreset(unittest.TestCase):
 
     def test_counts(self):
         self.assertEqual({"pt": (180, 180), "copy": (3, 3), "remove": (3, 5)}, parse_preset_counts(self.texts))
+
+
+class TestChaosFigure(unittest.TestCase):
+    def test_regions(self):
+        regions = parse_explore_regions(load_ocr("chaos_figure_regions.ocr.txt"), W, H)
+        self.assertEqual({"双星的暗影": 19, "裁决之沼": 30, "蓝罐": 30, "雾之都市": 24},
+                         {r["name"]: r["explore"] for r in regions})
 
 
 if __name__ == "__main__":

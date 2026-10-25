@@ -155,7 +155,7 @@ class ChaosMode(TriggerTask):
             sortie.disable()
         reset_all_status(self)
         _migrate_route_boss_to_elite(self)
-        self.setup_strategy()
+        self.strategy_ready = False
         super().enable()
 
     def setup_strategy(self):
@@ -166,6 +166,8 @@ class ChaosMode(TriggerTask):
         self.chaos_plan = None
         self.chaos_seen = chaos_strategy.load_seen() if mode == chaos_strategy.MODE_EXPLORE else set()
         self.team_checked = False
+        self.entry_checked = False
+        self.strategy_ready = True
         if mode == chaos_strategy.MODE_TARGET:
             preset = load_target_deck(member, self.config.get('目标预设', 1))
             if preset:
@@ -183,7 +185,7 @@ class ChaosMode(TriggerTask):
         """目标卡组玩法还没有预设时，在主页先去读一次预设构筑（只读），读完回主页。"""
         if getattr(self, 'chaos_mode', '') != chaos_strategy.MODE_TARGET or self.chaos_plan is not None:
             return False
-        if not utils_daily.is_home(self):
+        if not (utils_daily.is_home(self) or not self.all_texts):
             return False
         member = self.config.get('目标主战员', '')
         preset = self.config.get('目标预设', 1)
@@ -195,10 +197,35 @@ class ChaosMode(TriggerTask):
             self.chaos_overrides = {}
             return True
         save_target_deck(deck)
-        team_checked = self.team_checked
         self.setup_strategy()
-        self.team_checked = team_checked
         self.log_info(f"目标卡组计划：{self.chaos_plan}")
+        return True
+
+    def _enter_chaos_from_home(self):
+        """选了玩法且停在主页时自己进卡厄思：探索度 → 卡厄思具象探索度最低的区域；刷存档 → 零式系统。失败两次就停下。"""
+        mode = getattr(self, 'chaos_mode', chaos_strategy.MODE_LEGACY)
+        if mode == chaos_strategy.MODE_LEGACY or self.entry_checked:
+            return False
+        # 只在启动后第一帧判断：主页（主页闲置会隐藏 UI，整帧没有文字）才自己进卡厄思，已经在卡厄思里就交给原有流程
+        self.entry_checked = True
+        if not (utils_daily.is_home(self) or not self.all_texts):
+            return False
+        if not utils_daily.go_home(self):
+            return False
+        if mode == chaos_strategy.MODE_EXPLORE:
+            ok = utils_chaos_prep.enter_chaos_figure(self)
+        else:
+            ok = utils_chaos_prep.enter_zero_system(self)
+        if ok:
+            self.enter_failures = 0
+            return True
+        self.enter_failures = getattr(self, 'enter_failures', 0) + 1
+        self.log_error(f"从主页进入卡厄思失败（第{self.enter_failures}次）")
+        utils_daily.go_home(self)
+        if self.enter_failures >= 2:
+            self.disable()
+        else:
+            self.entry_checked = False
         return True
 
     def _check_upload_if_needed(self):
@@ -210,7 +237,9 @@ class ChaosMode(TriggerTask):
     def run(self):
         # 每帧执行一次 OCR 并转简体, 供各页面处理函数复用
         self.all_texts = _simplify_texts(self.ocr())
-        if self._prepare_target_deck():
+        if not getattr(self, 'strategy_ready', False):
+            self.setup_strategy()
+        if self._prepare_target_deck() or self._enter_chaos_from_home():
             return
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环
         for handle_page in utils_chaos.PAGE_HANDLERS:

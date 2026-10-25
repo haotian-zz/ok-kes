@@ -5,7 +5,7 @@ import unicodedata
 from ok import BaseTask
 
 from game_db import get_db, norm
-from utils_daily import (refresh, find_text, click_rel, click_text_box, wait_text, open_home_entry,
+from utils_daily import (refresh, find_text, click_rel, click_text, click_text_box, wait_text, open_home_entry,
                          rel_center, in_region)
 
 # ------------------------- 预设构筑 -------------------------
@@ -296,3 +296,56 @@ def setup_team(task: BaseTask, members):
     ok = [norm(n or "") for n in final] == [norm(m) for m in members]
     task.log_info(f"编队结果：{final}（{'正确' if ok else '不符'}）")
     return ok
+
+
+# ------------------------- 进入卡厄思 -------------------------
+
+_EXPLORE = re.compile(r"探索度\D{0,2}(\d+)")
+
+
+def parse_explore_regions(texts, width, height):
+    """卡厄思具象区域页：每个「探索度：N」正上方那行是区域名。返回 [{name, explore, box}]，纯函数。"""
+    regions = []
+    for b in texts:
+        m = _EXPLORE.search(unicodedata.normalize("NFKC", b.name))
+        if not m or "等级" in b.name:
+            continue
+        cx, cy = (b.x + b.width / 2) / width, (b.y + b.height / 2) / height
+        above = [t for t in texts
+                 if t is not b and not _EXPLORE.search(t.name) and len(t.name.strip()) >= 2
+                 and 0.02 <= cy - (t.y + t.height / 2) / height <= 0.08
+                 and abs((t.x + t.width / 2) / width - cx) <= 0.06]
+        if above:
+            name = min(above, key=lambda t: cy - (t.y + t.height / 2) / height)
+            regions.append({"name": name.name.strip(), "explore": int(m.group(1)), "box": name})
+    return regions
+
+
+def enter_chaos_figure(task: BaseTask, max_explore=30):
+    """主页 → 卡厄思 → 卡厄思具象 → 探索度最低（且没满 max_explore）的区域 → 进入，停在配置队伍页。"""
+    if not open_home_entry(task, "卡厄思"):
+        return False
+    if not click_text(task, r"^卡厄思具象$", timeout=8, after=4):
+        return False
+    if not wait_text(task, r"探索度", timeout=8):
+        return False
+    regions = parse_explore_regions(task.all_texts, task.width, task.height)
+    task.log_info(f"卡厄思具象区域探索度：{[(r['name'], r['explore']) for r in regions]}")
+    todo = [r for r in regions if r["explore"] < max_explore]
+    if not todo:
+        task.log_info(f"所有区域探索度都已达到 {max_explore}，不进入")
+        return False
+    target = min(todo, key=lambda r: r["explore"])
+    click_text_box(task, target["box"], after=4, reason=f"选择区域「{target['name']}」（探索度 {target['explore']}）")
+    if not click_text(task, r"^进入$", region=(0.8, 0.85, 1, 1), timeout=8, after=4):
+        return False
+    return bool(wait_text(task, r"^配置队伍$", region=(0, 0, 0.3, 0.1), timeout=10))
+
+
+def enter_zero_system(task: BaseTask):
+    """主页 → 卡厄思 → 零式系统首页（之后由卡厄思模式原有的法典流程接手）。"""
+    if not open_home_entry(task, "卡厄思"):
+        return False
+    if not click_text(task, r"^零式系统$", timeout=8, after=4):
+        return False
+    return bool(wait_text(task, r"零式系统", region=(0, 0, 0.3, 0.1), timeout=10))
