@@ -21,6 +21,11 @@ class DailyTask(BaseTask):
             "领取邮箱": True,
             "喝咖啡": True,
             "咖啡点单": "自动",
+            "清体力": True,
+            "清体力分类": "成长",
+            "清体力关卡": "单元币",
+            "清体力战斗效率": 6,
+            "清体力保留以太": 0,
         })
         self.config_description.update({
             "检查快捷键显示": "设置→键盘→快捷键显示保持 ON（出击/卡厄思识别手牌要用卡牌上的按键提示）",
@@ -29,6 +34,11 @@ class DailyTask(BaseTask):
             "领取邮箱": "菜单 → 邮箱 → 全部领取",
             "喝咖啡": "方舟城市 → 庭院咖啡店，每天一杯",
             "咖啡点单": "堂食立即 +120 以太；外带存 1 个以太补充货币（最多 4 个）；自动＝以太会溢出时外带，否则堂食",
+            "清体力": "模拟 → 战斗训练，按战斗效率连续打到以太不够；结算页优先下个难度，战斗失败就停",
+            "清体力分类": "战斗训练左侧分类（按画面文字点）",
+            "清体力关卡": "分类里的关卡名（按画面文字点，如 单元币）",
+            "清体力战斗效率": "每次消耗 20×效率 以太，以太不够时自动降到打得起的效率",
+            "清体力保留以太": "留这么多以太不用（比如留给卡厄思）",
         })
         # (配置项, 执行函数名)，函数在 utils_daily 里，签名 fn(task) -> bool
         self.steps = [
@@ -37,8 +47,22 @@ class DailyTask(BaseTask):
             ("领取阿基亚农补给", "claim_supply"),
             ("领取邮箱", "claim_mail"),
             ("喝咖啡", "drink_coffee"),
+            ("清体力", "farm_stamina"),      # 放在喝咖啡后面：堂食咖啡先补以太
         ]
-        self.config_type = {"咖啡点单": {"type": "drop_down", "options": ["自动", "堂食", "外带"]}}
+        self.config_type = {
+            "咖啡点单": {"type": "drop_down", "options": ["自动", "堂食", "外带"]},
+            "清体力分类": {"type": "drop_down", "options": ["成长", "主战员", "辅战员", "潜能", "记忆碎片"]},
+            "清体力战斗效率": {"type": "drop_down", "options": [1, 2, 3, 4, 5, 6]},
+        }
+
+    def _step_kwargs(self, fn_name):
+        if fn_name == "drink_coffee":
+            return {"choice": self.config.get("咖啡点单", "自动")}
+        if fn_name == "farm_stamina":
+            return {"category": self.config.get("清体力分类", "成长"), "stage": self.config.get("清体力关卡", "单元币"),
+                    "efficiency": int(self.config.get("清体力战斗效率", 6)),
+                    "keep_ether": int(self.config.get("清体力保留以太", 0))}
+        return {}
 
     def run(self):
         results = []
@@ -48,7 +72,7 @@ class DailyTask(BaseTask):
             self.log_info(f"开始：{key}")
             try:
                 fn = getattr(utils_daily, fn_name)
-                ok = fn(self, self.config.get("咖啡点单", "自动")) if fn_name == "drink_coffee" else fn(self)
+                ok = fn(self, **self._step_kwargs(fn_name))
             except Exception as e:
                 self.log_error(f"{key} 出错: {e}\n{traceback.format_exc()}")
                 self.screenshot(f"daily_error_{fn_name}")
