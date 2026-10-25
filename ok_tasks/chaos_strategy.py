@@ -551,11 +551,18 @@ def pick_flash_variant(card_name, choices, target_cards, db=None, min_sim=0.8):
     db = db or get_db()
     best, best_s = None, 0.0
     card_name = base_card_name(card_name)
+    card = db.find_card(card_name) if db else None
     for i, ch in enumerate(choices):
         for t in target_cards:
             if t.get("name") != card_name or not t.get("desc"):
                 continue
             s = similarity(ch.get("description", ""), t["desc"])
+            # 预设卡面 = 闪光变体 + 神闪词条（明灭剑 5 号 + 「必定触发弱点攻击」），局内重闪出不了神闪那行，
+            # 整段比只有 0.75（2026-10-25）。普通闪光（min_sim<0.9）按库里的变体号对上就算一致，神闪页仍要整段像
+            if card and t.get("n") and min_sim < 0.9:
+                m = db.match_spark(card, ch.get("description", ""))
+                if m and m["n"] == t["n"] and m["score"] >= 0.6:
+                    s = max(s, 0.9)
             if s > best_s:
                 best, best_s = i, s
     return best if best_s >= min_sim else None

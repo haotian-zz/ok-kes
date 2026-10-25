@@ -596,6 +596,19 @@ class TestVariantSuffix(unittest.TestCase):
         self.assertEqual(1, cs.pick_flash_variant("明灭剑 （强化)", choices, targets))
 
 
+class TestVariantByNumber(unittest.TestCase):
+    def test_preset_with_god_line(self):
+        db = cs.get_db()
+        vs = db.card_variants(db.find_card("明灭剑"))
+        preset = [{"name": "明灭剑", "n": 5, "desc": vs[5]["desc"] + "\n必定触发弱点攻击"}]
+        choices = [{"name": "明灭剑", "description": vs[i]["desc"]} for i in (1, 5, 3)]
+        self.assertEqual(1, cs.pick_flash_variant("明灭剑", choices, preset))
+        wrong = [{"name": "明灭剑", "description": vs[i]["desc"]} for i in (1, 2, 3)]
+        self.assertIsNone(cs.pick_flash_variant("明灭剑", wrong, preset))
+        # 神闪页（0.9）不放宽
+        self.assertIsNone(cs.pick_flash_variant("明灭剑", choices, preset, min_sim=0.9))
+
+
 class TestRemoveSplitOcr(unittest.TestCase):
     def test_split_remove(self):
         self.assertEqual(2, cs.parse_effects("开始赎罪所有主战员压力增加20，除2张所选卡牌移").get("remove_card"))
