@@ -10946,7 +10946,7 @@
   },
   {
    "id": "gk_eq_724886",
-   "name": "超负荷动力机关",
+   "name": "过载动力机关",
    "slot": 3,
    "slot_name": "饰品",
    "rarity": "传说",
@@ -10964,11 +10964,12 @@
    "rarity_gamekee": "传说",
    "obtain": "天上防护墙",
    "season_name": "雪上凝结的约定",
-   "icon": "equipment_icons/gk_724886.png"
+   "icon": "equipment_icons/gk_724886.png",
+   "name_gamekee": "超负荷动力机关"
   },
   {
    "id": "gk_eq_724888",
-   "name": "坠落的王冠",
+   "name": "堕落之冠",
    "slot": 2,
    "slot_name": "防具",
    "rarity": "传说",
@@ -10986,7 +10987,8 @@
    "rarity_gamekee": "传说",
    "obtain": "天上防护墙",
    "season_name": "雪上凝结的约定",
-   "icon": "equipment_icons/gk_724888.png"
+   "icon": "equipment_icons/gk_724888.png",
+   "name_gamekee": "坠落的王冠"
   },
   {
    "id": "gk_eq_724889",

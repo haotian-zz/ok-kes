@@ -784,3 +784,11 @@ class TestSaveCleanup(unittest.TestCase):
         later = {0: (9000, 0, 0), 1: (9600, 0, 0), 2: (10400, 0, 0), 3: (10560, 0, 0)}
         self.assertEqual(sc.align(later, tbs, 0, 6), 6)
         self.assertIsNone(sc.align({0: (99999, 0, 0)}, tbs, 0, 0))
+
+
+class TestEquipmentCnNames(unittest.TestCase):
+    def test_season_equipment_cn_alias(self):
+        import game_db
+        db = game_db.GameDB()
+        self.assertIn("堕落之冠", db.equipment_aliases("坠落的王冠"))
+        self.assertIn("过载动力机关", db.equipment_aliases("超负荷动力机关"))
