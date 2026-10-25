@@ -1,0 +1,9096 @@
+{
+ "game": "卡厄思梦境 国服简中",
+ "generated_by": "2game-helper/research/czn/build_db.py",
+ "categories": {
+  "card_sparks": "角色独特卡的 5 个专属闪光变体，在 cards.json 每张卡的 sparks[]（bwiki _rsp1~5）。闪光（灵光一闪）时 3 选 1，选项来自「5 个专属变体 + 符合 filters 的中立闪光(public)」；非角色卡（中立卡、衍生卡）只从 public 里抽。",
+  "public": "中立闪光（中立词条）：在原效果上追加 1 条效果，按 费用/卡牌类型/职业/天赋/spark_tag 过滤；适用于 spark_enable=1 的卡（中立卡、角色独特卡）。",
+  "god": "神之一闪（神闪）：1 个灵光效果 + 1 条神闪词条。god=通用 的 15 条所有神共用，其余每个神 3 条专属；闪光 3 选 1 里最多 1 个带神闪词条。已闪光过的卡不能再神闪。",
+  "assault": "出击模式（出击闪光，卡牌 source=出击）专用的神闪池，按神分组。",
+  "eidolon": "人格面具卡（sort=人格面具）的刻印：光之刻印 / 暗之刻印；add=附加的费用/天赋。",
+  "filters": "cost_min/cost_max 费用区间；card_category 卡牌类型(任一)；card_class 职业(任一，卡无职业时不限)；talent / exclude_talent 天赋 id(TALENT_*)；spark_tag / exclude_spark_tag 卡牌 spark_tag。规则同 bwiki 模块:Cards matchSparkEntry；卡牌侧对应 cards.json 的 cost/type/class/talent_ids/spark_tag。",
+  "taboo": "禁忌卡（neutral_cards.json 里 sort=禁忌卡牌）不是闪光类别，是带负面代价的中立卡。"
+ },
+ "god": [
+  {
+   "id": "add_r_spark_caligo_13",
+   "desc": "击败：抽取3",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_caligo_14",
+   "desc": "赋予此卡连击",
+   "god": "卡利戈",
+   "add_talent": [
+    "连击"
+   ],
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "exclude_talent": [
+     "TALENT_TERMINATION",
+     "TALENT_COOP"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_caligo_15",
+   "desc": "视作中立卡牌，抽取1张中立卡牌",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "add_r_spark_circen_01",
+   "desc": "此卡伤害总量提升30%",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_02",
+   "desc": "此卡的韧性伤害总量提升100%",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_03",
+   "desc": "此卡费用减少1",
+   "god": "通用",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99,
+    "exclude_spark_tag": [
+     "c1008_ban"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_04",
+   "desc": "行动点1",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 0
+   }
+  },
+  {
+   "id": "add_r_spark_circen_05",
+   "desc": "随机己方对敌人发动合击",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_06",
+   "desc": "必定触发弱点攻击",
+   "god": "通用",
+   "add_talent": [
+    "弱点攻击"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ],
+    "exclude_talent": [
+     "TALENT_WEAKPOINT"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_07",
+   "desc": "此卡的护盾总量提升30%",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "spark_tag": [
+     "shield"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_08",
+   "desc": "此卡的治愈总量提升30%",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "spark_tag": [
+     "cure"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_09",
+   "desc": "士气1，坚定1",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_10",
+   "desc": "抽取1",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_11",
+   "desc": "赋予敌人痛苦4",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_12",
+   "desc": "赋予对象脆弱2",
+   "god": "通用",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_13",
+   "desc": "压力减少3",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_circen_14",
+   "desc": "协调：下回合行动点2",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "add_r_spark_circen_15",
+   "desc": "本回合EGO技能费用减少1",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "add_r_spark_diallos_13",
+   "desc": "赋予此卡粉碎，赋予全体敌人损伤3",
+   "god": "迪亚洛斯",
+   "add_talent": [
+    "粉碎"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ],
+    "exclude_talent": [
+     "TALENT_SHIELD_DESTRUCT"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_diallos_14",
+   "desc": "赋予此卡保留",
+   "god": "迪亚洛斯",
+   "add_talent": [
+    "保留"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_RETAIN"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_diallos_15",
+   "desc": "若无护盾，则护盾获得总量提升100%",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "spark_tag": [
+     "shield"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_nihilum_13",
+   "desc": "每回合费用变为0~3",
+   "god": "尼希勒姆",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "add_r_spark_nihilum_14",
+   "desc": "将弃牌堆中2张消耗卡牌移动至手牌",
+   "god": "尼希勒姆",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "add_r_spark_nihilum_15",
+   "desc": "治愈总量提升100%，赋予此卡终结",
+   "god": "尼希勒姆",
+   "add_talent": [
+    "终结"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "spark_tag": [
+     "cure"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_secred_13",
+   "desc": "回合开始时，若为该回合首次使用此卡，则抽取2",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_secred_14",
+   "desc": "若生命值低于50%，则治愈总量提升100%",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "spark_tag": [
+     "cure"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_secred_15",
+   "desc": "回合开始时，随机敌人标记2",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_vitor_13",
+   "desc": "抽取1张自身卡牌",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_vitor_14",
+   "desc": "赋予此卡开战",
+   "god": "维托尔",
+   "add_talent": [
+    "开战"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "exclude_talent": [
+     "TALENT_INNATE"
+    ]
+   }
+  },
+  {
+   "id": "add_r_spark_vitor_15",
+   "desc": "弱点攻击：1回合内不屈减少2",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  }
+ ],
+ "public": [
+  {
+   "id": "c00000",
+   "desc": "士气1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00001",
+   "desc": "士气1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00002",
+   "desc": "士气2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00003",
+   "desc": "士气2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c00004",
+   "desc": "士气2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c00005",
+   "desc": "士气1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00110",
+   "desc": "士气1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00111",
+   "desc": "士气1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00112",
+   "desc": "士气2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00113",
+   "desc": "士气2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00114",
+   "desc": "士气2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c00115",
+   "desc": "士气1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "strength"
+    ]
+   }
+  },
+  {
+   "id": "c01000",
+   "desc": "坚定1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01001",
+   "desc": "坚定1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01002",
+   "desc": "坚定2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01003",
+   "desc": "坚定2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c01004",
+   "desc": "坚定2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c01005",
+   "desc": "坚定1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01110",
+   "desc": "坚定1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01111",
+   "desc": "坚定1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01112",
+   "desc": "坚定2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01113",
+   "desc": "坚定2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01114",
+   "desc": "坚定2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c01115",
+   "desc": "坚定1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dexterity"
+    ]
+   }
+  },
+  {
+   "id": "c02000",
+   "desc": "不屈1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02001",
+   "desc": "不屈1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02002",
+   "desc": "不屈2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02003",
+   "desc": "不屈2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c02004",
+   "desc": "不屈2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c02005",
+   "desc": "不屈1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02110",
+   "desc": "不屈1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02111",
+   "desc": "不屈1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02112",
+   "desc": "不屈2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02113",
+   "desc": "不屈2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02114",
+   "desc": "不屈2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c02115",
+   "desc": "不屈1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgresist"
+    ]
+   }
+  },
+  {
+   "id": "c03010",
+   "desc": "1回合内士气1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c03011",
+   "desc": "1回合内士气2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c03012",
+   "desc": "1回合内士气3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c03013",
+   "desc": "1回合内士气4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c03014",
+   "desc": "1回合内士气3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c03015",
+   "desc": "1回合内士气1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c04010",
+   "desc": "1回合内坚定1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c04011",
+   "desc": "1回合内坚定2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c04012",
+   "desc": "1回合内坚定3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c04013",
+   "desc": "1回合内坚定4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c04014",
+   "desc": "1回合内坚定3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c04015",
+   "desc": "1回合内坚定1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c05010",
+   "desc": "1回合内不屈1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c05011",
+   "desc": "1回合内不屈2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c05012",
+   "desc": "1回合内不屈3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c05013",
+   "desc": "1回合内不屈4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c05014",
+   "desc": "1回合内不屈3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c05015",
+   "desc": "1回合内不屈1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "c06000",
+   "desc": "抽取1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c06001",
+   "desc": "抽取2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c06002",
+   "desc": "抽取2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c06003",
+   "desc": "抽取3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c06004",
+   "desc": "抽取2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c06005",
+   "desc": "抽取1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c06011",
+   "desc": "抽取1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c06012",
+   "desc": "抽取1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c06013",
+   "desc": "抽取2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c06014",
+   "desc": "抽取1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c07010",
+   "desc": "反击1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "counter",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c07011",
+   "desc": "反击1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "counter",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c07012",
+   "desc": "反击2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "counter",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c07013",
+   "desc": "反击2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "counter",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c07014",
+   "desc": "反击2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "counter",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c07015",
+   "desc": "反击1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "counter",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c08000",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08001",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08002",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08003",
+   "desc": "回合开始时反击2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c08004",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c08005",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08110",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08111",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08112",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08113",
+   "desc": "回合开始时反击2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08114",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c08115",
+   "desc": "回合开始时反击1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "turncounter"
+    ]
+   }
+  },
+  {
+   "id": "c09000",
+   "desc": "赋予目标弱化2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09001",
+   "desc": "赋予目标弱化2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09002",
+   "desc": "赋予目标弱化3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09003",
+   "desc": "赋予目标弱化3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c09004",
+   "desc": "赋予目标弱化3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c09005",
+   "desc": "赋予目标弱化2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09010",
+   "desc": "赋予目标弱化1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09011",
+   "desc": "赋予目标弱化1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09012",
+   "desc": "赋予目标弱化2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09013",
+   "desc": "赋予目标弱化2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09014",
+   "desc": "赋予目标弱化2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c09015",
+   "desc": "赋予目标弱化1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "weak"
+    ]
+   }
+  },
+  {
+   "id": "c10000",
+   "desc": "赋予目标脆弱2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10001",
+   "desc": "赋予目标脆弱2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10002",
+   "desc": "赋予目标脆弱3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10003",
+   "desc": "赋予目标脆弱3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c10004",
+   "desc": "赋予目标脆弱3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c10005",
+   "desc": "赋予目标脆弱2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10010",
+   "desc": "赋予目标脆弱1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10011",
+   "desc": "赋予目标脆弱1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10012",
+   "desc": "赋予目标脆弱2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10013",
+   "desc": "赋予目标脆弱2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10014",
+   "desc": "赋予目标脆弱2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c10015",
+   "desc": "赋予目标脆弱1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c11000",
+   "desc": "赋予目标标记2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11001",
+   "desc": "赋予目标标记2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11002",
+   "desc": "赋予目标标记3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11003",
+   "desc": "赋予目标标记3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c11004",
+   "desc": "赋予目标标记3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c11005",
+   "desc": "赋予目标标记2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11010",
+   "desc": "赋予目标标记1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11011",
+   "desc": "赋予目标标记1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11012",
+   "desc": "赋予目标标记2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11013",
+   "desc": "赋予目标标记2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11014",
+   "desc": "赋予目标标记2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c11015",
+   "desc": "赋予目标标记1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "mark"
+    ]
+   }
+  },
+  {
+   "id": "c12000",
+   "desc": "减伤2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12001",
+   "desc": "减伤2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12002",
+   "desc": "减伤3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12003",
+   "desc": "减伤3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c12004",
+   "desc": "减伤3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c12005",
+   "desc": "减伤2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12010",
+   "desc": "减伤1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12011",
+   "desc": "减伤1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12012",
+   "desc": "减伤2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12013",
+   "desc": "减伤2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12014",
+   "desc": "减伤2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c12015",
+   "desc": "减伤1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c13010",
+   "desc": "行动计数增加2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c13011",
+   "desc": "行动计数增加2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c13012",
+   "desc": "行动计数增加3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c13013",
+   "desc": "行动计数增加3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c13014",
+   "desc": "行动计数增加3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c13015",
+   "desc": "行动计数增加2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c15000",
+   "desc": "韧性伤害1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15001",
+   "desc": "韧性伤害2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15002",
+   "desc": "韧性伤害2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15003",
+   "desc": "韧性伤害3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c15004",
+   "desc": "韧性伤害2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c15005",
+   "desc": "韧性伤害1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15010",
+   "desc": "韧性伤害0.5",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15011",
+   "desc": "韧性伤害1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15012",
+   "desc": "韧性伤害1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15013",
+   "desc": "韧性伤害2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15014",
+   "desc": "韧性伤害1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c15015",
+   "desc": "韧性伤害0.5",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "egodmg"
+    ]
+   }
+  },
+  {
+   "id": "c16000",
+   "desc": "行动点1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c16001",
+   "desc": "行动点1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c16002",
+   "desc": "行动点2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c16003",
+   "desc": "行动点2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c16004",
+   "desc": "行动点2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c16005",
+   "desc": "行动点1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c16012",
+   "desc": "行动点1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c16013",
+   "desc": "行动点1",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c16014",
+   "desc": "行动点1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c17000",
+   "desc": "获得EGO点数1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17001",
+   "desc": "获得EGO点数2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17002",
+   "desc": "获得EGO点数2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17003",
+   "desc": "获得EGO点数3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c17004",
+   "desc": "获得EGO点数2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c17005",
+   "desc": "获得EGO点数1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17110",
+   "desc": "获得EGO点数1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17111",
+   "desc": "获得EGO点数2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17112",
+   "desc": "获得EGO点数2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17113",
+   "desc": "获得EGO点数3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17114",
+   "desc": "获得EGO点数2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c17115",
+   "desc": "获得EGO点数1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "ep"
+    ]
+   }
+  },
+  {
+   "id": "c18001",
+   "desc": "免疫1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c18002",
+   "desc": "免疫1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c18003",
+   "desc": "免疫1",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c18004",
+   "desc": "免疫1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c18111",
+   "desc": "免疫1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c18112",
+   "desc": "免疫1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c18113",
+   "desc": "免疫1",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c18114",
+   "desc": "免疫1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c19000",
+   "desc": "赋予对象痛苦3",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19001",
+   "desc": "赋予对象痛苦3",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19002",
+   "desc": "赋予对象痛苦4",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19003",
+   "desc": "赋予对象痛苦4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c19004",
+   "desc": "赋予对象痛苦4",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c19005",
+   "desc": "赋予对象痛苦3",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19010",
+   "desc": "赋予对象痛苦2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19011",
+   "desc": "赋予对象痛苦2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19012",
+   "desc": "赋予对象痛苦3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19013",
+   "desc": "赋予对象痛苦3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19014",
+   "desc": "赋予对象痛苦3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c19015",
+   "desc": "赋予对象痛苦2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "spark_tag": [
+     "targetable"
+    ],
+    "exclude_spark_tag": [
+     "pain"
+    ]
+   }
+  },
+  {
+   "id": "c20110",
+   "desc": "回合开始时，赋予全体敌人痛苦1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c20111",
+   "desc": "回合开始时，赋予全体敌人痛苦1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c20112",
+   "desc": "回合开始时，赋予全体敌人痛苦1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c20113",
+   "desc": "回合开始时，赋予全体敌人痛苦2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c20114",
+   "desc": "回合开始时，赋予全体敌人痛苦1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c20115",
+   "desc": "回合开始时，赋予全体敌人痛苦1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c21110",
+   "desc": "回合结束时，固定护盾20%",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫",
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c21111",
+   "desc": "回合结束时，固定护盾20%",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫",
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c21112",
+   "desc": "回合结束时，固定护盾40%",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫",
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c21113",
+   "desc": "回合结束时，固定护盾60%",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫",
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c21114",
+   "desc": "回合结束时，固定护盾40%",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫",
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c21115",
+   "desc": "回合结束时，固定护盾20%",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫",
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c22110",
+   "desc": "回合结束时，固定治愈20%",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c22111",
+   "desc": "回合结束时，固定治愈20%",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c22112",
+   "desc": "回合结束时，固定治愈40%",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c22113",
+   "desc": "回合结束时，固定治愈60%",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c22114",
+   "desc": "回合结束时，固定治愈40%",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c22115",
+   "desc": "回合结束时，固定治愈20%",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "强化"
+    ],
+    "card_class": [
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c23000",
+   "desc": "全体敌人弱化2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23001",
+   "desc": "全体敌人弱化2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23002",
+   "desc": "全体敌人弱化3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23003",
+   "desc": "全体敌人弱化3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23004",
+   "desc": "全体敌人弱化3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23005",
+   "desc": "全体敌人弱化2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23010",
+   "desc": "全体敌人弱化1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23011",
+   "desc": "全体敌人弱化1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23012",
+   "desc": "全体敌人弱化2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23013",
+   "desc": "全体敌人弱化2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23014",
+   "desc": "全体敌人弱化2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c23015",
+   "desc": "全体敌人弱化1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "weak",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24000",
+   "desc": "全体敌人脆弱2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24001",
+   "desc": "全体敌人脆弱2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24002",
+   "desc": "全体敌人脆弱3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24003",
+   "desc": "全体敌人脆弱3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24004",
+   "desc": "全体敌人脆弱3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24005",
+   "desc": "全体敌人脆弱2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24010",
+   "desc": "全体敌人脆弱1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24011",
+   "desc": "全体敌人脆弱1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24012",
+   "desc": "全体敌人脆弱2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24013",
+   "desc": "全体敌人脆弱2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24014",
+   "desc": "全体敌人脆弱2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c24015",
+   "desc": "全体敌人脆弱1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25000",
+   "desc": "全体敌人标记2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25001",
+   "desc": "全体敌人标记2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25002",
+   "desc": "全体敌人标记3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25003",
+   "desc": "全体敌人标记3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25004",
+   "desc": "全体敌人标记3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25005",
+   "desc": "全体敌人标记2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25010",
+   "desc": "全体敌人标记1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25011",
+   "desc": "全体敌人标记1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25012",
+   "desc": "全体敌人标记2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25013",
+   "desc": "全体敌人标记2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25014",
+   "desc": "全体敌人标记2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c25015",
+   "desc": "全体敌人标记1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "mark",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26000",
+   "desc": "全体敌人痛苦2",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26001",
+   "desc": "全体敌人痛苦2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26002",
+   "desc": "全体敌人痛苦3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26003",
+   "desc": "全体敌人痛苦3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26004",
+   "desc": "全体敌人痛苦3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26005",
+   "desc": "全体敌人痛苦2",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26010",
+   "desc": "全体敌人痛苦1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26011",
+   "desc": "全体敌人痛苦1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26012",
+   "desc": "全体敌人痛苦2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26013",
+   "desc": "全体敌人痛苦2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26014",
+   "desc": "全体敌人痛苦2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c26015",
+   "desc": "全体敌人痛苦1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "pain",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c27010",
+   "desc": "全体敌人行动计数增加1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "all_turncountadd",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c27011",
+   "desc": "全体敌人行动计数增加1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "all_turncountadd",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c27012",
+   "desc": "全体敌人行动计数增加2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "all_turncountadd",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c27013",
+   "desc": "全体敌人行动计数增加2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "all_turncountadd",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c27014",
+   "desc": "全体敌人行动计数增加2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "all_turncountadd",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c27015",
+   "desc": "全体敌人行动计数增加1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "all_turncountadd",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c28000",
+   "desc": "下一回合士气1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c28001",
+   "desc": "下一回合士气2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c28002",
+   "desc": "下一回合士气3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c28003",
+   "desc": "下一回合士气4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c28004",
+   "desc": "下一回合士气3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c28005",
+   "desc": "下一回合士气1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c29000",
+   "desc": "下一回合坚定1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c29001",
+   "desc": "下一回合坚定2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c29002",
+   "desc": "下一回合坚定3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c29003",
+   "desc": "下一回合坚定4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c29004",
+   "desc": "下一回合坚定3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c29005",
+   "desc": "下一回合坚定1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "游侠",
+     "猎人",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c30000",
+   "desc": "下一回合不屈1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c30001",
+   "desc": "下一回合不屈2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c30002",
+   "desc": "下一回合不屈3",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c30003",
+   "desc": "下一回合不屈4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c30004",
+   "desc": "下一回合不屈3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c30005",
+   "desc": "下一回合不屈1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "c31000",
+   "desc": "下一回合抽取1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c31001",
+   "desc": "下一回合抽取2",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c31002",
+   "desc": "下一回合抽取2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c31003",
+   "desc": "下一回合抽取3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c31004",
+   "desc": "下一回合抽取2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c31005",
+   "desc": "下一回合抽取1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c32001",
+   "desc": "下一回合抽取1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c32002",
+   "desc": "下一回合抽取1",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c32003",
+   "desc": "下一回合抽取2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c32004",
+   "desc": "下一回合抽取1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "c33000",
+   "desc": "下一回合行动点1",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 0,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c33001",
+   "desc": "下一回合行动点1",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c33002",
+   "desc": "下一回合行动点2",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 2,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c33003",
+   "desc": "下一回合行动点2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c33004",
+   "desc": "下一回合行动点2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c33005",
+   "desc": "下一回合行动点1",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": -1,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_EXHAUST",
+     "TALENT_TERMINATION"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_05013",
+   "desc": "1回合内不屈4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_05014",
+   "desc": "1回合内不屈3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_07013",
+   "desc": "反击2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "counter",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_07014",
+   "desc": "反击2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "counter",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_10013",
+   "desc": "赋予目标脆弱2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "spark_tag": [
+     "targetable",
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_10014",
+   "desc": "赋予目标脆弱2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "spark_tag": [
+     "targetable",
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_12013",
+   "desc": "减伤2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_12014",
+   "desc": "减伤2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "dmgdecrease"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_13013",
+   "desc": "行动计数增加3",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "spark_tag": [
+     "targetable",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_13014",
+   "desc": "行动计数增加3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "spark_tag": [
+     "targetable",
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_16013",
+   "desc": "行动点1",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_16014",
+   "desc": "行动点1",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "操控师"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "ap"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_24013",
+   "desc": "全体敌人脆弱2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_24014",
+   "desc": "全体敌人脆弱2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "vulnerable",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_27013",
+   "desc": "全体敌人行动计数增加2",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "all_turncountadd",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_27014",
+   "desc": "全体敌人行动计数增加2",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "游侠",
+     "猎人",
+     "奥义师"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ],
+    "exclude_spark_tag": [
+     "all_turncountadd",
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_30003",
+   "desc": "下一回合不屈4",
+   "filters": {
+    "cost_min": 3,
+    "cost_max": 3,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ]
+   }
+  },
+  {
+   "id": "c_30047_30004",
+   "desc": "下一回合不屈3",
+   "filters": {
+    "cost_min": 4,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "card_class": [
+     "守卫",
+     "奥义师",
+     "操控师"
+    ],
+    "talent": [
+     "TALENT_TERMINATION"
+    ],
+    "spark_tag": [
+     "nine_exhaust"
+    ]
+   }
+  }
+ ],
+ "assault": [
+  {
+   "id": "assault_r_spark_caligo_1",
+   "desc": "感应：1回合内士气3",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_2",
+   "desc": "击败：抽取3",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_3",
+   "desc": "赋予此卡连接、安息",
+   "god": "卡利戈",
+   "add_talent": [
+    "连接",
+    "安息"
+   ],
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_CONNECT",
+     "TALENT_TESTAMENT"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_4",
+   "desc": "赋予此卡连击",
+   "god": "卡利戈",
+   "add_talent": [
+    "连击"
+   ],
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 1,
+    "exclude_talent": [
+     "TALENT_TERMINATION",
+     "TALENT_COOP"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_5",
+   "desc": "洗牌时，从抽牌堆移动至手牌",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_6",
+   "desc": "对未行动的目标伤害总量提升50%",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_7_0",
+   "desc": "信用点30",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_7_1",
+   "desc": "信用点30",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_8",
+   "desc": "按费用抽取相应张数",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "exclude_spark_tag": [
+     "draw"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_9",
+   "desc": "视作中立卡牌，抽取1张中立卡牌",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_caligo_10",
+   "desc": "首领战中伤害总量提升200%",
+   "god": "卡利戈",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_1",
+   "desc": "赋予此卡升空",
+   "god": "基尔肯",
+   "add_talent": [
+    "升空"
+   ],
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_TERMINATION",
+     "TALENT_CELESTIAL"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_2",
+   "desc": "下次X额外增加等同于此卡X的数值",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "spark_tag": [
+     "xcost"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_3",
+   "desc": "压力减少3",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_4",
+   "desc": "协调：下回合行动点2",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_5",
+   "desc": "视作基础卡牌，抽取1张基础卡牌",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "exclude_spark_tag": [
+     "sort_start"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_6",
+   "desc": "费用增加1，伤害总量提升100%",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_7",
+   "desc": "EGO点数大于等于5时，治愈总量提升100%",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "spark_tag": [
+     "cure"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_8",
+   "desc": "生成随机中立技能卡牌",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_9",
+   "desc": "行动点1",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 0
+   }
+  },
+  {
+   "id": "assault_r_spark_circen_10",
+   "desc": "本回合EGO技能费用减少1",
+   "god": "基尔肯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_1",
+   "desc": "生成2张机动核心",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_2",
+   "desc": "赋予此卡粉碎，赋予全体敌人损伤3",
+   "god": "迪亚洛斯",
+   "add_talent": [
+    "粉碎"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ],
+    "exclude_talent": [
+     "TALENT_SHIELD_DESTRUCT"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_3",
+   "desc": "保留：生成1张机动核心",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "talent": [
+     "TALENT_RETAIN"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_4",
+   "desc": "赋予此卡保留",
+   "god": "迪亚洛斯",
+   "add_talent": [
+    "保留"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_RETAIN"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_5",
+   "desc": "战斗开始时发动",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "spark_tag": [
+     "shield"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_6",
+   "desc": "若无护盾，则护盾获得总量提升100%",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "spark_tag": [
+     "shield"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_7",
+   "desc": "手牌大于等于8张时，，费用变为0",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_8",
+   "desc": "生成随机中立强化卡牌后发动",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_9",
+   "desc": "保留15%护盾",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_diallos_10",
+   "desc": "受击时，发动手牌中的此卡",
+   "god": "迪亚洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_1",
+   "desc": "每回合费用变为1~3",
+   "god": "尼希勒姆",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_2",
+   "desc": "赋予此卡蒸发，焚烧：发动此卡",
+   "god": "尼希勒姆",
+   "add_talent": [
+    "蒸发"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_EXHAUST",
+     "TALENT_ETHEREAL"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_3",
+   "desc": "赋予此卡点燃",
+   "god": "尼希勒姆",
+   "add_talent": [
+    "点燃"
+   ],
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_IGNITE"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_4",
+   "desc": "将弃牌堆中2张消耗卡牌移动至手牌",
+   "god": "尼希勒姆",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_5",
+   "desc": "生成1张虚空碎片加入手牌",
+   "god": "尼希勒姆",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_6",
+   "desc": "若手牌中存在状态异常或咒术，则伤害次数变为2倍",
+   "god": "尼希勒姆",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_7",
+   "desc": "治愈总量提升100%，赋予此卡终结",
+   "god": "尼希勒姆",
+   "add_talent": [
+    "终结"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ],
+    "spark_tag": [
+     "cure"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_8",
+   "desc": "对目标痛苦4",
+   "god": "尼希勒姆",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_9",
+   "desc": "对目标脆弱3",
+   "god": "尼希勒姆",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_nihilum_10",
+   "desc": "赋予此卡移除，生成2张虚空碎片",
+   "god": "尼希勒姆",
+   "add_talent": [
+    "移除"
+   ],
+   "filters": {
+    "cost_min": 99,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_1",
+   "desc": "回合开始时，若为该回合首次使用此卡，则抽取2",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_2",
+   "desc": "丢弃2，抽取2",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": 99,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_3",
+   "desc": "回合开始时，发动手牌中的此卡",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_TERMINATION"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_4_0",
+   "desc": "闪避1，免疫1",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": 2,
+    "cost_max": 99,
+    "talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_4_1",
+   "desc": "闪避1，免疫1",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_5",
+   "desc": "若生命值已满，则费用变为1",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_6",
+   "desc": "对生命值已满的目标伤害总量提升100%",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_7",
+   "desc": "若生命值低于50%，则治愈总量提升100%",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "技能"
+    ],
+    "spark_tag": [
+     "cure"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_8",
+   "desc": "始终弱点攻击，此卡韧性伤害提升100%",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_9",
+   "desc": "全体主战员合击",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_secred_10",
+   "desc": "回合开始时，随机敌人标记2",
+   "god": "瑟克洛斯",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 99,
+    "card_category": [
+     "强化"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_1",
+   "desc": "灵感：费用变为1",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99,
+    "exclude_talent": [
+     "TALENT_INNATE"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_2",
+   "desc": "抽取1张自身卡牌",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_3",
+   "desc": "赋予此卡开战",
+   "god": "维托尔",
+   "add_talent": [
+    "开战"
+   ],
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击",
+     "技能"
+    ],
+    "exclude_talent": [
+     "TALENT_INNATE"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_4",
+   "desc": "必定暴击",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_5",
+   "desc": "使用此卡击破时，此卡移动至手牌",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ],
+    "exclude_talent": [
+     "TALENT_EXHAUST"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_6",
+   "desc": "连击：伤害总量提升50%",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ],
+    "spark_tag": [
+     "targetable"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_7",
+   "desc": "破坏：伤害次数增加1",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_8",
+   "desc": "暴击伤害+100%",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": -1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_9",
+   "desc": "此卡费用减少1",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99
+   }
+  },
+  {
+   "id": "assault_r_spark_vitor_10",
+   "desc": "弱点攻击：1回合内不屈减少2",
+   "god": "维托尔",
+   "filters": {
+    "cost_min": 1,
+    "cost_max": 99,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  }
+ ],
+ "eidolon": [
+  {
+   "id": "ds03_lux_0001",
+   "desc": "光之庇佑1",
+   "imprint": "光之刻印",
+   "add": {
+    "cost": 1,
+    "talent": [
+     "消耗2"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0002",
+   "desc": "存在行动计数为1的目标时，此卡牌费用减少2",
+   "imprint": "光之刻印",
+   "add": {
+    "cost": 1,
+    "talent": [
+     "迅捷"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫",
+     "猎人",
+     "游侠",
+     "奥义师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0003",
+   "desc": "反击波动2，\n额外获得1层光之刻印",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "守卫"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0004",
+   "desc": "每有1张光之刻印，即可使护盾获得总量提升20%",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "前锋",
+     "守卫"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0005",
+   "desc": "每有1层光之刻印，即可获得反击1",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0006",
+   "desc": "每有1层光之刻印，即可赋予随机敌人标记1",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "猎人",
+     "游侠"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0007",
+   "desc": "每有1层光之刻印，即可使1回合内攻击卡牌伤害量+15%",
+   "imprint": "光之刻印",
+   "add": {
+    "talent": [
+     "迅捷"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "操控师",
+     "守卫"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0008",
+   "desc": "感应：费用减少1（使用后恢复）",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0009",
+   "desc": "每有1层光之刻印，即可赋予全体敌人痛苦1",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0010",
+   "desc": "使用此卡击破时，费用减少1",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0011",
+   "desc": "每有1层光之刻印，即可使伤害量+30%",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0012",
+   "desc": "感应：费用变为0~2",
+   "imprint": "光之刻印",
+   "add": {
+    "talent": [
+     "迅捷"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0013",
+   "desc": "行动计数数值每有1，\n1回合内士气减少1（最多5)",
+   "imprint": "光之刻印",
+   "add": {
+    "talent": [
+     "消耗"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0014",
+   "desc": "光之刻印55：赋予自身脆弱3，抽取3",
+   "imprint": "光之刻印",
+   "add": {
+    "cost": 1,
+    "talent": [
+     "消耗"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0015",
+   "desc": "若本回合内消耗过卡牌，则每有1层光之刻印，即可赋予痛苦1",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "奥义师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0016",
+   "desc": "光之刻印44：1回合内，自身消耗卡牌伤害量+40%",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "游侠",
+     "操控师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0017",
+   "desc": "抽取2张迅捷卡牌",
+   "imprint": "光之刻印",
+   "add": {
+    "cost": 1
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "猎人",
+     "游侠"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0018",
+   "desc": "每有1层光之刻印，\n即可获得光之祝福1",
+   "imprint": "光之刻印",
+   "add": {
+    "talent": [
+     "保留"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "操控师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_lux_0019",
+   "desc": "光之刻印33：全体敌人行动计数增加3",
+   "imprint": "光之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "操控师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0001",
+   "desc": "此卡费用为0时，伤害总量提升200%",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0002",
+   "desc": "墓地中存在大于等于7张卡牌时，伤害总量提升100%",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "前锋",
+     "猎人",
+     "游侠"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0003",
+   "desc": "本回合内丢弃卡牌时，每有1层暗之刻印，即可使伤害量+50%",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0004",
+   "desc": "抽取攻击卡牌时，每有1层暗之刻印，即可赋予全体敌人共鸣1",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "游侠"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0005",
+   "desc": "每有1层暗之刻印，即可赋予共鸣1",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "猎人",
+     "操控师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0006",
+   "desc": "暗之刻印44：1回合内，自身安息卡牌伤害量+40%",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0007",
+   "desc": "1回合内，自身攻击卡牌伤害总量提升30%",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0008",
+   "desc": "每有1层暗之刻印，即可随机丢弃1张安息卡牌",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0009",
+   "desc": "暗之刻印33：选择并发动1张手牌",
+   "imprint": "暗之刻印",
+   "add": {
+    "talent": [
+     "消耗"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "猎人"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0010",
+   "desc": "被丢弃时，发动此卡",
+   "imprint": "暗之刻印",
+   "add": {
+    "cost": 1
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0011",
+   "desc": "每有1层暗之刻印，即可使伤害量+30%",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0012",
+   "desc": "暗之刻印55：丢弃所有攻击卡牌，伤害次数增加2",
+   "imprint": "暗之刻印",
+   "add": {
+    "cost": 2,
+    "talent": [
+     "保留"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0013",
+   "desc": "暗之刻印55：伤害次数增加2",
+   "imprint": "暗之刻印",
+   "add": {
+    "talent": [
+     "消耗2"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0014",
+   "desc": "在弃牌堆中选择1张自身攻击卡牌，将其移动至手牌",
+   "imprint": "暗之刻印",
+   "add": {
+    "talent": [
+     "保留"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0015",
+   "desc": "被丢弃时，此卡费用减少1（使用后恢复）",
+   "imprint": "暗之刻印",
+   "add": {
+    "talent": [
+     "迅捷"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0016",
+   "desc": "暗之刻印55：将所有面具卡牌移动至手牌",
+   "imprint": "暗之刻印",
+   "add": {
+    "talent": [
+     "消耗2"
+    ]
+   },
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "游侠",
+     "猎人",
+     "操控师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0017",
+   "desc": "若目标处于共鸣状态，则伤害次数增加2",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0018",
+   "desc": "每有1层暗之刻印，\n即可生成1张过载加入弃牌堆\n每生成1张，即可使伤害量+50%",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "攻击"
+    ],
+    "card_class": [
+     "奥义师"
+    ]
+   }
+  },
+  {
+   "id": "ds03_umbra_0019",
+   "desc": "每有1层暗之刻印，即可赋予全体敌人痛苦1",
+   "imprint": "暗之刻印",
+   "filters": {
+    "cost_min": 0,
+    "cost_max": 9,
+    "card_category": [
+     "技能"
+    ],
+    "card_class": [
+     "奥义师"
+    ]
+   }
+  }
+ ]
+}

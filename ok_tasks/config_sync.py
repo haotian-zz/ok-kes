@@ -85,9 +85,9 @@ def _should_upload(task: TriggerTask) -> bool:
     """
     try:
         lang_config = task.executor.global_config.get_config('配置上传')
-        enabled = lang_config.get('是否上传配置', True)
+        enabled = lang_config.get('是否上传配置', False)
     except Exception:
-        enabled = True
+        enabled = False
     win_rate = _get_win_rate(task)
     if win_rate < 0:
         task.log_debug(f"[配置同步] 数据不足{MIN_ROUNDS}场，跳过上传")
@@ -286,7 +286,7 @@ def check_upload_disabled_and_warn(task: TriggerTask) -> bool:
     """检查配置上传是否已关闭，若关闭则弹窗提示并返回 True。"""
     try:
         lang_config = task.executor.global_config.get_config('配置上传')
-        upload_enabled = lang_config.get('是否上传配置', True)
+        upload_enabled = lang_config.get('是否上传配置', False)
     except Exception:
         upload_enabled = True
     if not upload_enabled:

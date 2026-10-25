@@ -1,0 +1,9041 @@
+{
+ "game": "卡厄思梦境 国服简中",
+ "generated_by": "2game-helper/research/czn/build_db.py",
+ "equipment": [
+  {
+   "id": "eq_sec_ca_023",
+   "name": "绽放：盗猎者的探路器",
+   "name_intl": "绽放：盗猎者的开拓者",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "伤害量+60%，战斗开始时，赋予全体敌人脆弱60",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_sec_ca_020",
+   "name": "绽放：生命之花",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "若生命值全满，则伤害量+120%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_sec_ca_013",
+   "name": "协调：深绿桎梏",
+   "name_intl": "调节：翠绿的枷锁",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "攻击力+20%，防御力+20%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_sec_ca_010",
+   "name": "协调：永劫枝桠",
+   "name_intl": "调节：永劫的枝条",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "主动治愈或恢复#1时，对全体敌人造成相当于恢复#1量80%的固定伤害",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_sec_013",
+   "name": "深绿桎梏",
+   "name_intl": "翠绿的枷锁",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "攻击力+12%，防御力+12%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_sec_010",
+   "name": "永劫枝桠",
+   "name_intl": "永劫的枝条",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "主动治愈或恢复#1时，对全体敌人造成恢复#1量50%的固定伤害",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_pub_ca_050",
+   "name": "绽放：烽烟蔽日",
+   "name_intl": "绽放：尸山血海",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "回合开始时，首次使用的1张攻击卡牌追加1次打击",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_pub_ca_049",
+   "name": "绽放：灰色球体",
+   "name_intl": "绽放：灰蛊",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "使用强化卡牌时，抽取1，行动点1",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_pub_ca_047",
+   "name": "绽放：黄金心脏",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "回合开始时，触发手牌的所有灵感效果",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_pub_ca_046",
+   "name": "绽放：量子收集器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "手牌中所有状态异常、咒术卡牌费用减少1",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_pub_ca_045",
+   "name": "绽放：绝对零度四面体",
+   "name_intl": "绽放：绝对零度的四面体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "获得护盾时，护盾获得量+80%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_pub_ca_044",
+   "name": "绽放：黑曜石剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "伤害总量提升45%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_pub_ca_043",
+   "name": "协调：错乱之骰",
+   "name_intl": "调节：错乱骰子",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "生命值上限+12%\n战斗结束时，若生命值低于上限的50%，则恢复上限的12%\n战斗结束时，若生命值高于上限的50%，则压力值最高的主战员压力减少5",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_042",
+   "name": "协调：随机之球",
+   "name_intl": "调节：乱数球体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "生命值上限+15%\n战斗开始时，获得行动点1点，抽取1",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_041",
+   "name": "协调：灾难之像",
+   "name_intl": "调节：祸之圣砲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "防御力+18%\n所有主战员恢复崩溃所需的卡牌数量减少1张",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_040",
+   "name": "协调：怪异之壳",
+   "name_intl": "调节：异常外壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "防御力+18%\n压力增加时，有50%概率增加2",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_039",
+   "name": "协调：乱世之触",
+   "name_intl": "调节：混沌触手",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "己方攻击力+15%\n击败敌人时，压力最高的主战员的压力减少3",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_038",
+   "name": "协调：混沌之识",
+   "name_intl": "调节：混沌指控",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "攻击力+30%\n击破时，随机队友压力减少2",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_043",
+   "name": "错乱之骰",
+   "name_intl": "错乱骰子",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "生命值上限+8%\n战斗结束时，若生命值低于上限的50%，则恢复上限的8%\n战斗结束时，若生命值高于上限的50%，则压力值最高的主战员压力减少5",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_042",
+   "name": "随机之球",
+   "name_intl": "乱数球体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "生命值上限+10%\n战斗开始时，行动点1，抽取1",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_041",
+   "name": "灾难之像",
+   "name_intl": "祸之圣砲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "防御力+12%\n全体主战员恢复崩溃所需的卡牌数量减少1张",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_040",
+   "name": "怪异之壳",
+   "name_intl": "异常外壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "防御力+12%\n压力增加时，增加量有50%的概率减少1",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_039",
+   "name": "乱世之触",
+   "name_intl": "混沌触手",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "己方攻击力+8%\n击败敌人时，压力高的主战员压力减少2",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_038",
+   "name": "混沌之识",
+   "name_intl": "混沌指控",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "攻击力+18%\n击破时，己方压力减少1",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_p_var_ca_010",
+   "name": "协调：沮丧的首领之眼",
+   "name_intl": "变异：格鲁米·普莱姆之眼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "对标记状态的敌人伤害总量提升60%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_ca_006",
+   "name": "协调：肯特里斯几丁质盔甲",
+   "name_intl": "变异：肯特里斯几丁质盔甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "回合结束时，若生命值低于50%，则固定护盾150%，减伤1",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_ca_005",
+   "name": "变异：野性毛皮披风",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "回合开始时，若生命值低于50%，则暴击率+30%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_var_ca_001",
+   "name": "协调：暗影之爪的指甲",
+   "name_intl": "调节：暗影之爪的指甲",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "全体攻击的伤害总量提升60%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_010",
+   "name": "沮丧的首领之眼",
+   "name_intl": "格鲁米·普莱姆之眼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "获得护盾时，护盾获得量+40%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_p_var_006",
+   "name": "肯特里斯几丁质盔甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "己方护盾获得总量提升15%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_p_var_005",
+   "name": "野性毛皮披风",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "回合开始时，反击1",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_p_var_001",
+   "name": "暗影之爪的指甲",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "全体攻击的伤害总量提升25%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_p_sec_ca_009",
+   "name": "变异：冬眠的种子",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "己方治疗或恢复时获得固定护盾80%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_sec_ca_007",
+   "name": "协调：火花面具",
+   "name_intl": "调节：烈焰面具",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "对处于脆弱状态的敌人造成的伤害总量提升60%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_sec_ca_005",
+   "name": "变异：星光披风",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "战斗开始时，不屈2，坚定2",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_sec_009",
+   "name": "冬眠的种子",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "通过卡牌获得护盾时，固定护盾100%（每个回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_007",
+   "name": "火花面具",
+   "name_intl": "烈焰面具",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "对处于脆弱状态的敌人造成的伤害总量提升35%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_005",
+   "name": "星光披风",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "所受伤害总量降低10%（每回合1次）",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_nih_ca_010",
+   "name": "绽放：禁灭之灯",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "在拥有护盾的状态下回合开始时，固定护盾120%，全体敌人固定伤害120%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_p_nih_ca_005",
+   "name": "虚空残片",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "战斗开始时最多丢弃3张手牌，根据丢弃数量抽取卡牌",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_p_nih_ca_001",
+   "name": "协调：迷雾水晶球",
+   "name_intl": "调节：迷雾水晶球",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "费用为0的攻击卡牌伤害总量提升60%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_nih_005",
+   "name": "虚空残片",
+   "name_intl": "空空的虚无碎片",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "战斗开始时最多丢弃3张手牌，根据丢弃数量抽取卡牌",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_nih_001",
+   "name": "迷雾水晶球",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "费用为0的攻击卡牌伤害总量提升40%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_inv_ca_008",
+   "name": "变异：脉动之卵",
+   "name_intl": "变异：跳动之卵",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "攻击力+15%，防御力+15%，生命值上限+15%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_inv_ca_007",
+   "name": "变异：群集之翼",
+   "name_intl": "变异：群体之翼",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "发动保留效果时，固定护盾80%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_inv_ca_002",
+   "name": "变异：甲虫之角",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "暴击率+20%，暴击伤害+20%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_inv_ca_001",
+   "name": "协调：邪恶双手剑",
+   "name_intl": "变异：大小邪双手剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "回合开始时，手牌中每存在1张状态异常、咒术卡牌数量，治愈+10%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_inv_008",
+   "name": "脉动之卵",
+   "name_intl": "跳动之卵",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "攻击力+15%，生命值上限+10%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_inv_007",
+   "name": "群集之翼",
+   "name_intl": "群体之翼",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "战斗开始时，免疫2",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_inv_002",
+   "name": "甲虫之角",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "暴击伤害+20%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_inv_001",
+   "name": "邪恶双手剑",
+   "name_intl": "大小邪双手剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "若敌人处于击破状态，则伤害总量提升30%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_dll_ca_008",
+   "name": "协调：惩罚者之眼",
+   "name_intl": "调节：惩戒者之眼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "只有一个敌人时，伤害总量提升45%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_dll_ca_004",
+   "name": "协调：祝圣光轮",
+   "name_intl": "调节：祝圣光环",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "护盾获得总量提升30%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_dll_ca_002",
+   "name": "变异：辉煌宝珠",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "对击破状态的敌人伤害总量提升60%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_dll_008",
+   "name": "惩罚者之眼",
+   "name_intl": "惩戒者之眼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "只有一个敌人时，伤害总量提升30%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_p_dll_004",
+   "name": "祝圣光轮",
+   "name_intl": "祝圣光环",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "护盾获得总量提升25%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_p_dll_002",
+   "name": "辉煌宝珠",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "若敌人持有护盾，则造成的伤害总量提升25%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_nih_ca_017",
+   "name": "绽放：魂之宝珠",
+   "name_intl": "绽放：灵魂宝珠",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "消耗3张卡牌时，对全体敌人造成固定伤害400%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_nih_ca_011",
+   "name": "变异：被侵吞者的虚无",
+   "name_intl": "扭曲：吞噬者的虚无",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "消耗费用大于等于2的卡牌后，下1张使用的卡牌的伤害总量提升75%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_nih_ca_007",
+   "name": "协调：贪食之眼",
+   "name_intl": "调节：贪食之眼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "伤害量+60%，回合结束时，消耗手牌中的1张卡牌",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_nih_ca_006",
+   "name": "变异：虚无启示录",
+   "name_intl": "变异：虚无的启示录",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "丢弃己方卡牌时，固定护盾80%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_nih_011",
+   "name": "被侵吞者的虚无",
+   "name_intl": "吞噬者的虚无",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "消耗卡牌时，下1张使用的卡牌的伤害总量提升35%（最多叠加1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_nih_007",
+   "name": "贪食之眼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "伤害量+40%，回合结束时有30%概率消耗1张手牌",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_nih_006",
+   "name": "虚无启示录",
+   "name_intl": "虚无的启示录",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "使用攻击卡牌时，固定护盾20%（每回合10次）",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_inv_ca_015",
+   "name": "绽放：普鲁伊德的甲壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "防御力+10%，受到伤害后下一回合开始时，固定护盾180%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_inv_ca_006",
+   "name": "协调：蕾皮多拉的鞭子",
+   "name_intl": "调节：蕾皮朵拉的鞭子",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "费用小于等于1的攻击卡牌的伤害总量提升40%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_inv_ca_003",
+   "name": "变异：完整的波勒米卡之矛",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "每存在1名敌人，即可使伤害总量提升20%，费用小于等于1的攻击卡牌暴击率+10%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_inv_006",
+   "name": "蕾皮多拉的鞭子",
+   "name_intl": "蕾皮朵拉的鞭子",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "费用小于等于1的攻击卡牌的伤害总量提升25%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_inv_003",
+   "name": "完整的波勒米卡之矛",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "每有1个敌人即可使伤害总量提升7%\n全体攻击的伤害总量提升10%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_g04_008",
+   "name": "继承残痕",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "发动2次攻击卡牌时，赋予全体敌人灼热4（每回合1次）",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g03_009",
+   "name": "从壁画中抠出的眼珠",
+   "name_intl": "从壁画上剥下的眼球",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "回合开始时，己方手牌中每有1张面具卡牌，1回合内伤害总量提升20%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g02_ca_012",
+   "name": "绽放：闪耀里拉琴",
+   "name_intl": "绽放：闪耀的里拉琴",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "战斗开始时，保存2",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_g02_ca_011",
+   "name": "释放的精髓",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "回合开始时，手牌中随机1张消耗卡牌在1回合内费用减少1",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_g02_ca_010",
+   "name": "协调：灿烂的孑然业火",
+   "name_intl": "调节：灿烂永劫之火",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "费用大于等于2的消耗卡牌伤害总量提升60%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_g02_011",
+   "name": "释放的精髓",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "回合开始时，手牌中随机1张消耗卡牌在1回合内费用减少1",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g02_010",
+   "name": "灿烂的孑然业火",
+   "name_intl": "灿烂永劫之火",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "费用大于等于2的消耗卡牌伤害总量提升40%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g01_ca_007",
+   "name": "畸变：奇美拉合金",
+   "name_intl": "变异：奇梅尔奈特",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "使用单体攻击卡牌时，伤害总量提升1%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_g01_007",
+   "name": "奇美拉合金",
+   "name_intl": "奇美拉矿石",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "主动抽取时，1回合内自身攻击卡牌伤害总量提升35%（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_dll_ca_017",
+   "name": "绽放：符文代码",
+   "name_intl": "绽放：符文单元码",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "减伤1，护盾保留#350%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_dll_ca_009",
+   "name": "协调：堕落核心",
+   "name_intl": "变异：堕落核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "战斗开始时，减伤2\n护盾保留#32%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_dll_ca_006",
+   "name": "变异：太古规则",
+   "name_intl": "变异：太古的纪律",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "己方使用弹药卡牌时，获得固定护盾80%",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_dll_009",
+   "name": "堕落核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "防御力+15%, 护盾保留#320%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_dll_006",
+   "name": "太古规则",
+   "name_intl": "太古的纪律",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "战斗开始时，免疫2",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_chr_ca_029",
+   "name": "绽放：钝骨刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "伤害总量提升50%，无法造成暴击",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_chr_ca_023",
+   "name": "协调：混沌骰子",
+   "name_intl": "调节：混沌骰子",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "回合结束时，随机触发1种效果：对随机敌人造成固定伤害100%x2~6，或对己方造成固定伤害200%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_ca_017",
+   "name": "协调：变异的权能",
+   "name_intl": "调节：变异的权能",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "对行动前的敌人造成的伤害总量提升60%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_ca_015",
+   "name": "绽放：誓死拳甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "基础攻击卡牌的伤害次数增加1",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_chr_ca_007",
+   "name": "协调：禁忌智识书",
+   "name_intl": "调节：禁忌圣书",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "第4回合开始时，对全体敌人造成固定伤害825%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_023",
+   "name": "混沌骰子",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "回合结束时，发动下列效果中的随机1个效果：对随机敌人造成固定伤害40%x2~6，或对己方造成固定伤害200%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "蓝罐,幻象剧场"
+  },
+  {
+   "id": "eq_chr_017",
+   "name": "变异的权能",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "独特",
+   "desc": "对行动前的敌人造成的伤害总量提升25%",
+   "stat": "攻击力",
+   "stat_values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_007",
+   "name": "禁忌智识书",
+   "name_intl": "禁忌圣书",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "独特",
+   "desc": "第4回合开始时，对全体敌人造成固定伤害550%",
+   "stat": "生命值",
+   "stat_values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_arena_ca_011",
+   "name": "勇气手镯",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "己方竞技场卡牌伤害总量提升20%，\n战斗开始时，生成20张遗忘之剑",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_arena_011",
+   "name": "勇气手镯",
+   "name_intl": "勇猛手环",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "独特",
+   "desc": "己方竞技场卡牌伤害总量提升20%，\n战斗开始时，生成20张遗忘之剑",
+   "stat": "防御力",
+   "stat_values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_sec_ca_021",
+   "name": "绽放：森林三叶草",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "从每回合的第三张攻击卡牌开始，暴击率增加50%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_sec_ca_019",
+   "name": "智慧粒子",
+   "name_intl": "蕴含智慧的粒子",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "对持有护盾的敌人暴击率增加25%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_sec_ca_012",
+   "name": "协调：深绿黑夜",
+   "name_intl": "调节：翠绿之夜",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "偶数回合攻击力+18%，防御力+18%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_sec_ca_011",
+   "name": "协调：深绿白昼",
+   "name_intl": "调节：翠绿之昼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "奇数回合攻击力+12%，防御力+12%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_sec_ca_009",
+   "name": "协调：恶木枝桠",
+   "name_intl": "调节：恶木的枝条",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "己方主动治愈或恢复#1时，对随机敌人造成相当于恢复#1量80%的固定伤害",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_sec_ca_008",
+   "name": "协调：生命之花",
+   "name_intl": "调节：生命之花",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "若生命值全满，伤害量+80%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_sec_ca_003",
+   "name": "协调：神木枝桠",
+   "name_intl": "调节：神木的枝条",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "己方主动治愈或恢复#1时，对全体敌人造成相当于恢复#1量60%的固定伤害",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_sec_012",
+   "name": "深绿黑夜",
+   "name_intl": "翠绿之夜",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "偶数回合攻击力+12%，防御力+12%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_sec_011",
+   "name": "深绿白昼",
+   "name_intl": "翠绿之昼",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "奇数回合攻击力+8%，防御力+8%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_sec_009",
+   "name": "恶木枝桠",
+   "name_intl": "恶木的枝条",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "主动治愈或恢复#1时，对随机敌人造成恢复#1量50%的固定伤害",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_sec_008",
+   "name": "生命之花",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "若生命值全满，伤害量+50%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_sec_003",
+   "name": "神木枝桠",
+   "name_intl": "神木的枝条",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "主动治愈或恢复#1时，对全体敌人造成治愈量35%的固定伤害",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_pub_ca_051",
+   "name": "绽放：命令：108号",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "攻击卡牌的伤害总量提升40%，击败敌人时，随机减少己方压力40",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_pub_ca_048",
+   "name": "绽放：多面平行宇宙连接体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，行动点1，自身的强化卡牌抽取1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "绽放"
+  },
+  {
+   "id": "eq_pub_ca_037",
+   "name": "变异：灰色球体",
+   "name_intl": "变异：灰蛊",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "暴击率+10%，战斗开始时，减伤10",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_036",
+   "name": "协调: 宝石之心",
+   "name_intl": "调节：宝石的心脏",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "X变为X+2",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_034",
+   "name": "协调：破坏之月",
+   "name_intl": "调节：破坏之月",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，对全体敌人造成固定伤害300%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_033",
+   "name": "变异：女神之泪",
+   "name_intl": "变异：女神水滴",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，保存1，固定护盾1%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_032",
+   "name": "协调：次元方块",
+   "name_intl": "扭曲：次元方块",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "丢弃卡牌时，1回合内伤害量+25%（最多叠加10）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_028",
+   "name": "协调：黄金心脏",
+   "name_intl": "调节：黄金心脏",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗结束时，若生命值低于50%，则恢复#1生命值上限的12%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_027",
+   "name": "畸变：量子收集器",
+   "name_intl": "扭曲：量子收集器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "己方使用强化卡牌时，伤害总量、护盾获得总量、治愈总量提升20%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_pub_ca_023",
+   "name": "畸变：奥义师战斗强化服",
+   "name_intl": "扭曲：心灵术士战斗强化服",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "消耗卡牌时，固定护盾60%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_pub_ca_020",
+   "name": "协调：加强型战斗强化服",
+   "name_intl": "调节：加强型战斗强化服",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合结束时，若己方没有护盾，则获得固定护盾120%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_018",
+   "name": "协调：突击靴子",
+   "name_intl": "调节：突击靴",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "第2回合开始时，获得固定护盾300%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_014",
+   "name": "协调：云端漫游者",
+   "name_intl": "调节：踏云之鞋",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "己方击破时，固定护盾120%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_008",
+   "name": "畸变：绯刃",
+   "name_intl": "扭曲：红剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "通过锁定目标攻击卡牌造成伤害时，赋予敌人痛苦2",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_pub_ca_007",
+   "name": "变异：讥笑匕首",
+   "name_intl": "变异：嘲笑的短刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "丢弃卡牌时，对随机敌人造成固定伤害80%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_004",
+   "name": "协调：烽烟蔽日",
+   "name_intl": "变异：尸山血海",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "战斗开始时，首次使用的攻击卡牌伤害次数增加1",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_003",
+   "name": "协调：RFS-17",
+   "name_intl": "调节：RFS-17",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "费用为0的攻击卡牌暴击率+30%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_001",
+   "name": "协调：阿萨辛之牙",
+   "name_intl": "调节：第二手段",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "额外攻击伤害量+55%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_037",
+   "name": "灰色球体",
+   "name_intl": "灰蛊",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，减伤3",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_036",
+   "name": "宝石之心",
+   "name_intl": "宝石的心脏",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "消耗费用为X的卡牌可发动X+1的效果",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_034",
+   "name": "破坏之月",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，对全体敌人造成固定伤害200%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_033",
+   "name": "女神之泪",
+   "name_intl": "女神水滴",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，保存1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_032",
+   "name": "次元方块",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "己方丢弃卡牌时，1回合内自身伤害量+15%（最多叠加3）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_028",
+   "name": "黄金心脏",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗结束时，若生命值低于50%，则恢复#1生命值上限的8%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_027",
+   "name": "量子收集器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "己方使用强化卡牌时，1回合内伤害总量、护盾获得总量、治愈总量提升20%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_023",
+   "name": "奥义师战斗强化服",
+   "name_intl": "心灵术士战斗强化服",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "消耗卡牌时，获得固定护盾30%（每回合5次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_020",
+   "name": "加强型战斗强化服",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合结束时，若己方没有护盾，则获得固定护盾60%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_018",
+   "name": "突击靴子",
+   "name_intl": "突击靴",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "第2回合开始时，获得固定护盾200%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_014",
+   "name": "云端漫游者",
+   "name_intl": "踏云之鞋",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "己方击破时，固定护盾40%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_008",
+   "name": "绯刃",
+   "name_intl": "红剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "通过锁定目标的攻击卡牌造成伤害时，赋予目标痛苦3（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_007",
+   "name": "讥笑匕首",
+   "name_intl": "嘲笑的短刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "击败敌人时，全体敌人脆弱2",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_004",
+   "name": "烽烟蔽日",
+   "name_intl": "尸山血海",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "攻击卡牌的伤害总量提升25%（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_003",
+   "name": "RFS-17",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "费用为0的攻击卡牌暴击率+10%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_001",
+   "name": "阿萨辛之牙",
+   "name_intl": "第二手段",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "额外攻击伤害量+35%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_p_var_ca_009",
+   "name": "协调：不会风化的石头",
+   "name_intl": "变异：不会风化的石头",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合结束时，若手牌中存在状态异常和咒术卡牌，则对全体敌人造成固定伤害150%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_ca_008",
+   "name": "协调：大自然的礼物",
+   "name_intl": "调节：大自然的礼物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合结束时，治愈60%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_ca_007",
+   "name": "协调：凝视护盾",
+   "name_intl": "调节：注视盾牌",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "受到伤害时，赋予攻击者标记2",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_ca_004",
+   "name": "协调：狼群韦恩的脊骨",
+   "name_intl": "变异：狼之克星的脊骨",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用技能卡牌时，生命值减少1%，固定护盾1%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_ca_003",
+   "name": "协调：变异的利爪",
+   "name_intl": "调节：变异之爪",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "抽取状态异常、咒术卡牌后，1回合内伤害量+40%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_ca_002",
+   "name": "协调：大自然的敌意",
+   "name_intl": "调节：大自然的敌意",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "击败敌人时，对全体敌人造成固定伤害300%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_var_009",
+   "name": "不会风化的石头",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合开始时，每有1个敌人即可获得固定护盾25%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+  },
+  {
+   "id": "eq_p_var_008",
+   "name": "大自然的礼物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合结束时，治愈40%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+  },
+  {
+   "id": "eq_p_var_007",
+   "name": "凝视护盾",
+   "name_intl": "注视盾牌",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "受到伤害时，赋予攻击者标记1",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+  },
+  {
+   "id": "eq_p_var_004",
+   "name": "狼群韦恩的脊骨",
+   "name_intl": "狼之克星的脊骨",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "暴击时，固定护盾10%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+  },
+  {
+   "id": "eq_p_var_003",
+   "name": "变异的利爪",
+   "name_intl": "变异之爪",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "抽取状态异常、咒术卡牌后，1回合内伤害量+15%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+  },
+  {
+   "id": "eq_p_var_002",
+   "name": "大自然的敌意",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "击败敌人时，对全体敌人造成固定伤害200%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "蓝罐,雾之都市,第零研究所,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_ca_010",
+   "name": "协调：远古灵魂的召唤",
+   "name_intl": "调节：古代灵魂的召唤",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "暴击时，治愈15%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_sec_ca_008",
+   "name": "协调：怀抱野火的骨戒",
+   "name_intl": "变异：怀抱野火的骨戒",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，随机生成2张中立卡牌加入手牌",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_sec_ca_006",
+   "name": "协调：精灵王的金冠",
+   "name_intl": "调节：妖精王的王冠",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "暴击率+25%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_sec_ca_004",
+   "name": "不朽鳞片",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "主动获得反击时，额外获得反击1",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_p_sec_ca_003",
+   "name": "变异：击落烈日之弓",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "使用中立卡牌时，1回合内伤害量45%（每回合1次)",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_sec_ca_002",
+   "name": "协调：湖中倒映之剑",
+   "name_intl": "调节：湖中倒映的剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "手牌大于等于6张时，伤害总量提升55%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_sec_ca_001",
+   "name": "协调：欺骗暗影的匕首",
+   "name_intl": "调节：欺骗暗影的匕首",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "暴击伤害+15%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_sec_010",
+   "name": "远古灵魂的召唤",
+   "name_intl": "古代灵魂的召唤",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "暴击时，治愈10%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_008",
+   "name": "怀抱野火的骨戒",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用强化卡牌时，1回合内伤害量+30%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_006",
+   "name": "精灵王的金冠",
+   "name_intl": "妖精王的王冠",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "暴击率+6%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_004",
+   "name": "不朽鳞片",
+   "name_intl": "不朽之鳞",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "主动获得反击时，额外获得反击1",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_003",
+   "name": "击落烈日之弓",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "费用大于等于2的攻击卡牌伤害总量提升30%（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_002",
+   "name": "湖中倒映之剑",
+   "name_intl": "湖中倒映的剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "手牌大于等于6张时，伤害总量提升25%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_sec_001",
+   "name": "欺骗暗影的匕首",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "暴击伤害+12%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "裁决之沼,无间烬土"
+  },
+  {
+   "id": "eq_p_nih_ca_009",
+   "name": "协调：禁灭之灯",
+   "name_intl": "调节：禁灭之灯",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合开始时，若拥有护盾，则获得固定护盾150%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_nih_ca_008",
+   "name": "变异：帕拉西亚之珠",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "手牌中存在异形卡牌时，暴击率+25%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_nih_ca_007",
+   "name": "协调：无眼者之瞳",
+   "name_intl": "变异：无眼者之瞳",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "基础攻击卡牌的暴击率增加30%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_nih_ca_006",
+   "name": "协调：贪婪的燕尾服",
+   "name_intl": "变异：贪吃燕尾服",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合结束行动点不低于1点时，下一回合开始时，随机生成1张中立卡牌",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_nih_ca_004",
+   "name": "协调：再生型肋骨",
+   "name_intl": "变异：再生型肋骨",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "手牌中所有异形卡牌费用减少1",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_nih_ca_003",
+   "name": "协调：猩红巨人的利爪",
+   "name_intl": "调节：血巨人之爪",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "击破时，对目标造成固定伤害300%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_nih_ca_002",
+   "name": "协调：未爆炸的等离子炸弹",
+   "name_intl": "调节：未爆的电浆炸弹",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "消耗卡牌时，对随机敌人造成固定伤害60%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_nih_009",
+   "name": "禁灭之灯",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合开始时，若拥有护盾，则获得固定护盾80%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_nih_008",
+   "name": "帕拉西亚之珠",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "通过卡牌赋予脆弱时，赋予敌人弱化1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_nih_007",
+   "name": "无眼者之瞳",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "基础攻击卡牌的伤害总量提升40%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_nih_006",
+   "name": "贪婪的燕尾服",
+   "name_intl": "贪吃燕尾服",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "受到伤害的下一回合开始时，固定护盾80%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_nih_004",
+   "name": "再生型肋骨",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "生命值上限+12%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_nih_003",
+   "name": "猩红巨人的利爪",
+   "name_intl": "血巨人之爪",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "击破时，对目标造成固定伤害150%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_nih_002",
+   "name": "未爆炸的等离子炸弹",
+   "name_intl": "未爆的电浆炸弹",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "消耗卡牌时，对随机敌人造成固定伤害40%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "雾之都市,第零研究所"
+  },
+  {
+   "id": "eq_p_inv_ca_010",
+   "name": "变异：猎食的群体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，生成2张黏性加入手牌\n回合开始时，按照手牌中状态异常、咒术的数量，士气1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_inv_ca_009",
+   "name": "协调：天生的掠食者",
+   "name_intl": "调节：天生的掠食者",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "击破时，下1张攻击卡牌的伤害量+150%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_inv_ca_006",
+   "name": "协调：夜蛾之舞",
+   "name_intl": "调节：夜蛾之舞",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "击破时，固定护盾150%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_inv_ca_005",
+   "name": "协调：生长的甲壳",
+   "name_intl": "调节：成长的甲壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合开始时，固定护盾80%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_inv_ca_004",
+   "name": "协调：厄律西克同的破灭",
+   "name_intl": "调节：厄律西克同的毁灭",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "使用攻击卡牌时，有20%的概率追加1次打击",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_inv_ca_003",
+   "name": "变异：深渊虫之齿",
+   "name_intl": "变异：深渊虫之牙",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "暴击时，为敌人赋予弱化2，脆弱2",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_inv_010",
+   "name": "猎食的群体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "受到伤害时，赋予攻击者痛苦4",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_inv_009",
+   "name": "天生的掠食者",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "击破时，下1张攻击卡牌的伤害量+100%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_inv_006",
+   "name": "夜蛾之舞",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "击破时，固定护盾60%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_inv_005",
+   "name": "生长的甲壳",
+   "name_intl": "成长的甲壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合开始时，固定护盾40%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_inv_004",
+   "name": "厄律西克同的破灭",
+   "name_intl": "厄律西克同的毁灭",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "使用攻击卡牌时，有5%的概率伤害次数增加1",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_inv_003",
+   "name": "深渊虫之齿",
+   "name_intl": "深渊虫之牙",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "暴击时，有50%的概率赋予痛苦1",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_p_dll_ca_010",
+   "name": "协调：黄金律",
+   "name_intl": "调节：黄金律",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "伤害量+30%，护盾获得量+30%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_dll_ca_009",
+   "name": "协调：维亚迪乌斯原子炉",
+   "name_intl": "调节：维亚迪乌斯反应炉",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用强化卡牌时，减伤2",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_dll_ca_007",
+   "name": "变异：铅色灵液",
+   "name_intl": "变异：铅色圣水",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "击破时，全体敌人固定伤害200%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_dll_ca_006",
+   "name": "协调：使者之环",
+   "name_intl": "调节：天使之环",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用强化卡牌时，1回合内伤害量+60%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_p_dll_ca_005",
+   "name": "变异：光明之翼",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "战斗开始时，反击波动3",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_p_dll_010",
+   "name": "黄金律",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "伤害量+20%，护盾获得量+20%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "裁决之沼,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_p_dll_009",
+   "name": "维亚迪乌斯原子炉",
+   "name_intl": "维亚迪乌斯反应炉",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用强化卡牌时，减伤1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "裁决之沼,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_p_dll_007",
+   "name": "铅色灵液",
+   "name_intl": "铅色圣水",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "击破时，赋予目标损伤2",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "裁决之沼,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_p_dll_006",
+   "name": "使者之环",
+   "name_intl": "天使之环",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用强化卡牌时，1回合内伤害量+30%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "裁决之沼,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_p_dll_005",
+   "name": "光明之翼",
+   "name_intl": "光之翼",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "EGO点数低于3时，暴击时获得EGO点数0.2",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "裁决之沼,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_p_dll_001",
+   "name": "进击的骑枪",
+   "name_intl": "电击骑兵枪",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "对拥有护盾的敌人造成伤害时，下1张使用的攻击卡牌伤害量+100%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "裁决之沼,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_nih_ca_010",
+   "name": "变异：被吞噬者的梦想",
+   "name_intl": "扭曲：被吞噬者的梦",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "消耗费用大于等于2的卡牌后，下1张使用的卡牌的伤害总量提升50%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_nih_ca_009",
+   "name": "协调：M.S.S领域",
+   "name_intl": "调节：M.S.S瞄准镜",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "若赋予持续1回合的减益效果，则回合结束时，固定护盾180%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_nih_ca_008",
+   "name": "变异：M.S.S数据盘SE",
+   "name_intl": "变异：M.S.S资料板SE",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，赋予全体敌人脆弱3、己方压力减少2",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_nih_ca_001",
+   "name": "协调：亡魂之花",
+   "name_intl": "调节：亡魂之花",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "从每回合的第2张攻击卡牌开始，伤害总量提升30%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_nih_010",
+   "name": "被吞噬者的梦想",
+   "name_intl": "被吞噬者的梦",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "消耗卡牌时，下次使用的卡牌的伤害总量提升25%（最多叠加1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_nih_009",
+   "name": "M.S.S领域",
+   "name_intl": "M.S.S 瞄准镜",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "若赋予持续1回合的减益效果，则回合结束时，固定护盾80%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_nih_008",
+   "name": "M.S.S数据盘SE",
+   "name_intl": "M.S.S资料板SE",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "对战尼希勒姆时，赋予全体敌人脆弱3",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_nih_001",
+   "name": "亡魂之花",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "从每回合的第2张攻击卡牌开始，伤害总量提升20%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_inv_ca_008",
+   "name": "协调：基拉克核心",
+   "name_intl": "调节：祈勒核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合开始时，若生命值低于上限的40%，则恢复#1上限的8%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_inv_ca_004",
+   "name": "变异：蕾皮多拉的翅膀",
+   "name_intl": "变异：蕾皮朵拉的翅膀",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "对处于脆弱状态的敌人造成的伤害总量提升40%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_inv_ca_002",
+   "name": "协调：破损的波勒米卡之矛",
+   "name_intl": "调节：破损的波勒米卡之矛",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "每存在1名敌人，即可使伤害总量提升15%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_inv_ca_001",
+   "name": "协调：紫蝴蝶的鞭子",
+   "name_intl": "调节：紫蝶之鞭",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "费用小于等于1的攻击卡牌的伤害总量提升30%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_inv_008",
+   "name": "基拉克核心",
+   "name_intl": "祈勒核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合开始时，若生命值低于上限的40%，则恢复#1上限的5%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_inv_004",
+   "name": "蕾皮多拉的翅膀",
+   "name_intl": "蕾皮朵拉的翅膀",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，闪避1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_inv_002",
+   "name": "破损的波勒米卡之矛",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "每存在1名敌人，即可使伤害总量提升6%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_inv_001",
+   "name": "紫蝴蝶的鞭子",
+   "name_intl": "紫蝶之鞭",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "费用小于等于1的攻击卡牌的伤害总量提升20%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_g04_010",
+   "name": "入侵者观察记录",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "攻击卡牌伤害量+20%，每有1个敌人，即可使暴击率+2%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g04_009",
+   "name": "循环之环",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合结束时，若生命值低于50%，获得固定治愈70%（每场战斗3次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g04_007",
+   "name": "污染的无人机镜头",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合开始时，若手牌中存在己方的欲望卡牌，则己方压力减少2",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g04_006",
+   "name": "封闭电路接口",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "己方主动进行全体攻击时，赋予随机敌人脆弱1（每回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g04_005",
+   "name": "扭曲的钻头",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "己方使用欲望卡牌时，对全体敌人造成固定伤害100%（每回合3次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g04_004",
+   "name": "永恒钉楔",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "回合开始时，对拥有持续伤害效果的敌人造成固定伤害100%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g04_003",
+   "name": "万花筒碎片",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "主动赋予弱化时，赋予目标弱化1、灼热3（每回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g03_008",
+   "name": "粉碎的使者之翼",
+   "name_intl": "破碎的天使之翼",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用己方的连接卡牌时，全体敌人行动计数增加1（每回合1次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g03_007",
+   "name": "唱赞歌的双唇",
+   "name_intl": "吟唱圣歌的嘴唇",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "主动丢弃卡牌时，全体敌人共鸣1（每回合3次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g03_006",
+   "name": "渴望的左手",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "对处于冲击波状态的敌人造成的伤害总量提升30%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g03_005",
+   "name": "纤细的锁骨",
+   "name_intl": "纤弱的锁骨",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合开始时，若手牌中存在面具卡牌，则己方压力减少2",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g03_004",
+   "name": "无法理解的古物",
+   "name_intl": "无法理解的圣物",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "主动丢弃安息卡牌时，固定护盾80%（每回合2次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g02_ca_009",
+   "name": "畸变：苍白孑然业火",
+   "name_intl": "扭曲：苍白永劫之火",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "消耗卡牌时，1回合内己方伤害总量提升20%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_g02_ca_008",
+   "name": "畸变：藤王之面具",
+   "name_intl": "扭曲：小藤蔓领主",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "己方主动抽取消耗卡牌时，获得60%固定护盾",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_g02_ca_007",
+   "name": "畸变：遗忘之长袍",
+   "name_intl": "扭曲：忘却长袍",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "己方通过消耗卡牌获得护盾时1回合内伤害总量提升20%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_g02_ca_006",
+   "name": "协调：闪耀的世界树枝干",
+   "name_intl": "调节：闪耀的世界树茎干",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "治愈总量提升40%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_g02_009",
+   "name": "苍白孑然业火",
+   "name_intl": "苍白永劫之火",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "卡牌被消耗时，1回合内己方伤害总量提升10%（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g02_008",
+   "name": "藤王之面具",
+   "name_intl": "藤蔓领主的面具",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "主动抽取消耗卡牌时，获得固定护盾80%（每回合2次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g02_007",
+   "name": "遗忘之长袍",
+   "name_intl": "忘却长袍",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "通过消耗卡牌获得护盾时，1回合内伤害总量提升20%（每回合1次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g02_006",
+   "name": "闪耀的世界树枝干",
+   "name_intl": "闪耀的世界树茎干",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "治愈总量提升25%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g01_ca_006",
+   "name": "畸变：禁忌的根源",
+   "name_intl": "扭曲：禁忌之源",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "被攻击时，随机赋予攻击者脆弱、弱化、损伤中的一种效果，总计3层",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_g01_ca_005",
+   "name": "协调：复制体核心",
+   "name_intl": "调节：莱福尔利卡核心",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "主动抽取自身攻击卡牌时，其1回合内伤害量+75%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_g01_ca_004",
+   "name": "变异：优秀个体之证",
+   "name_intl": "变异：优秀个体的证明",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "伤害量+40%，压力增加时有30%概率少增加1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_g01_ca_003",
+   "name": "畸变：自由之翼",
+   "name_intl": "扭曲：自由之翼",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "被攻击后，造成伤害总量提升10%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_g01_ca_002",
+   "name": "火箭装饰披风",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "战斗开始时，减伤1，抽取1",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_g01_006",
+   "name": "禁忌的根源",
+   "name_intl": "禁忌之源",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "被攻击时，赋予攻击者脆弱、弱化、损伤中随机1个效果（每回合3次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_g01_005",
+   "name": "复制体核心",
+   "name_intl": "莱福尔利卡核心",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "主动抽取自身攻击卡牌时，其1回合内伤害量+50%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_g01_004",
+   "name": "优秀个体之证",
+   "name_intl": "优秀个体的证明",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "伤害量+30%\n所受压力变为0（每场战斗1次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_g01_003",
+   "name": "自由之翼",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "被攻击后，造成伤害总量提升10%（最多叠加3层）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_g01_002",
+   "name": "火箭装饰披风",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "战斗开始时，减伤1，抽取1",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds04_007",
+   "name": "精华残片项链",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "1回合内己方击败敌人3次时，获得行动点1（每回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_ds04_006",
+   "name": "污染之茧斗篷",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "被攻击时，随机赋予攻击者痛苦、脆弱、灼热中的1个效果（每回合3次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_ds04_004",
+   "name": "几丁质盾牌",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "反击3\n反击时，赋予目标冲击波1（每回合1次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_ds04_002",
+   "name": "保护拳甲",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "直接使用原费用为3的攻击卡牌时，全体敌人固定伤害250%（每回合2次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_ds03_007",
+   "name": "噩梦发卡",
+   "name_intl": "恶梦发夹",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用单体攻击卡牌时，目标的行动计数增加1（每回合1次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_ds03_006",
+   "name": "沉眠之钥",
+   "name_intl": "睡眠之钥",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "攻击卡牌伤害量+40%\n攻击卡牌有大于等于2目标时，对每个目标的伤害量-10%（最多-30%）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_ds03_005",
+   "name": "异象石碑",
+   "name_intl": "异端石碑",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "己方主动丢弃3张卡牌时，赋予随机敌人1个脆弱或标记（每回合5次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_ds03_003",
+   "name": "情感面具",
+   "name_intl": "情感的面具",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "被攻击时，赋予攻击者共鸣2（每回合3次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_ds03_001",
+   "name": "使团权杖",
+   "name_intl": "教团的指挥棒",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "生成卡牌后，1回合内，伤害量+20%（每回合2次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_ds02_ca_008",
+   "name": "变异：发光蘑菇",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "消耗5张卡牌时，抽取1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_ds02_ca_006",
+   "name": "协调：世界树之叶",
+   "name_intl": "调节：世界树之叶",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用2张费用大于等于2的卡牌时保存1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds02_ca_003",
+   "name": "畸变：植物型义体",
+   "name_intl": "变异：植物型义肢",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用基础卡牌时，治愈40%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_ds02_ca_002",
+   "name": "协调：模糊荆棘",
+   "name_intl": "调节：模糊之刺",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "若1回合内己方未用卡牌对敌人造成伤害，则在下回合开始时1回合内伤害总量提升75%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds02_008",
+   "name": "发光蘑菇",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "第6张生成的攻击卡牌在1回合内孢子增殖效果2倍",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_ds02_006",
+   "name": "世界树之叶",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用3张费用大于等于2的卡牌时，保存1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_ds02_003",
+   "name": "植物型义体",
+   "name_intl": "植物型义肢",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "通过卡牌获得护盾时，1回合内下1张发动的攻击卡牌伤害总量提升20% （每回合2次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_ds02_002",
+   "name": "模糊荆棘",
+   "name_intl": "模糊之刺",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "若1回合内己方未用卡牌对敌人造成伤害，则在下回合开始时1回合内伤害总量提升50%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_ds01_ca_010",
+   "name": "超导蛋白质​",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，手牌中的1张卡牌在1回合内费用变为0",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_ds01_ca_009",
+   "name": "协调：异种孢子突触",
+   "name_intl": "调节：变种捕食体瘤",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "手牌大于等于4张时，卡牌伤害总量提升45%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds01_ca_008",
+   "name": "变异：W-52“多巴胺注射器”",
+   "name_intl": "变异：W-52「多巴胺注射器」",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "若EGO点数小于等于3，则伤害总量提升50%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_ds01_ca_007",
+   "name": "协调：变异波增幅器",
+   "name_intl": "调节：变异波动增幅器",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "抽取状态异常、咒术卡牌后，1回合内伤害量+18%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds01_ca_006",
+   "name": "协调：未识别修复液",
+   "name_intl": "变异：未确认的恢复浓缩原液",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "反击时，赋予敌人脆弱1",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds01_010",
+   "name": "超导蛋白质​",
+   "name_intl": "超导蛋白质",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "战斗开始时，手牌中的1张卡牌在1回合内费用变为0",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds01_009",
+   "name": "异种孢子突触",
+   "name_intl": "变种捕食体瘤",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "手牌大于等于4张时，卡牌伤害总量提升30%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds01_008",
+   "name": "W-52「多巴胺注射器」",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "主动抽取时，1回合内伤害总量提升20%（每回合2次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds01_007",
+   "name": "变异波增幅器",
+   "name_intl": "变异波动增幅器",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "抽取状态异常、咒术卡牌后，1回合内伤害量+12%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds01_006",
+   "name": "未识别修复液",
+   "name_intl": "未确认的恢复浓缩原液",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "己方使用禁忌卡牌时，恢复#1生命值上限的3%，获得固定护盾3%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_dll_ca_016",
+   "name": "恶灵之羽",
+   "name_intl": "恶灵的羽毛",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用技能卡牌时，1回合内暴击率增加20%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_dll_ca_010",
+   "name": "变异：歌唱之剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "对持有护盾的敌人伤害量+80%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_dll_ca_008",
+   "name": "变异：侵蚀核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用已复制的卡牌时，对全体敌人造成130%固定伤害",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_dll_ca_005",
+   "name": "变异：扭曲规则",
+   "name_intl": "变异：扭曲纪律",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用已复制的卡牌时，获得1行动点",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_dll_ca_004",
+   "name": "畸变：启示号角",
+   "name_intl": "扭曲：启示号角",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "通过卡牌抽取时，1回合内伤害量+30%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_dll_ca_003",
+   "name": "变异：净化之火",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "弹药卡牌伤害量+60%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_dll_ca_002",
+   "name": "协调：符文骑枪",
+   "name_intl": "扭曲：符文骑枪",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "回合开始时，每次使用大于等于3的行动点时，1回合内伤害量、护盾获得量、治愈量+100%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_dll_ca_001",
+   "name": "变异：守护核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合结束时，若手牌大于等于3张，获得固定护盾220%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_dll_010",
+   "name": "歌唱之剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "攻击力+15%\n对持有护盾的敌人造成伤害时，赋予惩罚1",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_dll_008",
+   "name": "侵蚀核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "通过护盾完全格挡攻击时，赋予全体敌人损伤1\n（每回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_dll_005",
+   "name": "扭曲规则",
+   "name_intl": "扭曲纪律",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用大于等于10点行动点时，获得免疫2\n（每场战斗1次）",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_dll_004",
+   "name": "启示号角",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "通过卡牌抽取时，1回合内伤害量+20%（每回合2次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_dll_003",
+   "name": "净化之火",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "消耗卡牌时，赋予随机敌人惩罚1（每回合2次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_dll_002",
+   "name": "符文骑枪",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "使用大于等于5点行动点时，伤害量、护盾获得量、治愈量+25%（每场战斗1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_dll_001",
+   "name": "守护核心",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "若有行动预告为攻击的敌人，则获得固定护盾60%（每回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_chr_ca_028",
+   "name": "爱之证物",
+   "name_intl": "爱的证物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "对已行动的敌人进行单体攻击时，暴击率增加50%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_chr_ca_022",
+   "name": "变异：暗色斑斑的坠饰",
+   "name_intl": "变异：血迹斑斑的坠饰",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用复制卡牌时，全体敌人的行动计数增加3",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_chr_ca_021",
+   "name": "协调：强缚锁链",
+   "name_intl": "调节：强迫锁链",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用攻击卡牌时，生命值减少1%，固定护盾1%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_ca_020",
+   "name": "拷问工具箱",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合开始时，全体敌人行动计数增加3",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_chr_ca_019",
+   "name": "协调：咒术玩偶",
+   "name_intl": "调节：受诅咒的娃娃",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合开始时，手牌中每有1张状态异常、咒术卡牌即可治愈90%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_ca_018",
+   "name": "协调：疯狂菜刀",
+   "name_intl": "调节：疯狂食道",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "若敌人处于痛苦状态，造成的伤害总量提升40%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_ca_013",
+   "name": "协调：命定容器",
+   "name_intl": "调节：成为容器之人",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "第3、第4回合开始时，获得固定护盾380%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_ca_012",
+   "name": "变异：使团的证物",
+   "name_intl": "变异：教团证物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "回合开始时，按照手牌中的状态异常、咒术卡牌数量，对随机敌人造成120%固定伤害",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_chr_ca_011",
+   "name": "畸变：仪式用短刀",
+   "name_intl": "扭曲：仪式用短刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "击败敌人时，攻击卡牌伤害量+30%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_chr_ca_010",
+   "name": "协调：处决者之刃",
+   "name_intl": "变异：处决者之刃",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "牌组中每存在1张基础卡牌，即可使基础攻击卡牌伤害总量提升15%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_ca_008",
+   "name": "畸变：鲜艳赤石",
+   "name_intl": "扭曲：腥红血石",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用攻击卡牌时，基于伤害的恢复9%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_chr_ca_005",
+   "name": "协调：卡厄思智识书",
+   "name_intl": "调节：卡厄思圣书",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "第4回合开始时，对全体敌人造成固定伤害600%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_ca_002",
+   "name": "协调：疯子的艺术作品",
+   "name_intl": "变异：疯狂艺术家",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "精英、首领战斗开始时，伤害量+75%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_chr_022",
+   "name": "暗色斑斑的坠饰",
+   "name_intl": "血迹斑斑的坠饰",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用已复制卡牌时，全体敌人的行动计数增加3（每场战斗1次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_chr_021",
+   "name": "强缚锁链",
+   "name_intl": "强迫锁链",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "使用攻击卡牌时，生命值减少1%，固定护盾1%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_chr_020",
+   "name": "拷问工具箱",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合开始时，全体敌人行动计数增加1",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_chr_019",
+   "name": "咒术玩偶",
+   "name_intl": "受诅咒的娃娃",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "回合开始时，手牌中每有1张状态异常、咒术卡牌即可治愈60%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_chr_018",
+   "name": "疯狂菜刀",
+   "name_intl": "疯狂食道",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "若敌人处于痛苦状态，造成的伤害总量提升20%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "蓝罐,双星的暗影,降临的混沌,幻象剧场"
+  },
+  {
+   "id": "eq_chr_013",
+   "name": "命定容器",
+   "name_intl": "成为容器之人",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "第3回合开始时，固定护盾250%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_012",
+   "name": "使团的证物",
+   "name_intl": "教团证物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "对战卡厄思使团时，防御力+15%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_011",
+   "name": "仪式用短刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "击败敌人时，攻击卡牌伤害量+25%（最多2次）",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_010",
+   "name": "处决者之刃",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "对生命值低于上限值50%的敌人造成的伤害总量提升35%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_008",
+   "name": "鲜艳赤石",
+   "name_intl": "腥红血石",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "使用攻击卡牌时，基于伤害的恢复9%（每回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_005",
+   "name": "卡厄思智识书",
+   "name_intl": "卡厄思圣书",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "第4回合开始时，对全体敌人造成固定伤害400%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_002",
+   "name": "疯子的艺术作品",
+   "name_intl": "疯子的艺术品",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "精英战斗开始时，伤害量+50%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_arena_ca_010",
+   "name": "协调：胜者桂冠",
+   "name_intl": "调节：赢家的月桂冠",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "反击伤害总量提升50%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_arena_ca_009",
+   "name": "协调：狂怒药水",
+   "name_intl": "调节：愤怒药水",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "发动4次攻击卡牌后，下1张发动的攻击卡牌伤害总量提升50%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_arena_ca_008",
+   "name": "协调：角斗士徽记",
+   "name_intl": "调节：角斗士证物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "通过卡牌获得3次护盾时，对全体敌人造成固定伤害130%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_arena_ca_007",
+   "name": "协调：斗争竖琴",
+   "name_intl": "调节：斗争竖琴",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "1回合内通过己方卡牌发动伤害、护盾、治愈时，1回合内己方伤害总量提升20%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_arena_ca_006",
+   "name": "畸变：战斗用鼓",
+   "name_intl": "扭曲：战斗用鼓",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "生成5张技能卡牌后，下1张发动的己方卡牌伤害总量提升20%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_arena_010",
+   "name": "胜者桂冠",
+   "name_intl": "赢家的月桂冠",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "传说",
+   "desc": "反击伤害总量提升40%",
+   "stat": "防御力",
+   "stat_values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_arena_009",
+   "name": "狂怒药水",
+   "name_intl": "愤怒药水",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "发动4张攻击卡牌后，下1张发动的攻击卡牌伤害总量提升40%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_arena_008",
+   "name": "角斗士徽记",
+   "name_intl": "角斗士证物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "通过卡牌获得3次护盾时，对全体敌人造成固定伤害100%",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_arena_007",
+   "name": "斗争竖琴",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "传说",
+   "desc": "1回合内己方卡牌同时触发伤害、护盾、治愈时，1回合内己方伤害总量提升15%",
+   "stat": "攻击力",
+   "stat_values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_arena_006",
+   "name": "战斗用鼓",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "传说",
+   "desc": "生成5张技能卡牌时，下一张发动的己方卡牌伤害总量提升20%（最多叠加1层）",
+   "stat": "生命值",
+   "stat_values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_sec_ca_007",
+   "name": "协调：暮色生命之花",
+   "name_intl": "调节：凋零的生命之花",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "若生命值全满，伤害量+60%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_sec_ca_006",
+   "name": "变异：恶灵面具",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "处于生命值达到上限的状态时，暴击率+30%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_sec_ca_005",
+   "name": "变异：盗猎者的探路器",
+   "name_intl": "变异：盗猎者的开拓者",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "伤害量+20%，战斗开始时，赋予随机敌人脆弱20",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_sec_ca_004",
+   "name": "变异：森林三叶草",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合结束时，随机触发己方保留的卡牌中保留效果2次",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_sec_007",
+   "name": "暮色生命之花",
+   "name_intl": "凋零的生命之花",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "若生命值全满，伤害量+40%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_sec_006",
+   "name": "恶灵面具",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "受到伤害的下一回合开始时，固定护盾60%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_sec_005",
+   "name": "盗猎者的探路器",
+   "name_intl": "盗猎者的开拓者",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "对战瑟克洛斯时，伤害量+25%，赋予全体敌人脆弱25",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_sec_004",
+   "name": "森林三叶草",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "通过卡牌恢复#1时，1回合内己方攻击力+10%（最多叠加1次）",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "裁决之沼"
+  },
+  {
+   "id": "eq_pub_ca_035",
+   "name": "变异：时间调节器",
+   "name_intl": "变异：调节时间器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "佩戴的主战员触发随机神之闪光",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_031",
+   "name": "协调：非典型立方体",
+   "name_intl": "调节：非典型方块",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "伤害量+40%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_030",
+   "name": "协调：绝对零度四面体",
+   "name_intl": "调节：绝对零度的四面体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，护盾获得量+30%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_029",
+   "name": "平行宇宙耦合体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合开始时，发动手牌中的随机1张先导卡牌",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_pub_ca_026",
+   "name": "变异：魔力蓝宝石",
+   "name_intl": "变异：蕴含魔力的蓝宝石",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "生命值上限+10%，战斗开始时，压力最高的主战员压力减少2",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_024",
+   "name": "协调：改良战斗强化服",
+   "name_intl": "调节：茂盛的海藻盔甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "通过卡牌获得护盾时，固定护盾45%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_022",
+   "name": "协调：幸存者的兜帽",
+   "name_intl": "调节：生存者的兜帽",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "战斗开始时，固定护盾210%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_021",
+   "name": "变异：泰坦型战斗强化服",
+   "name_intl": "变异：泰坦战斗强化服",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合结束时，恢复#1生命值上限的2%，己方压力随机减少1",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_019",
+   "name": "变异：突击护手",
+   "name_intl": "变异：突击臂铠",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "战斗开始时，反击3，不屈3",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_017",
+   "name": "协调：标准型防毒面具",
+   "name_intl": "调节：标准型防毒面具",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "战斗开始时，免疫2",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_016",
+   "name": "协调：侦察兵的军靴",
+   "name_intl": "调节：侦查兵的军靴",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "击败敌人时，固定护盾100%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_015",
+   "name": "变异：角斗士头盔",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "战斗开始时，减伤2，固定护盾2%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_013",
+   "name": "变异：闪光弹",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "战斗开始时，随机敌人弱化2，全体敌人行动计数增加2",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_pub_ca_012",
+   "name": "震怒的火炬",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "战斗开始时，赋予随机敌人标记2",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_pub_ca_011",
+   "name": "协调：命令：108号",
+   "name_intl": "变异：命令：108号",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "攻击卡牌的伤害总量提升15%，击败敌人时，随机主战员压力减少2",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_010",
+   "name": "协调：截骨机",
+   "name_intl": "调节：骨头切割机",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "攻击处于弱化状态的目标时，伤害量+45%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_009",
+   "name": "协调：精英猎手",
+   "name_intl": "调节：巨人猎人",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "每场战斗首次使用的攻击卡牌韧性伤害增加150%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_006",
+   "name": "协调：黑曜石剑",
+   "name_intl": "调节：黑曜石剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "伤害总量提升18%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_005",
+   "name": "协调：M85军用手榴弹",
+   "name_intl": "调节：M85军用手榴弹",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "使用强化卡牌时，对全体敌人造成固定伤害230%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_pub_ca_002",
+   "name": "美食之书",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "使用费用大于等于2的攻击卡牌时，赋予目标痛苦3",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_pub_035",
+   "name": "时间调节器",
+   "name_intl": "调节时间器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "佩戴的主战员触发闪光",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_031",
+   "name": "非典型立方体",
+   "name_intl": "非典型方块",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "伤害量+25%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_030",
+   "name": "绝对零度四面体",
+   "name_intl": "绝对零度的四面体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，护盾获得量+20%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_029",
+   "name": "平行宇宙耦合体",
+   "name_intl": "多面平行宇宙连接体",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合开始时，发动手牌中的随机1张先导卡牌",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_026",
+   "name": "魔力蓝宝石",
+   "name_intl": "蕴含魔力的蓝宝石",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，若手牌中有开战卡牌，则对全体敌人造成韧性伤害1",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_024",
+   "name": "改良战斗强化服",
+   "name_intl": "茂盛的海藻盔甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "通过卡牌获得护盾时，固定护盾30%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_022",
+   "name": "幸存者的兜帽",
+   "name_intl": "生存者的兜帽",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "战斗开始时，固定护盾140%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_021",
+   "name": "泰坦型战斗强化服",
+   "name_intl": "泰坦战斗强化服",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "受到伤害时，恢复#1生命值上限的2%（每回合1次）",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_019",
+   "name": "突击护手",
+   "name_intl": "突击臂铠",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "战斗开始时，反击3",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_017",
+   "name": "标准型防毒面具",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "战斗开始时，免疫1",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_016",
+   "name": "侦察兵的军靴",
+   "name_intl": "侦查兵的军靴",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "击败敌人时，固定护盾60%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_015",
+   "name": "角斗士头盔",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "战斗开始时，减伤2",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_013",
+   "name": "闪光弹",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "战斗开始时，赋予随机敌人弱化3",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_012",
+   "name": "震怒的火炬",
+   "name_intl": "愤怒的火炬",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "战斗开始时，赋予随机敌人标记2",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_011",
+   "name": "命令：108号",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "攻击卡牌的伤害总量提升40%（每场战斗1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "assault_type": "命令"
+  },
+  {
+   "id": "eq_pub_010",
+   "name": "截骨机",
+   "name_intl": "骨头切割机",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "攻击处于弱化状态的目标时，伤害量+30%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_009",
+   "name": "精英猎手",
+   "name_intl": "巨人猎人",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "每场战斗首次使用的攻击卡牌韧性伤害增加100%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_006",
+   "name": "黑曜石剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "伤害总量提升12%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_005",
+   "name": "M85军用手榴弹",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "使用强化卡牌时，对全体敌人造成固定伤害150%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_pub_002",
+   "name": "美食之书",
+   "name_intl": "美食学",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "使用费用大于等于2的攻击卡牌时，赋予目标痛苦3",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区"
+  },
+  {
+   "id": "eq_nih_ca_005",
+   "name": "畸变：M.S.S数据盘",
+   "name_intl": "变异：M.S.S资料板",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，赋予全体敌人脆弱2",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_nih_ca_004",
+   "name": "协调：污染的头盔",
+   "name_intl": "调节：被污染的头盔",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "生命值上限+9%\n防御力+18%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_nih_ca_003",
+   "name": "畸变：饥饿者的肚子",
+   "name_intl": "扭曲：饥饿者之腹",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "消耗卡牌时，伤害量+5%，恢复#1生命值上限的5%（每场战斗3次）",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_nih_ca_002",
+   "name": "畸变：魂之宝珠",
+   "name_intl": "扭曲：灵魂宝珠",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "消耗卡牌时，对随机敌人造成韧性伤害1",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_nih_005",
+   "name": "M.S.S数据盘",
+   "name_intl": "M.S.S资料板",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "对战尼希勒姆时，赋予全体敌人脆弱2",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_nih_004",
+   "name": "污染的头盔",
+   "name_intl": "被污染的头盔",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "生命值上限+6%\n防御力+12%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_nih_003",
+   "name": "饥饿者的肚子",
+   "name_intl": "饥饿者之腹",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "消耗卡牌时，伤害量+5%，恢复#1生命值上限的5%（每场战斗1次）",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_nih_002",
+   "name": "魂之宝珠",
+   "name_intl": "灵魂宝珠",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "消耗卡牌时，对全体敌人造成韧性伤害1（每场战斗1次）",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "雾之都市"
+  },
+  {
+   "id": "eq_inv_ca_009",
+   "name": "协调：急救包",
+   "name_intl": "变异：急救包",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗结束时，恢复#1生命值上限的6%。",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_inv_ca_007",
+   "name": "协调：普鲁伊德的甲壳",
+   "name_intl": "调节：普鲁伊德的甲壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "受到伤害的下一回合开始时，固定护盾150%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_inv_ca_005",
+   "name": "变异：虫虫杀手",
+   "name_intl": "变异：除虫高手",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "击破时，赋予目标脆弱3",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_inv_009",
+   "name": "急救包",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗结束时，恢复#1生命值上限的5%。",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_inv_007",
+   "name": "普鲁伊德的甲壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "受到伤害的下一回合开始时，固定护盾60%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_inv_005",
+   "name": "虫虫杀手",
+   "name_intl": "除虫高手",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "使用攻击卡牌时，赋予敌人痛苦1（每回合1次）\n若敌人为入侵者，则额外赋予痛苦1",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "双星的暗影"
+  },
+  {
+   "id": "eq_g04_002",
+   "name": "最后的日志",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合开始时，随机己方压力增加2，对全体敌人造成固定伤害150%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g04_001",
+   "name": "碎珀蘑菇",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "被攻击时，随机赋予攻击者脆弱、弱化、痛苦、灼热中的1个随机效果（每回合2次）",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_g03_003",
+   "name": "某人的信",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合结束时，若手牌中存在面具卡牌，则对随机敌人造成固定伤害150%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g03_002",
+   "name": "只剩一只的结婚戒指",
+   "name_intl": "失去对戒的结婚戒指",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合开始时，丢弃手牌中的随机1张安息卡牌",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g03_001",
+   "name": "断裂的黄金羽毛笔",
+   "name_intl": "折断的黄金羽毛笔",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "主动丢弃连接卡牌时，1回合内伤害总量提升20%（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_g02_ca_005",
+   "name": "协调：褪色的枝干",
+   "name_intl": "调节：失去光芒的茎干",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "治愈总量提升25%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_g02_ca_004",
+   "name": "协调：召唤的光团",
+   "name_intl": "调节：召唤出的光团",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "第3张生成的攻击卡牌在1回合内伤害总量提升45%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_g02_ca_003",
+   "name": "金色之钟",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，己方随机主战员减少3点压力",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_g02_ca_002",
+   "name": "协调：闪耀里拉琴",
+   "name_intl": "调节：闪耀的里拉琴",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合开始时，若手牌中有消耗卡牌，则获得固定护盾90%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_g02_ca_001",
+   "name": "畸变：审判之剑",
+   "name_intl": "扭曲：审判之剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "消耗卡牌时1回合内伤害总量提升10%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_g02_005",
+   "name": "褪色的枝干",
+   "name_intl": "失去光芒的茎干",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "治愈总量提升15%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g02_004",
+   "name": "召唤的光团",
+   "name_intl": "召唤出的光团",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "第3张生成的攻击卡牌在1回合内伤害总量提升30%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g02_003",
+   "name": "金色之钟",
+   "name_intl": "金色钟",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，己方随机主战员减少3点压力",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g02_002",
+   "name": "闪耀里拉琴",
+   "name_intl": "闪耀的里拉琴",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合开始时，若手牌中有消耗卡牌，则获得固定护盾60%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g02_001",
+   "name": "审判之剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "卡牌被消耗时，1回合内伤害总量提升10%（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_g01_ca_001",
+   "name": "管理员身份证",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，闪避1",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_g01_001",
+   "name": "管理员身份证",
+   "name_intl": "管理员身分证",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "战斗开始时，闪避1",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds04_008",
+   "name": "掠夺者扫描装置",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合开始时，首次发动的攻击卡牌的暴击伤害+30%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_ds04_005",
+   "name": "精华动力臂铠",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "主动获得护盾时，1回合内攻击卡牌暴击率+30%（每回合1次，使用后恢复）",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_ds04_003",
+   "name": "掠夺者鱼叉炮",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "暴击时，全体敌人固定伤害150%（每回合3次）",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_ds04_001",
+   "name": "渗液双手剑",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "发动攻击卡牌时，赋予目标灼热2（每回合1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "万花筒孵化场",
+   "season": "S4"
+  },
+  {
+   "id": "eq_ds03_008",
+   "name": "哀嚎福音",
+   "name_intl": "悲鸣福音书",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "主动增加敌方的行动计数时，1回合内伤害量+30%（每回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_ds03_004",
+   "name": "心灵斗篷",
+   "name_intl": "心之披风",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "己方主动丢弃卡牌时，减伤1（每回合1次）",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_ds03_002",
+   "name": "蚀化臂铠",
+   "name_intl": "被侵蚀的臂铠",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "额外攻击时，1回合内暴击率增加2%（每回合5次）",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "回荡在银河中的歌声",
+   "season": "S3"
+  },
+  {
+   "id": "eq_ds02_ca_007",
+   "name": "协调：植物玩偶",
+   "name_intl": "调节：植物娃娃",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "消耗4张技能卡牌时，随机主战员减少2点压力",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds02_ca_005",
+   "name": "协调：苔藓护甲",
+   "name_intl": "调节：苔藓盔甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "1回合内未发动己方攻击卡牌并结束回合时，获得固定护盾150%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds02_ca_004",
+   "name": "畸变：藤蔓伪装",
+   "name_intl": "变异：藤蔓伪装网",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "被攻击时，触发手牌中随机1张卡牌的灵感效果",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_ds02_ca_001",
+   "name": "协调：千年木",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "发动费用大于等于2的卡牌时，赋予随机敌人脆弱1",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds02_007",
+   "name": "植物玩偶",
+   "name_intl": "植物娃娃",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "消耗4张技能卡牌时，随机主战员减少1点压力",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_ds02_005",
+   "name": "苔藓护甲",
+   "name_intl": "苔藓盔甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "1回合内未发动己方攻击卡牌并结束回合时，获得固定护盾100%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_ds02_004",
+   "name": "藤蔓伪装",
+   "name_intl": "藤蔓伪装网",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合开始时若生命值低于30% ，闪避1 （每场战斗2次）",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_ds02_001",
+   "name": "千年木",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "发动费用大于等于3的卡牌时，赋予随机敌人1层脆弱",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_ds01_ca_005",
+   "name": "协调：不完整甲壳",
+   "name_intl": "变异：不完整的甲壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "反击时，治愈50%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds01_ca_004",
+   "name": "变异：过量免疫激素",
+   "name_intl": "变异：过度免疫荷尔蒙",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "使用强化卡牌时，1回合内手牌中随机卡牌费用变为0",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_ds01_ca_003",
+   "name": "畸变：脑电波阻断头盔",
+   "name_intl": "变异：脑波阻断头盔",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合开始时，手牌中每有1张状态异常及咒术卡牌，即可获得固定护盾75%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_ds01_ca_002",
+   "name": "畸变：神经黑客模块",
+   "name_intl": "变异：神经骇入模组",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "使用EGO技能时，1回合内伤害量+60%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_ds01_ca_001",
+   "name": "协调：过载电流冲击器",
+   "name_intl": "调节：过电流冲击器",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "主动抽取时，对随机敌人造成固定伤害75%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_ds01_005",
+   "name": "不完整甲壳",
+   "name_intl": "不完整的甲壳",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "回合结束时，若手牌大于等于3张，则获得固定护盾140%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds01_004",
+   "name": "过量免疫激素",
+   "name_intl": "过度免疫荷尔蒙",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "主动抽取时，1回合内护盾获得量+25%（每回合2次）",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds01_003",
+   "name": "脑电波阻断头盔",
+   "name_intl": "脑波阻断头盔",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "主动抽取时，固定护盾40%（每回合5次）",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds01_002",
+   "name": "神经黑客模块",
+   "name_intl": "神经骇入模组",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "己方使用禁忌卡牌时，伤害量+20%，护盾获得量+20%（每场战斗2次）",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_ds01_001",
+   "name": "过载电流冲击器",
+   "name_intl": "过电流冲击器",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "主动抽取时，对随机敌人造成固定伤害50%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "第零研究所",
+   "season": "S1"
+  },
+  {
+   "id": "eq_dll_ca_007",
+   "name": "协调：符文代码",
+   "name_intl": "调节：符文单元码",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "若回合结束时手牌中有保留卡牌，则获得固定护盾150%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "协调"
+  },
+  {
+   "id": "eq_dll_007",
+   "name": "符文代码",
+   "name_intl": "符文单元码",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "若回合结束时手牌中有保留卡牌，则获得固定护盾60%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "降临的混沌"
+  },
+  {
+   "id": "eq_chr_ca_016",
+   "name": "变异：入会凭证",
+   "name_intl": "变异：入教证物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "回合开始时，按照手牌中的状态异常、咒术卡牌数量，对随机敌人造成80%固定伤害",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_chr_ca_014",
+   "name": "变异：誓死拳甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "使用基础攻击卡牌时，固定护盾40%",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_chr_ca_006",
+   "name": "畸变：虚空的赤石",
+   "name_intl": "扭曲：虚无血石",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "使用攻击卡牌时，基于伤害的恢复6%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_chr_ca_003",
+   "name": "变异：钝骨刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "伤害总量提升30%，无法暴击",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "变异"
+  },
+  {
+   "id": "eq_chr_ca_001",
+   "name": "畸变：窃取者的短刀",
+   "name_intl": "扭曲：窃取者的短刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "击败敌人时，获得10~20信用点",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击",
+   "assault_type": "畸变"
+  },
+  {
+   "id": "eq_chr_016",
+   "name": "入会凭证",
+   "name_intl": "入教证物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "对战卡厄思使团时，防御力+10%",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_014",
+   "name": "誓死拳甲",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "对战卡厄思使团时，伤害量+20%，减伤1",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_006",
+   "name": "虚空的赤石",
+   "name_intl": "虚无血石",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "使用攻击卡牌时，基于伤害的恢复6%（每回合1次）",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_003",
+   "name": "钝骨刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "攻击力+10%，暴击率-5%",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_chr_001",
+   "name": "窃取者的短刀",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "击败敌人时，获得5~10信用点（每场战斗1次）",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "蓝罐"
+  },
+  {
+   "id": "eq_arena_ca_005",
+   "name": "陈旧荣耀充能器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "在行动点大于等于1的状态下结束回合时，下回合开始时生成1张充能一击",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_arena_ca_004",
+   "name": "崩塌荣誉发射器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "每逢偶数回合生成1张沉重打击",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_arena_ca_003",
+   "name": "褪色牺牲之盾",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "完全抵挡伤害时，在下回合开始时生成1张 盾牌爆炸",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_arena_ca_002",
+   "name": "折断意志之箭袋",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "每逢奇数回合生成1张贯穿",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_arena_ca_001",
+   "name": "熄灭勇气之臂",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "1回合内未发动攻击卡牌并结束回合时，生成1张火箭飞拳",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_arena_005",
+   "name": "陈旧荣耀充能器",
+   "name_intl": "陈旧荣耀充电器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "在行动点大于等于1的状态下结束回合时，下回合开始时生成1张充能一击",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_arena_004",
+   "name": "崩塌荣誉发射器",
+   "name_intl": "名誉崩塌发射器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "稀有",
+   "desc": "每逢偶数回合生成1张沉重打击",
+   "stat": "生命值",
+   "stat_values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_arena_003",
+   "name": "褪色牺牲之盾",
+   "slot": 2,
+   "slot_name": "防具",
+   "rarity": "稀有",
+   "desc": "完全抵挡伤害时，在下回合开始时生成1张 盾牌爆炸",
+   "stat": "防御力",
+   "stat_values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_arena_002",
+   "name": "折断意志之箭袋",
+   "name_intl": "意志受挫的鱼叉筒",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "每逢奇数回合生成1张贯穿",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_arena_001",
+   "name": "熄灭勇气之臂",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "稀有",
+   "desc": "1回合内未发动攻击卡牌并结束回合时，生成1张火箭飞拳",
+   "stat": "攻击力",
+   "stat_values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "area": "无间烬土",
+   "season": "S2"
+  },
+  {
+   "id": "eq_sec_ca_018",
+   "name": "员工证",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "暗星帮研究员的员工证。表情似乎因熬夜研究而疲惫不堪。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_sec_ca_017",
+   "name": "恶灵树液",
+   "name_intl": "恶灵的树液",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "从恶灵身上采集的树液。浓稠的黑色看起来适合用作染料。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_sec_ca_016",
+   "name": "盗猎者的陷阱",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "捕捉过无数精灵的陷阱。无法估量到底捕捉了多少精灵。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_sec_ca_015",
+   "name": "曼拉格拉戈",
+   "name_intl": "莫名其妙的东西",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "发出怪叫并不停扭动的草根。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_sec_ca_014",
+   "name": "盗猎者的弹弓",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "普通",
+   "desc": "看似毫无杀伤力的盗猎者的弹弓。虽然感觉没什么用，但还是先收起来吧。",
+   "stat": "攻击力",
+   "stat_values": [
+    20,
+    31,
+    43,
+    52,
+    57
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_nih_ca_016",
+   "name": "跳跃启动装置",
+   "name_intl": "紧急启动器",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "莫斯机器人随身携带的应急跳跃启动器。看起来有点老旧。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_nih_ca_015",
+   "name": "能量饮料",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "研究员总是拿在手上的饮料。味道未知，但觉醒效果确实很好。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_nih_ca_014",
+   "name": "未消化的眼珠",
+   "name_intl": "未消化的眼球",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "还未消化的眼珠。不知原本的主人是谁。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_nih_ca_013",
+   "name": "未消化的食物",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "暴饮暴食的异形胃中还未完全消化的食物团。最好还是别知道这是什么。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_nih_ca_012",
+   "name": "握力器",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "普通",
+   "desc": "宇宙海盗的握力器。如果坚持锻炼，感觉总有一天会派上用场。",
+   "stat": "攻击力",
+   "stat_values": [
+    20,
+    31,
+    43,
+    52,
+    57
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_inv_ca_014",
+   "name": "入侵者的蜂蜜",
+   "name_intl": "侵略者的蜂蜜",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "入侵者牌蜂蜜。虽然褒贬不一，但据说一旦迷上就无法自拔。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_inv_ca_013",
+   "name": "进化精华",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "入侵者珍藏的精华。似乎还未完全凝聚。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_inv_ca_012",
+   "name": "孢子粉",
+   "name_intl": "孢子粉末",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "从巨大蘑菇上采集的孢子粉。让人有一种朦胧的感觉。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_inv_ca_011",
+   "name": "巢穴黏液",
+   "name_intl": "巢穴的黏液",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "对紫色粉末过度反应的巢穴心脏喷出的黏液，凝固后散发淡淡甜香。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_inv_ca_010",
+   "name": "来历不明的酱汁",
+   "name_intl": "来历不明的酱料",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "装在皮袋中的来历不明的酱汁。甘甜中带着奇妙的香味。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_dll_ca_015",
+   "name": "暗星强壮剂",
+   "name_intl": "暗星的强化剂",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "暗星持有的强壮剂。效果似乎很好。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_dll_ca_014",
+   "name": "黑使者的螺栓",
+   "name_intl": "黑暗天使的螺栓",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "从黑使者身上某处掉落的螺栓和螺母。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_dll_ca_013",
+   "name": "护身术教典",
+   "name_intl": "防身术课本",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "暗星持有的护身术教典。似乎没什么用。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_dll_ca_012",
+   "name": "数据芯片",
+   "name_intl": "数据晶片",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "黑使者们收集的存有情感数据的芯片。上面记录着：「标本分类：优秀，有待继续观察。」",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_dll_ca_011",
+   "name": "暗星对讲机",
+   "name_intl": "暗星的对讲机",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "暗星携带的普通对讲机。预感会派上用场，于是带在了身上。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_chr_ca_027",
+   "name": "使团服装",
+   "name_intl": "教团服装",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "使徒的服装。似乎可以用来伪装身份。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_chr_ca_026",
+   "name": "玫瑰纹刀",
+   "name_intl": "玫瑰纹匕首",
+   "slot": 1,
+   "slot_name": "武器",
+   "rarity": "普通",
+   "desc": "肉铺中使用的刀，花纹却很精美。仿佛什么都能切开。",
+   "stat": "攻击力",
+   "stat_values": [
+    20,
+    31,
+    43,
+    52,
+    57
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_chr_ca_025",
+   "name": "献血包",
+   "name_intl": "输血包",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "使徒持有的赤色液体。不知是捐献，还是奉献。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  },
+  {
+   "id": "eq_chr_ca_024",
+   "name": "留声机",
+   "slot": 3,
+   "slot_name": "饰品",
+   "rarity": "普通",
+   "desc": "摆放着异象监察官喜欢听的唱片的留声机。",
+   "stat": "生命值",
+   "stat_values": [
+    15,
+    29,
+    42,
+    51,
+    58
+   ],
+   "area": "全地区",
+   "mode": "出击"
+  }
+ ],
+ "memory_fragment_sets": [
+  {
+   "id": "006",
+   "name": "征服者的威严",
+   "set": 4,
+   "desc": "费用为1的卡牌，暴击伤害+35%"
+  },
+  {
+   "id": "007",
+   "name": "利特朗的权威",
+   "set": 2,
+   "desc": "防御力+12%"
+  },
+  {
+   "id": "008",
+   "name": "治愈者的行踪",
+   "set": 2,
+   "desc": "最大生命值+12%"
+  },
+  {
+   "id": "009",
+   "name": "黑翼",
+   "set": 2,
+   "desc": "攻击力+12%"
+  },
+  {
+   "id": "010",
+   "name": "赛斯的金甲虫",
+   "set": 2,
+   "desc": "基础卡牌的伤害总量、护盾获得总量、治愈总量提升20%"
+  },
+  {
+   "id": "011",
+   "name": "执行者的工具",
+   "set": 2,
+   "desc": "暴击伤害+25%"
+  },
+  {
+   "id": "012",
+   "name": "本能的生长",
+   "set": 4,
+   "desc": "持有大于等于3张手牌时，本能卡牌伤害总量提升20%"
+  },
+  {
+   "id": "015",
+   "name": "秩序的弹药",
+   "set": 4,
+   "desc": "使用攻击卡牌时，1回合内秩序卡牌伤害总量提升10%（每回合2次）"
+  },
+  {
+   "id": "016",
+   "name": "虚无的供品",
+   "set": 4,
+   "desc": "消耗卡牌时，1回合内虚无卡牌伤害总量提升20%(每回合1次)"
+  },
+  {
+   "id": "018",
+   "name": "热情的火种",
+   "set": 4,
+   "desc": "使用强化卡牌时，热情卡牌伤害总量提升20%（最多叠加1）"
+  },
+  {
+   "id": "019",
+   "name": "被施咒的遗骸",
+   "set": 2,
+   "desc": "对处于痛苦状态的目标造成的伤害总量提升10%"
+  },
+  {
+   "id": "020",
+   "name": "正义的射线",
+   "set": 4,
+   "desc": "费用为大于等于2的卡牌，暴击率+20%"
+  },
+  {
+   "id": "022",
+   "name": "拘束宝珠",
+   "set": 4,
+   "desc": "伤害次数大于等于2次的虚无卡牌，伤害量+30%"
+  },
+  {
+   "id": "023",
+   "name": "质询之焰",
+   "set": 4,
+   "desc": "对处于击破状态敌人使用的本能卡牌伤害量+50%"
+  },
+  {
+   "id": "024",
+   "name": "野兽欲望",
+   "set": 4,
+   "desc": "正义、秩序的带消耗词条的攻击卡牌伤害总量提升30%（每回合5次）"
+  },
+  {
+   "id": "025",
+   "name": "光荣主宰",
+   "set": 4,
+   "desc": "生成或使用带消耗词条的技能卡牌时，己方的伤害总量提升5%（最多15%）"
+  },
+  {
+   "id": "026",
+   "name": "英雄序曲",
+   "set": 4,
+   "desc": "丢弃自身的热情、虚无属性攻击卡牌时，1回合内暴击率+15%（最高15%，最多叠加2）"
+  },
+  {
+   "id": "027",
+   "name": "星光与梦境",
+   "set": 4,
+   "desc": "发动能力获得护盾时，己方的反击、额外攻击伤害总量提升5%（最多25%）"
+  }
+ ]
+}

@@ -1,0 +1,10887 @@
+{
+ "game": "卡厄思梦境 国服简中",
+ "generated_by": "2game-helper/research/czn/build_db.py",
+ "cards": [
+  {
+   "id": "card_ab_00001",
+   "name": "渗液",
+   "name_intl": "出血",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，回合结束后对己方造成固定伤害40%",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00002",
+   "name": "致命伤口",
+   "name_intl": "伤口",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "无法使用"
+   ],
+   "desc": "",
+   "talent_ids": [
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00003",
+   "name": "虚无",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00004",
+   "name": "尖锐耳鸣",
+   "name_intl": "锐利耳鸣",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取此卡时，赋予己方弱化1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00005",
+   "name": "契母的礼物",
+   "name_intl": "教母之礼",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "状态异常",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，回合结束后对己方造成固定伤害70%\n使用攻击卡牌时，费用减少1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00006",
+   "name": "耳鸣",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "无法使用",
+    "蒸发"
+   ],
+   "desc": "抽取该卡牌时，赋予己方脆弱、弱化、损伤中随机1个",
+   "talent_ids": [
+    "TALENT_UNPLAYABLE",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00007",
+   "name": "怨气灵魂",
+   "name_intl": "冤魂",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "保留",
+    "移除"
+   ],
+   "desc": "伤害200%\n使用该卡牌3次时，鲁斯库斯晕眩",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00008",
+   "name": "嘲讽",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "蒸发",
+    "消耗"
+   ],
+   "desc": "有30%概率造成固定伤害50%\n有50%概率抽取1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_ETHEREAL",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00009",
+   "name": "泥沼",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，全体敌人获得固定护盾60%",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00010",
+   "name": "灼伤",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取此卡时，对己方造成固定伤害40%",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00011",
+   "name": "触电",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "无法使用",
+    "蒸发"
+   ],
+   "desc": "",
+   "talent_ids": [
+    "TALENT_UNPLAYABLE",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00012",
+   "name": "束缚",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，敌人行动时获得1层无法使用卡牌，行动计数减少时，行动计数额外减少1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00014",
+   "name": "过载",
+   "name_intl": "超出负荷",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00015",
+   "name": "咒术之锤",
+   "name_intl": "诅咒之锤",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "状态异常",
+   "talents": [
+    "保留",
+    "消耗",
+    "迅捷"
+   ],
+   "desc": "全体敌人行动计数增加3\n该卡牌在手牌中时，回合结束后对己方造成固定伤害50%",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST",
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00016",
+   "name": "污染",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗",
+    "蒸发"
+   ],
+   "desc": "此卡在手牌中时，回合结束后对己方造成固定伤害70%",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00017",
+   "name": "契母的祝福",
+   "name_intl": "教母祝福",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 5,
+   "type": "状态异常",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "打击时，此卡费用减少1\n此卡在手牌中时，回合结束后赋予己方脆弱、弱化1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00018",
+   "name": "不安",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取1\n此卡在手牌中时，回合结束后对己方造成固定伤害20%",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00019",
+   "name": "死亡标记",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "随机将1张被吸收的卡牌移动到手牌中",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00020",
+   "name": "骇人的记忆",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "全体敌人士气1\n抽取1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00021",
+   "name": "贫血",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "无法使用"
+   ],
+   "desc": "",
+   "talent_ids": [
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00022",
+   "name": "寄生孢子",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "若此卡在手牌中，则士气减少1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00023",
+   "name": "寄生",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "随机将1张被吸收的卡牌移动到手牌中",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00029",
+   "name": "赞美的试炼",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，回合结束时己方压力增加2",
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00030",
+   "name": "思想碎片",
+   "name_intl": "思念碎片",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取该卡牌时，获得脆弱1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00031",
+   "name": "思想碎片",
+   "name_intl": "思念残片",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取1\n40%概率\n对全体敌人施加弱化1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00032",
+   "name": "思念",
+   "name_intl": "思念碎片",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，回合结束后获得脆弱1\n固定伤害60%",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00033",
+   "name": "替代品",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "灵感：抽取1，\n本回合此卡费用减少2",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00034",
+   "name": "执念残骸",
+   "name_intl": "思念残骸",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取1\n全体敌人脆弱1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00035",
+   "name": "非法制造炸弹A",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，回合结束后造成生命值上限15%的伤害\n击破时，费用减少1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00036",
+   "name": "非法制造炸弹B",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，回合结束后造成生命值上限15%的伤害\n发动具有灵感效果的卡牌时，费用减少1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00037",
+   "name": "仿造品",
+   "name_intl": "仿制品",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "状态异常",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00038",
+   "name": "幸福的遗忘",
+   "name_intl": "幸福遗忘",
+   "sort": "咒术卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "终结",
+    "蒸发"
+   ],
+   "desc": "随机主战员压力减少3\n焚烧：下1回合开始时行动点减少1",
+   "talent_ids": [
+    "TALENT_TERMINATION",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00039",
+   "name": "分裂的记忆",
+   "sort": "咒术卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "若手牌中此卡数量大于等于10张，则卡牌费用为0\n保留：生成3张分裂的记忆",
+   "spark_tag": [
+    "exhaust",
+    "ap"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00040",
+   "name": "深渊侵蚀",
+   "sort": "咒术卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 4,
+   "type": "咒术",
+   "talents": [
+    "保留",
+    "消耗",
+    "点燃"
+   ],
+   "desc": "保留：己方压力增加3",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST",
+    "TALENT_IGNITE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00041",
+   "name": "怨恨之锤",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "状态异常",
+   "talents": [
+    "保留",
+    "消耗",
+    "安息"
+   ],
+   "desc": "怨恨之锤全部丢弃\n保留：生成1张怨恨之锤",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST",
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00042",
+   "name": "被侵蚀的英雄之剑",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "敌方士气1\n被丢弃时，获得行动点1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00043",
+   "name": "被侵蚀的英雄长矛",
+   "name_intl": "被侵蚀的英雄之矛",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "敌方不屈1\n被丢弃时，获得行动点1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00044",
+   "name": "被侵蚀的英雄钝器",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "敌方免疫1\n被丢弃时，获得行动点1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00045",
+   "name": "被侵蚀的英雄之剑",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "消耗",
+    "蒸发"
+   ],
+   "desc": "曾经百折不挠的意志，\n如今屈从于侵蚀。",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00046",
+   "name": "被侵蚀的英雄长矛",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "消耗",
+    "蒸发"
+   ],
+   "desc": "曾经的笑面盈盈，\n变作一脸怨怼。",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00047",
+   "name": "被侵蚀的英雄钝器",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "消耗",
+    "蒸发"
+   ],
+   "desc": "曾经坚定的责任，\n转为置之不理。",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00048",
+   "name": "被侵蚀的英雄之剑",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "消耗",
+    "蒸发"
+   ],
+   "desc": "此卡蒸发时，\n赋予全体敌人没落的英雄1",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00049",
+   "name": "被侵蚀的英雄长矛",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "消耗",
+    "蒸发"
+   ],
+   "desc": "此卡蒸发时，\n赋予全体敌人没落的英雄1",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00050",
+   "name": "被侵蚀的英雄钝器",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "状态异常",
+   "talents": [
+    "消耗",
+    "蒸发"
+   ],
+   "desc": "此卡蒸发时，\n赋予全体敌人没落的英雄1",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00051",
+   "name": "惩戒",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [],
+   "desc": "此卡在手牌中时，回合结束时对己方造成固定伤害100%\n弱化、脆弱2",
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00052",
+   "name": "挑选",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "蒸发"
+   ],
+   "desc": "吸收使用卡牌的主战员的所有卡牌",
+   "talent_ids": [
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_00053",
+   "name": "筛选：深化",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "蒸发"
+   ],
+   "desc": "使用卡牌的主战员吸收所有卡牌\n对自身施加眩晕",
+   "talent_ids": [
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ab_assault_00020",
+   "name": "畸变：骇人的记忆",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "状态异常",
+   "talents": [
+    "保留"
+   ],
+   "desc": "丢弃时消耗\n焚烧：抽取2",
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_arena_00001",
+   "name": "火箭飞拳",
+   "name_intl": "火箭拳",
+   "sort": "竞技场卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "攻击",
+   "talents": [
+    "无法使用",
+    "保留",
+    "消耗"
+   ],
+   "desc": "伤害400%\n保留：发动概率+25%，有25%的概率发动此卡",
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_UNPLAYABLE",
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_arena_00002",
+   "name": "贯穿",
+   "sort": "竞技场卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害200%\n脆弱1\n弱化1\n痛苦1",
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust",
+    "vulnerable",
+    "week",
+    "pain"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_arena_00003",
+   "name": "盾牌爆炸",
+   "sort": "竞技场卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "对全体敌人造成基于防御的伤害150%",
+   "spark_tag": [
+    "atk",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_arena_00004",
+   "name": "沉重打击",
+   "sort": "竞技场卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害200%\n脆弱增伤效果变为原本2倍",
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_arena_00005",
+   "name": "充能一击",
+   "sort": "竞技场卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "攻击",
+   "talents": [
+    "无法使用",
+    "消耗",
+    "蒸发"
+   ],
+   "desc": "基于防御的伤害100%，行动点每有1，即可使基础伤害量+100%\n焚烧：发动此卡",
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_UNPLAYABLE",
+    "TALENT_EXHAUST",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_arena_00006",
+   "name": "遗忘之剑",
+   "name_intl": "被遗忘的剑",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "技能",
+   "talents": [
+    "无法使用",
+    "保留"
+   ],
+   "desc": "生成所有类型的竞技场卡牌时，将此卡替换为审判",
+   "links": [
+    "card_arena_00007"
+   ],
+   "talent_ids": [
+    "TALENT_UNPLAYABLE",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_arena_00007",
+   "name": "审判",
+   "sort": "中立卡牌",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "伤害1000%\n韧性伤害10",
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_assualt_00001",
+   "name": "基尔肯的启示",
+   "name_intl": "凯尔肯的启示",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "抽取2\n此卡的抽取增加1\n抽取大于等于5张时，行动点2",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_assualt_00002",
+   "name": "迪亚洛斯的荣光",
+   "name_intl": "戴奥斯的宣言",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "技能",
+   "talents": [
+    "唯一",
+    "无法使用",
+    "保留"
+   ],
+   "desc": "感应：抽取1\n保留：护盾200%，根据己方护盾量对全体敌人造成固定伤害，此卡移动至抽牌堆",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_UNPLAYABLE",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_assualt_00003",
+   "name": "瑟克洛斯的脉动",
+   "name_intl": "赛克瑞德的脉动",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "唯一",
+    "消耗"
+   ],
+   "desc": "使用过的卡牌全部移动至抽牌堆上方\n抽取2\n焚烧：回合开始时，在抽牌堆中生成1张瑟克洛斯的脉动",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_assualt_00004",
+   "name": "尼希勒姆的共鸣",
+   "name_intl": "尼希隆的共鸣",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "技能",
+   "talents": [
+    "唯一",
+    "无法使用",
+    "蒸发"
+   ],
+   "desc": "感应：抽取1、行动点1\n焚烧：抽牌堆中生成1张尼希勒姆的共鸣",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_UNPLAYABLE",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_assualt_pn_00001",
+   "name": "苦行",
+   "sort": "咒术卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "TALENT_IRREMOVABLE",
+    "无法使用",
+    "蒸发"
+   ],
+   "desc": "焚烧：抽牌堆中生成1张苦行",
+   "talent_ids": [
+    "TALENT_IRREMOVABLE",
+    "TALENT_UNPLAYABLE",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_00001",
+   "name": "攻击性突变",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取1张自身攻击卡牌\n1回合内其伤害量+50%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_00002",
+   "name": "外壳生成细胞",
+   "name_intl": "造壳细胞",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留"
+   ],
+   "desc": "护盾70%\n每有1张手牌，即可使基础护盾获得量+25%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_00003",
+   "name": "增殖型病毒",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害120%×1\n感应：伤害次数增加1\n（最多5次）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_00004",
+   "name": "肌肉强化进化体",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害80%×2\n灵感：伤害次数增加2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_00005",
+   "name": "自我演化实验",
+   "name_intl": "自主发电实验",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "强化",
+   "talents": [
+    "先导"
+   ],
+   "desc": "手牌大于等于6张时，手牌中随机1张卡牌1回合内费用变为0\n（每回合1次）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_00006",
+   "name": "强制学习装置",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "强化",
+   "talents": [
+    "先导"
+   ],
+   "desc": "使用4张卡牌后抽取1\n（每回合1次）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_00007",
+   "name": "扣押",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "抽取1\n从抽牌堆或弃牌堆中，将随机1张禁忌卡牌移动至手牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_00008",
+   "name": "禁忌算法",
+   "name_intl": "禁忌的演算法",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "先导"
+   ],
+   "desc": "在手牌中随机生成1张禁忌卡牌",
+   "links": [
+    "card_ta_00001",
+    "card_ta_00002",
+    "card_ta_00003",
+    "card_ta_00004",
+    "card_ta_00005",
+    "card_ta_00006",
+    "card_ta_00007"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_assualt_00001",
+   "name": "畸变：攻击性突变",
+   "name_intl": "扭曲：攻击性突变",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取1张自身攻击卡牌，其伤害总量提升100%，费用增加1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_assualt_00002",
+   "name": "畸变：外壳生成细胞",
+   "name_intl": "扭曲：造壳细胞",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "开战",
+    "保留",
+    "消耗"
+   ],
+   "desc": "护盾70%\n每有1张手牌，即可使基础护盾获得量+25%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_INNATE",
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_assualt_00003",
+   "name": "畸变：增殖型病毒",
+   "name_intl": "扭曲：增殖型病毒",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害150%×1\n感应：伤害次数增加1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_assualt_00004",
+   "name": "协调：肌肉强化进化体",
+   "name_intl": "调节：肌肉强化进化体",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,游侠",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害100%×2\n灵感：伤害次数增加3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_assualt_00005",
+   "name": "变异：自我演化实验",
+   "name_intl": "变异：自主发电实验",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "强化",
+   "talents": [
+    "先导"
+   ],
+   "desc": "使用费用大于等于2的卡牌时，手牌中随机1张卡牌在1回合内费用减少1",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_assualt_00006",
+   "name": "畸变：强制学习装置",
+   "name_intl": "扭曲：强制学习装置",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "先导"
+   ],
+   "desc": "使用中立卡牌时，抽取1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_assualt_00007",
+   "name": "变异：扣押",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "抽取2张基础卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds01_assualt_00008",
+   "name": "变异：禁忌算法",
+   "name_intl": "变异：禁忌的演算法",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "生成2张随机禁忌卡牌加入手牌\n其费用变为0，赋予其消耗",
+   "links": [
+    "card_ta_00001",
+    "card_ta_00002",
+    "card_ta_00003",
+    "card_ta_00004",
+    "card_ta_00005",
+    "card_ta_00006",
+    "card_ta_00007"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00001",
+   "name": "残像草",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "回收2",
+    "消耗3"
+   ],
+   "desc": "护盾60%\n焚烧：生成1张污染孢子加入手牌",
+   "links": [
+    "card_ds02_00009"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_RECALL_2",
+    "TALENT_EXHAUST_3"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00002",
+   "name": "饥饿森林",
+   "name_intl": "森林的饥饿",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "基于防御的伤害300%\n消耗手牌中的所有消耗卡牌，每有1张即可使基础伤害量+25%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00003",
+   "name": "遗忘坟墓",
+   "name_intl": "被遗忘的坟墓",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 6,
+   "type": "技能",
+   "talents": [
+    "点燃",
+    "保留",
+    "消耗"
+   ],
+   "desc": "此卡费用减少时，1回合内自身的暴击率+10%\n焚烧：生成1张污染孢子加入手牌",
+   "links": [
+    "card_ds02_00009"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_IGNITE",
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00004",
+   "name": "蘑菇炮弹",
+   "name_intl": "蘑菇弹丸",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 3,
+   "type": "攻击",
+   "talents": [
+    "弹药",
+    "消耗"
+   ],
+   "desc": "伤害450%\n孢子增殖效果变为2倍",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_BULLET",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00005",
+   "name": "物我一体",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": "无法使用",
+   "type": "技能",
+   "talents": [
+    "无法使用",
+    "终结",
+    "消耗"
+   ],
+   "desc": "在手牌、抽牌堆、弃牌堆中选择1张卡牌发动\n1回合内通过卡牌发动伤害、护盾、治愈所有效果时，移除无法使用",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_UNPLAYABLE",
+    "TALENT_TERMINATION",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00006",
+   "name": "大自然的礼物",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "每有1张手牌即可治愈20%\n同调：每有1张手牌即可生成1张污染孢子加入手牌",
+   "links": [
+    "card_ds02_00009"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "cure"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00007",
+   "name": "孢子采集器",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "焚烧：生成2张污染孢子加入手牌\n保留：生成1张污染孢子加入手牌",
+   "links": [
+    "card_ds02_00009"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00008",
+   "name": "吸收养分",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "选择并消耗1张手牌\n其费用每有1点即可在1回合内使随机1张卡牌费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_00009",
+   "name": "污染孢子",
+   "name_intl": "被污染的孢子",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "孢子增殖1\n保留：生成1张污染孢子加入手牌",
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_assualt_00001",
+   "name": "协调：残像草",
+   "name_intl": "调节：残像草",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "守卫,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "回收2",
+    "消耗3"
+   ],
+   "desc": "护盾80%\n焚烧：生成1张污染孢子加入手牌",
+   "links": [
+    "card_ds02_00009"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_RECALL_2",
+    "TALENT_EXHAUST_3"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_assualt_00002",
+   "name": "绽放：饥饿森林",
+   "name_intl": "绽放：森林的饥饿",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "守卫,操控师",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "基于防御的伤害300%\n消耗弃牌堆的所有消耗卡牌，每消耗1张，伤害总量提升30%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_assualt_00003",
+   "name": "变异：遗忘坟墓",
+   "name_intl": "变异：被遗忘的坟墓",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 6,
+   "type": "技能",
+   "talents": [
+    "点燃",
+    "保留"
+   ],
+   "desc": "1回合内暴击率+40%",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_IGNITE",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_assualt_00004",
+   "name": "畸变：蘑菇炮弹",
+   "name_intl": "扭曲：蘑菇弹丸",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "点燃",
+    "弹药"
+   ],
+   "desc": "伤害150%\n丢弃手牌中的所有消耗卡牌，每丢弃1张，伤害次数即可增加1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_IGNITE",
+    "TALENT_BULLET"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_assualt_00005",
+   "name": "变异：物我一体",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": "X",
+   "type": "技能",
+   "talents": [],
+   "desc": "在弃牌堆中为随机X张卡牌赋予消耗词条\n并将其发动",
+   "spark_enable": 1,
+   "spark_tag": [
+    "xcost"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_assualt_00006",
+   "name": "畸变：大自然的礼物",
+   "name_intl": "扭曲：大自然的礼物",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "每有1张手牌即可治愈30%\n同调：生成2张污染孢子加入手牌",
+   "links": [
+    "card_ds02_00009"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "cure"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_assualt_00007",
+   "name": "绽放：孢子采集器",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "焚烧：生成2张污染孢子加入手牌，赋予所有污染孢子迅捷\n保留：生成1张污染孢子加入手牌",
+   "links": [
+    "card_ds02_00009"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds02_assualt_00008",
+   "name": "变异：吸收养分",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "选择并消耗手牌中的2张卡牌\n其费用之和每有1点，即可获得士气1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "strength"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00001",
+   "name": "失落人格",
+   "name_intl": "丧失的人格面具",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "抽取1张自身攻击卡牌\n若其为安息卡牌，则赋予连接词条",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00002",
+   "name": "束缚宗旨",
+   "name_intl": "束缚的教义",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害200%\n若目标处于共鸣状态，则伤害总量提升100%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00003",
+   "name": "疯狂低语",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "丢弃1\n下1张使用的攻击卡牌伤害量+100%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00004",
+   "name": "满溢回声",
+   "name_intl": "满溢的回声",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "安息"
+   ],
+   "desc": "伤害200%\n被丢弃时，赋予目标共鸣2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00005",
+   "name": "情绪爆发",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "强化",
+   "talents": [
+    "先导"
+   ],
+   "desc": "丢弃4张卡牌时，行动点1\n（每回合1次）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00006",
+   "name": "内在觉醒",
+   "name_intl": "内在的觉醒",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "安息"
+   ],
+   "desc": "丢弃1\n随机抽取1张攻击卡牌\n赋予其连接词条",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00007",
+   "name": "梦之边境",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [
+    "安息"
+   ],
+   "desc": "伤害300%\n被丢弃时，随机丢弃抽牌堆中的2张卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00008",
+   "name": "噩梦的另一面",
+   "name_intl": "恶梦的另一面",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "连接",
+    "安息"
+   ],
+   "desc": "抽取2\n抽牌堆中生成1张骇人的记忆",
+   "links": [
+    "card_ab_00020"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_CONNECT",
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_00009",
+   "name": "真实的共鸣",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "主动抽取时，全体敌人共鸣1（每回合1次）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00001",
+   "name": "畸变：丧失的人格面具",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "抽取3张自身攻击卡牌\n本回合内将其连接",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00002",
+   "name": "绽放：束缚的教义",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害200%\n可对随机敌人发动额外攻击200×目标持有的减益状态数量n_final_ecv_2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00003",
+   "name": "变异：疯狂的私语",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "迅捷"
+   ],
+   "desc": "抽取1\n所有手牌1回合内费用随机变为0~2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00004",
+   "name": "畸变：充盈之回声",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "升空",
+    "安息"
+   ],
+   "desc": "伤害200%、共鸣3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_CELESTIAL",
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00005",
+   "name": "变异：情感的爆发",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成基于防御的伤害250%\n护盾250%\n手牌中每有1张其他中立卡牌，即可使费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00006",
+   "name": "变异：内在觉醒",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "强化",
+   "talents": [
+    "开战",
+    "唯一"
+   ],
+   "desc": "主动抽取3次后，行动点1，1回合内士气3（每回合1次）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE",
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00007",
+   "name": "协调：梦境",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [
+    "安息"
+   ],
+   "desc": "伤害300%\n丢弃时，丢弃抽牌堆中的随机5张卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00008",
+   "name": "畸变：噩梦的另一面",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取2\n在抽牌堆中生成2张畸变：骇人的记忆",
+   "links": [
+    "card_ab_assault_00020"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_assault_00009",
+   "name": "绽放：真实的共鸣",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "生成卡牌时，随机敌人共鸣1\n消耗卡牌时，随机敌人痛苦1",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00001",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "伤害250%\n冲击波3",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00002",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "伤害200%\n死亡烙印1",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00003",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "丢弃最多2张卡牌，每丢弃1张，即可使1回合内自身攻击卡牌伤害量+60%",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00004",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "抽取1\n抽取攻击卡牌时，1回合内士气2",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00005",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "伤害250%\n若本回合生成过卡牌，\n则伤害总量提升50%",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00006",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一",
+    "安息"
+   ],
+   "desc": "丢弃抽牌堆中的随机1张安息卡牌",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00007",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "游侠",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "抽取2\n每抽取1张攻击卡牌，\n即可合击100%",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00008",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "守卫,操控师",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "基于防御的伤害250%\n脆弱1",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00009",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "守卫",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "基于防御的伤害250%\n存在行动计数为1的目标时，\n反击2",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00010",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "奥义师",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "伤害150%\n目标持有的自身赋予的\n痛苦每有1层，\n即可使伤害量+30%",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00011",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "前锋",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一",
+    "消耗5"
+   ],
+   "desc": "伤害100%\n手牌中的自身攻击卡牌伤害量+50%",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_EXHAUST_5"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00012",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "墓地中每有1张卡牌，即可使下1张使用的攻击卡牌伤害量+15%（最多150%）",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00013",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "操控师",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "基于防御的伤害250%\n行动计数增加2",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00014",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "护盾250%\n反击2",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00015",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一",
+    "弹药"
+   ],
+   "desc": "伤害250%\n手牌中的所有弹药卡牌\n伤害量+30%（使用后恢复）",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_BULLET"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00016",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "游侠",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "伤害250%\n标记2",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00017",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一",
+    "消耗2"
+   ],
+   "desc": "弹药卡牌伤害量+30%",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00018",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "奥义师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "治愈250%\n1回合内丢弃卡牌时，随机敌人痛苦1",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00019",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一"
+   ],
+   "desc": "治愈250%\n行动迟缓3",
+   "talent_ids": [
+    "TALENT_ORIGIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds03_eid_00020",
+   "name": "人格面具",
+   "sort": "人格面具",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": "前锋",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "唯一",
+    "消耗2"
+   ],
+   "desc": "护盾250%\n将墓地中自己的1张随机攻击卡牌移动至手牌",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_00001",
+   "name": "掠夺行军",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害120%\n连续：伤害次数增加1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_00002",
+   "name": "活用掩体",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾120%\n1回合内受击时，赋予攻击者灼热2\n（每回合2次）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_00003",
+   "name": "集中清剿",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成伤害200%\n对处于持续伤害效果的目标伤害量+50%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_00004",
+   "name": "追踪精华",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "抽取1张随机攻击卡牌\n1回合内其伤害量+50%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_00005",
+   "name": "扭曲洞察",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害0120%\n脆弱1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "vulnerable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_00006",
+   "name": "心灵侵蚀",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "先导"
+   ],
+   "desc": "击败敌人时，赋予随机敌人2层痛苦或灼热中的随机效果\n（每回合2次）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "pain"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_00007",
+   "name": "被光诱惑之手",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "士气1\n全体敌人脆弱2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "vulnerable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_00008",
+   "name": "本能共鸣",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 2,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "主动赋予持续伤害效果时，对随机敌人造成固定伤害80%×4\n（每回合1次）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10011",
+   "name": "收集标本",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "探索"
+   ],
+   "desc": "伤害100%\n抽取1",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10012",
+    "card_ds04_des_10013"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10012",
+   "name": "收集标本",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "探索"
+   ],
+   "desc": "伤害150%\n抽取1",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10013"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10013",
+   "name": "收集标本",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "探索"
+   ],
+   "desc": "伤害150%\n抽取2",
+   "links": [
+    "card_ds04_des_10061"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10021",
+   "name": "求知若渴",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "本回合内每抽取1张卡牌，即可使1回合内下1张使用的攻击卡牌伤害量+20%（最多5）",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10022",
+    "card_ds04_des_10023"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10022",
+   "name": "求知若渴",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "本回合内每抽取1张卡牌，即可使1回合内下1张使用的攻击卡牌伤害量+30%（最多5）",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10023"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10023",
+   "name": "求知若渴",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "本回合内每抽取1张卡牌，即可使1回合内下1张使用的攻击卡牌伤害量+40%（最多5）",
+   "links": [
+    "card_ds04_des_10061"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10031",
+   "name": "战后分析",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "探索"
+   ],
+   "desc": "伤害200%\n本回合内每击败1个敌人，即可在1回合内使伤害量+50%（最多4次）",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10032",
+    "card_ds04_des_10033"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10032",
+   "name": "战后分析",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "探索"
+   ],
+   "desc": "伤害260%\n本回合内每击败1个敌人，即可在1回合内使伤害量+60%（最多4次）",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10033"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10033",
+   "name": "战后分析",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "探索"
+   ],
+   "desc": "伤害320%\n本回合内每击败1个敌人，即可在1回合内使伤害量+70%（最多4次）",
+   "links": [
+    "card_ds04_des_10061"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10041",
+   "name": "感官过载",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "1回合内自身主动抽取时，对随机敌人发动额外攻击75%（最多3次）",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10042",
+    "card_ds04_des_10043"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10042",
+   "name": "感官过载",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "1回合内自身主动抽取时，对随机敌人发动额外攻击90%（最多3次）",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10043"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10043",
+   "name": "感官过载",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "1回合内自身主动抽取时，对随机敌人发动额外攻击110%（最多3次）",
+   "links": [
+    "card_ds04_des_10061"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10051",
+   "name": "禁忌假说",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "抽取1\n赋予随机敌人弱化、脆弱、痛苦中的随机效果2次",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10052",
+    "card_ds04_des_10053"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10052",
+   "name": "禁忌假说",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "抽取1\n赋予随机敌人弱化、脆弱、痛苦中的随机效果3次",
+   "links": [
+    "card_ds04_des_10061",
+    "card_ds04_des_10053"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10053",
+   "name": "禁忌假说",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "探索"
+   ],
+   "desc": "抽取1\n赋予全体敌人弱化、脆弱、痛苦中的随机效果3次",
+   "links": [
+    "card_ds04_des_10061"
+   ],
+   "talent_ids": [
+    "TALENT_EXPLORATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_10061",
+   "name": "欲望显现：探寻",
+   "sort": "欲望卡牌",
+   "rarity": "神话",
+   "ego": "传承",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "唯一",
+    "消耗"
+   ],
+   "desc": "伤害600%\n抽取2张自身卡牌",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20011",
+   "name": "盲目砍杀",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害240%\n行动计数减少2",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20012",
+    "card_ds04_des_20013"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20012",
+   "name": "盲目砍杀",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害290%\n行动计数减少2",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20013"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20013",
+   "name": "盲目砍杀",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害360%\n行动计数减少3",
+   "links": [
+    "card_ds04_des_20061"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20021",
+   "name": "巩固权柄",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害120%\n目标处于痛苦或灼热状态时，伤害总量提升85%",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20022",
+    "card_ds04_des_20023"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20022",
+   "name": "巩固权柄",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害140%\n目标处于痛苦或灼热状态时，伤害总量提升100%",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20023"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20023",
+   "name": "巩固权柄",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害150%\n目标处于痛苦或灼热状态时，伤害总量提升125%",
+   "links": [
+    "card_ds04_des_20061"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20031",
+   "name": "处决叛逆",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "对全体敌人造成伤害200%\n击败：赋予随机敌人灼热4",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20032",
+    "card_ds04_des_20033"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20032",
+   "name": "处决叛逆",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "对全体敌人造成伤害270%\n击败：赋予随机敌人灼热4",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20033"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20033",
+   "name": "处决叛逆",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "对全体敌人造成伤害300%\n击败：赋予随机敌人灼热6",
+   "links": [
+    "card_ds04_des_20061"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20041",
+   "name": "服从烙印",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害130%\n目标处于灼热状态时，额外攻击100%",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20042",
+    "card_ds04_des_20043"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20042",
+   "name": "服从烙印",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害150%\n目标处于灼热状态时，额外攻击140%",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20043"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20043",
+   "name": "服从烙印",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "控制"
+   ],
+   "desc": "伤害170%\n目标处于灼热状态时，额外攻击180%",
+   "links": [
+    "card_ds04_des_20061"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20051",
+   "name": "臣服吧",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "控制"
+   ],
+   "desc": "赋予拥有减益效果的目标脆弱1\n赋予全体敌人弱化1、灼热3",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20052",
+    "card_ds04_des_20053"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20052",
+   "name": "臣服吧",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "控制"
+   ],
+   "desc": "赋予拥有减益效果的目标脆弱2\n赋予全体敌人弱化1、灼热3",
+   "links": [
+    "card_ds04_des_20061",
+    "card_ds04_des_20053"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20053",
+   "name": "臣服吧",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "控制"
+   ],
+   "desc": "赋予拥有减益效果的目标脆弱3\n赋予全体敌人弱化1、灼热3",
+   "links": [
+    "card_ds04_des_20061"
+   ],
+   "talent_ids": [
+    "TALENT_CONTROL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_20061",
+   "name": "欲望显现：控制",
+   "sort": "欲望卡牌",
+   "rarity": "神话",
+   "ego": "传承",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "唯一",
+    "消耗"
+   ],
+   "desc": "伤害700%\n灼热4\n下一回合开始时，灼热4",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30011",
+   "name": "执念",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "伤害120%\n目标每持有1种减益效果，即可使伤害量+25%\n（最多100%）",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30012",
+    "card_ds04_des_30013"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30012",
+   "name": "执念",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "伤害150%\n目标每持有1种减益效果，即可使伤害量+30%\n（最多120%）",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30013"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30013",
+   "name": "执念",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "伤害170%\n目标每持有1种减益效果，即可使伤害量+40%\n（最多160%）",
+   "links": [
+    "card_ds04_des_30061"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30021",
+   "name": "黄金之巢",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "目标每持有1个减益效果，即可获得护盾40%\n（最多200%）\n痛苦2\n灼热2",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30022",
+    "card_ds04_des_30023"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30022",
+   "name": "黄金之巢",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "目标每持有1个减益效果，即可获得护盾50%\n（最多250%）\n痛苦4\n灼热4",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30023"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30023",
+   "name": "黄金之巢",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "目标每持有1个减益效果，即可获得护盾60%\n（最多300%）\n痛苦6\n灼热6",
+   "links": [
+    "card_ds04_des_30061"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30031",
+   "name": "斩断尘缘",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "1回合内目标每持有1种减益效果，即可使伤害量+20%（最多60%）",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30032",
+    "card_ds04_des_30033"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30032",
+   "name": "斩断尘缘",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "1回合内目标每持有1种减益效果，即可使伤害量+30%（最多90%）",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30033"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30033",
+   "name": "斩断尘缘",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "1回合内目标每持有1种减益效果，即可使伤害量+40%（最多120%）",
+   "links": [
+    "card_ds04_des_30061"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30041",
+   "name": "自恋",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "1回合内使用队友的攻击卡牌时，对随机目标合击60%（最多2次）\n合击目标在1回合内士气减少1",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30042",
+    "card_ds04_des_30043"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30042",
+   "name": "自恋",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "1回合内使用队友的攻击卡牌时，对随机目标合击80%（最多2次）\n合击目标在1回合内士气减少1",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30043"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30043",
+   "name": "自恋",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "1回合内使用队友的攻击卡牌时，对随机目标合击110%（最多2次）\n合击目标在1回合内士气减少1",
+   "links": [
+    "card_ds04_des_30061"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30051",
+   "name": "统统归我",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "伤害200%\n击败：目标每持有1种减益效果，即可在1回合内获得士气1",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30052",
+    "card_ds04_des_30053"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30052",
+   "name": "统统归我",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "伤害300%\n击败：目标每持有1种减益效果，即可在1回合内获得士气1",
+   "links": [
+    "card_ds04_des_30061",
+    "card_ds04_des_30053"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30053",
+   "name": "统统归我",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "拥有"
+   ],
+   "desc": "伤害390%\n击败：目标每持有1种减益效果，即可在1回合内获得士气1",
+   "links": [
+    "card_ds04_des_30061"
+   ],
+   "talent_ids": [
+    "TALENT_POSSESSION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_30061",
+   "name": "欲望显现：占有",
+   "sort": "欲望卡牌",
+   "rarity": "神话",
+   "ego": "传承",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "唯一",
+    "消耗"
+   ],
+   "desc": "伤害600%\n1回合内士气、坚定5",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40011",
+   "name": "最后挣扎",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害110%\n最大生命值低于50%时，伤害量变为2倍",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40012",
+    "card_ds04_des_40013"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40012",
+   "name": "最后挣扎",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害140%\n最大生命值低于50%时，伤害量变为2倍",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40013"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40013",
+   "name": "最后挣扎",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害170%\n最大生命值低于50%时，伤害量变为2倍",
+   "links": [
+    "card_ds04_des_40061"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40021",
+   "name": "惨烈君临",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害160%\n基于伤害的恢复20%",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40022",
+    "card_ds04_des_40023"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40022",
+   "name": "惨烈君临",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害210%\n基于伤害的恢复20%",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40023"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40023",
+   "name": "惨烈君临",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害240%\n基于伤害的恢复30%",
+   "links": [
+    "card_ds04_des_40061"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40031",
+   "name": "断尾",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "护盾140%\n丢弃手牌中的随机攻击卡牌1\n丢弃时，额外获得护盾140%",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40032",
+    "card_ds04_des_40033"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40032",
+   "name": "断尾",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "护盾170%\n随机丢弃手牌中的1张攻击卡牌\n丢弃时，额外获得护盾170%",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40033"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40033",
+   "name": "断尾",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "护盾200%\n随机丢弃手牌中的1张攻击卡牌\n丢弃时，额外获得护盾200%",
+   "links": [
+    "card_ds04_des_40061"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40041",
+   "name": "围猎",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害35%\n1回合内不屈减少2",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40042",
+    "card_ds04_des_40043"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40042",
+   "name": "围猎",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害50%\n1回合内不屈减少2",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40043"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40043",
+   "name": "围猎",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "伤害50%\n1回合内不屈减少3",
+   "links": [
+    "card_ds04_des_40061"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40051",
+   "name": "野化",
+   "sort": "欲望卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "1回合内伤害量+50%（最多叠加1）\n赋予己方脆弱2",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40052",
+    "card_ds04_des_40053"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40052",
+   "name": "野化",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "1回合内伤害量+60%（最多叠加1）\n赋予己方脆弱2",
+   "links": [
+    "card_ds04_des_40061",
+    "card_ds04_des_40053"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40053",
+   "name": "野化",
+   "sort": "欲望卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "TALENT_SURVIVAL"
+   ],
+   "desc": "1回合内伤害量+75%（最多叠加1）\n赋予己方脆弱2",
+   "links": [
+    "card_ds04_des_40061"
+   ],
+   "talent_ids": [
+    "TALENT_SURVIVAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ds04_des_40061",
+   "name": "欲望显现：生存",
+   "sort": "欲望卡牌",
+   "rarity": "神话",
+   "ego": "传承",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "唯一",
+    "消耗"
+   ],
+   "desc": "伤害200%\n固定护盾100%×2\n1回合内护盾保留20%",
+   "talent_ids": [
+    "TALENT_ORIGIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00001",
+   "name": "觉醒剂",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "1回合内士气2",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00002",
+   "name": "奥德赛恢复包",
+   "name_intl": "奥德赛恢复套组",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "移除"
+   ],
+   "desc": "恢复最大生命值的8%\n行动点1",
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00003",
+   "name": "老旧的剑",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害360%\n每次使用，基础伤害量-120%",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00004",
+   "name": "冒牌秘术师",
+   "name_intl": "冒牌巫女",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取2\n抽取的卡牌中若有技能卡牌，\n则获得行动点1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00005",
+   "name": "变异",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，每次使用卡牌，对己方造成固定伤害15%",
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00006",
+   "name": "肉块",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "移除"
+   ],
+   "desc": "恢复最大生命值的12%\n下回合开始时士气减少1",
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00007",
+   "name": "纪律严明",
+   "name_intl": "严格纪律",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "咒术",
+   "talents": [
+    "移除3"
+   ],
+   "desc": "此卡在手牌中时，回合结束后获得1层下回合无法使用攻击卡牌",
+   "talent_ids": [
+    "TALENT_REMOVE_3"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00008",
+   "name": "渴望",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "咒术",
+   "talents": [
+    "移除3"
+   ],
+   "desc": "此卡在手牌中时，回合结束后，下回合开始时，行动点减少1",
+   "talent_ids": [
+    "TALENT_REMOVE_3"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00009",
+   "name": "提灯",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "愿望3"
+   ],
+   "desc": "对全体敌人造成伤害500%\n丢弃所有卡牌",
+   "spark_tag": [
+    "atk"
+   ],
+   "talent_ids": [
+    "TALENT_LAMP_3"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00010",
+   "name": "普鲁伊德",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害70%\n痛苦4",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00011",
+   "name": "新鲜的生肉",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "移除"
+   ],
+   "desc": "恢复最大生命值的15%\n行动点2",
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00012",
+   "name": "黏性",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "移除2"
+   ],
+   "desc": "非常黏稠。",
+   "talent_ids": [
+    "TALENT_REMOVE_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00014",
+   "name": "精灵的咒术",
+   "name_intl": "妖精的诅咒",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "此卡在手牌中时，回合结束后，下1张使用的卡牌伤害总量、护盾获得总量、治愈总量降低20%",
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00015",
+   "name": "盗猎者的急救包",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "盗猎者",
+    "移除"
+   ],
+   "desc": "战斗结束时恢复最大生命值的20%",
+   "talent_ids": [
+    "TALENT_POACHER",
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00016",
+   "name": "根深蒂固",
+   "name_intl": "深根",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "咒术",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "回合开始时，若此卡在手牌中，全体敌人行动计数减少3",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00017",
+   "name": "永劫火种",
+   "name_intl": "永劫之火",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "强化",
+   "talents": [],
+   "desc": "费用大于等于1的卡牌伤害总量提升40%\n攻击卡牌费用增加1",
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00018",
+   "name": "香甜诱饵",
+   "name_intl": "香喷喷的诱饵",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "赋予全体敌人弱化1\n按照敌人数量赋予额外弱化",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00019",
+   "name": "紫色幻影",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "咒术",
+   "talents": [
+    "移除3"
+   ],
+   "desc": "抽取此卡时，手牌中随机1张卡牌1回合内费用变更为2",
+   "talent_ids": [
+    "TALENT_REMOVE_3"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00020",
+   "name": "精炼卡厄思胶囊",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "行动点2\n己方压力减少3",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00021",
+   "name": "寄生孢子",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "移除2"
+   ],
+   "desc": "若此卡在手牌中，则士气减少1",
+   "talent_ids": [
+    "TALENT_REMOVE_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00022",
+   "name": "威廉",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "行动点2\n抽取4",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00023",
+   "name": "贪婪",
+   "sort": "咒术卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "无法使用",
+    "蒸发"
+   ],
+   "desc": "",
+   "talent_ids": [
+    "TALENT_UNPLAYABLE",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00024",
+   "name": "兔子的特制点心",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "恢复最大生命值的8%\n士气1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00025",
+   "name": "变异生命体",
+   "sort": "咒术卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "咒术",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "保留此卡时，行动点减少1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00026",
+   "name": "卡厄思生命体",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "行动点1\n保留此卡时，获得行动点1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00027",
+   "name": "挑食巨口",
+   "name_intl": "挑剔的口味",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "消耗1张手牌中的卡牌\n治愈100%",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00028",
+   "name": "分裂症",
+   "sort": "咒术卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "回合结束时，若此卡在手牌中，则造成生命值上限2%的伤害，或随机主战员压力增加3",
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00029",
+   "name": "亡魂之果",
+   "name_intl": "亡魂果实",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "移除"
+   ],
+   "desc": "选择手牌中至多2张卡牌消耗\n按消耗的卡牌的数量获得相应士气、行动点",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00030",
+   "name": "贝壳之刺",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害20%×3\n使用后，伤害次数减少1",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00031",
+   "name": "瞬发畸变",
+   "name_intl": "暂时性变异",
+   "sort": "状态异常",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "无法使用",
+    "蒸发"
+   ],
+   "desc": "",
+   "talent_ids": [
+    "TALENT_UNPLAYABLE",
+    "TALENT_ETHEREAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00032",
+   "name": "使团的智识书页",
+   "name_intl": "教团的圣书页面",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "此卡消耗时，抽取2",
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00033",
+   "name": "变异灵药",
+   "name_intl": "变异的灵药",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "在弃牌堆中生成3张瞬发畸变\n1回合内士气3",
+   "links": [
+    "card_enc_00031"
+   ],
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00034",
+   "name": "黑色污渍包裹",
+   "name_intl": "黑斑包袱",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "移除"
+   ],
+   "desc": "恢复最大生命值的20%\n下回合开始时士气减少1",
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00035",
+   "name": "天罚",
+   "name_intl": "天上审判",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害350%\n惩罚3",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00036",
+   "name": "毁伤战术",
+   "name_intl": "损伤战术",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害200%\n若目标持有护盾，则伤害量+80%\n损伤2",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00037",
+   "name": "紫影翩翩",
+   "name_intl": "紫色群舞",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "手牌中1张攻击卡牌的费用1回合内变为0~1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00038",
+   "name": "深渊化",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "生命值减少10%\n下1张使用的攻击卡牌的伤害总量提升30%\n生命值为10%以下时无法使用",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00039",
+   "name": "传染",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "生成2张污染\n固定伤害200%\n每有1张手牌，即可使基础伤害量+30%",
+   "links": [
+    "card_ab_00016"
+   ],
+   "spark_tag": [
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00040",
+   "name": "巢穴心脏",
+   "name_intl": "巢穴的心脏",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "脉动1\n回合开始时，脉动1\n（最多叠加4层）",
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00041",
+   "name": "麻痹陷阱",
+   "name_intl": "麻痺陷阱",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "弱化2，脆弱2",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00042",
+   "name": "网状陷阱",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "弱化2",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00043",
+   "name": "凶残本能",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "士气2\n生命值减少5%",
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00044",
+   "name": "变异体样本",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "技能",
+   "talents": [
+    "保留",
+    "无法使用",
+    "移除"
+   ],
+   "desc": "此卡在手牌中时，在变异体战斗中伤害总量提升20%",
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_UNPLAYABLE",
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00045",
+   "name": "超再生",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "超再生1\n赋予自身脆弱1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00046",
+   "name": "HA-00",
+   "sort": "中立卡牌",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对随机敌人造成伤害100%×4\n赋予命中的目标脆弱1或弱化1",
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00047",
+   "name": "红色流明",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [
+    "点燃",
+    "消耗"
+   ],
+   "desc": "对全体敌人造成伤害300%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_IGNITE",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00048",
+   "name": "蓝色流明",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "消耗1张手牌中的消耗卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00049",
+   "name": "黄色流明",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "治愈150%\n同调：护盾150%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "cure",
+    "shield",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00050",
+   "name": "黑色流明",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 3,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "焚烧：抽取3，\n生成1张破碎黑色流明加入手牌",
+   "links": [
+    "card_enc_00051"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00051",
+   "name": "破碎黑色流明",
+   "name_intl": "破碎的黑色流明",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "焚烧：抽取2，\n生成1张黑色流明碎片加入手牌",
+   "links": [
+    "card_enc_00052"
+   ],
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00052",
+   "name": "黑色流明碎片",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "焚烧：抽取1",
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00053",
+   "name": "腐烂的苹果与少女",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾180%\n光之庇佑1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00054",
+   "name": "倒挂的天选者",
+   "name_intl": "倒吊的弥赛亚",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害250%\n若手牌中有连接卡牌，则将其丢弃，并且伤害次数增加1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00055",
+   "name": "无脸女",
+   "name_intl": "没有脸的女子",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "使用连接卡牌时，抽取1\n（每回合1次）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00056",
+   "name": "往昔执念",
+   "name_intl": "过去的思念",
+   "sort": "咒术卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "抽取此卡时，赋予手牌中1张随机卡牌连接效果",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00057",
+   "name": "机动核心",
+   "sort": "中立卡牌",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "护盾200%\n1回合内机动核心费用减少1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00058",
+   "name": "虚空碎片",
+   "name_intl": "虚无残片",
+   "sort": "中立卡牌",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "保留：生命值减少10%，赋予全体敌人痛苦10\n焚烧：赋予全体敌人弱化3",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00059",
+   "name": "黏性",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "咒术",
+   "talents": [
+    "移除2"
+   ],
+   "desc": "非常黏稠。",
+   "talent_ids": [
+    "TALENT_REMOVE_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00060",
+   "name": "易爆火药桶",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "移除"
+   ],
+   "desc": "伤害50%×1~12\n赋予随机敌人灼热3",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00061",
+   "name": "拟态回响",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "传承",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "弱化2\n若目标处于行动前，则行动计数减少2，弱化增加1",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00062",
+   "name": "费洛蒙中毒",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "咒术",
+   "talents": [
+    "移除2"
+   ],
+   "desc": "赋予己方弱化2\n移除此卡时，赋予全体敌人灼热2",
+   "talent_ids": [
+    "TALENT_REMOVE_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_00063",
+   "name": "万花筒残像",
+   "sort": "咒术卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "移除"
+   ],
+   "desc": "己方压力增加20\n暴击率+20%，暴击伤害+25%",
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00003",
+   "name": "老旧的剑",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害360%\n每次使用，基础伤害量-120%",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00005",
+   "name": "变异",
+   "sort": "咒术卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "咒术",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "此卡在手牌中时，每次使用卡牌，对己方造成固定伤害15%",
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00006",
+   "name": "肉块",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "移除"
+   ],
+   "desc": "恢复最大生命值的12%\n下回合开始时士气减少1",
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00010",
+   "name": "普鲁伊德",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害70%\n痛苦4",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00015",
+   "name": "盗猎者的急救包",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "盗猎者",
+    "移除"
+   ],
+   "desc": "战斗结束时恢复最大生命值的20%",
+   "talent_ids": [
+    "TALENT_POACHER",
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00018",
+   "name": "香甜诱饵",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "赋予全体敌人弱化1\n按照敌人数量赋予额外弱化",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00032",
+   "name": "使团的智识书页",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "此卡消耗时，抽取2",
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00033",
+   "name": "变异灵药",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "在弃牌堆中生成3张瞬发畸变\n1回合内士气3",
+   "links": [
+    "card_enc_00031"
+   ],
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00034",
+   "name": "黑色污渍包裹",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "移除"
+   ],
+   "desc": "恢复最大生命值的20%\n下回合开始时士气减少1",
+   "talent_ids": [
+    "TALENT_REMOVE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00035",
+   "name": "天罚",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害350%\n惩罚3",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00036",
+   "name": "毁伤战术",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害200%\n若目标持有护盾，则伤害量+80%\n损伤2",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00037",
+   "name": "紫影翩翩",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "手牌中1张攻击卡牌的费用1回合内变为0~1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00038",
+   "name": "深渊化",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "生命值减少10%\n下1张使用的攻击卡牌的伤害总量提升30%\n生命值为10%以下时无法使用",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00039",
+   "name": "传染",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "生成2张污染\n固定伤害200%\n每有1张手牌，即可使基础伤害量+30%",
+   "links": [
+    "card_ab_00016"
+   ],
+   "spark_tag": [
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00040",
+   "name": "巢穴心脏",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "脉动1\n回合开始时，脉动1\n（最多叠加4层）",
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00041",
+   "name": "麻痹陷阱",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "弱化2，脆弱2",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00042",
+   "name": "网状陷阱",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "弱化2",
+   "spark_tag": [
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_enc_ca_00043",
+   "name": "凶残本能",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "士气2\n生命值减少5%",
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00001",
+   "name": "锤子",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害800%\n只有拥有资格的人才能使用「维修」。",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00002",
+   "name": "撬棍",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害200%\n士气10\n历史悠久的「维修」工具。",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00003",
+   "name": "切割机",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害100%×4\n这是用于切断「某物」而准备的「维修」道具。",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00004",
+   "name": "物主之祝福",
+   "name_intl": "神之祝福",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "护盾100%\n赋予朱达斯相当于生命值上限8%的固定护盾\n抽取1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00005",
+   "name": "扩容弹匣",
+   "name_intl": "扩容弹夹",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "伤害20%×4",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00006",
+   "name": "火力支持无人机",
+   "name_intl": "火力支援无人机",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "伤害20%\n标记3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00007",
+   "name": "时间加速胶囊",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "行动点2，抽取2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00008",
+   "name": "幻影复制装置",
+   "name_intl": "幻象复制装置",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "对随机敌人造成伤害20%×6",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00009",
+   "name": "剧毒炸弹",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "伤害20%\n痛苦6",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00010",
+   "name": "启示",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留"
+   ],
+   "desc": "获得行动点1",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00011",
+   "name": "金色鬃毛",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "金色鬃毛",
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00012",
+   "name": "恐惧",
+   "sort": "闯入事件卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "滚动骰子成功掷出\n10\n时逃跑",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00013",
+   "name": "恐惧",
+   "sort": "闯入事件卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "滚动骰子成功掷出\n6\n时逃跑",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_etc_00014",
+   "name": "恐惧",
+   "sort": "闯入事件卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "逃跑",
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_event_1055_00001",
+   "name": "梦中的向导",
+   "sort": "中立卡牌",
+   "rarity": "神话",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "安息"
+   ],
+   "desc": "基于防御的伤害200%\n丢弃抽牌堆最上方的2张卡牌",
+   "talent_ids": [
+    "TALENT_TESTAMENT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00001",
+   "name": "虚无吞噬者",
+   "name_intl": "虚无饥饿",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "吸收士气2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "targetable",
+    "strength"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00002",
+   "name": "害羞的园丁",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害50%×4\n标记3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "mark"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00003",
+   "name": "忧郁的契父",
+   "name_intl": "忧郁的教父",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害50%×4\n痛苦6",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "pain"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00004",
+   "name": "阴森的契母",
+   "name_intl": "阴森的教母",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "回合结束时，对随机敌人造成伤害200%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00005",
+   "name": "卡瓦利机兵",
+   "name_intl": "卡瓦利自动机",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害150%\n脆弱4",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "vulnerable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00006",
+   "name": "主宰者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "强化",
+   "talents": [],
+   "desc": "回合开始时士气1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "strength"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00007",
+   "name": "毁灭者",
+   "name_intl": "杀戮者",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "护盾200%\n按照持有的护盾量，对全体敌人造成等量伤害",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00008",
+   "name": "光束射手",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害350%\n若目标持有护盾，则伤害量+50%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00009",
+   "name": "翅翼人面兽",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对随机敌人造成伤害50%×5",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00010",
+   "name": "狼群韦恩",
+   "name_intl": "狼之克星",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成伤害120%，赋予弱化2、损伤2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "vulnerable",
+    "weak"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00011",
+   "name": "暗影之爪",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害120%×2\n击败：对随机敌人造成伤害120%×2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00012",
+   "name": "受难使徒",
+   "name_intl": "痛苦炽天使",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害250%\n若手牌中仅有此卡，则费用减少2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00013",
+   "name": "恶灵火蜥蜴",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "抽取4",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00013_opt1",
+   "name": "恶灵火蜥蜴",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取4",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00013_opt2",
+   "name": "恶灵火蜥蜴",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "消耗所有手牌\n对全体敌人造成消耗数量×伤害50%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00014",
+   "name": "精灵凤凰",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "坚定2\n获得等同于已损失生命值的护盾",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "dexterity"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00015",
+   "name": "精灵凯福克斯",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "从抽牌堆选择并抽取1张卡牌，并赋予其回收",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00016",
+   "name": "恶灵杜拉汉",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "使用锁定目标的攻击卡牌时，赋予痛苦1",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00017",
+   "name": "深渊虫",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "士气减少1\n坚定减少3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00018",
+   "name": "阿比图姆",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "强化",
+   "talents": [],
+   "desc": "所受伤害总量减少15%（每回合1次）",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00019",
+   "name": "甲虫",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "结晶化5",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00020",
+   "name": "尖兵统领",
+   "name_intl": "索尔杰·普莱姆",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害300%\n击破时，获得行动点2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00021",
+   "name": "七臂怪",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "迅捷"
+   ],
+   "desc": "伤害120%\n目标的行动计数大于等于5时，行动点2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00022",
+   "name": "捕兽者",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾120%，脆弱1\n若目标本回合内未行动，则护盾获得量+120%，额外脆弱1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "targetable",
+    "vulnerable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00023",
+   "name": "使徒仲裁者",
+   "name_intl": "密教仲裁者",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾140%\n下回合开始时全体敌人行动计数增加2",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00024",
+   "name": "腐烂收割者",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "迅捷"
+   ],
+   "desc": "伤害160%\n行动计数增加1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00025",
+   "name": "幽灵",
+   "sort": "怪物卡牌",
+   "rarity": "神话",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "灵体化1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00026",
+   "name": "冷酷的契父",
+   "name_intl": "冷酷的教父",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "发动抽牌堆最底部的1张卡牌\n选择手牌中的1张卡牌，将其移动至抽牌堆最底部",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00027",
+   "name": "失落吞噬者",
+   "name_intl": "丧失的饥饿",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取1\n若手牌中没有卡牌，则额外抽取4",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00028",
+   "name": "维因罗德",
+   "name_intl": "藤蔓领主",
+   "sort": "怪物卡牌",
+   "rarity": "稀有",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗3"
+   ],
+   "desc": "抽取2张自身的消耗卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_3"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00029",
+   "name": "机械人偶士兵",
+   "name_intl": "生化人奥托马顿",
+   "sort": "怪物卡牌",
+   "rarity": "普通",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 5,
+   "type": "攻击",
+   "talents": [],
+   "desc": "基于防御的伤害600%\n焚烧：发动此卡",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00030",
+   "name": "毁灭者（亚种）",
+   "name_intl": "执行者杀戮者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "强化",
+   "talents": [],
+   "desc": "护盾保留70%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00031",
+   "name": "卡瓦利机兵（亚种）",
+   "name_intl": "胡萨尔自动机",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "基于防御的伤害200%\n护盾200%\n获得护盾后，\n1回合内此卡费用减少1（使用后恢复）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00032",
+   "name": "恶灵火蜥蜴（亚种）",
+   "name_intl": "荒芜恶灵火蜥蜴",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "消耗所有手牌\n抽取3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00033",
+   "name": "恶灵杜拉汉（亚种）",
+   "name_intl": "荒芜恶灵杜拉汉",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": "X",
+   "type": "技能",
+   "talents": [],
+   "desc": "根据X的值，1回合内不屈3\n根据X的值，下1回合内士气3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "xcost"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00034",
+   "name": "深渊虫（亚种）",
+   "name_intl": "流浪者深渊虫",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "每次受到伤害时，固定治愈80%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00035",
+   "name": "尖兵统领（亚种）",
+   "name_intl": "流浪者索尔杰·普莱姆",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害500%\n击败：行动点3，将此卡移动回手牌中",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00036",
+   "name": "阿比图姆（亚种）",
+   "name_intl": "流浪者阿比图姆",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "终结"
+   ],
+   "desc": "振翅1",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_TERMINATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00037",
+   "name": "使徒仲裁者（亚种）",
+   "name_intl": "亡灵仲裁者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "选择并使用1张抽牌堆的强化卡牌",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00038",
+   "name": "腐烂收割者（亚种）",
+   "name_intl": "锈钉腐烂收割者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": "无法使用",
+   "type": "攻击",
+   "talents": [
+    "无法使用"
+   ],
+   "desc": "对随机敌人造成伤害150%×4\n回合结束3次后移除无法使用",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "talent_ids": [
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00039",
+   "name": "七臂怪（亚种）",
+   "name_intl": "锈钉七臂怪",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 3,
+   "type": "强化",
+   "talents": [],
+   "desc": "使用7张攻击卡牌时，对全体敌人造成固定伤害700%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00040",
+   "name": "审判官多米尼温",
+   "name_intl": "审判官主宰者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "移除己方损伤\n护盾700%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00041",
+   "name": "冷酷的契母",
+   "name_intl": "冷酷的教母",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 8,
+   "type": "技能",
+   "talents": [
+    "保留"
+   ],
+   "desc": "行动点3\n造成伤害后，此卡费用减少1（使用后恢复）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_00042",
+   "name": "毒精灵凯福克斯",
+   "name_intl": "毒之精灵凯福克斯",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "从抽牌堆中选择并抽取1张卡牌，赋予其精灵毒液",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00001",
+   "name": "变异：虚无吞噬者",
+   "name_intl": "调节：虚无饥饿",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "吸收士气4",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "strength"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00002",
+   "name": "变异：害羞的园丁",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "标记10",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "mark"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00003",
+   "name": "变异：忧郁的契父",
+   "name_intl": "绽放：忧郁的教父",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害50%×4\n痛苦3\n按照痛苦的层数额外赋予痛苦",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "pain"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00004",
+   "name": "变异：阴森的契母",
+   "name_intl": "绽放：阴森的教母",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "回合结束时，对随机敌人发动额外攻击100%\n在抽牌堆中生成1张此卡（每场战斗5次）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00005",
+   "name": "变异：卡瓦利机兵",
+   "name_intl": "扭曲：卡瓦利自动机",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "消耗",
+    "先导"
+   ],
+   "desc": "伤害150%\n脆弱10",
+   "spark_enable": 1,
+   "spark_tag": [
+    "targetable",
+    "vulnerable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00006",
+   "name": "变异：主宰者",
+   "name_intl": "扭曲：主宰者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "强化",
+   "talents": [
+    "先导"
+   ],
+   "desc": "士气1\n回合开始时，士气1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "strength"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00007",
+   "name": "变异：毁灭者",
+   "name_intl": "绽放：杀戮者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "护盾300%\n按照持有的护盾量，对全体敌人造成伤害",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00008",
+   "name": "变异：光束射手",
+   "name_intl": "绽放：光束射手",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [
+    "保留",
+    "粉碎"
+   ],
+   "desc": "伤害350%\n若目标持有护盾，则伤害总量提升100%\n保留：护盾120%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_SHIELD_DESTRUCT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00009",
+   "name": "变异：翅翼人面兽",
+   "name_intl": "调节：翅翼人面兽",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对随机敌人造成伤害50%×10\n灵感：费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00010",
+   "name": "变异：狼群韦恩",
+   "name_intl": "调节：狼之克星",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "连击"
+   ],
+   "desc": "对全体敌人造成伤害150%、弱化3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "weak"
+   ],
+   "talent_ids": [
+    "TALENT_COOP"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00011",
+   "name": "变异：暗影之爪",
+   "name_intl": "绽放：暗影之爪",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成伤害200%\n击败：对全体敌人造成伤害200%（最多3次）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00012",
+   "name": "变异：受难使徒",
+   "name_intl": "调节：痛苦炽天使",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害350%，若手牌中仅有此卡，则费用减少3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00013",
+   "name": "变异：恶灵火蜥蜴",
+   "name_intl": "绽放：恶灵火蜥蜴",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "抽取4，手牌中的卡牌大于等于7张时，费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00014",
+   "name": "变异：精灵凤凰",
+   "name_intl": "调节：精灵凤凰",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "坚定3\n获得等同于已损失生命值的护盾",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "dexterity"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00015",
+   "name": "变异：精灵凯福克斯",
+   "name_intl": "调节：精灵凯福克斯",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "从抽牌堆中选择并抽取1张，赋予其回收2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00016",
+   "name": "变异：恶灵杜拉汉",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "回合结束时，每使用过1张攻击卡牌，即可赋予随机敌人痛苦1（最多20）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00017",
+   "name": "变异：深渊虫",
+   "name_intl": "绽放：深渊虫",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "全体敌人士气减少1\n同调：全体敌人士气减少2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00018",
+   "name": "变异：阿比图姆",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "不屈2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "dmgresist"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00019",
+   "name": "变异：甲虫",
+   "name_intl": "扭曲：甲虫",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "强化",
+   "talents": [
+    "升空"
+   ],
+   "desc": "结晶化7",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_CELESTIAL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00020",
+   "name": "变异：尖兵统领",
+   "name_intl": "绽放：索尔杰·普莱姆",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害300%，韧性伤害1\n击破时，获得行动点2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "ap"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00021",
+   "name": "变异：七臂怪",
+   "name_intl": "调节：七臂怪",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "迅捷"
+   ],
+   "desc": "伤害200%\n目标的行动计数大于等于5时，行动点2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "ap"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00022",
+   "name": "变异：捕兽者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "脆弱3\n若目标本回合内未行动，则护盾250%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield",
+    "vulnerable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00023",
+   "name": "变异：使徒仲裁者",
+   "name_intl": "变异：密教仲裁者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "迅捷"
+   ],
+   "desc": "回合结束时，护盾200%\n下回合结束时，护盾200%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00024",
+   "name": "变异：腐烂收割者",
+   "name_intl": "调节：腐烂收割者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "迅捷"
+   ],
+   "desc": "伤害160%\n行动计数增加5",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00026",
+   "name": "变异：冷酷的契父",
+   "name_intl": "变异：冷酷的教父",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "发动抽牌堆最底部的1张卡牌\n选择手牌中的1张卡牌，将其移动至抽牌堆最底部",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00027",
+   "name": "变异：失落吞噬者",
+   "name_intl": "扭曲：丧失的饥饿",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取1\n若手牌中没有卡牌，则额外抽取9",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00028",
+   "name": "变异：维因罗德",
+   "name_intl": "变异：藤蔓领主",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗3"
+   ],
+   "desc": "抽取2张自身的消耗卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_3"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00029",
+   "name": "变异：机械人偶士兵",
+   "name_intl": "变异：生化人奥托马顿",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 5,
+   "type": "攻击",
+   "talents": [],
+   "desc": "基于防御的伤害600%\n焚烧：发动此卡",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00030",
+   "name": "变异：毁灭者（亚种）",
+   "name_intl": "变异：执行者杀戮者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "强化",
+   "talents": [],
+   "desc": "护盾保留70%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00031",
+   "name": "变异：卡瓦利机兵（亚种）",
+   "name_intl": "变异：胡萨尔自动机",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "基于防御的伤害200%\n护盾200%\n获得护盾后，1回合内此卡费用减少1（使用后恢复）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00032",
+   "name": "变异：恶灵火蜥蜴（亚种）",
+   "name_intl": "变异：荒芜恶灵火蜥蜴",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "消耗所有手牌\n抽取3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00033",
+   "name": "变异：恶灵杜拉汉（亚种）",
+   "name_intl": "变异：荒芜恶灵杜拉汉",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": "X",
+   "type": "技能",
+   "talents": [],
+   "desc": "根据X的值，1回合内不屈3\n根据X的值，下1回合内士气3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "xcost",
+    "strength",
+    "dmgresist"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00034",
+   "name": "变异：深渊虫（亚种）",
+   "name_intl": "变异：流浪者深渊虫",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "每次受到伤害时，固定治愈80%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00035",
+   "name": "变异：尖兵统领（亚种）",
+   "name_intl": "变异：流浪者索尔杰·普莱姆",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 3,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害500%\n击败：行动点3，将此卡移动回手牌中",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "ap"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00036",
+   "name": "变异：阿比图姆（亚种）",
+   "name_intl": "变异：流浪者阿比图姆",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "终结"
+   ],
+   "desc": "振翅1",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_TERMINATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00037",
+   "name": "变异：使徒仲裁者（亚种）",
+   "name_intl": "变异：亡灵仲裁者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "选择并使用1张抽牌堆的强化卡牌",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00038",
+   "name": "变异：腐烂收割者（亚种）",
+   "name_intl": "变异：锈钉腐烂收割者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": "无法使用",
+   "type": "攻击",
+   "talents": [
+    "无法使用"
+   ],
+   "desc": "对随机敌人造成伤害150%×4\n回合结束3次后移除无法使用",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "talent_ids": [
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00039",
+   "name": "变异：七臂怪（亚种）",
+   "name_intl": "变异：锈钉七臂怪",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 3,
+   "type": "强化",
+   "talents": [],
+   "desc": "使用7张攻击卡牌时，对全体敌人造成固定伤害700%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00040",
+   "name": "变异：审判官多米尼温",
+   "name_intl": "变异：审判官主宰者",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "移除己方损伤\n护盾700%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00041",
+   "name": "变异：冷酷的契母",
+   "name_intl": "变异：冷酷的教母",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 8,
+   "type": "技能",
+   "talents": [
+    "保留"
+   ],
+   "desc": "行动点3\n造成伤害后，此卡费用减少1（使用后恢复）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw",
+    "ap"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_mon_assualt_00042",
+   "name": "变异：毒精灵凯福克斯",
+   "name_intl": "变异：毒之精灵凯福克斯",
+   "sort": "怪物卡牌",
+   "rarity": "传说",
+   "ego": "所有属性",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "从抽牌堆中选择并抽取1张卡牌，赋予其精灵毒液",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00001",
+   "name": "蓄力重击",
+   "name_intl": "沉重一击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害200%\n脆弱2\n弱化2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "vulnerable",
+    "weak"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00002",
+   "name": "保持耐心",
+   "name_intl": "顽强的耐心",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "保留"
+   ],
+   "desc": "护盾350%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00003",
+   "name": "战斗准备",
+   "name_intl": "准备战斗",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "随机生成1张德朗商店的卡牌\n1回合内将其费用变为0",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00004",
+   "name": "冲击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成伤害200%\n脆弱2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "vulnerable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00005",
+   "name": "肉搏",
+   "name_intl": "肉搏战",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "基于防御的伤害200%\n结晶化2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00006",
+   "name": "全力以赴",
+   "name_intl": "灵魂",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "基于防御的伤害100%×2\n每有1层坚定即可使基础伤害量+20%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00007",
+   "name": "护佑箴言",
+   "name_intl": "保护之喊",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾130%\n若未持有护盾，则护盾获得总量提升100%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00008",
+   "name": "跃击冲拳",
+   "name_intl": "跳跃攻击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害200%\n灵感：费用减少1，抽取1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00009",
+   "name": "颅骨重击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害200%\n弱点攻击：伤害量+50%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00010",
+   "name": "进攻！",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "选择并抽取抽牌堆中的1张攻击卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00011",
+   "name": "连斩",
+   "name_intl": "连续攻击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害50%×3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00012",
+   "name": "魔力暴走",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "免疫2",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00013",
+   "name": "高速连射",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害80%\n抽取1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00014",
+   "name": "蓄势反攻",
+   "name_intl": "反击准备",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "将当前栏位的EGO技能替换为其他随行战员的EGO技能",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00015",
+   "name": "压制",
+   "name_intl": "辗压",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "对全体敌人造成伤害100%×3\n生成2张过载加入抽牌堆",
+   "links": [
+    "card_ab_00014"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "exhaust",
+    "multi_atk"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00016",
+   "name": "忏悔",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "士气减少1\n坚定减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00017",
+   "name": "虚空流浪者",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "1回合内，目标的行动计数不减少",
+   "spark_enable": 1,
+   "spark_tag": [
+    "targetable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00018",
+   "name": "毁灭",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害300%\n丢弃1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00019",
+   "name": "能量护盾",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "护盾100%\n行动点1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "shield",
+    "ap"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00020",
+   "name": "坚守荣光",
+   "name_intl": "光荣的抵抗",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 3,
+   "type": "强化",
+   "talents": [],
+   "desc": "回合开始时对己方造成最大生命值10%的固定伤害\n获得行动点1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "ap"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00021",
+   "name": "铜墙铁壁",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "坚定1\n不屈1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "dexterity",
+    "dmgresist"
+   ],
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00022",
+   "name": "战术射击",
+   "name_intl": "机动射击",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "开战",
+    "消耗"
+   ],
+   "desc": "对全体敌人造成伤害200%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_INNATE",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00023",
+   "name": "奇袭",
+   "name_intl": "突袭",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害80%\n击破时，将此卡从墓地移动至手牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00024",
+   "name": "原子分解",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成穿透伤害230%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00025",
+   "name": "伪装",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "闪避1\n下一回合抽取2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00026",
+   "name": "装备包",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "连击"
+   ],
+   "desc": "抽取2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_COOP"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00027",
+   "name": "灵光乍现",
+   "name_intl": "点燃直觉",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "强化",
+   "talents": [],
+   "desc": "生成卡牌时，随机赋予闪光词条\n（每回合1次）",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00028",
+   "name": "战略重构",
+   "name_intl": "重组战略",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "下一次使用的EGO技能的费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00029",
+   "name": "好战",
+   "name_intl": "好战性",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "若手牌中没有攻击卡牌，则抽取2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00030",
+   "name": "战术应对",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "对持有护盾的目标，造成的伤害总量提升25%（最多1）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00031",
+   "name": "战略起点",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "EGO点数2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "ep"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00032",
+   "name": "瞄准射击",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害400%\n击败：获得信用点20\n（小怪除外）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00033",
+   "name": "愤怒",
+   "name_intl": "激愤",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害300%\n若手牌中没有其他主战员的卡牌，则此卡费用减少2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00034",
+   "name": "光明一击",
+   "name_intl": "神圣一击",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害200%\n韧性伤害2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "exhaust",
+    "targetable",
+    "egodmg"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00035",
+   "name": "致命射击",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害350%\n下回合开始时抽取1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00036",
+   "name": "重整旗鼓",
+   "name_intl": "重新整顿",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "抽取3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00037",
+   "name": "精密瞄准",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害120%\n抽取1\n选择手牌中的1张卡牌，将其移动到抽牌堆最上方",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00038",
+   "name": "暗黑知识",
+   "name_intl": "黑暗知识",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "终结",
+    "消耗"
+   ],
+   "desc": "抽取1\n并将其发动",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_TERMINATION",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00039",
+   "name": "拦截",
+   "name_intl": "拦截​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 3,
+   "type": "攻击",
+   "talents": [
+    "粉碎"
+   ],
+   "desc": "基于防御的伤害400%\n若生命值全满，则此卡的费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_SHIELD_DESTRUCT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00040",
+   "name": "尖刺盾牌",
+   "name_intl": "荆棘盾​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成基于防御的伤害100%\n破坏：伤害次数增加1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00041",
+   "name": "坚固",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾150%\n连续：下回合开始时，护盾150%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00042",
+   "name": "乱和",
+   "name_intl": "撕裂​",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "弱点攻击"
+   ],
+   "desc": "伤害150%×2\n抽取1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_WEAKPOINT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00043",
+   "name": "协商",
+   "name_intl": "协商​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "士气2\n全体敌人士气2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "strength"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00044",
+   "name": "觉悟",
+   "name_intl": "觉悟​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "强化",
+   "talents": [],
+   "desc": "回合开始时，手牌中随机1张攻击卡牌1回合内伤害量+50%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00045",
+   "name": "酸性气体",
+   "name_intl": "酸性气体​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "回收",
+    "消耗"
+   ],
+   "desc": "全体敌人损伤3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RECALL",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00046",
+   "name": "快速拔枪",
+   "name_intl": "快速拔枪​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "开战",
+    "消耗"
+   ],
+   "desc": "伤害150%\n标记1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust",
+    "mark"
+   ],
+   "talent_ids": [
+    "TALENT_INNATE",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00047",
+   "name": "谢幕之弹",
+   "name_intl": "秘藏一击​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "伤害100%\n保留：伤害量+50%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust",
+    "ap"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00048",
+   "name": "消散之风",
+   "name_intl": "解除之风​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "全体敌人痛苦2\n选择并消耗手牌中最多2张状态异常、咒术卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "pain"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00049",
+   "name": "钱治百病",
+   "name_intl": "金融治疗​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "治愈200%\n若生命值全满，则获得30信用点",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "cure"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00050",
+   "name": "急救包",
+   "name_intl": "急救包​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "升空",
+    "消耗"
+   ],
+   "desc": "治愈250%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "cure"
+   ],
+   "talent_ids": [
+    "TALENT_CELESTIAL",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00051",
+   "name": "集结",
+   "name_intl": "集结​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "迅捷",
+    "消耗2"
+   ],
+   "desc": "抽取1\n全体敌人行动计数增加3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "all_turncountadd",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT",
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00052",
+   "name": "回收利用",
+   "name_intl": "回收利用​",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "当EGO点数大于等于2时，获得行动点1，EGO点数减少2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "ap"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00053",
+   "name": "暴虐",
+   "name_intl": "施虐性​",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "先导"
+   ],
+   "desc": "赋予全体敌人脆弱1\n手牌中随机1张攻击卡牌1回合内费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "vulnerable"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_00054",
+   "name": "睡眠果实",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "终结",
+    "消耗"
+   ],
+   "desc": "随机主战员的压力减少5",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_TERMINATION",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00001",
+   "name": "协调：蓄力重击",
+   "name_intl": "调节：沉重一击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害300%\n脆弱4\n弱化2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "vulnerable",
+    "weak"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00002",
+   "name": "绽放：保持耐心",
+   "name_intl": "绽放：顽强的耐心",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "保留"
+   ],
+   "desc": "护盾350%\n保留：护盾量+100%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00003",
+   "name": "变异：战斗准备",
+   "name_intl": "变异：准备战斗",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "奥义师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "生成1张费用大于等于1点的随机德朗商店卡牌\n1回合内其费用变为0",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00004",
+   "name": "绽放：冲击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成伤害200%\n脆弱2\n连续：费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "vulnerable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00005",
+   "name": "畸变：肉搏",
+   "name_intl": "扭曲：肉搏战",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "守卫",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "基于防御的伤害130%\n结晶化2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00006",
+   "name": "协调：全力以赴",
+   "name_intl": "调节：灵魂",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "守卫",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "基于防御的伤害50%×4\n每有1层坚定即可使基础伤害量+20%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00007",
+   "name": "畸变：护佑箴言",
+   "name_intl": "扭曲：保护之喊",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾100%\n若未持有护盾，则护盾获得总量提升200%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00008",
+   "name": "协调：跃击冲拳",
+   "name_intl": "调节：跳跃攻击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,游侠",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害220%，抽取1\n灵感：费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00009",
+   "name": "变异：颅骨重击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "弱点攻击"
+   ],
+   "desc": "伤害200%\n击破：伤害量+100%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_WEAKPOINT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00010",
+   "name": "畸变：进攻！",
+   "name_intl": "扭曲：进攻！",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "开战"
+   ],
+   "desc": "选择1张抽牌堆中的攻击卡牌并将其移动到手牌中",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00011",
+   "name": "变异：连斩",
+   "name_intl": "变异：连续攻击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,猎人",
+   "cost": "X",
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害75%×2×X",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk",
+    "xcost"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00012",
+   "name": "变异：魔力暴走",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "丢弃抽牌堆最上方的3张卡牌\n丢弃卡牌的费用总和每有1点，赋予随机敌人痛苦2",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00013",
+   "name": "协调：高速连射",
+   "name_intl": "调节：高速连射",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "迅捷"
+   ],
+   "desc": "伤害100%\n抽取1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00014",
+   "name": "变异：蓄势反攻",
+   "name_intl": "变异：反击准备",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾100%\n反击3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield",
+    "counter"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00015",
+   "name": "畸变：压倒",
+   "name_intl": "扭曲：辗压",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,奥义师",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "对全体敌人造成伤害100%×3\n生成2张过载加入抽牌堆",
+   "links": [
+    "card_ab_00014"
+   ],
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "multi_atk"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00016",
+   "name": "畸变：忏悔",
+   "name_intl": "扭曲：忏悔",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "升空",
+    "消耗"
+   ],
+   "desc": "士气减少2\n不屈减少2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_CELESTIAL",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00017",
+   "name": "畸变：虚空流浪者",
+   "name_intl": "扭曲：虚空流浪者",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [],
+   "desc": "1回合内，目标的行动计数不减少",
+   "spark_enable": 1,
+   "spark_tag": [
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00018",
+   "name": "协调：毁灭",
+   "name_intl": "调节：毁灭",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害400%\n丢弃2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00019",
+   "name": "变异：能量护盾",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": "X",
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "根据X的数值，护盾150%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "shield",
+    "xcost"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00020",
+   "name": "畸变：坚守荣光",
+   "name_intl": "扭曲：光荣的抵抗",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 3,
+   "type": "强化",
+   "talents": [
+    "先导"
+   ],
+   "desc": "回合开始时获得行动点1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "ap"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00021",
+   "name": "变异：铜墙铁壁",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "坚定3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "dexterity"
+   ],
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00022",
+   "name": "协调：战术射击",
+   "name_intl": "调节：机动射击",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "传承",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "开战",
+    "消耗"
+   ],
+   "desc": "对全体敌人造成伤害250%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_INNATE",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00023",
+   "name": "协调：奇袭",
+   "name_intl": "调节：突袭",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,游侠",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害150%\n击破时，将此卡移动至手牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00024",
+   "name": "变异：原子分解",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "先导"
+   ],
+   "desc": "对全体敌人造成穿透伤害80%\n消耗手牌中除攻击卡牌之外的所有卡牌\n每消耗1张卡牌，伤害次数增加1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00025",
+   "name": "协调：伪装",
+   "name_intl": "调节：伪装",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "守卫,游侠",
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "闪避1\n下一回合抽取3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00026",
+   "name": "畸变：装备包",
+   "name_intl": "扭曲：装备包",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗2",
+    "连击"
+   ],
+   "desc": "抽取2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_2",
+    "TALENT_COOP"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00027",
+   "name": "畸变：灵光乍现",
+   "name_intl": "扭曲：点燃直觉",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "生成卡牌时，随机赋予闪光词条\n（每回合1次）",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00028",
+   "name": "畸变：战略重构",
+   "name_intl": "扭曲：重组战略",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "连击"
+   ],
+   "desc": "下一次使用的EGO技能的费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_COOP"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00029",
+   "name": "畸变：好战",
+   "name_intl": "扭曲：好战性",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留"
+   ],
+   "desc": "若手牌中没有攻击卡牌，则抽取2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00030",
+   "name": "变异：战术应对",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留"
+   ],
+   "desc": "保留：随机敌人标记2\n感应：随机敌人标记2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "mark"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00031",
+   "name": "绽放：战略起点",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "获得EGO点数2\n同调：获得EGO点数1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "ep"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00032",
+   "name": "绽放：瞄准射击",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害400%\n暴击率+50%\n击败：获得信用点20\n（小怪除外）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00033",
+   "name": "协调：愤怒",
+   "name_intl": "调节：激愤",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害350%\n若手牌中没有其他主战员的卡牌，则此卡费用减少2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00034",
+   "name": "协调：光明一击",
+   "name_intl": "调节：神圣一击",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "伤害200%\n韧性伤害5",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "exhaust",
+    "targetable",
+    "egodmg"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00035",
+   "name": "畸变：致命射击",
+   "name_intl": "扭曲：致命射击",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "攻击",
+   "talents": [
+    "终结"
+   ],
+   "desc": "伤害500%\n下回合开始时抽取2",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_TERMINATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00036",
+   "name": "绽放: 重整旗鼓",
+   "name_intl": "绽放：重新整顿",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "保留"
+   ],
+   "desc": "抽取3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00037",
+   "name": "协调：精密瞄准",
+   "name_intl": "调节：精密瞄准",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害150%\n抽取1\n选择手牌中的1张卡牌，将其移动到抽牌堆顶端",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00038",
+   "name": "畸变：暗黑知识",
+   "name_intl": "扭曲：黑暗知识",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "终结"
+   ],
+   "desc": "抽取2\n并将其发动",
+   "spark_enable": 1,
+   "spark_tag": [
+    "draw",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_TERMINATION"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00039",
+   "name": "协调：拦截",
+   "name_intl": "调节：拦截",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "守卫",
+   "cost": 3,
+   "type": "攻击",
+   "talents": [
+    "粉碎"
+   ],
+   "desc": "基于防御的伤害400%\n反击2\n生命值大于等于80%状态下，此卡费用减少3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "counter"
+   ],
+   "talent_ids": [
+    "TALENT_SHIELD_DESTRUCT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00040",
+   "name": "畸变：尖刺盾牌",
+   "name_intl": "扭曲：荆棘盾",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "守卫",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "对全体敌人造成基于防御的伤害100%\n若完全格挡了伤害，则1回合内费用减少1",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00041",
+   "name": "协调：坚固",
+   "name_intl": "调节：坚固",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "前锋,守卫",
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "护盾180%\n连续：下回合开始时，护盾180%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "shield"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00042",
+   "name": "绽放：乱和",
+   "name_intl": "绽放：撕裂",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 1,
+   "type": "攻击",
+   "talents": [
+    "弱点攻击"
+   ],
+   "desc": "伤害50%×3\n目标处于痛苦状态时，伤害量+50%\n目标处于标记状态时，伤害量+50%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "talent_ids": [
+    "TALENT_WEAKPOINT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00043",
+   "name": "协调：协商",
+   "name_intl": "调节：协商",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "士气3\n全体敌人士气3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "strength"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00044",
+   "name": "协调：觉悟",
+   "name_intl": "调节：觉悟",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 2,
+   "type": "强化",
+   "talents": [],
+   "desc": "回合开始时，手牌中随机1张攻击卡牌在1回合内伤害量+200%",
+   "spark_enable": 1,
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00045",
+   "name": "绽放：酸性气体",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,奥义师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "回收",
+    "消耗"
+   ],
+   "desc": "赋予全体敌人损伤3，痛苦3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "pain"
+   ],
+   "talent_ids": [
+    "TALENT_RECALL",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00046",
+   "name": "协调：快速拔枪",
+   "name_intl": "调节：快速拔枪",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "开战",
+    "消耗"
+   ],
+   "desc": "伤害50%\n标记3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust",
+    "mark"
+   ],
+   "talent_ids": [
+    "TALENT_INNATE",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00047",
+   "name": "协调：谢幕之弹",
+   "name_intl": "调节：秘藏一击",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "游侠,猎人",
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "伤害50%\n保留：伤害量+250%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00048",
+   "name": "畸变：消散之风",
+   "name_intl": "扭曲：解除之风",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "全体敌人痛苦3\n选择并消耗所有卡牌中最多2张状态异常、咒术卡牌",
+   "spark_enable": 1,
+   "spark_tag": [
+    "pain",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00049",
+   "name": "畸变：钱治百病",
+   "name_intl": "扭曲：金融治疗",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗2"
+   ],
+   "desc": "治愈200%\n若生命值全满，则获得30信用点",
+   "spark_enable": 1,
+   "spark_tag": [
+    "cure"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST_2"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00050",
+   "name": "协调：急救包",
+   "name_intl": "调节：急救包",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "操控师",
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "升空",
+    "消耗"
+   ],
+   "desc": "治愈300%",
+   "spark_enable": 1,
+   "spark_tag": [
+    "exhaust",
+    "cure"
+   ],
+   "talent_ids": [
+    "TALENT_CELESTIAL",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00051",
+   "name": "畸变：集结",
+   "name_intl": "扭曲：集结",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "迅捷"
+   ],
+   "desc": "抽取1\n全体敌人行动计数增加3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "all_turncountadd",
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_NO_COUNT"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00052",
+   "name": "协调：回收利用",
+   "name_intl": "调节：回收利用",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "EGO点数大于等于3时，获得行动点2，EGO点数减少3",
+   "spark_enable": 1,
+   "spark_tag": [
+    "ap",
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00053",
+   "name": "协调：暴虐",
+   "name_intl": "调节：施虐性",
+   "sort": "中立卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": "奥义师,操控师",
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "先导"
+   ],
+   "desc": "赋予全体敌人脆弱2\n手牌中随机1张攻击卡牌在1回合内费用减少1（使用后恢复）",
+   "spark_enable": 1,
+   "spark_tag": [
+    "vulnerable"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ne_assualt_00054",
+   "name": "畸变：睡眠果实",
+   "name_intl": "扭曲：睡眠果实",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "随机主战员的压力减少5",
+   "spark_enable": 1,
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_qu_00001",
+   "name": "航路点安装模块",
+   "name_intl": "航点设置模组",
+   "sort": "任务卡牌",
+   "rarity": "普通",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "技能",
+   "talents": [
+    "无法使用"
+   ],
+   "desc": "在该区域设置航路点。\n相当沉重。",
+   "talent_ids": [
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_qu_00003",
+   "name": "露希",
+   "name_intl": "露雪",
+   "sort": "任务卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "同伴"
+   ],
+   "desc": "伤害140%×3\n造成伤害时，士气1",
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_NPC"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_qu_00004",
+   "name": "卡罗尔的特殊赤色液体",
+   "name_intl": "凯隆的特殊血液",
+   "sort": "任务卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "同伴",
+    "消耗"
+   ],
+   "desc": "伤害100%×2\n对目标造成1回合晕眩",
+   "spark_tag": [
+    "atk",
+    "exhaust",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_NPC",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_qu_00005",
+   "name": "card@name@quest_018",
+   "sort": "任务卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "攻击",
+   "talents": [
+    "同伴"
+   ],
+   "desc": "",
+   "spark_enable": 1,
+   "spark_tag": [
+    "atk",
+    "targetable"
+   ],
+   "talent_ids": [
+    "TALENT_NPC"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_qu_00006",
+   "name": "放电的机器人",
+   "name_intl": "没电的机器人",
+   "sort": "中立卡牌",
+   "rarity": "稀有",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "护盾200%\n减伤2",
+   "spark_tag": [
+    "exhaust",
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_qu_00007",
+   "name": "机器人",
+   "sort": "中立卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "消耗"
+   ],
+   "desc": "护盾250%\n减伤3",
+   "spark_tag": [
+    "exhaust",
+    "shield"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_qu_00008",
+   "name": "娜嘉",
+   "sort": "任务卡牌",
+   "rarity": "神话",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "同伴",
+    "开战",
+    "保留",
+    "回收"
+   ],
+   "desc": "全体敌人韧性伤害2\n发动手牌中费用最高的2张卡牌",
+   "talent_ids": [
+    "TALENT_NPC",
+    "TALENT_INNATE",
+    "TALENT_RETAIN",
+    "TALENT_RECALL"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_00001",
+   "name": "禁忌：铭刻恶意",
+   "name_intl": "禁忌：刻印的恶意",
+   "sort": "禁忌卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 2,
+   "type": "技能",
+   "talents": [
+    "先导"
+   ],
+   "desc": "抽取1\n随机发动手牌中的2张卡牌",
+   "spark_tag": [
+    "draw"
+   ],
+   "talent_ids": [
+    "TALENT_LEAD"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_00002",
+   "name": "禁忌：暴怒之像",
+   "name_intl": "禁忌：愤怒的肖像",
+   "sort": "禁忌卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "攻击",
+   "talents": [],
+   "desc": "伤害70%×1\n每有4张手牌即可使伤害次数增加1\n每造成1次伤害即可抽取1",
+   "spark_tag": [
+    "draw",
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_00003",
+   "name": "禁忌：暴虐欢愉",
+   "name_intl": "禁忌：暴力的欢愉",
+   "sort": "禁忌卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 9,
+   "type": "攻击",
+   "talents": [
+    "保留"
+   ],
+   "desc": "伤害150%×4\n主动抽取卡牌时，此卡费用减少1",
+   "spark_tag": [
+    "atk",
+    "targetable",
+    "multi_atk"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_00004",
+   "name": "禁忌：虚无指引",
+   "name_intl": "禁忌：虚无的引导",
+   "sort": "禁忌卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "强化",
+   "talents": [
+    "开战"
+   ],
+   "desc": "主动抽取卡牌时治愈40%，随机主战员压力减少1",
+   "talent_ids": [
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_00005",
+   "name": "禁忌：即弃之我",
+   "name_intl": "禁忌：一次性自我",
+   "sort": "禁忌卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 1,
+   "type": "技能",
+   "talents": [],
+   "desc": "抽取1，其每需要1点费用，此卡即可额外抽取1",
+   "spark_tag": [
+    "draw"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_00006",
+   "name": "禁忌：自由之召",
+   "name_intl": "禁忌：自由的召唤",
+   "sort": "禁忌卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "消耗",
+    "开战"
+   ],
+   "desc": "手牌中1张随机卡牌的费用减少1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_EXHAUST",
+    "TALENT_INNATE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_00007",
+   "name": "禁忌：永生饥渴",
+   "name_intl": "禁忌：永生的饥饿",
+   "sort": "禁忌卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": 0,
+   "type": "技能",
+   "talents": [
+    "保留",
+    "消耗"
+   ],
+   "desc": "感应：抽取1，行动点1",
+   "spark_tag": [
+    "exhaust"
+   ],
+   "talent_ids": [
+    "TALENT_RETAIN",
+    "TALENT_EXHAUST"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_pn_00001",
+   "name": "铭刻恶意",
+   "name_intl": "刻印的恶意",
+   "sort": "咒术卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "失忆",
+    "无法使用"
+   ],
+   "desc": "抽取此卡时\n随机丢弃2张卡牌\n抽取1",
+   "talent_ids": [
+    "TALENT_UNEXHAUSTIBLE",
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_pn_00002",
+   "name": "暴怒之像",
+   "name_intl": "愤怒的肖像",
+   "sort": "咒术卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "失忆",
+    "无法使用"
+   ],
+   "desc": "抽取此卡时\n接下来2张卡牌的伤害总量、韧性伤害减少100%",
+   "talent_ids": [
+    "TALENT_UNEXHAUSTIBLE",
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_pn_00003",
+   "name": "暴虐欢愉",
+   "name_intl": "暴力的欢愉",
+   "sort": "咒术卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "失忆",
+    "无法使用"
+   ],
+   "desc": "抽取此卡后，\n接下来2张卡牌的护盾获得总量、治愈总量降低100%",
+   "talent_ids": [
+    "TALENT_UNEXHAUSTIBLE",
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_pn_00004",
+   "name": "虚无指引",
+   "name_intl": "虚无的引导",
+   "sort": "咒术卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "失忆",
+    "无法使用"
+   ],
+   "desc": "抽取此卡时\n对自身造成最大生命值5%的伤害\n随机主战员压力5",
+   "talent_ids": [
+    "TALENT_UNEXHAUSTIBLE",
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_pn_00005",
+   "name": "即弃之我",
+   "name_intl": "一次性自我",
+   "sort": "咒术卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "失忆",
+    "无法使用"
+   ],
+   "desc": "抽取此卡时\n在抽牌堆中生成1张复制的自我",
+   "links": [
+    "card_ta_pn_00008"
+   ],
+   "talent_ids": [
+    "TALENT_UNEXHAUSTIBLE",
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_pn_00006",
+   "name": "自由之召",
+   "name_intl": "自由的手势",
+   "sort": "咒术卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "失忆",
+    "无法使用"
+   ],
+   "desc": "抽取此卡时\n1回合内攻击卡牌的费用增加1",
+   "talent_ids": [
+    "TALENT_UNEXHAUSTIBLE",
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_pn_00007",
+   "name": "永生饥渴",
+   "name_intl": "永恒的饥饿",
+   "sort": "咒术卡牌",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "咒术",
+   "talents": [
+    "失忆",
+    "无法使用"
+   ],
+   "desc": "抽取此卡时\n行动点减少1",
+   "talent_ids": [
+    "TALENT_UNEXHAUSTIBLE",
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "card_ta_pn_00008",
+   "name": "镜像之我",
+   "name_intl": "被复制的自我",
+   "sort": "状态异常",
+   "rarity": "传说",
+   "ego": "basic",
+   "class": null,
+   "cost": "无法使用",
+   "type": "状态异常",
+   "talents": [
+    "无法使用"
+   ],
+   "desc": "",
+   "talent_ids": [
+    "TALENT_UNPLAYABLE"
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "p_30114",
+   "name": "前方开火！",
+   "sort": null,
+   "rarity": null,
+   "ego": null,
+   "class": null,
+   "cost": null,
+   "type": null,
+   "talents": [],
+   "desc": "对全体敌人造成伤害80%\n获得终结请求1，每击败1个敌人，即可获得移交子弹1",
+   "source": "bwiki"
+  }
+ ]
+}

@@ -84,7 +84,7 @@ key_config_option = ConfigOption('Game Hotkey Config', { #全局配置示例
 
 # 配置上传选项
 upload_config_option = ConfigOption('配置上传', {
-    '是否上传配置': True,
+    '是否上传配置': False,
 }, description='开启后每5分钟自动上传匿名的配置信息和胜率，帮助统计热门配置。\n不上传任何个人信息、游戏账号、截图、IP地址等隐私数据。\n仅上传配置内容和胜率统计数据。')
 
 ocr_backend_option = ConfigOption('OCR设置', {

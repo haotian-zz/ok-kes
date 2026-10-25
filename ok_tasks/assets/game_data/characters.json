@@ -1,0 +1,2078 @@
+{
+ "game": "卡厄思梦境 国服简中",
+ "generated_by": "2game-helper/research/czn/build_db.py",
+ "combatants": [
+  {
+   "id": "30047",
+   "name": "九",
+   "name_intl": "奈音",
+   "nickname": null,
+   "class": "守卫",
+   "ego": "秩序",
+   "rarity": 5,
+   "faction": "流浪者",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_30047_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_30047_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_30047_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_30047_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_30047_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_30047_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_30047_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1018",
+   "name": "凛",
+   "name_intl": "琳",
+   "nickname": null,
+   "class": "前锋",
+   "ego": "虚无",
+   "rarity": 5,
+   "faction": "流浪者",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1018_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1018_srt2",
+     "count": 1
+    },
+    {
+     "id": "c_1018_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1018_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1018_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1018_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1018_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1018_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1064",
+   "name": "凯隆",
+   "name_intl": "凯隆",
+   "nickname": "凯宝",
+   "class": "奥义师",
+   "ego": "虚无",
+   "rarity": 5,
+   "faction": "流浪者",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1064_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1064_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1064_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1064_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1064_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1064_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1064_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1060",
+   "name": "千鹤",
+   "name_intl": "千鹤",
+   "nickname": null,
+   "class": "奥义师",
+   "ego": "虚无",
+   "rarity": 5,
+   "faction": "帕尔律社",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1060_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1060_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1060_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1060_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1060_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1060_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1060_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1049",
+   "name": "卡修斯",
+   "name_intl": "凯西乌斯",
+   "nickname": "小丑",
+   "class": "操控师",
+   "ego": "本能",
+   "rarity": 4,
+   "faction": "帕尔律社",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1049_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1049_srt2",
+     "count": 1
+    },
+    {
+     "id": "c_1049_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1049_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1049_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1049_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1049_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1049_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1008",
+   "name": "卡利佩",
+   "name_intl": "卡莉佩",
+   "nickname": "鹰盾",
+   "class": "守卫",
+   "ego": "本能",
+   "rarity": 5,
+   "faction": "恒星家族",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1008_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1008_srt2",
+     "count": 1
+    },
+    {
+     "id": "c_1008_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1008_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1008_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1008_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1008_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1008_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1004",
+   "name": "卢克",
+   "name_intl": "路克",
+   "nickname": null,
+   "class": "猎人",
+   "ego": "秩序",
+   "rarity": 5,
+   "faction": "铁巷联盟",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1004_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1004_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1004_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1004_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1004_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1004_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1004_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1021",
+   "name": "卢卡斯",
+   "name_intl": "卢卡斯",
+   "nickname": null,
+   "class": "猎人",
+   "ego": "热情",
+   "rarity": 4,
+   "faction": "铁巷联盟",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1021_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1021_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1021_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1021_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1021_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1021_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1021_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1057",
+   "name": "友纪",
+   "name_intl": "友纪",
+   "nickname": "UG",
+   "class": "前锋",
+   "ego": "秩序",
+   "rarity": 5,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1057_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1057_srt2",
+     "count": 1
+    },
+    {
+     "id": "c_1057_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1057_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1057_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1057_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1057_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1057_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1024",
+   "name": "奥莱娅",
+   "name_intl": "奥尔莱亚",
+   "nickname": "修女",
+   "class": "操控师",
+   "ego": "本能",
+   "rarity": 5,
+   "faction": "晨曦会",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1024_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1024_srt2",
+     "count": 2
+    },
+    {
+     "id": "c_1024_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1024_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1024_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1024_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1024_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1052",
+   "name": "娜嘉",
+   "name_intl": "娜嘉",
+   "nickname": null,
+   "class": "操控师",
+   "ego": "本能",
+   "rarity": 5,
+   "faction": "帕尔律社",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1052_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1052_srt2",
+     "count": 2
+    },
+    {
+     "id": "c_1052_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1052_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1052_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1052_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1052_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1062",
+   "name": "小春",
+   "name_intl": "小春",
+   "nickname": null,
+   "class": "前锋",
+   "ego": "正义",
+   "rarity": 5,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1062_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1062_srt2",
+     "count": 1
+    },
+    {
+     "id": "c_1062_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1062_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1062_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1062_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1062_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1062_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1003",
+   "name": "尼娅",
+   "name_intl": "妮雅",
+   "nickname": "吉他",
+   "class": "操控师",
+   "ego": "本能",
+   "rarity": 4,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1003_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1003_srt2",
+     "count": 2
+    },
+    {
+     "id": "c_1003_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1003_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1003_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1003_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1003_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "30113",
+   "name": "希露德",
+   "name_intl": "希尔德",
+   "nickname": "狐狸",
+   "class": "游侠",
+   "ego": "本能",
+   "rarity": 5,
+   "faction": "铁巷联盟",
+   "cn_launch": "2026年7月29日",
+   "start_deck": [
+    {
+     "id": "c_30113_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_30113_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_30113_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_30113_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_30113_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_30113_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_30113_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1027",
+   "name": "梅铃",
+   "name_intl": "梅铃",
+   "nickname": null,
+   "class": "前锋",
+   "ego": "热情",
+   "rarity": 5,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1027_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1027_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1027_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1027_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1027_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1027_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1027_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1050",
+   "name": "欧文",
+   "name_intl": "欧文",
+   "nickname": null,
+   "class": "前锋",
+   "ego": "热情",
+   "rarity": 4,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1050_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1050_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1050_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1050_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1050_uni4",
+     "count": 1
+    },
+    {
+     "id": "c_1050_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1050_uni2",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1069",
+   "name": "泰妮布里雅",
+   "name_intl": "泰妮布里雅",
+   "nickname": "泰妮",
+   "class": "奥义师",
+   "ego": "热情",
+   "rarity": 5,
+   "faction": "希安联邦",
+   "cn_launch": "2025年7月8日",
+   "start_deck": [
+    {
+     "id": "c_1069_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1069_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1069_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1069_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1069_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1069_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1069_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "30093",
+   "name": "海德玛丽",
+   "name_intl": "海德玛丽",
+   "nickname": "市长",
+   "class": "游侠",
+   "ego": "热情",
+   "rarity": 5,
+   "faction": "希安联邦",
+   "cn_launch": "2026年6月17日",
+   "start_deck": [
+    {
+     "id": "c_30093_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_30093_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_30093_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_30093_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_30093_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_30093_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_30093_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1009",
+   "name": "特莱莎",
+   "name_intl": "德蕾莎",
+   "nickname": "小刀",
+   "class": "奥义师",
+   "ego": "虚无",
+   "rarity": 4,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1009_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1009_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1009_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1009_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1009_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1009_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1009_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1028",
+   "name": "玛丽贝儿",
+   "name_intl": "玛莉贝尔",
+   "nickname": "火盾",
+   "class": "守卫",
+   "ego": "热情",
+   "rarity": 4,
+   "faction": "铁巷联盟",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1028_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1028_srt2",
+     "count": 1
+    },
+    {
+     "id": "c_1028_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1028_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1028_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1028_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1028_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1028_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1039",
+   "name": "米卡",
+   "name_intl": "米卡",
+   "nickname": null,
+   "class": "操控师",
+   "ego": "正义",
+   "rarity": 4,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1039_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1039_srt2",
+     "count": 2
+    },
+    {
+     "id": "c_1039_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1039_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1039_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1039_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1039_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "30048",
+   "name": "绯",
+   "name_intl": "佩伊",
+   "nickname": null,
+   "class": "游侠",
+   "ego": "虚无",
+   "rarity": 5,
+   "faction": "流浪者",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_30048_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_30048_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_30048_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_30048_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_30048_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_30048_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_30048_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1033",
+   "name": "维罗妮卡",
+   "name_intl": "维若妮卡",
+   "nickname": "鼠兔",
+   "class": "游侠",
+   "ego": "热情",
+   "rarity": 5,
+   "faction": "恒星家族",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1033_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1033_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1033_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1033_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1033_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1033_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1033_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1017",
+   "name": "艾米尔",
+   "name_intl": "艾美",
+   "nickname": null,
+   "class": "守卫",
+   "ego": "秩序",
+   "rarity": 4,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1017_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1017_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1017_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1017_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1017_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1017_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1017_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "30097",
+   "name": "莉妲",
+   "name_intl": "丽塔",
+   "nickname": "猫娘",
+   "class": "奥义师",
+   "ego": "正义",
+   "rarity": 5,
+   "faction": "流浪者",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_30097_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_30097_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_30097_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_30097_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_30097_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_30097_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_30097_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "30084",
+   "name": "蒂菲拉",
+   "name_intl": "蒂菲拉",
+   "nickname": "黄毛,双马尾",
+   "class": "操控师",
+   "ego": "秩序",
+   "rarity": 5,
+   "faction": "流浪者",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_30084_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_30084_srt2",
+     "count": 2
+    },
+    {
+     "id": "c_30084_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_30084_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_30084_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_30084_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_30084_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1056",
+   "name": "蕾伊",
+   "name_intl": "蕾伊",
+   "nickname": null,
+   "class": "操控师",
+   "ego": "虚无",
+   "rarity": 4,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1056_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1056_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1056_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1056_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1056_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1056_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1056_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1041",
+   "name": "蕾诺娅",
+   "name_intl": "蕾欧娜",
+   "nickname": "女主",
+   "class": "猎人",
+   "ego": "虚无",
+   "rarity": 5,
+   "faction": "希安联邦",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1041_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1041_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1041_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1041_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1041_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1041_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1041_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1040",
+   "name": "贝丽尔",
+   "name_intl": "百丽儿",
+   "nickname": "保留炮",
+   "class": "游侠",
+   "ego": "正义",
+   "rarity": 4,
+   "faction": "铁巷联盟",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1040_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1040_srt2",
+     "count": 1
+    },
+    {
+     "id": "c_1040_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1040_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1040_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1040_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1040_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1040_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1005",
+   "name": "赛琳娜",
+   "name_intl": "席琳娜",
+   "nickname": "火兔",
+   "class": "游侠",
+   "ego": "热情",
+   "rarity": 4,
+   "faction": "恒星家族",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1005_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1005_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1005_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1005_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1005_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1005_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1005_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "30075",
+   "name": "赛雷妮尔",
+   "name_intl": "赛雷妮尔",
+   "nickname": "天使",
+   "class": "猎人",
+   "ego": "本能",
+   "rarity": 5,
+   "faction": "希安联邦",
+   "cn_launch": "未实装",
+   "start_deck": [
+    {
+     "id": "c_30075_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_30075_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_30075_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_30075_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_30075_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_30075_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_30075_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1055",
+   "name": "阿黛尔海特",
+   "name_intl": "阿黛海特",
+   "nickname": "阿黛",
+   "class": "守卫",
+   "ego": "虚无",
+   "rarity": 5,
+   "faction": "希安联邦",
+   "cn_launch": "2026年6月17日",
+   "start_deck": [
+    {
+     "id": "c_1055_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1055_srt2",
+     "count": 2
+    },
+    {
+     "id": "c_1055_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1055_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1055_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1055_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1055_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1043",
+   "name": "雨果",
+   "name_intl": "雨果",
+   "nickname": "狼叔",
+   "class": "游侠",
+   "ego": "秩序",
+   "rarity": 5,
+   "faction": "恒星家族",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1043_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1043_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1043_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1043_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1043_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1043_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1043_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1010",
+   "name": "麦格纳",
+   "name_intl": "麦格纳",
+   "nickname": "冰狗",
+   "class": "守卫",
+   "ego": "正义",
+   "rarity": 5,
+   "faction": "恒星家族",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1010_srt1",
+     "count": 1
+    },
+    {
+     "id": "c_1010_srt2",
+     "count": 2
+    },
+    {
+     "id": "c_1010_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1010_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1010_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1010_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1010_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "1061",
+   "name": "黛安娜",
+   "name_intl": "黛安娜",
+   "nickname": "粉毛",
+   "class": "猎人",
+   "ego": "热情",
+   "rarity": 5,
+   "faction": "晨曦会",
+   "cn_launch": "2025年5月28日",
+   "start_deck": [
+    {
+     "id": "c_1061_srt1",
+     "count": 2
+    },
+    {
+     "id": "c_1061_srt3",
+     "count": 1
+    },
+    {
+     "id": "c_1061_srt4",
+     "count": 1
+    },
+    {
+     "id": "c_1061_uni1",
+     "count": 1
+    },
+    {
+     "id": "c_1061_uni2",
+     "count": 1
+    },
+    {
+     "id": "c_1061_uni3",
+     "count": 1
+    },
+    {
+     "id": "c_1061_uni4",
+     "count": 1
+    }
+   ],
+   "source": "bwiki"
+  },
+  {
+   "id": "gk_724743",
+   "name": "罗丝薇瑟",
+   "name_intl": null,
+   "name_source": "gamekee（bwiki 未收录；gamekee 新角色已用国服译名，罗丝薇瑟已对照国服截图）",
+   "nickname": null,
+   "class": "前锋",
+   "ego": "正义",
+   "rarity": 5,
+   "faction": "流浪者",
+   "cn_launch": null,
+   "intl_launch": "2026/10/20",
+   "start_deck": [
+    {
+     "id": "gk_card_1137",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1138",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1139",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1140",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1141",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1142",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1143",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1144",
+     "count": 1
+    }
+   ],
+   "gamekee_content_id": 724743,
+   "source": "gamekee"
+  },
+  {
+   "id": "gk_722673",
+   "name": "安妮卡",
+   "name_intl": null,
+   "name_source": "gamekee（bwiki 未收录；gamekee 新角色已用国服译名，罗丝薇瑟已对照国服截图）",
+   "nickname": null,
+   "class": "前锋",
+   "ego": "秩序",
+   "rarity": 4,
+   "faction": "钢铁之雨",
+   "cn_launch": null,
+   "intl_launch": "2026/9/30",
+   "start_deck": [
+    {
+     "id": "gk_card_1097",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1098",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1099",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1100",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1101",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1102",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1103",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1104",
+     "count": 1
+    }
+   ],
+   "gamekee_content_id": 722673,
+   "source": "gamekee"
+  },
+  {
+   "id": "gk_720369",
+   "name": "奥尔加",
+   "name_intl": null,
+   "name_source": "gamekee（bwiki 未收录；gamekee 新角色已用国服译名，罗丝薇瑟已对照国服截图）",
+   "nickname": null,
+   "class": "奥义师",
+   "ego": "本能",
+   "rarity": 5,
+   "faction": "流浪者",
+   "cn_launch": null,
+   "intl_launch": "2026/9/9",
+   "start_deck": [
+    {
+     "id": "gk_card_1089",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1090",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1091",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1092",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1093",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1094",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1095",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1096",
+     "count": 1
+    }
+   ],
+   "gamekee_content_id": 720369,
+   "source": "gamekee"
+  },
+  {
+   "id": "gk_716291",
+   "name": "阿拉贝拉",
+   "name_intl": null,
+   "name_source": "gamekee（bwiki 未收录；gamekee 新角色已用国服译名，罗丝薇瑟已对照国服截图）",
+   "nickname": null,
+   "class": "前锋",
+   "ego": "本能",
+   "rarity": 5,
+   "faction": "斯特拉·帕密里尔",
+   "cn_launch": null,
+   "intl_launch": "2026/8/19",
+   "start_deck": [
+    {
+     "id": "gk_card_1080",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1081",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1082",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1083",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1084",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1085",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1086",
+     "count": 1
+    },
+    {
+     "id": "gk_card_1087",
+     "count": 1
+    }
+   ],
+   "gamekee_content_id": 716291,
+   "source": "gamekee"
+  }
+ ],
+ "supporters": [
+  {
+   "id": "20026",
+   "name": "伊万娜",
+   "name_intl": "伊冯娜",
+   "class": "操控师",
+   "rarity": 3,
+   "source": "bwiki"
+  },
+  {
+   "id": "30046",
+   "name": "伊势",
+   "name_intl": "伊冢",
+   "class": "奥义师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30076",
+   "name": "佩可",
+   "name_intl": "佩可",
+   "class": "猎人",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30095",
+   "name": "克拉拉",
+   "name_intl": "克拉拉",
+   "class": "守卫",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20035",
+   "name": "利托奇卡",
+   "name_intl": "里托奇卡",
+   "class": "前锋",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "20036",
+   "name": "卡洛蒂",
+   "name_intl": "卡洛蒂",
+   "class": "猎人",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "20030",
+   "name": "奇雅",
+   "name_intl": "吉雅拉",
+   "class": "猎人",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20024",
+   "name": "威廉明娜",
+   "name_intl": "威廉明娜",
+   "class": "守卫",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "30044",
+   "name": "威斯特马科特",
+   "name_intl": "威斯特马科特",
+   "class": "前锋",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20008",
+   "name": "安忒亚",
+   "name_intl": "安忒亚",
+   "class": "奥义师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20016",
+   "name": "尤莉",
+   "name_intl": "百合",
+   "class": "猎人",
+   "rarity": 3,
+   "source": "bwiki"
+  },
+  {
+   "id": "20006",
+   "name": "尼克斯",
+   "name_intl": "妮克丝",
+   "class": "操控师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20021",
+   "name": "布莱亚",
+   "name_intl": "布莉亚",
+   "class": "奥义师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20034",
+   "name": "斯嘉丽",
+   "name_intl": "绯红",
+   "class": "前锋",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30045",
+   "name": "星遥",
+   "name_intl": "阿斯特莉亚",
+   "class": "前锋",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20019",
+   "name": "普莉希拉",
+   "name_intl": "普里西拉",
+   "class": "前锋",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20009",
+   "name": "泽塔",
+   "name_intl": "泽塔",
+   "class": "守卫",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30114",
+   "name": "温妮",
+   "name_intl": "尤妮",
+   "class": "游侠",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30051",
+   "name": "漪",
+   "name_intl": "玛琳",
+   "class": "游侠",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20003",
+   "name": "爱丽莎",
+   "name_intl": "艾莉莎",
+   "class": "操控师",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "20027",
+   "name": "爱洛依丝",
+   "name_intl": "艾洛伊丝",
+   "class": "奥义师",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "20037",
+   "name": "玛丽安妮",
+   "name_intl": "玛丽安娜",
+   "class": "前锋",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20004",
+   "name": "珍妮特",
+   "name_intl": "莎娜",
+   "class": "猎人",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20032",
+   "name": "瑞秋",
+   "name_intl": "瑞秋",
+   "class": "守卫",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "30053",
+   "name": "索菲亚",
+   "name_intl": "苏菲亚",
+   "class": "猎人",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "1058",
+   "name": "索里亚",
+   "name_intl": "索莉亚",
+   "class": "游侠",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20010",
+   "name": "纳奇亚",
+   "name_intl": "娜奇雅",
+   "class": "游侠",
+   "rarity": 3,
+   "source": "bwiki"
+  },
+  {
+   "id": "20038",
+   "name": "缇娜",
+   "name_intl": "缇娜",
+   "class": "游侠",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30091",
+   "name": "艾希雅",
+   "name_intl": "艾希雅",
+   "class": "守卫",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20005",
+   "name": "艾舒伦",
+   "name_intl": "艾苏伦",
+   "class": "守卫",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30054",
+   "name": "艾莉可",
+   "name_intl": "艾莉卡",
+   "class": "守卫",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "1025",
+   "name": "艾薇",
+   "name_intl": "艾薇",
+   "class": "奥义师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30092",
+   "name": "芮香",
+   "name_intl": "瑞香",
+   "class": "游侠",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20033",
+   "name": "莉莉安",
+   "name_intl": "莉莉安",
+   "class": "前锋",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "20002",
+   "name": "莎耶",
+   "name_intl": "卡雅",
+   "class": "操控师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20013",
+   "name": "莱德尔",
+   "name_intl": "赖德尔",
+   "class": "守卫",
+   "rarity": 3,
+   "source": "bwiki"
+  },
+  {
+   "id": "20014",
+   "name": "萨丽缇雅",
+   "name_intl": "赛丽黛亚",
+   "class": "猎人",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20012",
+   "name": "萨特拉",
+   "name_intl": "扎塔拉",
+   "class": "奥义师",
+   "rarity": 3,
+   "source": "bwiki"
+  },
+  {
+   "id": "30085",
+   "name": "蒂亚娜",
+   "name_intl": "蒂亚娜",
+   "class": "操控师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20025",
+   "name": "蔷薇夫人",
+   "name_intl": "罗莎莉亚",
+   "class": "游侠",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "30094",
+   "name": "西尔维亚",
+   "name_intl": "席薇亚",
+   "class": "游侠",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "30052",
+   "name": "诺盈",
+   "name_intl": "诺艾尔",
+   "class": "操控师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20015",
+   "name": "道格拉斯",
+   "name_intl": "道格拉斯",
+   "class": "前锋",
+   "rarity": 3,
+   "source": "bwiki"
+  },
+  {
+   "id": "20007",
+   "name": "阿卡",
+   "name_intl": "阿卡德",
+   "class": "猎人",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "20001",
+   "name": "阿尔温",
+   "name_intl": "亚玟",
+   "class": "操控师",
+   "rarity": 4,
+   "source": "bwiki"
+  },
+  {
+   "id": "1070",
+   "name": "阿莉娅",
+   "name_intl": "艾睿雅",
+   "class": "奥义师",
+   "rarity": 5,
+   "source": "bwiki"
+  },
+  {
+   "id": "20011",
+   "name": "黛西",
+   "name_intl": "黛西",
+   "class": "游侠",
+   "rarity": 4,
+   "source": "bwiki"
+  }
+ ]
+}
