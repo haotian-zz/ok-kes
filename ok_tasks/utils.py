@@ -1802,12 +1802,21 @@ def is_frame_stuck(task: TriggerTask, stuck_threshold_seconds=30, change_thresho
     return time.time() - task._last_change_time >= stuck_threshold_seconds
 
 
+STUCK_STOP_SECONDS = 300
+
+
 def handle_stuck_log(task: TriggerTask):
     """画面卡住超过10秒时依次处理关闭页、特殊怪物、卡牌或未知页面。"""
     if not is_frame_stuck(task, stuck_threshold_seconds=10):
         return False
 
     stuck_seconds = int(time.time() - task._last_change_time)
+    if stuck_seconds >= STUCK_STOP_SECONDS and getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) != chaos_strategy.MODE_LEGACY:
+        # 画面几分钟纹丝不动、点什么都没反应（2026-10-25 实录：兑换战利品后游戏 UI 锁死），继续乱点没有意义，停下来等人看
+        task.log_info(f"画面已经 {stuck_seconds} 秒没有任何变化，游戏可能无响应，停止任务", notify=True)
+        chaos_trace.step(task, "page", "画面长时间不变，停止", task.frame)
+        task.disable()
+        return True
     close_page = task.find_one(
         feature_name="close_page",
         box=task.box_of_screen(0.921, 0.003, 0.998, 0.100),

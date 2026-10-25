@@ -1323,6 +1323,16 @@ def handle_chaos_reward_claim(task: TriggerTask):
     cards = _verify_cards(task, (0.959, 0.281))
     task.log_info(f"检测到额外战利品兑换弹窗：验证卡={cards}，文字={texts[:120]}")
     chaos_trace.step(task, "page", "额外战利品兑换弹窗", task.frame, cards=cards, texts=texts[:300])
+    ns = task.node_status if isinstance(getattr(task, "node_status", None), dict) else {}
+    tries, last = ns.get("reward_claim_tries") or (0, 0.0)
+    tries = tries + 1 if time.time() - last < 15 else 1
+    ns["reward_claim_tries"] = (tries, time.time())
+    if tries > 3:
+        # 2026-10-25 第十二局：点「获得」后弹窗不消失、游戏不再响应任何点击，脚本连点了 20 分钟
+        task.log_info(f"额外战利品弹窗点了 {tries - 1} 次「获得」都没反应，改点取消", notify=tries == 4)
+        _move_and_click(task, 0.352, 0.708)
+        task.sleep(1)
+        return True
     if cards is not None and cards > 0 and _get_config_value(task, REWARD_USE_CARD, True):
         task.log_info(f"战利品验证卡 {cards} 张，用 1 张兑换")
         task.click_box(claim_box)
