@@ -2353,7 +2353,13 @@ def _equipment_slot(task: TriggerTask, type_text):
 def _equipment_priority(task: TriggerTask, slot):
     """读取指定装备位的优先级配置。"""
     priority = _get_config_value(task, f"装备{slot + 1}号位优先级", [])
-    return list(priority) if isinstance(priority, (list, tuple)) else []
+    priority = list(priority) if isinstance(priority, (list, tuple)) else []
+    # 配置里可能写国际服名，展开成所有叫法（别名紧跟原名，优先级顺序不变）
+    try:
+        db = game_db.get_db()
+        return list(dict.fromkeys(a for n in priority for a in db.equipment_aliases(n)))
+    except Exception:  # noqa: BLE001
+        return priority
 
 
 def _match_equipment_name(ocr_name, priority):
@@ -3412,7 +3418,6 @@ def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
         seen.update(keys)
         chaos_strategy.save_seen(seen)
     task.log_info(f"[{mode}] 选择「{tasks_info[best]['description']}」")
-    task.node_status["event_pending_choice"] = tasks_info[best]["description"]
     # 选了神闪选项（只能选它、或分数仍最高时）：之后的选卡页/变体页要跳过，避免神闪落到目标卡上
     task.node_status["god_spark_pending"] = any("神闪" in w for w in results[best][1])
     chaos_trace.step(task, "event", results[best][2], task.frame, chosen=best,
@@ -3502,6 +3507,8 @@ def handle_event_task(task: TriggerTask):
         return True
 
     def click_event_option(event_task):
+        # 记下点的是哪个：下一帧它抬起来时才按「已选中」直接确认（所有分支——策略、就此离开、关键词——都经过这里）
+        task.node_status["event_pending_choice"] = event_task["description"]
         left, top, right, bottom = event_task["description_region"]
         description_x = (left + right) / 2
         description_y = (top + bottom) / 2

@@ -222,6 +222,18 @@ class GameDB:
         return self._best(normal, name, keys=("name", "name_intl"), min_score=0.75) or \
             self._best(self.equipment, name, keys=("name", "name_intl"), min_score=0.75)
 
+    EQUIPMENT_NAME_KEYS = ("name", "name_intl", "name_gamekee")
+
+    def equipment_aliases(self, name):
+        """装备的所有叫法（国服名、国际服名、gamekee 名）。用户常用国际服名（「混沌指控」），国服画面上是「混沌之识」。"""
+        target = norm(name)
+        names = [name]
+        for e in self.equipment:
+            vals = [e.get(k) for k in self.EQUIPMENT_NAME_KEYS if e.get(k)]
+            if any(norm(v) == target for v in vals):
+                names += [v for v in vals if v not in names]
+        return names
+
     # ---------------- 工具 ----------------
 
     @staticmethod

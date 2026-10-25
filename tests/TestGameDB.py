@@ -59,6 +59,12 @@ class TestEventsAndEquipment(unittest.TestCase):
         self.assertEqual("雾之都市", e["region"])
         self.assertEqual(3, self.db.find_option(e, "闭上眼睛")["effects"].get("remove_card"))
 
+    def test_equipment_aliases(self):
+        # 用户写国际服名「混沌指控」，国服画面上是「混沌之识」
+        self.assertIn("混沌之识", self.db.equipment_aliases("混沌指控"))
+        self.assertIn("混沌指控", self.db.equipment_aliases("混沌之识"))
+        self.assertEqual(["没有这件装备"], self.db.equipment_aliases("没有这件装备"))
+
     def test_equipment_slot(self):
         self.assertEqual(1, self.db.find_equipment("蚀化臂铠")["slot"])
 
