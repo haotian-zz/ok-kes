@@ -84,7 +84,8 @@ def log(task, msg):
 def begin_frame(task):
     """ChaosMode.run 每帧开头调用：记下这一帧开始时的序号，页面处理函数里记过决策就不再另存页面截图。"""
     if enabled(task):
-        _state(task)["iter_seq"] = task._chaos_trace["seq"]
+        t = _state(task)
+        t["iter_seq"] = t["seq"]
 
 
 def page(task, handler, frame):

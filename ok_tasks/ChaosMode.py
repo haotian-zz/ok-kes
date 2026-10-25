@@ -241,8 +241,20 @@ class ChaosMode(TriggerTask):
             return False
         # 只在启动后第一帧判断：主页（主页闲置会隐藏 UI，整帧没有文字）才自己进卡厄思，已经在卡厄思里就交给原有流程
         self.entry_checked = True
-        if not (utils_daily.is_home(self) or not self.all_texts):
+        # 卡厄思难度选择页（有「每周进展」）也在局外：上一轮按轮数停下后就停在这里（2026-10-24 实机），
+        # 直接点进入会跳过零式升级和难度选择，所以同样先回主页
+        at_lobby = any("每周进展" in box.name for box in self.all_texts or [])
+        if not (utils_daily.is_home(self) or not self.all_texts or at_lobby):
             return False
+        if at_lobby:
+            # 难度页 → ESC → 活动页 → ESC → 主页；切页有动画，每次 ESC 后等够再判断，免得在主页多按一次 ESC
+            self.log_info("停在卡厄思难度选择页（局外），按 ESC 回主页再按玩法准备")
+            for _ in range(4):
+                if utils_daily.is_home(self):
+                    break
+                self.send_key("esc")
+                self.sleep(3)
+                utils_daily.refresh(self)
         if not utils_daily.go_home(self):
             return False
         want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode) if self.config.get('调整零式升级') else ([], [])

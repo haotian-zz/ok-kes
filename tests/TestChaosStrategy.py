@@ -222,6 +222,8 @@ class TestTrace(unittest.TestCase):
                 info = {"nodes": [{"id": 0, "type": "当前位置", "col": 0, "px": 100, "py": 270},
                                   {"id": 1, "type": "事件", "col": 1, "px": 1100, "py": 270}],
                         "adjacency": {0: [1], 1: []}, "current": 0}
+                chaos_trace.begin_frame(task)      # 每次启动第一帧还没有追踪目录（2026-10-24 实机崩过）
+                chaos_trace.page(task, "handle_x", frames[0])
                 chaos_trace.map_scan(task, frames, [0, -400], info)
                 chaos_trace.log(task, "全屏地图扫描：2帧")
                 chaos_trace.route_plan(task, info, {"route": [0, 1], "weighted_score": 6}, [])
@@ -229,7 +231,7 @@ class TestTrace(unittest.TestCase):
                                  options=[{"desc": "A", "score": 1, "why": [], "src": "x"},
                                           {"desc": "B", "score": 9, "why": ["信用点+9"], "src": "x"}])
                 path = task._chaos_trace["dir"]
-                self.assertEqual(3, len([f for f in os.listdir(path) if f.endswith(".jpg")]))
+                self.assertEqual(4, len([f for f in os.listdir(path) if f.endswith(".jpg")]))
                 with open(chaos_trace_report.render(path), encoding="utf-8") as f:
                     page = f.read()
                 self.assertIn("当前位置 → 事件", page)
