@@ -356,6 +356,26 @@ class TestTrace(unittest.TestCase):
             finally:
                 chaos_trace.TRACE_ROOT = old_root
 
+    def test_season_route_weights(self):
+        # 活动卡厄思精英必给记忆残片：所有玩法精英高于普通战；血量低时精英压回普通战、休息加分
+        for mode in (cs.MODE_EXPLORE, cs.MODE_EMPTY, cs.MODE_TARGET):
+            t = cs.ROUTE_WEIGHTS[mode]["types"]
+            self.assertGreater(t["精英"], t["小怪"])
+        low = cs.route_weights(cs.MODE_TARGET, 0, 30)["types"]
+        self.assertEqual(low["精英"], low["小怪"])
+        self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"]["休息"] + 2, low["休息"])
+        self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"], cs.route_weights(cs.MODE_TARGET, 0, False)["types"])
+
+    def test_equipment_event_source_bonus(self):
+        # 凝结的光辉残片只能在第 1 层（外围）「前往更深之处」选「劈向地脉」拿：第 1 层事件加分，拿到后不加
+        src = cs.equipment_event_sources(["混沌指控", "凝结的光辉残片", "坠落的王冠"])
+        self.assertEqual([("凝结的光辉残片", "前往更深之处", "劈向地脉", 0)],
+                         [(s["equipment"], s["event"], s["option"], s["layer"]) for s in src])
+        self.assertEqual(cs.EVENT_SOURCE_BONUS, cs.event_source_bonus(src, 0))
+        self.assertEqual(0, cs.event_source_bonus(src, 1))
+        self.assertEqual(0, cs.event_source_bonus(src, 0, ["凝结的光辉残片"]))
+        w = cs.route_weights(cs.MODE_TARGET, 0, 80, cs.event_source_bonus(src, 0))["types"]
+        self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"]["事件"] + cs.EVENT_SOURCE_BONUS, w["事件"])
 
 if __name__ == "__main__":
     unittest.main()

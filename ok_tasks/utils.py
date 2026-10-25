@@ -3892,7 +3892,7 @@ def handle_route_selection(task: TriggerTask):
     # 先根据左下角小地图的完整连通关系规划路线，再用右侧当前可点击节点
     # 校验规划结果。两边识别不一致时，使用当前节点识别结果兜底。
     map_info = recognize_map_connections(task)
-    route_weights = chaos_strategy.ROUTE_WEIGHTS.get(getattr(task, "chaos_mode", ""))
+    route_weights = _chaos_route_weights(task)
     route_plan = find_best_map_route_by_priority(map_info, priority, route_weights)
     _track_layer_route(task, map_info, route_plan)
     node = None
@@ -3938,6 +3938,31 @@ def handle_route_selection(task: TriggerTask):
     return True
 
 
+def _chaos_route_weights(task: TriggerTask):
+    """当前玩法的路线权重，按本层血量和「目标装备只能靠本层事件拿」调整（chaos_strategy.route_weights）。"""
+    mode = getattr(task, "chaos_mode", "")
+    if mode not in chaos_strategy.ROUTE_WEIGHTS:
+        return None
+    layer = task.node_status.get("pass_final_boss_count", 0) if isinstance(getattr(task, "node_status", None), dict) else 0
+    try:
+        hp = _get_current_hp_percent(task)
+    except Exception:  # noqa: BLE001
+        hp = None
+    bonus = 0
+    try:
+        targets = [n for slot in range(3) for n in _equipment_priority(task, slot)]
+        owned = [n for n in _equipment_state(task).get("names", []) if n]
+        seen = getattr(task, "chaos_seen", None) or set()
+        owned += [n for n in targets if chaos_strategy.equipment_key(n) in seen]
+        sources = chaos_strategy.equipment_event_sources(targets)
+        bonus = chaos_strategy.event_source_bonus(sources, layer, owned)
+        if bonus:
+            task.log_info(f"本层有目标装备的来源事件（{[s['equipment'] + '←' + s['event'] for s in sources]}），事件节点 +{bonus}")
+    except Exception as e:  # noqa: BLE001
+        task.log_info(f"目标装备来源事件加权失败: {e}")
+    return chaos_strategy.route_weights(mode, layer, hp, bonus)
+
+
 def _click_route_node(task: TriggerTask, node):
     # 更新 node_type 为最优先的节点类型
     if hasattr(task, 'node_status'):
@@ -3965,7 +3990,7 @@ def _plan_full_map(task: TriggerTask, priority):
     if not info:
         task.log_info("全屏地图扫描失败（没认出当前位置或节点），改用小地图规划")
         return None
-    weights = chaos_strategy.ROUTE_WEIGHTS.get(getattr(task, "chaos_mode", ""))
+    weights = _chaos_route_weights(task)
     plan = find_best_map_route_by_priority(info, priority, weights)
     if not plan or len(plan["route"]) < 2:
         return None

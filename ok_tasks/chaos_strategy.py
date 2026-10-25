@@ -21,14 +21,67 @@ SEEN_FILE = os.path.join("configs", "chaos_seen.json")
 
 
 # 路线权重（越大越优先，整条路径求和）；商店是休息点上的标记，额外加分。见设计文档 3.1
+# 活动卡厄思「凝结于雪上的约定」：精英战必给 1 个记忆残片（赛季记忆卡升阶材料，普通战只是概率掉），
+# 所以所有玩法精英都高于普通战（用户 2026-10-25）；血量低时 route_weights 再把精英压回去。
 ROUTE_WEIGHTS = {
-    MODE_EXPLORE: {"types": {"事件": 6, "休息": 3, "小怪": 3, "精英": 3, "结算": 0},
+    MODE_EXPLORE: {"types": {"事件": 6, "休息": 3, "小怪": 3, "精英": 4, "结算": 0},
                    "shop": -1, "special": {"kalei_in_map": 1, "seal_in_map": 1, "hard_in_map": 1}},
-    MODE_EMPTY: {"types": {"事件": 5, "休息": 4, "小怪": 2, "精英": 1, "结算": 0},
+    MODE_EMPTY: {"types": {"事件": 5, "休息": 4, "小怪": 2, "精英": 3, "结算": 0},
                  "shop": 2, "special": {"kalei_in_map": 1, "seal_in_map": 0, "hard_in_map": -2}},
-    MODE_TARGET: {"types": {"事件": 4, "休息": 3, "小怪": 3, "精英": 2, "结算": 0},
+    MODE_TARGET: {"types": {"事件": 4, "休息": 3, "小怪": 2, "精英": 5, "结算": 0},
                   "shop": 1, "special": {"kalei_in_map": 1, "seal_in_map": 0, "hard_in_map": -1}},
 }
+
+LOW_HP_ROUTE = 40          # 规划整层路线时血量低于这个，精英不再优先、休息加分
+EVENT_SOURCE_BONUS = 3     # 本层有只能靠事件拿的目标装备时，事件节点加分
+AREA_LAYER = {"外围": 0, "核心": 1}   # 事件库 area → 层号（从 0 起）
+
+
+def route_weights(mode, layer=0, hp=None, event_bonus=0):
+    """按本层情况调整路线权重：血量低精英降到普通战、休息 +2；本层有目标装备的来源事件时事件加分。"""
+    base = ROUTE_WEIGHTS.get(mode)
+    if not base:
+        return base
+    w = {**base, "types": dict(base["types"])}
+    t = w["types"]
+    if hp is not None and hp is not False and hp < LOW_HP_ROUTE:
+        t["精英"] = min(t["精英"], t["小怪"])
+        t["休息"] += 2
+    t["事件"] += event_bonus
+    return w
+
+
+def equipment_event_sources(names, db=None):
+    """目标装备里写明「事件-X」才能拿的：返回 [{装备, 事件, 选项, 层}]（层 None = 不限）。
+    装备库 obtain 形如「天上防护墙：事件-前往更深之处」，事件库里找给这件装备的选项。"""
+    db = db or get_db()
+    out = []
+    for name in names:
+        eq = db.find_equipment(name)
+        obtain = (eq or {}).get("obtain") or ""
+        m = re.search(r"事件\s*[-－:：]\s*([^；;，,]+)", obtain)
+        if not m:
+            continue
+        event_name = norm(m.group(1))
+        for e in db.iter_events():
+            if norm(e.get("name", "")) != event_name:
+                continue
+            for o in e.get("options", []):
+                if any(norm(x) == norm(eq["name"]) for x in (o.get("effects") or {}).get("equipment") or []):
+                    out.append({"equipment": eq["name"], "event": e["name"], "option": o.get("text"),
+                                "layer": AREA_LAYER.get(e.get("area"))})
+    return out
+
+
+def event_source_bonus(sources, layer, owned=()):
+    """本层（或不限层）还有没拿到的目标装备来源事件 → 事件节点加分。"""
+    owned = {norm(n) for n in owned if n}
+    for src in sources:
+        if norm(src["equipment"]) in owned:
+            continue
+        if src["layer"] is None or src["layer"] == layer:
+            return EVENT_SOURCE_BONUS
+    return 0
 
 
 # ---------------- 从选项文字解析效果（数据库没命中时的兜底） ----------------
@@ -517,7 +570,7 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "卡牌奖励优先级": [],
             "任务优先级": ["移除2张", "移除"],
             "拉黑任务": ["咒术卡牌", "压力", "复制", "闪光", "中立"],
-            "路线优先级": ["事件", "休息", "小怪", "精英"],
+            "路线优先级": ["事件", "休息", "精英", "小怪"],
             "进入商店": True,
             "保留大于多少TB的存档": 0,
         }
@@ -536,7 +589,7 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "需要冥想的卡牌": list(dict.fromkeys(flash_names)),
             "任务优先级": ["复制", "移除", "信用点增加"],
             "拉黑任务": ["咒术卡牌", "压力"],
-            "路线优先级": ["事件", "休息", "小怪", "精英"],
+            "路线优先级": ["精英", "事件", "休息", "小怪"],
             "进入商店": True,
             **_memory_override(plan),
         }
@@ -555,7 +608,7 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "刷初始卡牌": "",
             "任务优先级": [],
             "拉黑任务": ["咒术卡牌"],
-            "路线优先级": ["事件", "小怪", "精英", "休息"],
+            "路线优先级": ["事件", "精英", "小怪", "休息"],
             "存储数据保存上限大于多少": 0,   # 探索度不要存档，别花货币「再次观测」
             **_memory_override(plan),
         }
