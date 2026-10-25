@@ -4325,6 +4325,12 @@ def handle_rest(task: TriggerTask):
     can_train = bool(flash_or_rest and train_box and find_text_in_region(task, r"免费", TRAIN_REGION))
     on_rest_page = any("安全区采取" in b.name for b in task.all_texts or [])
 
+    pending = task.node_status.get('training_pending') if isinstance(task.node_status, dict) else None
+    if pending and time.time() - pending < 8 and not can_train:
+        # 刚点过训练，选战斗员页还没出来；这几秒里「训练」字样可能认不到，别改去点休息/冥想（2026-10-25 实录）
+        task.sleep(0.5)
+        return True
+
     if can_rest and can_train and not can_meditate:
         hp_percent = _get_current_hp_percent(task)
         if hp_percent is not False and hp_percent >= REST_HP_BELOW:
