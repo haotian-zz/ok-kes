@@ -25,7 +25,9 @@ from utils import (
     # handle_stage_clear,
     handle_auto_stop,
     clear_run_state,
+    handle_storage_full,
 )
+import save_cleanup
 
 import re
 import random
@@ -1418,6 +1420,8 @@ def _at_chaos_initial_page(task: TriggerTask):
 # 卡厄思模式 PAGE_HANDLERS
 PAGE_HANDLERS = [
     handle_chaos_auto_stop,
+    handle_storage_full, #存档存储满了：去分解页自动清理或停止（要先于通用确认，2026-10-25 在进入/确认间循环）
+    save_cleanup.handle_save_cleanup, #存档清理流程：分解页/详情/分解确认
     handle_save_target_member,
     handle_route_selection,
     # handle_stage_clear,

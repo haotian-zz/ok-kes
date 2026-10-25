@@ -53,6 +53,7 @@ class ChaosMode(TriggerTask):
         self.default_config['刷存档主战员'] = "海德玛丽"
         self.default_config['存储数据保存上限大于多少'] = 120
         self.default_config['保留大于多少TB的存档'] = 62000
+        self.default_config['存档满了自动清理'] = True
         self.default_config['额外战利品：有战利品验证卡就用'] = True
         self.default_config['额外战利品：验证卡用完后用体力兑换'] = True
         self.default_config['额外战利品：体力不足时用免费道具补充体力'] = False
@@ -169,6 +170,9 @@ class ChaosMode(TriggerTask):
         self.config_description['刷空档'] = (
             "初始任务必须包含“移除2张”，否则重新开始；不能与“刷初始卡牌”同时使用。"
         )
+        self.config_description['存档满了自动清理'] = (
+            "存档存储满了（进不去卡厄思）时去分解页，按分数从低到高分解，腾出 30 个位置；"
+            "空白存档（0PT）、目标主战员的存档、读不准的都保留")
         self.config_description['章鱼哥速刷'] = (
             "刷章鱼哥（梦境模式乱入的精英赛内克图斯，掉混沌之识）：第一层打完首领还没遇到它就退出重进；遇到了就照常打完。需要开梦境模式"
         )

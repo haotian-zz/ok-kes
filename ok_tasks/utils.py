@@ -1996,7 +1996,7 @@ def handle_refine_equipment_credit(task: TriggerTask):
 
 
 # 中央确认弹窗里出现这些字就不点：花钱、重置零式升级、删邮件
-_DANGEROUS_CONFIRM = re.compile(r"全部重置|重置所有|\d+元|充值|购买.*礼包|解锁额外数据|删除已读")
+_DANGEROUS_CONFIRM = re.compile(r"存储空间不足|超出存储数据的保留限制|确定要分解|分解数据后无法恢复|全部重置|重置所有|\d+元|充值|购买.*礼包|解锁额外数据|删除已读")
 
 
 def handle_center_confirm(task: TriggerTask):
@@ -5590,10 +5590,19 @@ def handle_storage_full(task: TriggerTask):
     if not any("存储空间不足" in b.name or "超出存储数据的保留限制" in b.name for b in task.all_texts or []):
         return False
     chaos_trace.step(task, "page", "存储空间不足", task.frame)
+    import save_cleanup
+    go = next((b for b in task.all_texts if _clean_match(b.name, "前往")), None)
+    if save_cleanup.enabled(task) and go and getattr(task, "save_cleanup_last", None) != 0:
+        # 用户 2026-10-25 定：脚本自动清理（空白存档、目标主战员的存档保留）；上次清理一个都没删掉就不再试
+        task.log_info("存档存储空间已满，去分解页自动清理")
+        save_cleanup.start(task)
+        task.click_box(go)
+        task.sleep(2)
+        return True
     box = next((b for b in task.all_texts if _clean_match(b.name, "确认")), None)
     if box:
         task.click_box(box)
-    task.log_info("存档存储空间已满，进不去卡厄思：请在存档收集里清理存档后再开始，停止任务", notify=True)
+    task.log_info("存档存储空间已满，进不去卡厄思：自动清理没开或腾不出位置，请手动清理存档后再开始，停止任务", notify=True)
     task.disable()
     return True
 

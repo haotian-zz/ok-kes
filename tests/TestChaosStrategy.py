@@ -1,3 +1,4 @@
+import time
 # 卡厄思局内策略（chaos_strategy）单测：事件选项打分、玩法→配置项、目标卡组计划，不需要游戏
 import os
 import sys
@@ -738,3 +739,37 @@ class TestStorageFull(unittest.TestCase):
         self.assertEqual(state["clicks"], ["确认"])
         t.all_texts = [box("进入")]
         self.assertFalse(utils.handle_storage_full(t))
+
+
+class TestSaveCleanup(unittest.TestCase):
+    def test_keep_reason(self):
+        import save_cleanup as sc
+        self.assertEqual(sc.owners_of(["剑光", "万众英雄"]), {"海德玛丽"})
+        self.assertIsNone(sc.keep_reason(11520, 20, {"海德玛丽"}, "罗丝薇瑟"))
+        self.assertIn("空白", sc.keep_reason(8400, 0, {"绯"}, "罗丝薇瑟"))
+        self.assertIn("目标", sc.keep_reason(66000, 60, sc.owners_of(["斩念", "入鞘"]), "罗丝薇瑟"))
+        self.assertIsNotNone(sc.keep_reason(None, 20, {"绯"}, "罗丝薇瑟"))
+        self.assertIsNotNone(sc.keep_reason(9000, 20, set(), "罗丝薇瑟"))
+        self.assertEqual(sc._num("OPT", "PT"), 0)
+        self.assertEqual(sc._num("11520 TB", "TB"), 11520)
+
+    def test_confirm_only_when_pending(self):
+        import types
+        import save_cleanup as sc
+        clicks = []
+        old = sc._move_and_click
+        sc._move_and_click = lambda task, x, y: clicks.append((x, y))
+        try:
+            box = types.SimpleNamespace(name="确定要分解吗？", x=0, y=0, width=1, height=1)
+            t = types.SimpleNamespace(all_texts=[box], log_info=lambda *a, **k: None, sleep=lambda *a: None)
+            self.assertTrue(sc.handle_save_cleanup(t))
+            self.assertEqual(clicks, [sc.CANCEL])
+            sc.start(t)
+            t.save_cleanup["pending"] = time.time()
+            t.save_cleanup["need"] = 30
+            clicks.clear()
+            self.assertTrue(sc.handle_save_cleanup(t))
+            self.assertEqual(clicks, [sc.CONFIRM])
+            self.assertEqual(t.save_cleanup["deleted"], 1)
+        finally:
+            sc._move_and_click = old
