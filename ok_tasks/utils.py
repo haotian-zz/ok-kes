@@ -3821,11 +3821,7 @@ def handle_route_selection(task: TriggerTask):
                 pause_layer = int(pause_config)
                 current_layer = task.node_status.get('pass_final_boss_count', 0)
                 if pause_layer - 1 == current_layer:
-                    task.log_info(f"配置在第{pause_layer}层boss前暂停（当前已通过{current_layer}层），暂停工具")
-                    from ok import og
-                    og.executor.pause()
-                    task.sleep(5)
-                    return True
+                    _wait_before_boss(task, pause_layer)
             except (ValueError, TypeError):
                 pass
 
@@ -3965,6 +3961,25 @@ def _chaos_route_weights(task: TriggerTask):
     except Exception as e:  # noqa: BLE001
         task.log_info(f"目标装备来源事件加权失败: {e}")
     return chaos_strategy.route_weights(mode, layer, hp, bonus)
+
+
+BOSS_PAUSE_FILE = os.path.join("dev_out", "paused_before_boss")
+
+
+def _wait_before_boss(task: TriggerTask, layer):
+    """首领前暂停：建一个标记文件，等它被删掉再进首领（无界面运行也能远程继续；每层只停一次）。"""
+    key = (task.node_status.get("total_rounds", 0), layer)
+    if task.node_status.get("boss_paused") == key:
+        return
+    task.node_status["boss_paused"] = key
+    os.makedirs("dev_out", exist_ok=True)
+    with open(BOSS_PAUSE_FILE, "w", encoding="utf-8") as f:
+        f.write(f"第{layer}层首领前暂停，删除本文件继续\n")
+    task.log_info(f"第{layer}层首领前暂停：删除 {BOSS_PAUSE_FILE} 后继续")
+    while os.path.exists(BOSS_PAUSE_FILE):
+        task.sleep(2)
+    task.log_info("首领前暂停结束，继续")
+    task.next_frame()
 
 
 def _click_route_node(task: TriggerTask, node):

@@ -127,7 +127,7 @@ class ChaosMode(TriggerTask):
                     {'text': '切换配置', 'callback': make_switch_local_config_callback(self, 'chaos')},
                 ],
             },
-            '第几层boss前自动暂停': {'type': 'drop_down', 'options': ['不暂停', '1', '2']},
+            '第几层boss前自动暂停': {'type': 'drop_down', 'options': ['不暂停', '1', '2', '3']},
             '存储数据保存上限大于多少': {'min': 0, 'max': 170},
         }
         self.config_description['游戏语言'] = "国际服请设置为繁体中文"
