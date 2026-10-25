@@ -3837,6 +3837,7 @@ def handle_route_selection(task: TriggerTask):
         task.node_status['flash_or_rest'] = True
         task.node_status['rest_page_frames'] = 0
         task.node_status['training_logged'] = False
+        task.node_status['training_clicks'] = 0
         task.log_info("检测到路线选择页面，更新 node_status['flash_or_rest']=True")
         # 检查"进入商店"配置，若为 True 则同时更新 shop 状态
         if _get_config_value(task, '进入商店', False):
@@ -4348,12 +4349,24 @@ def handle_rest(task: TriggerTask):
 
     if can_train:
         # 训练（免费）：所选战斗员所有能力值 +1；休息/冥想都不选时用掉，不白跳过（2026-10-25 实录两次直接跳过）
-        task.log_info("休息/冥想不需要或不可用，点击免费「训练」（选目标主战员）")
-        task.click_box(train_box)
-        task.sleep(1.5)
-        task.node_status['training_pending'] = time.time()
-        task.node_status['flash_or_rest'] = False
-        return True
+        # 入场动画期点训练可能没反应（2026-10-25 实录）：选战斗员页出现前一直还在休息页，就隔几秒再点，最多 3 次；
+        # flash_or_rest 等选中战斗员后再清（handle_training_select）
+        ns = task.node_status
+        last = ns.get('training_pending') or 0
+        if time.time() - last < 2.5:
+            task.sleep(0.5)
+            return True
+        clicks = ns.get('training_clicks', 0)
+        if clicks < 3:
+            task.log_info("休息/冥想不需要或不可用，点击免费「训练」（选目标主战员）"
+                          + (f"（第 {clicks + 1} 次）" if clicks else ""))
+            task.click_box(train_box)
+            task.sleep(1.5)
+            ns['training_pending'] = time.time()
+            ns['training_clicks'] = clicks + 1
+            return True
+        task.log_info("点了 3 次「训练」都没进选战斗员页，放弃训练")
+        ns['flash_or_rest'] = False
 
     if rest_feature and "免费" not in free_text:
         task.log_info("检测到rest特征，但休息区域未找到「免费」，跳过点击休息")
@@ -4401,10 +4414,16 @@ def handle_training_select(task: TriggerTask):
     if not started:
         return False
     if time.time() - started > 20:
-        task.log_info("训练选战斗员超时，放弃（截图见流程追踪）")
-        chaos_trace.step(task, "page", "训练选战斗员超时", task.frame)
+        if ns.get('training_member_clicked'):
+            task.log_info("训练：已选目标主战员（确认由页面中央确认按钮处理）")
+        else:
+            task.log_info("训练选战斗员超时，放弃（截图见流程追踪）")
+            chaos_trace.step(task, "page", "训练选战斗员超时", task.frame)
         ns['training_pending'] = None
+        ns['training_member_clicked'] = False
         return False
+    if any("安全区采取" in b.name for b in task.all_texts or []):
+        return False                         # 还在休息页（训练没点进去），交给 handle_rest 重点
     member = None
     if task.feature_exists("target_member_small"):
         member = task.find_one(feature_name="target_member_small", box=task.box_of_screen(0, 0.1, 1, 0.9), threshold=0.4)
@@ -4414,6 +4433,8 @@ def handle_training_select(task: TriggerTask):
         task.click_box(member)
         task.sleep(1)
         ns['training_member_clicked'] = True
+        ns['training_pending'] = time.time()
+        ns['flash_or_rest'] = False          # 这次休息用掉了
         return True
     if confirm and ns.get('training_member_clicked'):
         task.log_info(f"训练：点「{confirm.name}」")

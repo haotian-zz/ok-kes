@@ -521,3 +521,8 @@ class TestRestChoice(unittest.TestCase):
 
     def test_meditate_needs_80_even_if_cost_misread(self):
         self.assertEqual(["训练"], self.run_rest(hp=100, credit=50, pending=True))
+
+    def test_train_retries_when_click_ignored(self):
+        import time as _t
+        clicks = self.run_rest(hp=100, credit=50, pending=False)
+        self.assertEqual(["训练"], clicks)
