@@ -671,3 +671,45 @@ class TestGameRestart(unittest.TestCase):
         open(os.path.join(root, "WeGameLauncher", "launcher.exe"), "w").close()
         self.assertEqual(launcher_path(exe), os.path.join(root, "WeGameLauncher", "launcher.exe"))
         self.assertIsNone(launcher_path(None))
+
+
+class TestOctopusRush(unittest.TestCase):
+    def _task(self, seen=False, layers=1):
+        import types
+        t = types.SimpleNamespace(config={"章鱼哥速刷": True}, all_texts=[], clicks=[],
+                                  node_status={"pass_final_boss_count": layers, "success_rounds": 0})
+        if seen:
+            t.node_status["octopus_seen"] = True
+        t.log_info = lambda *a, **k: None
+        t.sleep = lambda *a: None
+        return t
+
+    def test_exit_when_not_seen(self):
+        import utils
+        clicks = []
+        old = utils._move_and_click
+        utils._move_and_click = lambda task, x, y: clicks.append((x, y))
+        try:
+            self.assertTrue(utils._finish_only_first_layer(self._task()))
+            self.assertEqual(clicks, [(0.959, 0.051)])
+            clicks.clear()
+            self.assertFalse(utils._finish_only_first_layer(self._task(seen=True)))
+            self.assertFalse(utils._finish_only_first_layer(self._task(layers=2)))
+            self.assertEqual(clicks, [])
+        finally:
+            utils._move_and_click = old
+
+    def test_note_octopus(self):
+        import types
+        import utils
+        t = self._task()
+        t.frame = None
+        t.all_texts = [types.SimpleNamespace(name="赛内克图斯")]
+        old = utils.chaos_trace.step
+        utils.chaos_trace.step = lambda *a, **k: None
+        try:
+            utils.note_octopus(t)
+        finally:
+            utils.chaos_trace.step = old
+        self.assertTrue(t.node_status["octopus_seen"])
+        self.assertIn("octopus_seen", utils.RUN_LEVEL_KEYS)

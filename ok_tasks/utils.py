@@ -5167,6 +5167,22 @@ def _initial_member_status():
     }
 
 
+OCTOPUS_RUSH = "章鱼哥速刷"
+OCTOPUS_NAMES = ("赛内克图斯",)       # 章鱼哥：梦境模式清完怪后低概率乱入的精英，掉混沌之识（混沌指控）
+
+
+def note_octopus(task: TriggerTask):
+    """每帧看画面文字里有没有章鱼哥；看到就记下（整局有效），第一次存一张截图方便校准识别。"""
+    ns = getattr(task, 'node_status', None)
+    if not isinstance(ns, dict) or ns.get('octopus_seen'):
+        return
+    hit = next((b.name for b in task.all_texts or [] if any(n in b.name for n in OCTOPUS_NAMES)), None)
+    if hit:
+        ns['octopus_seen'] = True
+        task.log_info(f"遇到章鱼哥：「{hit}」（第 {ns.get('pass_final_boss_count', 0) + 1} 层）", notify=True)
+        chaos_trace.step(task, "page", "章鱼哥", task.frame, text=hit)
+
+
 def _finish_only_first_layer(task: TriggerTask) -> bool:
     """检查并完成只打第一层的退出操作：如果 pass_final_boss_count >= 1 且配置'只打第一层'为 True，则成功次数+1、点击退出并返回 True。"""
     if not (
@@ -5181,6 +5197,14 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
     ):
         task.node_status['success_rounds'] += 1
         task.log_info("未刷到指定闪光且已通关第一层，退出重刷")
+        _move_and_click(task, 0.959, 0.051)
+        task.sleep(1)
+        return True
+
+    if (_get_config_value(task, OCTOPUS_RUSH, False) is True
+            and task.node_status.get('pass_final_boss_count', 0) == 1
+            and not task.node_status.get('octopus_seen')):
+        task.log_info("章鱼哥速刷：第一层没遇到章鱼哥（赛内克图斯），退出重进")
         _move_and_click(task, 0.959, 0.051)
         task.sleep(1)
         return True
@@ -5247,7 +5271,8 @@ def reset_layer_status(task: TriggerTask):
                 task.node_status[k] = ns[k]
 
 
-RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok")
+RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok",
+                  "octopus_seen")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")

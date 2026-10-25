@@ -91,6 +91,7 @@ class ChaosMode(TriggerTask):
         self.default_config['面具卡牌刻印'] = "自身攻击卡牌伤害总量提升30%"
         self.default_config['刷初始卡牌'] = ""
         self.default_config['只打第一层'] = False
+        self.default_config['章鱼哥速刷'] = False
         # 路线节点优先级 (列表), 越靠前优先级越高
         self.default_config['路线优先级'] = ["休息", "事件", "小怪", "精英"]
         self.default_config['几轮后停止(0为不停止)'] = 0
@@ -167,6 +168,9 @@ class ChaosMode(TriggerTask):
         )
         self.config_description['刷空档'] = (
             "初始任务必须包含“移除2张”，否则重新开始；不能与“刷初始卡牌”同时使用。"
+        )
+        self.config_description['章鱼哥速刷'] = (
+            "刷章鱼哥（梦境模式乱入的精英赛内克图斯，掉混沌之识）：第一层打完首领还没遇到它就退出重进；遇到了就照常打完。需要开梦境模式"
         )
         self.config_description['首层刷特定闪光'] = (
             "默认刷闪光优先级第一张，可刷神闪，第一层没刷出自动逃脱"
@@ -338,6 +342,8 @@ class ChaosMode(TriggerTask):
                 return
             self.start_window = False
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环
+        if self.config.get('章鱼哥速刷'):
+            utils.note_octopus(self)
         frame = self.frame
         chaos_trace.begin_frame(self)
         for handle_page in utils_chaos.PAGE_HANDLERS:
