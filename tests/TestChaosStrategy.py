@@ -190,6 +190,14 @@ class TestPriorities(unittest.TestCase):
         s, why = cs.score_effects({"equipment": ["商店稀有~传说装备"]}, cs.MODE_EXPLORE, {"seen": set()})
         self.assertLess(s, 1000)
 
+    def test_explore_tiebreak_spark_over_transform(self):
+        # 2026-10-24 实跑：两个都没选过，「转换为执行仪式」排在第一个就被选了，应选闪光
+        st = {"seen": set(), "unseen": True}
+        spark = cs.score_effects({"spark": 1, "spark_card": True}, cs.MODE_EXPLORE, st)[0]
+        conv = cs.score_effects({"transform_card": True}, cs.MODE_EXPLORE, st)[0]
+        self.assertGreater(spark, conv)
+        self.assertLess(spark, 1050)
+
     def test_explore_followup_unseen(self):
         opt = {"id": "a", "text": "进入", "effects": {},
                "next": [{"id": "a1", "text": "x", "effects": {}}, {"id": "a2", "text": "y", "effects": {}}]}

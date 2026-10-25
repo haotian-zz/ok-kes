@@ -264,6 +264,14 @@ def score_effects(effects, mode, state=None):
             add(-8, "咒术卡")
         if effects.get("battle"):
             add(2, "战斗（新怪物）")
+        # 同为没选过的选项时按「让这局打得更顺」排：闪光/删卡/复制让卡组变强，转换和事件卡变弱（分值远小于 +1000/+50）
+        for k, v, reason in (("spark", 6, "闪光"), ("god_spark", 6, "神闪"), ("copy_card", 4, "复制"),
+                             ("neutral_card", 3, "中立卡"), ("transform_card", -4, "转换卡"),
+                             ("event_card", -3, "获得卡"), ("desire_card", -3, "获得卡")):
+            if effects.get(k):
+                add(v, reason)
+        if rm:
+            add(5, f"移除{rm}张")
     if hp and mode == MODE_TARGET and hp > 0:
         # 回血按缺血程度动态排名，一般不超过 ≥200 信用点（100）；血量 <25% 时死了就只能带出最近航路点的存档，
         # 回血排到仅次于目标装备和复制
