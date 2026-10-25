@@ -469,6 +469,7 @@ def recognize_cards_in_deck(
 
 # 不是事件选项的文字：装备/选卡页左下角的卡组统计「独特卡牌平均费用 0.9」、存档收集页的存档价值「4368 TB」
 # 会被事件图标特征误命中（2026-10-24 实录）
+NOT_EVENT_PAGE = re.compile(r"保存战斗数据|存储数据收集")
 NOT_EVENT_OPTION = re.compile(r"平均费用|^\W*\w?\s*[\d,]{3,}\s*TB\W*$")
 
 
@@ -3447,6 +3448,9 @@ def handle_event_task(task: TriggerTask):
     """事件任务页面: 识别事件选项特征和描述，按任务优先级选择推进。"""
     bottom_box = find_box_at_point(task, 0.516, 0.971)
     if bottom_box and re.search(r'\d+/\d+', bottom_box.name):
+        return False
+    # 存档页（正在保存战斗数据 / 存储数据收集完成）的 TB 数字滚动时会被事件图标误命中（2026-10-25 实录点了「18T」）
+    if any(NOT_EVENT_PAGE.search(b.name) for b in task.all_texts):
         return False
 
     rewards = task.find_feature(feature_name="taskreward")

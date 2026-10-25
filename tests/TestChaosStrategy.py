@@ -155,7 +155,9 @@ class TestPriorities(unittest.TestCase):
         self.assertEqual("x", cs.config_overrides(cs.MODE_EXPLORE, "罗丝薇瑟", plan)["指定记忆描述"])
 
     def test_deck_stat_not_event_option(self):
-        from utils import NOT_EVENT_OPTION
+        from utils import NOT_EVENT_OPTION, NOT_EVENT_PAGE
+        self.assertTrue(NOT_EVENT_PAGE.search("正在保存战斗数据"))
+        self.assertTrue(NOT_EVENT_PAGE.search("存储数据收集完成"))
         self.assertTrue(NOT_EVENT_OPTION.search("独特卡牌平均费用0.9"))
         self.assertTrue(NOT_EVENT_OPTION.search("4368 TB"))
         self.assertTrue(NOT_EVENT_OPTION.search("39823TB"))
