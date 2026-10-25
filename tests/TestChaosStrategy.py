@@ -536,3 +536,11 @@ class TestLayerReset(unittest.TestCase):
         reset_layer_status(task)
         self.assertEqual((2, 1, 3), (task.node_status["copy_count"], task.node_status["god_spark_count"],
                                      task.node_status["removed_card_count"]))
+
+    def test_copy_needed(self):
+        from utils import _copy_needed
+        task = SimpleNamespace(chaos_mode=cs.MODE_TARGET, chaos_plan={"copy": ["剑鸣九霄", "剑鸣九霄"]},
+                               node_status={"copy_count": 1})
+        self.assertTrue(_copy_needed(task))
+        task.node_status["copy_count"] = 2
+        self.assertFalse(_copy_needed(task))

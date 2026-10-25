@@ -3064,6 +3064,15 @@ def _pt_room(task: TriggerTask, what):
     return False
 
 
+def _copy_needed(task: TriggerTask):
+    """目标卡组还要不要复制（首领奖励的复制不经过事件打分，2026-10-25 实录复制成第 4 张剑鸣九霄）。其他模式不管。"""
+    if getattr(task, "chaos_mode", "") != chaos_strategy.MODE_TARGET:
+        return True
+    plan = getattr(task, "chaos_plan", None) or {}
+    done = (getattr(task, "node_status", None) or {}).get("copy_count", 0)
+    return len(plan.get("copy", [])) > done
+
+
 def _record_copy(task: TriggerTask):
     ns = task.node_status
     key = (ns.get("total_rounds", 0), ns.get("pass_final_boss_count", 0), ns.get("node_count", 0))
@@ -3114,6 +3123,9 @@ def handle_select_card(task: TriggerTask):
     if action in ("移除", "复制") and not _pt_room(task, action):
         if _click_bottom_skip(task, f"{action}会爆 PT"):
             return True
+    if action == "复制" and not _copy_needed(task):
+        if _click_bottom_skip(task, "目标卡组要复制的已经够了"):
+            return True
 
     if (
         action in ("移除", "复制", "闪光", "灵光")
@@ -3135,6 +3147,7 @@ def handle_select_card(task: TriggerTask):
                 return True
             return False
         card_list = pending
+        task.node_status['meditate_count'] = task.node_status.get('meditate_count', 0) + 1
     result = select_card(task, card_list, count=count, action=select_action)
     if result and action == "复制":
         _record_copy(task)
@@ -3164,6 +3177,8 @@ def handle_copy_card_choice(task: TriggerTask):
 
     task.log_info("检测到复制卡牌选择页面")
     if not _pt_room(task, "复制") and _click_bottom_skip(task, "复制会爆 PT"):
+        return True
+    if not _copy_needed(task) and _click_bottom_skip(task, "目标卡组要复制的已经够了"):
         return True
     target_boxes, target_click_positions = find_target_card(task)
     if target_boxes:
@@ -3842,6 +3857,7 @@ def handle_route_selection(task: TriggerTask):
         task.node_status['rest_page_frames'] = 0
         task.node_status['training_logged'] = False
         task.node_status['training_clicks'] = 0
+        task.node_status['meditate_tries'] = 0
         task.log_info("检测到路线选择页面，更新 node_status['flash_or_rest']=True")
         # 检查"进入商店"配置，若为 True 则同时更新 shop 状态
         if _get_config_value(task, '进入商店', False):
@@ -4290,10 +4306,14 @@ def handle_rest(task: TriggerTask):
         # 目标卡组：目标卡闪错了只能靠冥想重闪，钱够冥想就冥想，不用等到「多少信用点以上冥想」
         # （2026-10-25 实录：剑鸣九霄待冥想、269 信用点、冥想 80，因门槛 300 去休息了）
         # 冥想实际 80 信用点；费用数字 OCR 会认错（实录 80 认成 4），按至少 80 算
-        meditation_cost = max(meditation_cost, MEDITATE_COST)
+        # 冥想每用一次涨 40（实录 80→120→160→200），按本局已冥想次数估，OCR 读数只取更大的
+        done = task.node_status.get('meditate_count', 0) if isinstance(task.node_status, dict) else 0
+        meditation_cost = max(meditation_cost, MEDITATE_COST + MEDITATE_COST_STEP * done)
         meditation_credit_threshold = min(meditation_credit_threshold, meditation_cost)
+    meditate_tries = task.node_status.get('meditate_tries', 0) if isinstance(task.node_status, dict) else 0
     can_meditate = bool(
-        flash_or_rest
+        meditate_tries < 2                   # 同一休息点点了两次还在休息页（钱不够等），别死循环
+        and flash_or_rest
         and meditate_feature
         and meditation_cost is not None
         and has_pending_meditation
@@ -4345,6 +4365,7 @@ def handle_rest(task: TriggerTask):
             f"检测到可冥想卡牌{pending_cards}，当前信用点={current_credit}，"
             f"冥想费用={meditation_cost}，点击冥想"
         )
+        task.node_status['meditate_tries'] = meditate_tries + 1
         task.click_box(meditate_feature)
         if not _wait_for_rest_confirm(task):
             return True
@@ -4399,7 +4420,8 @@ def handle_rest(task: TriggerTask):
 
 TRAIN_REGION = (0.78, 0.15, 0.92, 0.26)     # 休息页右上「训练 / 免费」
 REST_HP_BELOW = 70                           # 能训练时，血量低于这个才休息
-MEDITATE_COST = 80                           # 休息页冥想的信用点费用
+MEDITATE_COST = 80                           # 休息页冥想的信用点费用（第一次）
+MEDITATE_COST_STEP = 40                      # 每冥想一次涨这么多
 
 
 def find_text_in_region(task, pattern, region):
@@ -5040,7 +5062,7 @@ def reset_layer_status(task: TriggerTask):
                 task.node_status[k] = ns[k]
 
 
-RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited")
+RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count")
 
 
 def handle_close_button(task: TriggerTask):
