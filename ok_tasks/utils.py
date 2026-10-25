@@ -1945,6 +1945,12 @@ def handle_auto_chat(task: TriggerTask):
 def _dialogue_line(task: TriggerTask):
     """剧情对白页面: 画面文字很少，且底部中间有一行较长的台词。"""
     texts = getattr(task, "all_texts", None) or []
+    # 卡厄思局内顶栏（血量、信用点、Ctrl/Q 按键提示）和右下角 Space 提示不算页面文字
+    texts = [
+        b for b in texts
+        if (b.y + b.height / 2) / task.height > 0.12
+        and not re.fullmatch(r"Space|Ctrl|[A-Z]|回", b.name.strip())
+    ]
     if len(texts) > 6:
         return None
     # 带操作按钮的页面（如「请确认是否可投入主战员。」+ 确认）不是对白
@@ -3531,8 +3537,13 @@ def _track_layer_route(task: TriggerTask, map_info, route_plan):
     plan = node_status.get("layer_route")
     if plan and plan["layer"] == layer:
         remaining = plan["steps"][plan["done"]:]
-        if steps == remaining:
-            task.log_info(f"第{layer + 1}层按计划走第{plan['done'] + 1}/{len(plan['steps'])}步：{steps[0] if steps else '结束'}")
+        common = min(len(steps), len(remaining))
+        if common and steps[:common] == remaining[:common]:
+            # 小地图只显示一段，往前走会露出后面的节点：前缀一致就算还在计划上，把露出来的部分接到计划后面
+            if len(steps) > len(remaining):
+                plan["steps"] += steps[len(remaining):]
+                task.log_info(f"第{layer + 1}层地图露出更多节点，计划延长为 {plan['steps'][plan['done']:]}")
+            task.log_info(f"第{layer + 1}层按计划走第{plan['done'] + 1}/{len(plan['steps'])}步：{steps[0]}")
             plan["done"] += 1
             return
         task.log_info(f"第{layer + 1}层地图和计划不一致，按新识别的图重新规划：计划剩余={remaining}，新路线={steps}")

@@ -54,6 +54,15 @@ class TestEventPick(unittest.TestCase):
         self.assertNotEqual(1, best)
 
 
+    def test_explore_avoids_hp_to_one(self):
+        # 2026-10-24 实机开局「凯尔肯的传令兵」：库里没有效果，三个都是没见过的，不能选生命值变为1
+        descs = ["舍弃世俗高速连射]，普通战斗3次期间异将选择的普通卡牌转换为卡牌[形生命值变为1",
+                 "对祝福表示感谢随机主战员触发1次闪光",
+                 "献上一切信用点减少100%，在随机3张中立传说卡牌中选择1张获得"]
+        best, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {})
+        self.assertEqual(1, best, res)
+
+
 class TestTargetDeck(unittest.TestCase):
     preset = {"cards": parse_preset_cards(load_ocr("preset_rosweisse_1.ocr.txt"), W, H)}
 

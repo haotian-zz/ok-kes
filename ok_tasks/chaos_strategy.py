@@ -50,7 +50,9 @@ def parse_effects(text):
         e["remove_card"] = _num(m.group(1))
     elif "移除" in t and "卡" in t:
         e["remove_card"] = 1
-    if m := re.search(r"信用点(增加|获得|\+)(\d+)", t):
+    if re.search(r"信用点(减少|消耗)(100#%|全部|所有)|献上一切信用点", t):
+        e["credit"] = -999
+    elif m := re.search(r"信用点(增加|获得|\+)(\d+)", t):
         e["credit"] = int(m.group(2))
     elif m := re.search(r"信用点(减少|消耗|-)(\d+)", t):
         e["credit"] = -int(m.group(2))
@@ -72,7 +74,9 @@ def parse_effects(text):
         e["stress"] = int(m.group(2) or 1)
     elif m := re.search(r"压力(减少|降低)(\d+)?", t):
         e["stress"] = -int(m.group(2) or 1)
-    if re.search(r"(恢复|回复)\S*生命", t):
+    if re.search(r"生命值?(变为|降为|变成)1(?!\d)", t):
+        e["hp_to_one"] = True
+    elif re.search(r"(恢复|回复)\S*生命", t):
         e["hp_pct"] = 1
     elif re.search(r"(失去|减少)\S*生命", t):
         e["hp_pct"] = -1
@@ -200,6 +204,8 @@ def score_effects(effects, mode, state=None):
         add(-3 * stress if stress > 0 else 3, "压力")
     if effects.get("max_hp_pct"):
         add(3 if effects["max_hp_pct"] > 0 else -6, "最大生命")
+    if effects.get("hp_to_one"):
+        add(-60, "生命值变为1")
     if effects.get("equipment_lost"):
         add(-6, "失去装备")
     if effects.get("requires_credit", 0) > state.get("credit", 10 ** 9):
@@ -223,7 +229,8 @@ def pick_event_option(descs, mode, state=None, db=None):
     results = []
     for d, o in zip(descs, matched):
         if o is not None:
-            effects = _effects_of(o)
+            # 库里只有选项名没有效果（如开局的凯尔肯的传令兵）时，用画面上的效果说明补
+            effects = {**parse_effects(d), **_effects_of(o)}
             src = f"库:{event['name']}/{o.get('text')}"
             st = dict(state, unseen=o.get("id") not in seen)
         else:

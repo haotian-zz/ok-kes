@@ -51,5 +51,13 @@ class TestChaosFigure(unittest.TestCase):
                          {r["name"]: r["explore"] for r in regions})
 
 
+class TestDialogue(unittest.TestCase):
+    def test_chaos_dialogue_with_hud(self):
+        # 2026-10-24 实机：卡厄思局内事件对白，顶栏 HUD + Space 提示共 8 个框，以前因为 >6 认不出对白而卡住
+        from utils import _dialogue_line
+        task = SimpleNamespace(all_texts=load_ocr("chaos_dialogue_hud.ocr.txt"), width=W, height=H)
+        self.assertEqual("幼虫专心地啃食着生肉，姿态十分诡异。", _dialogue_line(task).name)
+
+
 if __name__ == "__main__":
     unittest.main()
