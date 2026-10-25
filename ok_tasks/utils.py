@@ -3555,13 +3555,17 @@ def _track_layer_route(task: TriggerTask, map_info, route_plan):
     node_status["layer_route"] = {"layer": layer, "steps": steps, "done": 1}
 
 
-def handle_route_selection(task: TriggerTask):
-    """路线选择页面: 识别节点类型，按优先级排序后依次点击所有节点，每次间隔1秒。
-    同时负责节点计数：离开路线页面时 node_count +1。"""
+def is_route_selection_page(task: TriggerTask):
     position_box = task.box_of_screen(0.335, 0.568, 0.453, 0.751)
     position_feature = task.find_feature(feature_name="position", box=position_box)
     cant_receive = find_box_at_point(task, 0.186, 0.850)
-    is_route_page = position_feature or (cant_receive and "无法接收到梦境号" in cant_receive.name)
+    return bool(position_feature or (cant_receive and "无法接收到梦境号" in cant_receive.name))
+
+
+def handle_route_selection(task: TriggerTask):
+    """路线选择页面: 识别节点类型，按优先级排序后依次点击所有节点，每次间隔1秒。
+    同时负责节点计数：离开路线页面时 node_count +1。"""
+    is_route_page = is_route_selection_page(task)
 
     # 如果当前页面不是路线选择页面，但 enter_new_node 为 True（刚离开路线页面），计数+1
     if not is_route_page:
@@ -3686,13 +3690,18 @@ def handle_route_selection(task: TriggerTask):
         center_x, center_y = relative_center(node["box"])
         return shop_priority, type_priority, special_priority, center_y, center_x
 
+    visible_nodes = sorted(nodes, key=lambda item: relative_center(item["box"])[1])
+    node = _follow_full_map_plan(task, visible_nodes, priority)
+    if node is not None:
+        _click_route_node(task, node)
+        return True
+
     # 先根据左下角小地图的完整连通关系规划路线，再用右侧当前可点击节点
     # 校验规划结果。两边识别不一致时，使用当前节点识别结果兜底。
     map_info = recognize_map_connections(task)
     route_weights = chaos_strategy.ROUTE_WEIGHTS.get(getattr(task, "chaos_mode", ""))
     route_plan = find_best_map_route_by_priority(map_info, priority, route_weights)
     _track_layer_route(task, map_info, route_plan)
-    visible_nodes = sorted(nodes, key=lambda item: relative_center(item["box"])[1])
     node = None
     if route_plan and route_plan["next_row"] is not None:
         planned_index = route_plan["next_row"] - 1
@@ -3732,12 +3741,19 @@ def handle_route_selection(task: TriggerTask):
     if node is None:
         node = sorted(nodes, key=sort_key)[0]
 
+    _click_route_node(task, node)
+    return True
+
+
+def _click_route_node(task: TriggerTask, node):
     # 更新 node_type 为最优先的节点类型
     if hasattr(task, 'node_status'):
         task.node_status['node_type'] = node["node_type"]
         task.log_info(f"更新 node_type 为「{node['node_type']}」")
 
-    center_x, center_y = relative_center(node["box"])
+    box = node["box"]
+    center_x = (box.x + box.width / 2) / task.width
+    center_y = (box.y + box.height / 2) / task.height
     click_x = center_x - 0.095
     click_y = center_y - 0.0065
     task.log_info(
@@ -3748,7 +3764,65 @@ def handle_route_selection(task: TriggerTask):
 
     task.sleep(2)
 
-    return True
+
+def _plan_full_map(task: TriggerTask, priority):
+    """打开全屏地图扫描整层、按玩法权重求整条最佳路径，存成每一步的「类型 + 在后继里从上往下的名次」。"""
+    import chaos_map
+    info = chaos_map.scan_layer(task)
+    if not info:
+        task.log_info("全屏地图扫描失败（没认出当前位置或节点），改用小地图规划")
+        return None
+    weights = chaos_strategy.ROUTE_WEIGHTS.get(getattr(task, "chaos_mode", ""))
+    plan = find_best_map_route_by_priority(info, priority, weights)
+    if not plan or len(plan["route"]) < 2:
+        return None
+    by_id = {n["id"]: n for n in info["nodes"]}
+    steps = []
+    for prev, cur in zip(plan["route"], plan["route"][1:]):
+        succ = sorted(info["adjacency"].get(prev, []), key=lambda i: by_id[i]["row"])
+        steps.append({"type": by_id[cur]["type"], "rank": succ.index(cur) + 1, "options": len(succ),
+                      "shop": bool(by_id[cur]["special_features"])})
+    layer = task.node_status.get("pass_final_boss_count", 0)
+    task.log_info(
+        f"第{layer + 1}层整层路线（总分{plan['weighted_score']}）："
+        + " → ".join(f"{st['type']}{'[商店]' if st['shop'] else ''}" for st in steps)
+    )
+    return {"layer": layer, "steps": steps, "done": 0}
+
+
+def _follow_full_map_plan(task: TriggerTask, visible_nodes, priority):
+    """选了卡厄思玩法时：每层第一次进路线页扫全屏地图定好整条路，之后每步按计划点；对不上就重扫一次，再不行交给小地图逻辑。"""
+    if getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) == chaos_strategy.MODE_LEGACY:
+        return None
+    node_status = getattr(task, "node_status", None)
+    if not isinstance(node_status, dict) or not visible_nodes:
+        return None
+    layer = node_status.get("pass_final_boss_count", 0)
+    for attempt in range(2):
+        plan = node_status.get("full_route")
+        if attempt or not plan or plan["layer"] != layer or plan["done"] >= len(plan["steps"]):
+            plan = _plan_full_map(task, priority)
+            node_status["full_route"] = plan
+            if not plan:
+                return None
+        step = plan["steps"][plan["done"]]
+        index = step["rank"] - 1
+        candidate = visible_nodes[index] if index < len(visible_nodes) else None
+        count_ok = len(visible_nodes) == step["options"]
+        type_ok = candidate is not None and (step["type"] == "首领" or candidate["node_type"] == step["type"])
+        if candidate is not None and count_ok and type_ok:
+            plan["done"] += 1
+            task.log_info(
+                f"第{layer + 1}层按整层路线走第{plan['done']}/{len(plan['steps'])}步："
+                f"{step['type']}（{len(visible_nodes)}个可选里从上往下第{step['rank']}个）"
+            )
+            return candidate
+        task.log_info(
+            f"整层路线第{plan['done'] + 1}步预计{step['type']}（{step['options']}选{step['rank']}），"
+            f"实际可选={[n['node_type'] for n in visible_nodes]}，{'重新扫描' if attempt == 0 else '改用小地图规划'}"
+        )
+    node_status["full_route"] = None
+    return None
 
 
 def handle_obtain_reward(task: TriggerTask):

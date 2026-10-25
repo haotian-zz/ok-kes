@@ -4,6 +4,7 @@ import json
 import os
 
 import chaos_strategy
+import utils
 import utils_chaos
 import utils_chaos_prep
 import utils_daily
@@ -237,6 +238,11 @@ class ChaosMode(TriggerTask):
     def run(self):
         # 每帧执行一次 OCR 并转简体, 供各页面处理函数复用
         self.all_texts = _simplify_texts(self.ocr())
+        if os.path.exists(PAUSE_AT_ROUTE_FILE) and utils.is_route_selection_page(self):
+            # 开发调试：存在这个文件时停在路线页不点节点，方便探全屏地图
+            self.log_info(f"存在 {PAUSE_AT_ROUTE_FILE}，停在路线页")
+            self.sleep(3)
+            return
         if not getattr(self, 'strategy_ready', False):
             self.setup_strategy()
         if self._prepare_target_deck() or self._enter_chaos_from_home():
@@ -250,6 +256,7 @@ class ChaosMode(TriggerTask):
 
 
 TARGET_DECK_FILE = os.path.join("configs", "chaos_target_deck.json")
+PAUSE_AT_ROUTE_FILE = os.path.join("dev_out", "pause_at_route")
 
 
 def load_target_deck(member, preset):
