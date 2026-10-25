@@ -109,6 +109,9 @@ def parse_effects(text):
         e["remove_card"] = _num(m.group(1))
     elif "移除" in t and "卡" in t:
         e["remove_card"] = 1
+    elif "移" in t and (m := re.search(r"除(\d|[一两二三四五])张\S{0,4}卡", t)):
+        # 两行乱序把「移除」拆开：「除2张所选卡牌移」（2026-10-25 实录，移除 2 张被当成无效果，选了装备）
+        e["remove_card"] = _num(m.group(1))
     if re.search(r"信用点(减少|消耗)(100#%|全部|所有)|献上一切信用点", t):
         e["credit"] = -999
     elif m := re.search(r"信用点(增加|获得|\+)(\d+)", t):

@@ -583,6 +583,11 @@ class TestLayerReset(unittest.TestCase):
             utils.RUN_STATE_FILE = old
 
 
+class TestRemoveSplitOcr(unittest.TestCase):
+    def test_split_remove(self):
+        self.assertEqual(2, cs.parse_effects("开始赎罪所有主战员压力增加20，除2张所选卡牌移").get("remove_card"))
+
+
 class TestModifierOcr(unittest.TestCase):
     def test_variant_char(self):
         mods = cs.parse_modifiers("【精英2】多2个精英【疎忽1】某效果")
