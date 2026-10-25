@@ -1112,6 +1112,17 @@ def handle_precision_memory_process(task: TriggerTask):
     if not _precision_button_active(task, box):
         task.log_info("精密加工记忆按钮已变灰（材料耗尽），跳过点击")
         return False
+    # 颜色判断不可靠（2026-10-24 天幕：材料为 0、按钮灰着仍判成可用，连点了几十次），
+    # 同一张卡点过 2 次还在这页就当点不动，交给离开按钮
+    card_key = cards[0]["name"] if cards else ""
+    tries = task.node_status.get("precision_memory_tries", {}) if status is not None else {}
+    tries[card_key] = tries.get(card_key, 0) + 1
+    if status is not None:
+        status["precision_memory_tries"] = tries
+    if tries[card_key] > 2:
+        if tries[card_key] == 3:
+            task.log_info("精密加工记忆点了 2 次没有变化，当作材料不足，交给离开")
+        return False
 
     task.log_info("检测到精密加工记忆按钮，点击精密加工")
     task.click_box(box)
