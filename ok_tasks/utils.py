@@ -3858,6 +3858,9 @@ def handle_route_selection(task: TriggerTask):
         task.node_status['training_logged'] = False
         task.node_status['training_clicks'] = 0
         task.node_status['meditate_tries'] = 0
+        # 离开休息点了：训练状态作废，免得在别的页面点「确认」（2026-10-25 实录在装备页点了确认）
+        task.node_status['training_pending'] = None
+        task.node_status['training_member_clicked'] = False
         task.log_info("检测到路线选择页面，更新 node_status['flash_or_rest']=True")
         # 检查"进入商店"配置，若为 True 则同时更新 shop 状态
         if _get_config_value(task, '进入商店', False):
