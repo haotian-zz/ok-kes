@@ -2082,6 +2082,12 @@ def handle_skip(task: TriggerTask):
     """"跳过"按钮。"""
     box = find_box_at_point(task, 0.941, 0.917)
     if box and _clean_match(box.name, "跳过"):
+        if any(t in b.name for b in task.all_texts or [] for t in ("查看原件", "查看之前的闪光", "闪光效果")):
+            # 闪光变体三选一页：卡牌还在播发光动画时认不出卡，不能当普通跳过页点掉
+            # （2026-10-24 实机：冥想重闪后被点了跳过，160 信用点白花）。神闪变体页的跳过由 handle_view_original 自己点
+            task.log_info("闪光变体页（卡牌可能还在播动画），不点跳过，等下一帧")
+            task.sleep(1)
+            return True
         task.log_info("跳过页面触发跳过事件，点击「跳过」按钮")
         task.click_box(box)
         task.sleep(1)
