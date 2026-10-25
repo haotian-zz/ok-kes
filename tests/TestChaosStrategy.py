@@ -560,6 +560,28 @@ class TestLayerReset(unittest.TestCase):
         self.assertFalse(_ocr_name_matches("黑云奥义：残", "黑云奥义：灭"))
         self.assertFalse(_ocr_name_matches("明剑", "灭剑"))
 
+    def test_run_state_roundtrip(self):
+        import tempfile
+        import utils
+        old = utils.RUN_STATE_FILE
+        utils.RUN_STATE_FILE = os.path.join(tempfile.mkdtemp(), "s.json")
+        try:
+            logs = []
+            src = SimpleNamespace(chaos_pt_cap=130, log_info=logs.append, member_status={"deck": {"冥想": {"明灭剑": True}}},
+                                  node_status={"removed_card_count": 3, "copy_count": 2, "flash_ok": ["循环之刃"]})
+            utils.save_run_state(src)
+            dst = SimpleNamespace(log_info=logs.append, member_status={"deck": {}},
+                                  node_status={"removed_card_count": 0, "total_rounds": 1})
+            self.assertTrue(utils.restore_run_state(dst))
+            self.assertEqual(130, dst.chaos_pt_cap)
+            self.assertEqual(3, dst.node_status["removed_card_count"])
+            self.assertEqual(["循环之刃"], dst.node_status["flash_ok"])
+            self.assertTrue(dst.member_status["deck"]["冥想"]["明灭剑"])
+            utils.clear_run_state(dst)
+            self.assertFalse(utils.restore_run_state(dst))
+        finally:
+            utils.RUN_STATE_FILE = old
+
 
 class TestModifierOcr(unittest.TestCase):
     def test_variant_char(self):

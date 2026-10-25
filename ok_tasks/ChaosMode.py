@@ -259,6 +259,8 @@ class ChaosMode(TriggerTask):
         texts = [box.name for box in self.all_texts or []]
         at_lobby = any("每周进展" in t for t in texts) and "确认" not in texts
         if not (utils_daily.is_home(self) or not self.all_texts or at_lobby):
+            if not utils_chaos._at_chaos_initial_page(self):
+                utils.restore_run_state(self)     # 停在局内：读回 PT 账（中途重启不丢）
             return False
         if at_lobby:
             # 难度页 → ESC → 活动页 → ESC → 主页；切页有动画，每次 ESC 后等够再判断，免得在主页多按一次 ESC

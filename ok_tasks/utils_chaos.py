@@ -24,6 +24,7 @@ from utils import (
     handle_escape,
     # handle_stage_clear,
     handle_auto_stop,
+    clear_run_state,
 )
 
 import re
@@ -248,6 +249,7 @@ def handle_season_chaos_initial_page(task: TriggerTask):
     if data_value_level >= required_level and mods_ok:
         task._observe_tries = {}
         if required_level:
+            clear_run_state(task)
             task.chaos_pt_cap = data_value_level + dream
             task.log_info(f"本局存储数据上限按 {task.chaos_pt_cap}PT 记账（局内绝不爆 PT）")
         return False
@@ -944,6 +946,11 @@ def handle_data_collected(task: TriggerTask):
     )
     if retain_threshold <= 0:
         task.log_info("保留大于多少TB的存档设置为0，保留全部存档")
+        return False
+    if getattr(task, 'chaos_mode', chaos_strategy.MODE_LEGACY) != chaos_strategy.MODE_LEGACY:
+        # 选了玩法（刷存档/探索度）时一个都不删：TB 价值和卡组好坏无关，2026-10-25 实录按 62000TB 阈值
+        # 把目标主战员罗丝薇瑟 60/130PT 的「最佳」存档（44520TB）连同两位辅战员的一起分解了
+        task.log_info("卡厄思玩法模式不删存档（TB 价值不代表卡组好坏），由通用按钮处理")
         return False
     if node_status is None:
         return False

@@ -1,6 +1,7 @@
 from ok import TriggerTask
 
 import difflib
+import json
 import re
 import random
 import time
@@ -1874,6 +1875,7 @@ def log_credit(task: TriggerTask):
 def log_node_status(task: TriggerTask):
     """记录当前胜率（仅记录, 不拦截后续处理）。"""
     ns = getattr(task, 'node_status', None)
+    save_run_state(task)
     if ns:
         try:
             from src.config import version
@@ -5139,6 +5141,56 @@ def reset_layer_status(task: TriggerTask):
 
 
 RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok")
+
+# 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
+RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")
+RUN_STATE_MAX_AGE = 3 * 3600
+_PERSIST_KEYS = RUN_LEVEL_KEYS + ("removed_card_count", "neutral_card_count", "pass_final_boss_count")
+
+
+def save_run_state(task: TriggerTask):
+    cap = getattr(task, "chaos_pt_cap", None)
+    ns = getattr(task, "node_status", None)
+    if not cap or ns is None:
+        return
+    try:
+        body = json.dumps({"cap": cap, "ns": {k: ns[k] for k in _PERSIST_KEYS if k in ns},
+                           "deck": _member_deck_state(task)}, ensure_ascii=False, default=list, sort_keys=True)
+        if body == getattr(task, "_run_state_saved", None):
+            return
+        os.makedirs(os.path.dirname(RUN_STATE_FILE), exist_ok=True)
+        with open(RUN_STATE_FILE, "w", encoding="utf-8") as f:
+            f.write(body)
+        task._run_state_saved = body
+    except Exception as e:  # noqa: BLE001
+        task.log_info(f"局内状态落盘失败: {e}")
+
+
+def clear_run_state(task: TriggerTask):
+    """新一局开局（观测到可接受的上限）时清掉上一局的落盘。"""
+    task._run_state_saved = None
+    try:
+        os.remove(RUN_STATE_FILE)
+    except OSError:
+        pass
+
+
+def restore_run_state(task: TriggerTask):
+    """启动时停在局内：读回落盘的 PT 账和局内进度。3 小时以上的旧文件不认。"""
+    try:
+        if time.time() - os.path.getmtime(RUN_STATE_FILE) > RUN_STATE_MAX_AGE:
+            return False
+        with open(RUN_STATE_FILE, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return False
+    task.chaos_pt_cap = data.get("cap")
+    task.node_status.update(data.get("ns", {}))
+    if isinstance(data.get("deck"), dict):
+        task.member_status["deck"] = data["deck"]
+    task._run_state_saved = None
+    task.log_info(f"启动时在局内，读回落盘的局内状态：PT 上限 {task.chaos_pt_cap}，{data.get('ns')}")
+    return True
 
 
 def handle_close_button(task: TriggerTask):
