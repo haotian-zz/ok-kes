@@ -4350,7 +4350,7 @@ def _last_shop_pick(task: TriggerTask, shop_items, credit):
     legends = [e for e in eqs if e[3] in LEGEND_RARITIES]
     if legends and not can_refresh_for_legend:
         icon, name, price, rarity = legends[0]
-        return icon, name, price, f"{rarity}，再刷新就不够买传说了"
+        return icon, name, price, f"{rarity}，" + ("刷新次数用完了，先买传说" if kind is None else "再刷新就不够买传说了")
     if kind is None:
         icon, name, price, rarity = eqs[0]
         return icon, name, price, f"{rarity}，刷新不了了，剩下的钱买装备"
