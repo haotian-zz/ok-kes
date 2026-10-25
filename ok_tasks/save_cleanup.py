@@ -10,6 +10,7 @@ from utils import _get_config_value, _move_and_click, find_box_at_point, find_te
 
 FREE_SLOTS = 30          # 每次腾出的位置
 MAX_VIEWED = 150         # 最多看这么多个存档（都不能删就放弃）
+SAME_LIMIT = 12          # 翻页后连续这么多次一模一样才算到最后一个
 SORT_TOGGLE = (0.232, 0.931)
 FIRST_CARD = (0.155, 0.200)
 NEXT_SAVE = (0.965, 0.495)
@@ -113,6 +114,7 @@ def handle_save_cleanup(task):
         if st and st["pending"] and time.time() - st["pending"] < 15:
             st["pending"] = None
             st["deleted"] += 1
+            st["last_action"], st["trash_tries"] = "deleted", 0     # 下一个一模一样的存档不能算「垃圾桶没反应」
             task.log_info(f"存档清理：确认分解（第 {st['deleted']}/{st['need']} 个）")
             _click(task, CONFIRM, 2)
         else:
@@ -166,9 +168,13 @@ def _on_detail(task, st):
         _click(task, CLOSE_DETAIL, 2)
         return True
     tb, pt, names = read_detail(task)
-    sig = (tb, pt, tuple(names))
-    if sig == st["last_sig"] and st["last_action"] == "next":
-        st["done"] = True                # 翻页没变化：到最后一个了
+    date = find_box_at_point(task, 0.226, 0.200)
+    sig = (tb, pt, tuple(names), date.name if date else None)
+    # 翻页后一模一样：可能是到最后一个了，也可能是连着几个一模一样的空白存档（2026-10-25 实录，第三个就误判到底），
+    # 连续 SAME_LIMIT 次一样才算到底
+    st["same"] = st.get("same", 0) + 1 if sig == st["last_sig"] and st["last_action"] == "next" else 0
+    if st["same"] >= SAME_LIMIT or st["viewed"] >= MAX_VIEWED:
+        st["done"] = True
         _click(task, CLOSE_DETAIL, 2)
         return True
     if sig in st["kept"]:
