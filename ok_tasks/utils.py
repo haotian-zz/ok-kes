@@ -470,7 +470,7 @@ def recognize_cards_in_deck(
 
 # 不是事件选项的文字：装备/选卡页左下角的卡组统计「独特卡牌平均费用 0.9」、存档收集页的存档价值「4368 TB」
 # 会被事件图标特征误命中（2026-10-24 实录）
-NOT_EVENT_PAGE = re.compile(r"保存战斗数据|存储数据收集")
+NOT_EVENT_PAGE = re.compile(r"保存战斗数据|存储数据收集|决定闪光效果|长按卡牌以查看信息")
 NOT_EVENT_OPTION = re.compile(r"平均费用|^\W*\w?\s*[\d,]{3,}\s*TB\W*$")
 
 

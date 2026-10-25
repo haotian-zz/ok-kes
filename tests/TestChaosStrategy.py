@@ -158,6 +158,7 @@ class TestPriorities(unittest.TestCase):
         from utils import NOT_EVENT_OPTION, NOT_EVENT_PAGE
         self.assertTrue(NOT_EVENT_PAGE.search("正在保存战斗数据"))
         self.assertTrue(NOT_EVENT_PAGE.search("存储数据收集完成"))
+        self.assertTrue(NOT_EVENT_PAGE.search("请决定闪光效果。"))   # 闪光变体页被当成事件点了第 1 张（2026-10-25）
         self.assertTrue(NOT_EVENT_OPTION.search("独特卡牌平均费用0.9"))
         self.assertTrue(NOT_EVENT_OPTION.search("4368 TB"))
         self.assertTrue(NOT_EVENT_OPTION.search("39823TB"))
