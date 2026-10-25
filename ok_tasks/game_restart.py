@@ -70,6 +70,22 @@ def _game_running(exe_name):
     return any((p.info["name"] or "").lower() == exe_name.lower() for p in psutil.process_iter(["name"]))
 
 
+def _prefer_pc(task):
+    """游戏进程消失时 ok-script 会把首选设备改成别的（实录被存成模拟器 Pie64，之后一直截不到图），重开后改回 PC 窗口。"""
+    from ok import og
+    dm = getattr(og, "device_manager", None)
+    if dm is None:
+        return
+    try:
+        dm.do_refresh()
+        pc = next((imei for imei, d in dm.device_dict.items() if d.get("device") == "windows"), None)
+        if pc is not None and dm.config.get("preferred") != pc:
+            task.log_info(f"首选设备是 {dm.config.get('preferred')}，改回 PC 窗口")
+            dm.set_preferred_device(imei=pc)
+    except Exception as e:  # noqa: BLE001
+        task.log_info(f"改回 PC 窗口失败: {e}")
+
+
 def restart_game(task, reason):
     """结束并重新拉起游戏，等到能交回页面流程（主页或卡厄思里的页面）。成功返回 True。"""
     from ok.util.process import kill_exe
@@ -114,6 +130,9 @@ def restart_game(task, reason):
     if not started:
         task.log_info("点了启动器但游戏没起来，停止", notify=True)
         return False
+
+    time.sleep(20)                        # 等游戏窗口出来
+    _prefer_pc(task)
 
     # 过标题页「点击开始」和登录弹窗（每日礼物「点击以领取补给」等）；出现主页或别的游戏页面就交回去
     deadline = time.time() + LOGIN_TIMEOUT
