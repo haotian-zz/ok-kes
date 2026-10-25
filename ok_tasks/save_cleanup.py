@@ -229,6 +229,11 @@ def _on_grid(task, st):
             task.log_info("存档清理：改成按分数从低到高")
             _click(task, SORT_TOGGLE, 2)
             return True
+        if not st.get("scan_top"):
+            # 列表会记住滚动位置；从最上面（分数最低）开始看，不然序号和后面勾选对不上
+            st["scan_top"] = True
+            _scroll_to_top(task)
+            return True
         detail = find_text(task, r'^详细信息$')
         if detail:
             task.click_box(detail)
@@ -237,6 +242,13 @@ def _on_grid(task, st):
         _click(task, FIRST_CARD)         # 选中第一个（分数最低）才会出「详细信息」
         return True
     return _select(task, st, cells)
+
+
+def _scroll_to_top(task):
+    for _ in range(6):
+        task.swipe_relative(0.5, 0.30, 0.5, 0.78, duration=0.3)
+        task.sleep(0.5)
+    task.sleep(1.5)
 
 
 def _select(task, st, cells):
@@ -248,10 +260,7 @@ def _select(task, st, cells):
         if pre > 1:
             return _abort(task, st, f"列表里已经勾选了 {pre} 个存档")
         st["pre0"] = pre == 1            # 进详情时点了第一个（序号 0），它还勾着
-        for _ in range(4):
-            task.swipe_relative(0.5, 0.30, 0.5, 0.78, duration=0.4)
-            task.sleep(0.5)
-        task.sleep(1)
+        _scroll_to_top(task)
         st["top"], st["offset"], st["expect"] = True, None, 0
         return True
     tbs = [d["tb"] for d in dec]
