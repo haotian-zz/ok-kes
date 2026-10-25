@@ -4949,9 +4949,14 @@ def handle_view_original(task: TriggerTask):
         meditation_completed = chosen_card is None and not target_boxes
         for configured_name in matched_meditation_cards:
             meditation_state[configured_name] = meditation_completed
-            if not meditation_completed:
+            # 同一个变体页会连着处理两帧（选中、再点确认），按页面内容只记一次（2026-10-25 实录记了两次）
+            last = task.node_status.get("flash_ok_page") or [None, None, 0]
+            same_page = last[:2] == [task.node_status.get("node_count", 0), configured_name] and time.time() - last[2] < 8
+            if not meditation_completed and not same_page:
                 # 每闪对一张记一次：预设里同名有几张（剑鸣九霄 3 张）就要闪对几次，后面「选卡闪光」才不再选它
                 task.node_status.setdefault("flash_ok", []).append(configured_name)
+            if not meditation_completed:
+                task.node_status["flash_ok_page"] = [task.node_status.get("node_count", 0), configured_name, time.time()]
             task.log_info(
                 f"冥想卡牌「{configured_name}」状态更新为"
                 f"{'待冥想' if meditation_completed else '无需冥想'}"
