@@ -10,6 +10,7 @@ import numpy as np
 from opencc import OpenCC
 
 import chaos_strategy
+import chaos_trace
 
 _jp2t = OpenCC('jp2t')  # 日文新字体转繁体
 _t2s = OpenCC('t2s')  # 繁体转简体
@@ -1315,6 +1316,11 @@ def card_has_pin(card, pins):
     return any(abs(px - x) < 0.035 and abs(py - y) < 0.035 for x, y in pins)
 
 
+def _trace_card_click(task, action, card, cards, reason):
+    chaos_trace.step(task, "card", f"{action or '选卡'}：{card['name']}", task.frame, reason=reason,
+                     chosen=card["name"], cards=[c["name"] for c in cards])
+
+
 def select_card(task: TriggerTask, card_names, count=1, action=""):
     """使用卡组特征识别选择卡牌，支持滚动查找、基础牌移除和兜底选择。"""
     selected = 0
@@ -1383,6 +1389,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
             if card["selected"] or not predicate(card):
                 continue
             task.log_info(f"{page}: {reason}「{card['name']}」")
+            _trace_card_click(task, action, card, cards, reason)
             _move_and_click(task, card["x"], card["y"])
             task.sleep(0.3)
             card["selected"] = True
@@ -1421,6 +1428,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
                 task.log_info(
                     f"{page}: 命中优先级「{target}」，点击目标卡牌「{card['name']}」"
                 )
+                _trace_card_click(task, action, card, cards, f"命中优先级「{target}」")
                 _move_and_click(task, card["x"], card["y"])
                 task.sleep(0.3)
                 card["selected"] = True
@@ -3333,6 +3341,7 @@ def _chaos_strategy_state(task: TriggerTask):
         "need_copy": len(plan.get("copy", [])),
         "need_spark": len(plan.get("flash", [])),
         "need_god_spark": sum(1 for c in plan.get("flash", []) if c.get("god_spark")),
+        "need_neutral": len(plan.get("neutral", [])),
         "target_equipment": [n for slot in range(3) for n in _equipment_priority(task, slot)],
     }
 
@@ -3359,6 +3368,9 @@ def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
             seen.update(keys)
             chaos_strategy.save_seen(seen)
     task.log_info(f"[{mode}] 选择「{tasks_info[best]['description']}」")
+    chaos_trace.step(task, "event", results[best][2], task.frame, chosen=best,
+                     options=[{"desc": d, "score": round(sc, 1), "why": why, "src": src}
+                              for d, (sc, why, src, _o) in zip(descs, results)])
     click_event_option(tasks_info[best])
     task.sleep(1)
     return True
@@ -3864,6 +3876,7 @@ def _plan_full_map(task: TriggerTask, priority):
         steps.append({"type": by_id[cur]["type"], "rank": succ.index(cur) + 1, "options": len(succ),
                       "shop": bool(by_id[cur]["special_features"])})
     layer = task.node_status.get("pass_final_boss_count", 0)
+    chaos_trace.route_plan(task, info, plan, steps)
     task.log_info(
         f"第{layer + 1}层整层路线（总分{plan['weighted_score']}）："
         + " → ".join(f"{st['type']}{'[商店]' if st['shop'] else ''}" for st in steps)

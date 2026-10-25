@@ -214,12 +214,12 @@ def build_map(frames, offsets, line_threshold=0.75):
             key = (col, n["row"])
             seen_in.setdefault(key, []).append((i, n))
             if key not in merged:
-                merged[key] = dict(n, col=col)
+                merged[key] = dict(n, col=col, px=gx)
             elif n["current"]:
                 merged[key]["current"] = True
         boss = detect_boss(frame)
         if boss:
-            boss_gx = boss[0] - off
+            boss_gx, boss_gy = boss[0] - off, boss[1]
     if boss_gx is not None:
         # 首领只露出一部分时面积不够、认不成首领，它左边那截会被当成普通节点
         merged = {k: n for k, n in merged.items() if n["x"] - offsets[seen_in[k][0][0]] < boss_gx - 180 * s}
@@ -234,7 +234,8 @@ def build_map(frames, offsets, line_threshold=0.75):
     for k in keys:
         n = merged[k]
         nodes.append({"id": ids[k], "type": "当前位置" if k == cur_key else n["type"], "row": k[1], "col": k[0],
-                      "special_features": [{"feature_name": "shop_in_map", "priority": 1}] if n["shop"] else []})
+                      "special_features": [{"feature_name": "shop_in_map", "priority": 1}] if n["shop"] else [],
+                      "px": n["px"], "py": n["y"]})    # px/py：拼接大图上的位置（流程追踪画图用）
     adjacency = {ids[k]: [] for k in keys}
     by_col = {}
     for k in keys:
@@ -258,7 +259,8 @@ def build_map(frames, offsets, line_threshold=0.75):
     last_col = max(by_col)
     if boss_gx is not None:
         boss_id = len(nodes)
-        nodes.append({"id": boss_id, "type": "首领", "row": 2, "col": last_col + 1, "special_features": []})
+        nodes.append({"id": boss_id, "type": "首领", "row": 2, "col": last_col + 1, "special_features": [],
+                      "px": boss_gx, "py": boss_gy})
         adjacency[boss_id] = []
         for k in by_col[last_col]:
             adjacency[ids[k]].append(boss_id)
@@ -348,4 +350,6 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
             cv2.imwrite(os.path.join(dump_dir, f"chaos_map_{i}.png"), f)
     info = build_map(frames, offsets)
     task.log_info(f"全屏地图扫描：{len(frames)}帧，平移{[round(o) for o in offsets]}，{describe(info)}")
+    import chaos_trace
+    chaos_trace.map_scan(task, frames, offsets, info)
     return info if info["nodes"] and info["current"] is not None else None

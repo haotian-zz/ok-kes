@@ -55,7 +55,7 @@ class TestZeroUpgrade(unittest.TestCase):
     def test_wants(self):
         import chaos_strategy as cs
         self.assertEqual((["高维启示", "认知闪光"], []), cs.zero_upgrade_wants(cs.MODE_EMPTY))
-        self.assertEqual(([], ["高维启示", "认知闪光"]), cs.zero_upgrade_wants(cs.MODE_TARGET))
+        self.assertEqual((["高维启示"], ["认知闪光"]), cs.zero_upgrade_wants(cs.MODE_TARGET))
         self.assertEqual(([], []), cs.zero_upgrade_wants(cs.MODE_EXPLORE))
 
     def test_levels_ok(self):

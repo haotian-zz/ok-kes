@@ -182,38 +182,48 @@ def score_effects(effects, mode, state=None):
         if effects.get("battle"):
             add(-6, "战斗")
     elif mode == MODE_TARGET:
-        # 用户 2026-10-24 定的优先级（分档，档间差距大）：目标装备 > 其他装备 > 复制 > 删卡（还没删够）> 选中主战员闪光
-        # > ≥200 信用点 > 随机主战员闪光（目标还有卡没闪）> <200 信用点 > 其他
+        # 用户 2026-10-24 定的优先级（分档，档间差距大）：目标装备 > 复制 > 中立卡（预设里有中立卡时）> 删卡（还没删够）
+        # > 选择卡牌闪光 > 选中主战员闪光 > ≥200 信用点 > 随机主战员闪光 > 随机卡牌闪光 > 其他装备 > <200 信用点
+        # > 神闪（预设要求时；局内最好不神闪）> 战斗；回血按血量动态，但不超过 ≥200 信用点
         equip = effects.get("equipment") or []
         targets = state.get("target_equipment") or []
         if any(n != "?" and any(norm(n) in norm(t) or norm(t) in norm(n) for t in targets) for n in equip):
             add(1000, "目标装备")
         elif equip:
-            add(500, "装备")
+            add(40, "装备")
         if effects.get("copy_card"):
             add(300 if state.get("need_copy", 0) > 0 else -5, "复制")
+        if effects.get("neutral_card"):
+            add(250 if state.get("need_neutral", 0) > 0 else -10, "中立卡")
         if rm and can_remove and state.get("need_remove", 0) > 0:
             add(200, f"移除{rm}张")
         elif rm:
             add(-5, "多余的移除")
         if effects.get("spark") and state.get("need_spark", 0) > 0:
-            if effects.get("spark_random"):
-                add(60, "随机主战员闪光")
-            elif effects.get("spark_card"):
+            if effects.get("spark_card"):
                 add(170, "选择卡牌闪光")
+            elif effects.get("spark_random_card"):
+                add(50, "随机卡牌闪光")
+            elif effects.get("spark_random"):
+                add(60, "随机主战员闪光")
             else:
                 add(150, "选中主战员闪光")
         elif effects.get("spark"):
             add(-3, "多余的闪光")
         if effects.get("god_spark"):
-            add(150 if state.get("need_god_spark", 0) > 0 else -15, "神闪")
-        for k, v, reason in (("neutral_card", -10, "中立卡"), ("curse_card", -15, "咒术卡"), ("event_card", -8, "获得卡")):
+            add(15 if state.get("need_god_spark", 0) > 0 else -15, "神闪")
+        for k, v, reason in (("curse_card", -15, "咒术卡"), ("event_card", -8, "获得卡"), ("lumen_card", -8, "获得卡"),
+                             ("desire_card", -8, "获得卡"), ("card_choice", -5, "选卡"), ("transform_card", -10, "转换卡")):
             if effects.get(k):
                 add(v, reason)
         if credit >= 200:
             add(100, "信用点≥200")
+        elif credit > 0:
+            add(20 + credit * 15 / 200, "信用点<200")
         elif credit:
-            add(max(-15, min(50, credit / 4)), "信用点")
+            add(max(-15, credit / 4), "信用点")
+        if effects.get("battle"):
+            add(10, "战斗")
     elif mode == MODE_EXPLORE:
         # 用户 2026-10-24：推进探索度时，没触发过的选项 / 没拿过的装备高于一切
         if state.get("unseen"):
@@ -230,7 +240,10 @@ def score_effects(effects, mode, state=None):
             add(-8, "咒术卡")
         if effects.get("battle"):
             add(2, "战斗（新怪物）")
-    if hp:
+    if hp and mode == MODE_TARGET and hp > 0:
+        # 回血按缺血程度动态排名，最高不超过 ≥200 信用点（100）
+        add(min(95, max(2, (100 - state.get("hp_pct", 100)) * 1.4)), "回血")
+    elif hp:
         low = state.get("hp_pct", 100) < 50
         add((8 if low else 2) * (1 if hp > 0 else -1) * (2 if hp < 0 and low else 1), "生命")
     if stress:
@@ -253,7 +266,34 @@ def _effects_of(option):
     req = option.get("requires") or ""
     if m := re.search(r"(\d+)以上的信用点", req):
         e["requires_credit"] = int(m.group(1))
+    target = e.get("spark_target") or ""
+    if e.get("spark") and target:
+        e["spark_card"] = target == "选择卡牌"
+        e["spark_random_card"] = target == "随机卡牌"
+        e["spark_random"] = target == "随机主战员"
+        e["spark_choose"] = target == "选择主战员"
     return e
+
+
+FOLLOWUP_DEPTH = 4
+
+
+def followup_best(option, mode, state, depth=FOLLOWUP_DEPTH):
+    """选了这个选项后出现的下一层选项（库里的 next 树）里能拿到的最好分数和理由；没有后续返回 (0, [])。
+
+    用户 2026-10-24：后续事件要把所有可能性一起排，比如后续能给目标装备，那这个选项就是第一优先级。
+    """
+    children = option.get("next") or []
+    if not children or depth <= 0:
+        return 0.0, []
+    st = dict(state, unseen=False)
+    best = None
+    for c in children:
+        s, why = score_effects(_effects_of(c), mode, st)
+        fs, fwhy = followup_best(c, mode, state, depth - 1)
+        if best is None or s + fs > best[0]:
+            best = (s + fs, [f"后续「{c.get('text', '')}」"] + why + fwhy)
+    return best
 
 
 def pick_event_option(descs, mode, state=None, db=None):
@@ -274,6 +314,9 @@ def pick_event_option(descs, mode, state=None, db=None):
             src = "文字解析"
             st = dict(state, unseen=text_key(d) not in seen)
         score, why = score_effects(effects, mode, st)
+        if o is not None:
+            fs, fwhy = followup_best(o, mode, state)
+            score, why = score + fs, why + fwhy
         results.append((score, why, src, o.get("id") if o else text_key(d)))
     if not results:
         return None, results
@@ -336,7 +379,14 @@ def deck_plan(member, preset, db=None):
         extra = len(cs) - max(1, start_names.get(name, 0))
         copy += [name] * max(0, extra)
     flash = [c for c in preset.get("cards", []) if c.get("n") or c.get("god_spark")]
-    return {"remove": remove, "copy": copy, "flash": flash}
+    own = {c["name"] for c in db.cards_of(member, sorts=None)}
+    neutral = [c["name"] for c in preset.get("cards", []) if c["name"] not in own and _is_neutral(db, c["name"])]
+    return {"remove": remove, "copy": copy, "flash": flash, "neutral": neutral}
+
+
+def _is_neutral(db, name):
+    card = db.find_card(name)
+    return bool(card) and db.card_owner(card) is None
 
 
 def pick_flash_variant(card_name, choices, target_cards, db=None):
@@ -355,7 +405,7 @@ def pick_flash_variant(card_name, choices, target_cards, db=None):
 
 # ---------------- 零式系统升级 ----------------
 
-GOD_SPARK_UPGRADE = "高维启示"   # 神之闪光触发率，空存 0 级、目标卡组满级（用户 2026-10-24 改）
+GOD_SPARK_UPGRADE = "高维启示"   # 神之闪光触发率，空存和目标卡组都 0 级（用户 2026-10-24：局内最好不神闪）
 SPARK_UPGRADE = "认知闪光"       # 闪光触发率，空存 0 级、目标卡组满级
 
 
@@ -364,7 +414,7 @@ def zero_upgrade_wants(mode):
     if mode == MODE_EMPTY:
         return [GOD_SPARK_UPGRADE, SPARK_UPGRADE], []
     if mode == MODE_TARGET:
-        return [], [GOD_SPARK_UPGRADE, SPARK_UPGRADE]
+        return [GOD_SPARK_UPGRADE], [SPARK_UPGRADE]
     return [], []
 
 

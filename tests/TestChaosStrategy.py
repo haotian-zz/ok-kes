@@ -2,6 +2,7 @@
 import os
 import sys
 import unittest
+from types import SimpleNamespace
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "ok_tasks"))
@@ -84,31 +85,67 @@ class TestPriorities(unittest.TestCase):
     """用户 2026-10-24 定的优先级。"""
     need = {"need_remove": 2, "need_copy": 1, "need_spark": 3, "credit": 500, "target_equipment": ["截骨机"]}
 
+    # 只测画面文字解析出的效果怎么排：编出来的选项文字会模糊匹配到库里不相干的事件，所以给个空事件库
+    no_events = SimpleNamespace(iter_events=lambda region=None: [])
+
     def rank(self, descs, mode=cs.MODE_TARGET, state=None):
-        _, res = cs.pick_event_option(descs, mode, state if state is not None else self.need)
+        _, res = cs.pick_event_option(descs, mode, state if state is not None else self.need, db=self.no_events)
         return [d for _, d in sorted(zip([r[0] for r in res], descs), reverse=True)]
 
     def test_target_order(self):
         descs = ["要他回去获得装备[截骨机]", "复制选中的1张卡牌", "移除1张卡牌", "选择1张卡牌闪光", "选中主战员闪光1次",
-                 "信用点增加300", "随机主战员触发1次闪光", "信用点增加100"]
+                 "信用点增加300", "随机主战员触发1次闪光", "获得装备[女神之泪]", "信用点增加100"]
         self.assertEqual(descs, self.rank(list(reversed(descs))))
 
-    def test_target_any_equipment_over_cards(self):
-        self.assertEqual("获得装备[女神之泪]", self.rank(["移除1张卡牌", "获得装备[女神之泪]"])[0])
+    def test_target_other_equipment_below_random_spark(self):
+        # 用户 2026-10-24：其他装备放在随机卡牌闪光和 <200 信用点之间
+        self.assertEqual("移除1张卡牌", self.rank(["获得装备[女神之泪]", "移除1张卡牌"])[0])
+        self.assertEqual("获得装备[女神之泪]", self.rank(["信用点增加150", "获得装备[女神之泪]"])[0])
 
     def test_target_no_more_removal_prefers_spark(self):
         st = dict(self.need, need_remove=0)
         self.assertEqual("选中主战员闪光1次", self.rank(["移除1张卡牌", "选中主战员闪光1次"], state=st)[0])
 
+    def test_target_neutral_between_copy_and_remove(self):
+        st = dict(self.need, need_neutral=1)
+        self.assertEqual(["复制选中的1张卡牌", "获得1张中立卡牌", "移除1张卡牌"],
+                         self.rank(["移除1张卡牌", "获得1张中立卡牌", "复制选中的1张卡牌"], state=st))
+        self.assertEqual("移除1张卡牌", self.rank(["获得1张中立卡牌", "移除1张卡牌"])[0])
+
+    def test_target_god_spark_and_battle_after_small_credit(self):
+        st = dict(self.need, need_god_spark=1)
+        self.assertEqual(["信用点增加100", "选择1张卡牌触发神之闪光", "发起攻击进入战斗"],
+                         self.rank(["发起攻击进入战斗", "选择1张卡牌触发神之闪光", "信用点增加100"], state=st))
+
+    def test_target_heal_capped_below_big_credit(self):
+        st = dict(self.need, hp_pct=5)
+        self.assertEqual(["信用点增加300", "恢复50%生命值", "信用点增加100"],
+                         self.rank(["信用点增加100", "恢复50%生命值", "信用点增加300"], state=st))
+        self.assertEqual("信用点增加100", self.rank(["恢复50%生命值", "信用点增加100"])[0])
+
+    def test_followup_target_equipment(self):
+        # 后续事件里能拿到目标装备 → 这个选项第一优先级
+        opt = {"text": "继续深入", "effects": {"stress": 5},
+               "next": [{"text": "拿走", "effects": {"equipment": ["截骨机"]}}, {"text": "离开", "effects": {}}]}
+        s, why = cs.followup_best(opt, cs.MODE_TARGET, self.need)
+        self.assertGreaterEqual(s, 1000)
+        self.assertIn("后续「拿走」", why)
+        self.assertEqual((0.0, []), cs.followup_best({"text": "x"}, cs.MODE_TARGET, self.need))
+
+    def test_db_spark_target(self):
+        e = cs._effects_of({"effects": {"spark": 1, "spark_target": "随机卡牌"}})
+        self.assertTrue(e["spark_random_card"])
+        self.assertEqual(50, cs.score_effects(e, cs.MODE_TARGET, self.need)[0])
+
     def test_explore_unseen_over_everything(self):
         descs = ["献上赞美信用点增加100", "失去理智所有主战员生命值变为1"]
-        _, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()})
+        _, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()}, db=self.no_events)
         seen = {res[0][3]}
         self.assertEqual(descs[1], self.rank(descs, cs.MODE_EXPLORE, {"seen": seen})[0])
 
     def test_explore_new_equipment(self):
         descs = ["接受A获得装备[截骨机]", "接受B获得装备[女神之泪]"]
-        _, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()})
+        _, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()}, db=self.no_events)
         seen = {res[0][3], res[1][3], cs.equipment_key("截骨机")}
         self.assertEqual(descs[1], self.rank(descs, cs.MODE_EXPLORE, {"seen": seen})[0])
         self.assertIn(cs.equipment_key("女神之泪"), cs.option_seen_keys(descs[1], None))
@@ -166,6 +203,40 @@ class TestRoute(unittest.TestCase):
         prio = ["事件", "小怪", "精英", "休息"]
         r = find_best_map_route_by_priority(self.map_info, prio, cs.ROUTE_WEIGHTS[cs.MODE_EXPLORE])
         self.assertEqual([0, 1, 3, 5], r["route"])
+
+
+class TestTrace(unittest.TestCase):
+    """流程追踪：记地图（拼图 + 路线）、事件决策、日志，再生成 HTML。"""
+
+    def test_trace_and_report(self):
+        import tempfile
+        import numpy as np
+        import chaos_trace
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import chaos_trace_report
+        with tempfile.TemporaryDirectory() as tmp:
+            old_root, chaos_trace.TRACE_ROOT = chaos_trace.TRACE_ROOT, tmp
+            try:
+                task = SimpleNamespace(config={}, node_status={"pass_final_boss_count": 0}, chaos_mode=cs.MODE_EXPLORE)
+                frames = [np.full((540, 960, 3), 40, np.uint8), np.full((540, 960, 3), 80, np.uint8)]
+                info = {"nodes": [{"id": 0, "type": "当前位置", "col": 0, "px": 100, "py": 270},
+                                  {"id": 1, "type": "事件", "col": 1, "px": 1100, "py": 270}],
+                        "adjacency": {0: [1], 1: []}, "current": 0}
+                chaos_trace.map_scan(task, frames, [0, -400], info)
+                chaos_trace.log(task, "全屏地图扫描：2帧")
+                chaos_trace.route_plan(task, info, {"route": [0, 1], "weighted_score": 6}, [])
+                chaos_trace.step(task, "event", "库:小偷们/抢走", frames[0], chosen=1,
+                                 options=[{"desc": "A", "score": 1, "why": [], "src": "x"},
+                                          {"desc": "B", "score": 9, "why": ["信用点+9"], "src": "x"}])
+                path = task._chaos_trace["dir"]
+                self.assertEqual(3, len([f for f in os.listdir(path) if f.endswith(".jpg")]))
+                with open(chaos_trace_report.render(path), encoding="utf-8") as f:
+                    page = f.read()
+                self.assertIn("当前位置 → 事件", page)
+                self.assertIn('class="chosen"', page)
+                self.assertIn("全屏地图扫描：2帧", page)
+            finally:
+                chaos_trace.TRACE_ROOT = old_root
 
 
 if __name__ == "__main__":

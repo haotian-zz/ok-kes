@@ -4,6 +4,7 @@ import json
 import os
 
 import chaos_strategy
+import chaos_trace
 import utils
 import utils_chaos
 import utils_chaos_prep
@@ -44,6 +45,7 @@ class ChaosMode(TriggerTask):
         self.default_config['自动编队'] = True
         self.default_config['卡厄思地图'] = "活动卡厄思"
         self.default_config['刷存档难度'] = 0
+        self.default_config['记录流程追踪'] = True
         self.default_config['调整零式升级'] = True
         self.default_config['刷存档开梦境模式'] = True
         self.default_config['刷存档主战员'] = "海德玛丽"
@@ -138,6 +140,9 @@ class ChaosMode(TriggerTask):
             "活动卡厄思：主页右下角活动横幅 → 卡厄思（如 2026-10 的「天幕」），探索度打最高难度，刷存档按「刷存档难度」；"
             "常驻：探索度去卡厄思具象探索度最低的区域，刷存档去零式系统法典"
         )
+        self.config_description['记录流程追踪'] = (
+            "每局把整层地图、选的路线、每次分支的打分和选择、各页面截图存到 dev_out/chaos_trace/<时间>/，"
+            "用 tools/chaos_trace_report.py 生成 HTML 复盘；只保留最近 10 次")
         self.config_description['刷存档难度'] = "活动卡厄思刷存档时选第几档难度（左侧罗马数字，Ⅰ=1），0 或没解锁就选最高"
         self.config_description['调整零式升级'] = (
             "刷存档玩法从主页进零式系统时，先把升级调好：高维启示 0 级；认知闪光空存 0 级、目标卡组满级。"
@@ -268,6 +273,10 @@ class ChaosMode(TriggerTask):
     def _show_hot_configs(self):
         show_hot_configs_dialog(self, "chaos")
 
+    def log_info(self, message, *args, **kwargs):
+        super().log_info(message, *args, **kwargs)
+        chaos_trace.log(self, message)
+
     def run(self):
         # 每帧执行一次 OCR 并转简体, 供各页面处理函数复用
         self.all_texts = _simplify_texts(self.ocr())
@@ -285,8 +294,11 @@ class ChaosMode(TriggerTask):
                 return
             self.start_window = False
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环
+        frame = self.frame
+        chaos_trace.begin_frame(self)
         for handle_page in utils_chaos.PAGE_HANDLERS:
             if handle_page(self):
+                chaos_trace.page(self, handle_page.__name__, frame)
                 return
         # 帧末尾检查是否需要上传配置
         self._check_upload_if_needed()
