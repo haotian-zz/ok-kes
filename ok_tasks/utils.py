@@ -1408,7 +1408,8 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
 
     chaos_mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
     # 空存不要闪光，图钉只在删卡时用
-    use_pins = action != "重新闪光" and (chaos_mode in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EXPLORE) or (
+    # 目标卡组的闪光由 handle_select_card 按「闪错/未闪对」排好候选，图钉不管卡闪没闪对，不用
+    use_pins = action != "重新闪光" and not (chaos_mode == chaos_strategy.MODE_TARGET and action in ("闪光", "灵光")) and (chaos_mode in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EXPLORE) or (
         chaos_mode == chaos_strategy.MODE_EMPTY and action == "移除"))
 
     def click_priority_cards(cards):
@@ -3148,6 +3149,17 @@ def handle_select_card(task: TriggerTask):
             return False
         card_list = pending
         task.node_status['meditate_count'] = task.node_status.get('meditate_count', 0) + 1
+    if (action in ("闪光", "灵光") and select_action != "重新闪光"
+            and getattr(task, "chaos_mode", "") == chaos_strategy.MODE_TARGET):
+        # 目标卡组：先选闪错的（免费重闪），再选还没闪对的；都闪对了就跳过（2026-10-25 实录把闪对的剑鸣九霄又闪坏）
+        pending = [n for n, v in (_member_deck_state(task).get("冥想", {}) or {}).items() if v is True]
+        ok = task.node_status.get("flash_ok", [])
+        card_list = pending + [n for n in card_list if n not in ok and n not in pending]
+        task.log_info(f"选卡闪光：闪错待重闪 {pending}，已闪对 {ok} → 候选 {card_list}")
+        if not card_list:
+            if _click_bottom_skip(task, "目标卡都闪对了，不再闪光"):
+                return True
+            return False
     result = select_card(task, card_list, count=count, action=select_action)
     if result and action == "复制":
         _record_copy(task)
@@ -4877,6 +4889,10 @@ def handle_view_original(task: TriggerTask):
         meditation_completed = chosen_card is None and not target_boxes
         for configured_name in matched_meditation_cards:
             meditation_state[configured_name] = meditation_completed
+            if not meditation_completed:
+                ok = task.node_status.setdefault("flash_ok", [])
+                if configured_name not in ok:
+                    ok.append(configured_name)      # 这张卡闪对了，后面「选卡闪光」别再选它
             task.log_info(
                 f"冥想卡牌「{configured_name}」状态更新为"
                 f"{'待冥想' if meditation_completed else '无需冥想'}"
@@ -5071,7 +5087,7 @@ def reset_layer_status(task: TriggerTask):
                 task.node_status[k] = ns[k]
 
 
-RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count")
+RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok")
 
 
 def handle_close_button(task: TriggerTask):
