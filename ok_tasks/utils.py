@@ -4884,6 +4884,11 @@ def handle_view_original(task: TriggerTask):
         plan = getattr(task, "chaos_plan", None) or {}
         god_cards = [c for c in plan.get("flash", []) if c.get("god_spark")]
         cards = recognize_cards(task, page="神闪变体页") if god_cards and _pt_room(task, "神闪") else []
+        if cards and len(cards) < 3 and task.node_status.get("flash_page_waits", 0) < 3:
+            task.node_status["flash_page_waits"] = task.node_status.get("flash_page_waits", 0) + 1
+            task.log_info(f"神闪三选一只认出 {len(cards)} 张，等动画结束再判断")
+            task.sleep(0.8)
+            return True
         for card in cards:
             # 神闪选错存档就废，比普通闪光要求更像（0.9）
             index = chaos_strategy.pick_flash_variant(card["name"], cards, god_cards, min_sim=0.9)
@@ -4901,6 +4906,16 @@ def handle_view_original(task: TriggerTask):
     cards = recognize_cards(task, page="卡牌闪光页面")
     if not cards:
         return False
+    # 三选一有入场动画，第一帧常只认出 1~2 张；点一下就直接选定，所以认全 3 张再判断
+    # （2026-10-25 实录只认出 1 张剑鸣九霄就随机点了，预设那张还没出来）。最多等 3 帧
+    if len(cards) < 3:
+        waits = task.node_status.get("flash_page_waits", 0)
+        if waits < 3:
+            task.node_status["flash_page_waits"] = waits + 1
+            task.log_info(f"闪光三选一只认出 {len(cards)} 张，等动画结束再选（第 {waits + 1} 次）")
+            task.sleep(0.8)
+            return True
+    task.node_status["flash_page_waits"] = 0
     _dump_card_page(task, "view_original")
 
     flash_priority = []
