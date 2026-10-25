@@ -31,6 +31,7 @@ import random
 import time
 
 import chaos_strategy
+import game_db
 import chaos_trace
 import utils_chaos_prep
 
@@ -50,12 +51,17 @@ def handle_memory_process(task: TriggerTask):
     )[:3]
     specified_memory = _get_config_value(task, "指定记忆卡牌", "")
     if specified_memory:
-        for card in cards:
-            if is_subsequence(specified_memory, card["name"] + "：:" + card["description"]):
-                task.log_info(f"加工记忆页面：命中指定记忆卡牌「{card['name']}」")
-                _move_and_click(task, card["x"], card["y"])
-                task.sleep(1)
-                return True
+        hits = [c for c in cards if is_subsequence(specified_memory, c["name"] + "：:" + c["description"])]
+        want = _get_config_value(task, "指定记忆描述", "")
+        if hits and want:
+            # 同名记忆的几种效果（自身攻击力 / 伤害总量…）只差描述，按预设描述最像的选
+            hits.sort(key=lambda c: game_db.similarity(c["description"], want), reverse=True)
+        if hits:
+            card = hits[0]
+            task.log_info(f"加工记忆页面：命中指定记忆卡牌「{card['name']}」{card['description'][:40]}")
+            _move_and_click(task, card["x"], card["y"])
+            task.sleep(1)
+            return True
 
     task.log_info("加工记忆页面：未匹配到指定记忆卡牌，点击跳过")
     _move_and_click(task, 0.762, 0.935)

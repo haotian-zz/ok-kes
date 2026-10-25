@@ -152,6 +152,7 @@ class TestPriorities(unittest.TestCase):
         self.assertEqual(["丧失"], [m["memory"] for m in plan["memory"]])
         self.assertEqual([], plan["neutral"])
         self.assertEqual("丧失", cs.config_overrides(cs.MODE_TARGET, "罗丝薇瑟", plan)["指定记忆卡牌"])
+        self.assertEqual("x", cs.config_overrides(cs.MODE_EXPLORE, "罗丝薇瑟", plan)["指定记忆描述"])
 
     def test_deck_stat_not_event_option(self):
         from utils import NOT_EVENT_OPTION

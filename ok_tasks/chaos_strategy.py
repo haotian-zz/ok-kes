@@ -549,8 +549,11 @@ def zero_upgrade_wants(mode):
 
 def _memory_override(plan):
     """预设里有赛季记忆卡时，「选择铭刻的记忆」页按它选（没有就不覆盖用户配置）。"""
-    mem = [m["memory"] for m in (plan or {}).get("memory", [])]
-    return {"指定记忆卡牌": mem[0]} if mem else {}
+    mem = (plan or {}).get("memory", [])
+    if not mem:
+        return {}
+    # 加工记忆页三张同名记忆、效果不同，按预设里这张卡的描述挑
+    return {"指定记忆卡牌": mem[0]["memory"], "指定记忆描述": mem[0].get("desc", "")}
 
 
 def config_overrides(mode, member=None, plan=None, db=None):
