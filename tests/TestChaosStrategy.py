@@ -482,11 +482,12 @@ if __name__ == "__main__":
 
 class TestRestChoice(unittest.TestCase):
     """休息页：满血不休息改训练；目标卡组有待冥想的卡、钱够冥想就冥想（2026-10-25 实录）。"""
+    cost = "4"      # 实录：冥想费用 80 被 OCR 成 4
 
     def run_rest(self, hp, credit, pending, mode=cs.MODE_TARGET):
         import utils
         box = lambda name, x, y: SimpleNamespace(name=name, x=x * 1920 - 20, y=y * 1080 - 10, width=40, height=20)
-        texts = [box("安全区采取", 0.5, 0.1), box("训练", 0.85, 0.18), box("免费", 0.85, 0.23), box("80", 0.8, 0.7)]
+        texts = [box("安全区采取", 0.5, 0.1), box("训练", 0.85, 0.18), box("免费", 0.85, 0.23), box(self.cost, 0.8, 0.7)]
         clicks = []
         task = SimpleNamespace(width=1920, height=1080, all_texts=texts, chaos_mode=mode,
                                node_status={"flash_or_rest": True}, log_info=lambda *a, **k: None,
@@ -517,3 +518,6 @@ class TestRestChoice(unittest.TestCase):
 
     def test_target_meditates_below_config_threshold(self):
         self.assertEqual(["meditate"], self.run_rest(hp=100, credit=269, pending=True))
+
+    def test_meditate_needs_80_even_if_cost_misread(self):
+        self.assertEqual(["训练"], self.run_rest(hp=100, credit=50, pending=True))

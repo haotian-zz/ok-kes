@@ -3157,6 +3157,7 @@ def handle_copy_card_choice(task: TriggerTask):
         task.log_info(
             f"复制卡牌选择: 检测到target卡牌，点击位置{click_position}"
         )
+        _record_copy(task)          # 图钉卡这条路也要记 PT 账（2026-10-25 实录首领奖励复制没记上）
         _move_and_click(task, *click_position)
         return True
 
@@ -4273,6 +4274,8 @@ def handle_rest(task: TriggerTask):
     if getattr(task, "chaos_mode", "") == chaos_strategy.MODE_TARGET and meditation_cost is not None:
         # 目标卡组：目标卡闪错了只能靠冥想重闪，钱够冥想就冥想，不用等到「多少信用点以上冥想」
         # （2026-10-25 实录：剑鸣九霄待冥想、269 信用点、冥想 80，因门槛 300 去休息了）
+        # 冥想实际 80 信用点；费用数字 OCR 会认错（实录 80 认成 4），按至少 80 算
+        meditation_cost = max(meditation_cost, MEDITATE_COST)
         meditation_credit_threshold = min(meditation_credit_threshold, meditation_cost)
     can_meditate = bool(
         flash_or_rest
@@ -4369,6 +4372,7 @@ def handle_rest(task: TriggerTask):
 
 TRAIN_REGION = (0.78, 0.15, 0.92, 0.26)     # 休息页右上「训练 / 免费」
 REST_HP_BELOW = 70                           # 能训练时，血量低于这个才休息
+MEDITATE_COST = 80                           # 休息页冥想的信用点费用
 
 
 def find_text_in_region(task, pattern, region):
