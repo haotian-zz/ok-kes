@@ -12,6 +12,7 @@ from opencc import OpenCC
 
 import chaos_strategy
 import chaos_trace
+import game_db
 
 _jp2t = OpenCC('jp2t')  # 日文新字体转繁体
 _t2s = OpenCC('t2s')  # 繁体转简体
@@ -4276,6 +4277,69 @@ def handle_rest(task: TriggerTask):
     return False
 
 
+def _is_last_shop(task: TriggerTask):
+    """最后一层（记忆之末）里、整层路线下一步就是最终首领的商店：钱留着没用，全部花掉（用户 2026-10-25）。"""
+    ns = getattr(task, "node_status", None)
+    if not isinstance(ns, dict) or ns.get("pass_final_boss_count", 0) < 2:
+        return False
+    plan = ns.get("full_route")
+    if not plan or plan.get("layer") != ns.get("pass_final_boss_count", 0):
+        return False
+    steps = plan.get("steps", [])
+    return plan.get("done", 0) < len(steps) and steps[plan["done"]]["type"] == "首领"
+
+
+LEGEND_PRICE_EST = 200      # 商店传说装备价格（实录 200，打折 140）；稀有 96，付费刷新 30
+LEGEND_RARITIES = ("传说", "神话", "独特")
+
+
+def _shop_item_rarity(name, price):
+    """商店装备稀有度：先查装备库，查不到按价格猜（≥130 当传说）。"""
+    try:
+        eq = game_db.get_db().find_equipment(name)
+    except Exception:  # noqa: BLE001
+        eq = None
+    if eq and eq.get("rarity"):
+        return eq["rarity"]
+    return "传说" if price >= 130 else "稀有"
+
+
+def _shop_refresh_option(task: TriggerTask, credit):
+    """商店左下角刷新：免费 → ("free", 0)；还有付费次数且够钱 → ("paid", 价格)；否则 (None, None)。只读。"""
+    def in_box(b, x0, x1, y0, y1):
+        cx, cy = (b.x + b.width / 2) / task.width, (b.y + b.height / 2) / task.height
+        return x0 <= cx <= x1 and y0 <= cy <= y1
+    if any(in_box(b, 0.012, 0.258, 0.892, 0.979) and "免费" in b.name for b in task.all_texts):
+        return "free", 0
+    count_text = "".join(b.name.strip() for b in sorted(task.all_texts, key=lambda i: i.x)
+                         if in_box(b, 0.045, 0.115, 0.912, 0.952))
+    m = re.search(r"(\d+)\s*[/／]\s*(\d+)", count_text)
+    price_box = next((b for b in task.all_texts if in_box(b, 0.160, 0.220, 0.915, 0.950) and b.name.strip().isdigit()), None)
+    if not m or int(m.group(1)) <= 0 or not price_box or int(price_box.name.strip()) > credit:
+        return None, None
+    return "paid", int(price_box.name.strip())
+
+
+def _last_shop_pick(task: TriggerTask, shop_items, credit):
+    """最后一个商店买哪件装备（用户 2026-10-25）：下一次刷新后不够买传说了（或刷不了）就先买眼前的传说；
+    刷不了时剩下的钱买任意装备（贵的先）。返回 (图标, 名称, 价格, 理由) 或 None（去刷新）。"""
+    eqs = sorted(((icon, name, price, _shop_item_rarity(name, price))
+                  for icon, name, price, is_card in shop_items if not is_card and price <= credit),
+                 key=lambda x: -x[2])
+    if not eqs:
+        return None
+    kind, refresh_price = _shop_refresh_option(task, credit)
+    can_refresh_for_legend = kind == "free" or (kind == "paid" and credit - refresh_price >= LEGEND_PRICE_EST)
+    legends = [e for e in eqs if e[3] in LEGEND_RARITIES]
+    if legends and not can_refresh_for_legend:
+        icon, name, price, rarity = legends[0]
+        return icon, name, price, f"{rarity}，再刷新就不够买传说了"
+    if kind is None:
+        icon, name, price, rarity = eqs[0]
+        return icon, name, price, f"{rarity}，刷新不了了，剩下的钱买装备"
+    return None
+
+
 def handle_shop(task: TriggerTask):
     """德朗商店: 优先移除卡牌，其次按配置购买卡牌或装备，最后尝试免费或付费刷新。"""
     box = find_box_at_point(task, 0.729, 0.261)
@@ -4356,6 +4420,10 @@ def handle_shop(task: TriggerTask):
         card_priority = _get_card_reward_priority(task)
         equipment_priorities = [_equipment_priority(task, slot) for slot in range(3)]
         unaffordable_items = []
+        shop_items = []
+        last_shop = _is_last_shop(task)
+        if last_shop:
+            task.log_info("德朗商店：最后一个商店（下一步是最终首领），信用点全部用来买装备和刷新")
         for index, credit_icon in enumerate(credit_icons):
             icon_x = (credit_icon.x + credit_icon.width / 2) / task.width
             icon_y = (credit_icon.y + credit_icon.height / 2) / task.height
@@ -4372,6 +4440,7 @@ def handle_shop(task: TriggerTask):
             task.log_info(f"德朗商店第{index + 1}个商品: 类型={item_type}，名称=「{item_name}」，价格={price}")
             if not item_name or price is None:
                 continue
+            shop_items.append((credit_icon, item_name, price, is_card))
 
             if is_card:
                 if _neutral_card_limit_reached(task):
@@ -4400,7 +4469,7 @@ def handle_shop(task: TriggerTask):
             if not matched_name:
                 task.log_info(f"德朗商店: {item_type}「{item_name}」未命中配置，跳过")
                 continue
-            if price >= current_credit:
+            if price > current_credit or (price == current_credit and not last_shop):
                 unaffordable_items.append(item_name)
                 reason = "余额不足" if price > current_credit else "余额等于价格，当前购买规则要求余额大于价格"
                 task.log_info(
@@ -4417,6 +4486,15 @@ def handle_shop(task: TriggerTask):
             task.click_box(credit_icon)
             task.sleep(1)
             return True
+
+        if last_shop:
+            pick = _last_shop_pick(task, shop_items, current_credit)
+            if pick:
+                credit_icon, item_name, price, reason = pick
+                task.log_info(f"德朗商店（最后一个）: 装备「{item_name}」价格{price}，当前{current_credit}，{reason}，买下")
+                task.click_box(credit_icon)
+                task.sleep(1)
+                return True
 
         free_box = next(
         (text_box for text_box in task.all_texts
@@ -4462,7 +4540,7 @@ def handle_shop(task: TriggerTask):
             refresh_credit_threshold = int(refresh_credit_threshold)
         except (TypeError, ValueError):
             refresh_credit_threshold = 300
-        if current_credit <= refresh_credit_threshold:
+        if current_credit <= refresh_credit_threshold and not last_shop:
             task.log_info(
                 f"德朗商店免费刷新已用完，当前信用点{current_credit}未超过阈值"
                 f"{refresh_credit_threshold}，不付费刷新"

@@ -379,6 +379,37 @@ class TestTrace(unittest.TestCase):
         self.assertEqual(0, cs.event_source_bonus(src, 0, ["凝结的光辉残片"]))
         w = cs.route_weights(cs.MODE_TARGET, 0, 80, cs.event_source_bonus(src, 0))["types"]
         self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"]["事件"] + cs.EVENT_SOURCE_BONUS, w["事件"])
+    def test_last_shop(self):
+        from utils import _is_last_shop
+        plan = {"layer": 2, "done": 1, "steps": [{"type": "休息"}, {"type": "首领"}]}
+        task = SimpleNamespace(node_status={"pass_final_boss_count": 2, "full_route": plan})
+        self.assertTrue(_is_last_shop(task))
+        task.node_status["pass_final_boss_count"] = 1          # 第 2 层首领前的商店不算
+        plan["layer"] = 1
+        self.assertFalse(_is_last_shop(task))
+        task.node_status.update(pass_final_boss_count=2)
+        plan.update(layer=2, done=0)                           # 后面还有节点
+        self.assertFalse(_is_last_shop(task))
+    def test_last_shop_pick(self):
+        import utils
+        box = lambda x, y, name: SimpleNamespace(x=x * 1920, y=y * 1080, width=0, height=0, name=name)
+        legend, rare = object(), object()
+        items = [(rare, "某稀有装备", 96, False), (legend, "坠落的王冠", 200, False)]
+        paid = [box(0.08, 0.93, "2/3"), box(0.19, 0.93, "30")]
+        task = SimpleNamespace(width=1920, height=1080, all_texts=paid)
+        # 250 - 30 = 220 ≥ 200：还能刷，先刷新
+        self.assertIsNone(utils._last_shop_pick(task, items, 250))
+        # 220 - 30 < 200：再刷就不够买传说，先买传说
+        self.assertIs(legend, utils._last_shop_pick(task, items, 220)[0])
+        # 刷不了：剩下的钱买得起什么买什么
+        task.all_texts = []
+        self.assertIs(rare, utils._last_shop_pick(task, items, 150)[0])
+        # 免费刷新：先刷
+        task.all_texts = [box(0.1, 0.93, "免费")]
+        self.assertIsNone(utils._last_shop_pick(task, items, 220))
+        # 别名展开（之前 utils 没 import game_db，静默失败）
+        task = SimpleNamespace(config={"装备1号位优先级": ["混沌指控"]})
+        self.assertIn("混沌之识", utils._equipment_priority(task, 0))
 
 if __name__ == "__main__":
     unittest.main()
