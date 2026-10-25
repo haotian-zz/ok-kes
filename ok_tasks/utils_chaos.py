@@ -1366,9 +1366,23 @@ def handle_chaos_reward_settlement(task: TriggerTask):
     return False if status.get('is_escaped', False) else _finish_only_first_layer(task)
 
 
+def handle_chaos_auto_stop(task: TriggerTask):
+    """轮数够了也要等回到初始页再停：结算后的奖励页、存储数据收集页还没走完就停，存档会留在半路（2026-10-25 实录）。"""
+    if not _at_chaos_initial_page(task):
+        return False
+    return handle_auto_stop(task)
+
+
+def _at_chaos_initial_page(task: TriggerTask):
+    title = _get_region_text(task, (0.075, 0.011, 0.305, 0.106))
+    bottom = _get_region_text(task, (0.659, 0.715, 0.993, 0.972))
+    return ("卡厄思" in title and "再次观测" in bottom) or (
+        _get_game_text(task, "零式系统") in title and "进入" in bottom)
+
+
 # 卡厄思模式 PAGE_HANDLERS
 PAGE_HANDLERS = [
-    handle_auto_stop,
+    handle_chaos_auto_stop,
     handle_save_target_member,
     handle_route_selection,
     # handle_stage_clear,
