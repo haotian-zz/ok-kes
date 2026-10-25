@@ -5034,6 +5034,13 @@ def reset_layer_status(task: TriggerTask):
         task.node_status['get_specific_flash'] = keep['get_specific_flash']
         task.node_status['removed_card_count'] = keep['removed_card_count']
         task.node_status['neutral_card_count'] = keep['neutral_card_count']
+        # PT 账是整局的：换层不能清（2026-10-25 实录第 2 层复制又从 1 次记起）
+        for k in RUN_LEVEL_KEYS:
+            if k in ns:
+                task.node_status[k] = ns[k]
+
+
+RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited")
 
 
 def handle_close_button(task: TriggerTask):

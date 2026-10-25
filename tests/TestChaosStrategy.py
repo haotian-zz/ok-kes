@@ -526,3 +526,13 @@ class TestRestChoice(unittest.TestCase):
         import time as _t
         clicks = self.run_rest(hp=100, credit=50, pending=False)
         self.assertEqual(["训练"], clicks)
+
+
+class TestLayerReset(unittest.TestCase):
+    def test_pt_ledger_survives_layer(self):
+        from utils import reset_layer_status
+        task = SimpleNamespace(node_status={"copy_count": 2, "god_spark_count": 1, "removed_card_count": 3,
+                                            "pass_final_boss_count": 1})
+        reset_layer_status(task)
+        self.assertEqual((2, 1, 3), (task.node_status["copy_count"], task.node_status["god_spark_count"],
+                                     task.node_status["removed_card_count"]))
