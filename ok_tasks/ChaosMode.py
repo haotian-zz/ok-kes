@@ -255,7 +255,9 @@ class ChaosMode(TriggerTask):
         self.entry_checked = True
         # 卡厄思难度选择页（有「每周进展」）也在局外：上一轮按轮数停下后就停在这里（2026-10-24 实机），
         # 直接点进入会跳过零式升级和难度选择，所以同样先回主页
-        at_lobby = any("每周进展" in box.name for box in self.all_texts or [])
+        # 结算后的奖励页也有「每周进展」，但带「确认」按钮，要交给页面流程点确认、走存储数据收集（2026-10-25 实录被当成难度页按了 ESC）
+        texts = [box.name for box in self.all_texts or []]
+        at_lobby = any("每周进展" in t for t in texts) and "确认" not in texts
         if not (utils_daily.is_home(self) or not self.all_texts or at_lobby):
             return False
         if at_lobby:
