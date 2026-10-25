@@ -446,8 +446,16 @@ def deck_plan(member, preset, db=None):
         copy += [name] * max(0, extra)
     flash = [c for c in preset.get("cards", []) if c.get("n") or c.get("god_spark")]
     own = {c["name"] for c in db.cards_of(member, sorts=None)}
-    neutral = [c["name"] for c in preset.get("cards", []) if c["name"] not in own and _is_neutral(db, c["name"])]
-    return {"remove": remove, "copy": copy, "flash": flash, "neutral": neutral}
+    memory = [dict(c, memory=memory_name(c["name"])) for c in preset.get("cards", []) if memory_name(c["name"])]
+    neutral = [c["name"] for c in preset.get("cards", [])
+               if c["name"] not in own and not memory_name(c["name"]) and _is_neutral(db, c["name"])]
+    return {"remove": remove, "copy": copy, "flash": flash, "neutral": neutral, "memory": memory}
+
+
+def memory_name(card_name):
+    """赛季卡牌「记忆：丧失」→「丧失」（OCR 常把类型带进来：「记忆：丧失4强化」）；不是记忆卡返回空串。"""
+    m = re.match(r"\s*记忆\s*[:：]?\s*([^\d\s:：]+?)(强化|攻击|技能)?(\d.*)?$", card_name or "")
+    return m.group(1) if m else ""
 
 
 def _is_neutral(db, name):
@@ -485,6 +493,12 @@ def zero_upgrade_wants(mode):
 
 
 # ---------------- 玩法 → 现有配置项 ----------------
+
+def _memory_override(plan):
+    """预设里有赛季记忆卡时，「选择铭刻的记忆」页按它选（没有就不覆盖用户配置）。"""
+    mem = [m["memory"] for m in (plan or {}).get("memory", [])]
+    return {"指定记忆卡牌": mem[0]} if mem else {}
+
 
 def config_overrides(mode, member=None, plan=None, db=None):
     """把玩法翻译成现有 handler 读的配置项（_get_config_value 会先查这里）。原有逻辑返回空字典。"""
@@ -524,6 +538,7 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "拉黑任务": ["咒术卡牌", "压力"],
             "路线优先级": ["事件", "休息", "小怪", "精英"],
             "进入商店": True,
+            **_memory_override(plan),
         }
     if mode == MODE_EXPLORE:
         # 删卡/闪光/复制也按目标主战员的预设来（用户 2026-10-24：以前沿用旧配置的移除列表，删了别人的卡）
@@ -542,5 +557,6 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "拉黑任务": ["咒术卡牌"],
             "路线优先级": ["事件", "小怪", "精英", "休息"],
             "存储数据保存上限大于多少": 0,   # 探索度不要存档，别花货币「再次观测」
+            **_memory_override(plan),
         }
     return {}

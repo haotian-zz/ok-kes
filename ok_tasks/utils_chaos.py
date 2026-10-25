@@ -31,6 +31,7 @@ import random
 import time
 
 import chaos_strategy
+import chaos_trace
 import utils_chaos_prep
 
 
@@ -1057,6 +1058,15 @@ def _precision_button_active(task: TriggerTask, box):
     return (red - blue) > 30
 
 
+MEMORY_SHARD_COUNT = (0.641, 0.053)   # 顶栏水晶图标右边的记忆残片数（1920×1080 国服）
+
+
+def _memory_shards(task: TriggerTask):
+    box = find_box_at_point(task, *MEMORY_SHARD_COUNT)
+    m = re.fullmatch(r"\s*(\d+)\s*", box.name) if box else None
+    return int(m.group(1)) if m else None
+
+
 def handle_precision_memory_process(task: TriggerTask):
     """记忆之末「精密加工记忆」按钮: 可用时优先点击，变灰（材料耗尽）后交给离开按钮处理。"""
     title_text = _get_region_text(task, (0.400, 0.080, 0.600, 0.170)).replace(" ", "")
@@ -1112,17 +1122,22 @@ def handle_precision_memory_process(task: TriggerTask):
     if not _precision_button_active(task, box):
         task.log_info("精密加工记忆按钮已变灰（材料耗尽），跳过点击")
         return False
-    # 颜色判断不可靠（2026-10-24 天幕：材料为 0、按钮灰着仍判成可用，连点了几十次），
-    # 同一张卡点过 2 次还在这页就当点不动，交给离开按钮
-    card_key = cards[0]["name"] if cards else ""
-    tries = task.node_status.get("precision_memory_tries", {}) if status is not None else {}
-    tries[card_key] = tries.get(card_key, 0) + 1
-    if status is not None:
-        status["precision_memory_tries"] = tries
-    if tries[card_key] > 2:
-        if tries[card_key] == 3:
-            task.log_info("精密加工记忆点了 2 次没有变化，当作材料不足，交给离开")
+    # 精密加工成功率只有 30%/20%（失败卡面不变），所以不能按「卡面没变」判断材料用完（2026-10-24 有 8 张残片
+    # 点 2 次就走了）。读顶栏的记忆残片数：0 张就离开；点了残片数却没减少（按钮其实灰着/已到上限）连续 2 次也离开
+    shards = _memory_shards(task)
+    if shards is not None and shards <= 0:
+        task.log_info("记忆残片 0 张，不再精密加工")
         return False
+    last = status.get("precision_last_shards") if status is not None else None
+    stuck = status.get("precision_stuck", 0) if status is not None else 0
+    stuck = stuck + 1 if (shards is None or shards == last) else 0
+    if status is not None:
+        status["precision_last_shards"], status["precision_stuck"] = shards, stuck
+    if stuck > 2:
+        if stuck == 3:
+            task.log_info(f"精密加工记忆点了没有消耗残片（残片={shards}），当作已到上限/不可用，交给离开")
+        return False
+    task.log_info(f"记忆残片 {shards} 张，继续精密加工")
 
     task.log_info("检测到精密加工记忆按钮，点击精密加工")
     task.click_box(box)
@@ -1130,68 +1145,103 @@ def handle_precision_memory_process(task: TriggerTask):
     return True
 
 
+# 额外战利品（2026-10-25 用户定）：每周 4 张免费「战利品验证卡」有就用；用完后按配置用体力兑换；
+# 体力不足时按配置用免费道具补充体力（只点免费道具，绝不碰付费/钻石）。体力兑换和补体力的弹窗还没实机见过，
+# 认不出的弹窗一律取消并记追踪截图，见到后再校准。
+REWARD_USE_CARD = "额外战利品：有战利品验证卡就用"
+REWARD_USE_STAMINA = "额外战利品：验证卡用完后用体力兑换"
+REWARD_REFILL_STAMINA = "额外战利品：体力不足时用免费道具补充体力"
+_PAID = re.compile(r"元|购买|充值|钻石|晶|付费|解锁额外")
+
+
+def _verify_cards(task: TriggerTask, point):
+    """读「a/b」形式的战利品验证卡数量，读不到返回 None。"""
+    box = find_box_at_point(task, *point)
+    m = re.search(r"(\d+)\s*/\s*(\d+)", box.name) if box else None
+    return int(m.group(1)) if m else None
+
+
+def _reward_wanted(task: TriggerTask, cards):
+    if cards is not None and cards > 0:
+        return _get_config_value(task, REWARD_USE_CARD, True)
+    return _get_config_value(task, REWARD_USE_STAMINA, True)
+
+
+def _dialog_texts(task: TriggerTask):
+    return " ".join(b.name for b in task.all_texts)
+
+
 def handle_chaos_reward_claim(task: TriggerTask):
-    """卡厄思模式奖励领取页面: 如果0.568,0.711处文本包含"获得"，则为奖励领取页面。
-    识别0.959,0.281处"\\d/\\d"作为当前/最大战利品验证卡，
-    如果验证卡大于0则点击获得，否则重置"领取奖励(只使用验证卡)"为False并取消。"""
+    """额外战利品兑换弹窗（0.568,0.711 处「获得」）：有验证卡就用；没有时按配置用体力兑换。"""
     claim_box = find_box_at_point(task, 0.568, 0.711)
     if not (claim_box and "获得" in claim_box.name):
         return False
-
-    task.log_info("检测到卡厄思模式奖励领取页面")
-
-    # 读取0.959,0.281处的战利品验证卡文本，格式如 "2/3"
-    verify_box = find_box_at_point(task, 0.959, 0.281)
-    if verify_box and re.search(r'(\d+)/(\d+)', verify_box.name):
-        match = re.search(r'(\d+)/(\d+)', verify_box.name)
-        current_cards = int(match.group(1))
-        max_cards = int(match.group(2))
-        task.log_info(f"战利品验证卡: {current_cards}/{max_cards}")
-
-        if current_cards > 0:
-            task.log_info(f"当前战利品验证卡{current_cards}>0，点击获得")
-            task.click_box(claim_box)
-            task.sleep(1)
-            return True
-        else:
-            task.log_info("当前战利品验证卡为0，将领取奖励(只使用验证卡)设置为False，点击取消")
-            task.config['领取奖励(只使用验证卡)'] = False
-            from ok.gui.Communicate import communicate
-            communicate.task_list_updated.emit()
-            _move_and_click(task, 0.352, 0.708)
-            task.sleep(1)
-            return True
-    else:
-        task.log_info("未检测到战利品验证卡信息，点击取消")
-        _move_and_click(task, 0.352, 0.708)
+    texts = _dialog_texts(task)
+    cards = _verify_cards(task, (0.959, 0.281))
+    task.log_info(f"检测到额外战利品兑换弹窗：验证卡={cards}，文字={texts[:120]}")
+    chaos_trace.step(task, "page", "额外战利品兑换弹窗", task.frame, cards=cards, texts=texts[:300])
+    if cards is not None and cards > 0 and _get_config_value(task, REWARD_USE_CARD, True):
+        task.log_info(f"战利品验证卡 {cards} 张，用 1 张兑换")
+        task.click_box(claim_box)
         task.sleep(1)
         return True
+    if "体力" in texts and not _PAID.search(texts) and _get_config_value(task, REWARD_USE_STAMINA, True):
+        task.log_info("验证卡用完，用体力兑换额外战利品")
+        task.click_box(claim_box)
+        task.sleep(1)
+        return True
+    task.log_info("不兑换（没有验证卡且不用体力 / 弹窗里有付费字样 / 认不出），点取消")
+    _move_and_click(task, 0.352, 0.708)
+    task.sleep(1)
+    return True
+
+
+def handle_stamina_refill(task: TriggerTask):
+    """体力不足弹窗：按配置只用免费道具补充，否则取消。"""
+    texts = _dialog_texts(task)
+    if "体力" not in texts or not re.search(r"体力不足|补充体力|恢复体力", texts):
+        return False
+    task.log_info(f"检测到体力补充弹窗：{texts[:160]}")
+    chaos_trace.step(task, "page", "体力补充弹窗", task.frame, texts=texts[:300])
+    if _get_config_value(task, REWARD_REFILL_STAMINA, False):
+        free = next((b for b in task.all_texts if re.search(r"免费|使用道具|补充剂|体力药", b.name)
+                     and not _PAID.search(b.name)), None)
+        if free is not None:
+            task.log_info(f"用免费道具补充体力：点「{free.name}」")
+            task.click_box(free)
+            task.sleep(1)
+            return True
+        task.log_info("没找到免费道具按钮（不点任何付费项）")
+    cancel = next((b for b in task.all_texts if b.name.strip() in ("取消", "关闭")), None)
+    if cancel is not None:
+        task.click_box(cancel)
+    else:
+        task.send_key("esc")
+    task.sleep(1)
+    return True
 
 
 def handle_chaos_reward_settlement(task: TriggerTask):
-    """卡厄思奖励结算页面: 如果0.552,0.067处包含"结算"，则为卡厄思奖励结算页面。
-    如果0.851,0.389处包含"获得"且当前战利品验证卡>0，则点击获得按钮。
-    如果领取奖励关闭且只打第一层完成，则退出结算页面。"""
+    """卡厄思奖励结算页面（0.552,0.067 处「结算」）：右侧「获得」兑换额外战利品（每个结算页只点一次），
+    之后交给继续/前往记忆之末等按钮。"""
     title_box = find_box_at_point(task, 0.552, 0.067)
     if not (title_box and "结算" in title_box.name):
         return False
 
     task.log_info("检测到卡厄思奖励结算页面")
-
-    if not _get_config_value(task, '领取奖励(只使用验证卡)', False):
-        task.log_info("领取奖励(只使用验证卡)配置为False")
-        return False if task.node_status.get('is_escaped', False) else _finish_only_first_layer(task)
-
-    # 检查0.851,0.389处是否有"获得"按钮
+    status = task.node_status
     reward_box = find_box_at_point(task, 0.851, 0.389)
-    if not (reward_box and "获得" in reward_box.name):
-        task.log_info("未检测到获得按钮")
-        return False if task.node_status.get('is_escaped', False) else _finish_only_first_layer(task)
-
-    task.log_info("检测到获得按钮，点击获得")
-    task.click_box(reward_box)
-    task.sleep(1)
-    return True
+    key = (status.get("total_rounds", 0), status.get("pass_final_boss_count", 0))
+    if reward_box and "获得" in reward_box.name and status.get("reward_claim_tried") != key:
+        cards = _verify_cards(task, (0.94, 0.051))
+        if _reward_wanted(task, cards):
+            status["reward_claim_tried"] = key
+            task.log_info(f"额外战利品：验证卡={cards}，点获得")
+            task.click_box(reward_box)
+            task.sleep(1)
+            return True
+        task.log_info(f"额外战利品：验证卡={cards}，按配置不兑换")
+    return False if status.get('is_escaped', False) else _finish_only_first_layer(task)
 
 
 # 卡厄思模式 PAGE_HANDLERS
@@ -1252,6 +1302,7 @@ PAGE_HANDLERS = [
     handle_discovery_select,
     handle_negotiation,
     handle_chaos_reward_settlement, #卡厄思奖励结算页面，优先级高于继续按钮
+    handle_stamina_refill, #额外战利品体力不足弹窗
     handle_chaos_reward_claim, #卡厄思模式奖励领取页面
     handle_go_to_memory_end, #卡厄思结算页面右下角「前往记忆之末」按钮
     handle_continue,

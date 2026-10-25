@@ -51,7 +51,9 @@ class ChaosMode(TriggerTask):
         self.default_config['刷存档主战员'] = "海德玛丽"
         self.default_config['存储数据保存上限大于多少'] = 120
         self.default_config['保留大于多少TB的存档'] = 62000
-        self.default_config['领取奖励(只使用验证卡)'] = False
+        self.default_config['额外战利品：有战利品验证卡就用'] = True
+        self.default_config['额外战利品：验证卡用完后用体力兑换'] = True
+        self.default_config['额外战利品：体力不足时用免费道具补充体力'] = False
         # 事件任务优先级列表, 匹配到包含对应文字的选项时会优先选择
         self.default_config['任务优先级'] = ["复制","信用点增加", "移除"]
         self.default_config['拉黑任务'] = ["咒术卡牌", "压力"]
@@ -133,6 +135,9 @@ class ChaosMode(TriggerTask):
             "探索度：优先没见过的事件选项；刷存档-空存：删光目标主战员的卡，避开闪光/获得卡；"
             "刷存档-目标卡组：按目标主战员的预设构筑删/复制/闪光。选了玩法后删卡、闪光、复制、路线、任务优先级等项自动生成。"
         )
+        self.config_description['额外战利品：有战利品验证卡就用'] = "每次打完首领的结算页，每周 4 张免费战利品验证卡有就用来兑换额外战利品"
+        self.config_description['额外战利品：验证卡用完后用体力兑换'] = "验证卡用完后用体力兑换额外战利品"
+        self.config_description['额外战利品：体力不足时用免费道具补充体力'] = "体力不够兑换时用免费道具补充体力（不会用钻石或付费项）"
         self.config_description['目标预设'] = "目标卡组读主战员详情 → 卡牌 → 预设构筑里的第几号预设"
         self.config_description['队友'] = "自动编队时目标主战员之外的两个人（按槽位顺序）"
         self.config_description['刷存档开梦境模式'] = "刷存档玩法在配置队伍页打开梦境模式（存档 +1 阶、PT 上限 +10），要队伍里有经历过深层创伤的主战员"

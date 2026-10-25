@@ -143,6 +143,16 @@ class TestPriorities(unittest.TestCase):
         self.assertFalse(_same_option_text("回答先知选择1张卡牌闪光，信用点增加40", a))
         self.assertFalse(_same_option_text("拯救先知获得装备[绯刃]，信用点增加40", a))
 
+    def test_memory_card_in_preset(self):
+        self.assertEqual("丧失", cs.memory_name("记忆：丧失4强化"))
+        self.assertEqual("丧失", cs.memory_name("记忆：丧失"))
+        self.assertEqual("万花筒", cs.memory_name("记忆:万花筒"))
+        self.assertEqual("", cs.memory_name("明灭剑"))
+        plan = cs.deck_plan("罗丝薇瑟", {"cards": [{"name": "记忆：丧失", "desc": "x", "n": None, "god_spark": None}]})
+        self.assertEqual(["丧失"], [m["memory"] for m in plan["memory"]])
+        self.assertEqual([], plan["neutral"])
+        self.assertEqual("丧失", cs.config_overrides(cs.MODE_TARGET, "罗丝薇瑟", plan)["指定记忆卡牌"])
+
     def test_deck_stat_not_event_option(self):
         from utils import NOT_EVENT_OPTION
         self.assertTrue(NOT_EVENT_OPTION.search("独特卡牌平均费用0.9"))
