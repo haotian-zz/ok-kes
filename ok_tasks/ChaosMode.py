@@ -196,6 +196,8 @@ class ChaosMode(TriggerTask):
         if overrides and member:
             overrides['刷存档主战员'] = member
         self.chaos_overrides = overrides
+        if "需要冥想的卡牌" in overrides:
+            utils._reset_meditation_state(self)
         if overrides:
             self.log_info(f"卡厄思玩法「{mode}」，自动配置：{overrides}")
 

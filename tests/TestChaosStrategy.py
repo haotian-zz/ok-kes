@@ -80,6 +80,40 @@ class TestEventPick(unittest.TestCase):
         self.assertGreater(res[1][0], res[0][0])
 
 
+class TestPriorities(unittest.TestCase):
+    """用户 2026-10-24 定的优先级。"""
+    need = {"need_remove": 2, "need_copy": 1, "need_spark": 3, "credit": 500, "target_equipment": ["截骨机"]}
+
+    def rank(self, descs, mode=cs.MODE_TARGET, state=None):
+        _, res = cs.pick_event_option(descs, mode, state if state is not None else self.need)
+        return [d for _, d in sorted(zip([r[0] for r in res], descs), reverse=True)]
+
+    def test_target_order(self):
+        descs = ["要他回去获得装备[截骨机]", "复制选中的1张卡牌", "移除1张卡牌", "选中主战员闪光1次",
+                 "信用点增加300", "随机主战员触发1次闪光", "信用点增加100"]
+        self.assertEqual(descs, self.rank(list(reversed(descs))))
+
+    def test_target_any_equipment_over_cards(self):
+        self.assertEqual("获得装备[女神之泪]", self.rank(["移除1张卡牌", "获得装备[女神之泪]"])[0])
+
+    def test_target_no_more_removal_prefers_spark(self):
+        st = dict(self.need, need_remove=0)
+        self.assertEqual("选中主战员闪光1次", self.rank(["移除1张卡牌", "选中主战员闪光1次"], state=st)[0])
+
+    def test_explore_unseen_over_everything(self):
+        descs = ["献上赞美信用点增加100", "失去理智所有主战员生命值变为1"]
+        _, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()})
+        seen = {res[0][3]}
+        self.assertEqual(descs[1], self.rank(descs, cs.MODE_EXPLORE, {"seen": seen})[0])
+
+    def test_explore_new_equipment(self):
+        descs = ["接受A获得装备[截骨机]", "接受B获得装备[女神之泪]"]
+        _, res = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()})
+        seen = {res[0][3], res[1][3], cs.equipment_key("截骨机")}
+        self.assertEqual(descs[1], self.rank(descs, cs.MODE_EXPLORE, {"seen": seen})[0])
+        self.assertIn(cs.equipment_key("女神之泪"), cs.option_seen_keys(descs[1], None))
+
+
 class TestTargetDeck(unittest.TestCase):
     preset = {"cards": parse_preset_cards(load_ocr("preset_rosweisse_1.ocr.txt"), W, H)}
 

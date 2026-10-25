@@ -1966,7 +1966,9 @@ def _ensure_auto_chat(task: TriggerTask, context=""):
     _move_and_click(task, cx, cy)
     task.sleep(0.8)
     after = _find_auto_chat(task)
-    after_conf = after.confidence if after else 0
+    if not after:
+        return True    # 点完画面换了（对白结束），没法判断，下次再看
+    after_conf = after.confidence
     if after_conf < before - 0.02:
         task.log_info(f"点击后置信度降到 {after_conf:.2%}，原本是开着的，点回去；阈值改为 {before - 0.01:.2%}")
         _move_and_click(task, cx, cy)
@@ -3286,6 +3288,7 @@ def _chaos_strategy_state(task: TriggerTask):
         "need_copy": len(plan.get("copy", [])),
         "need_spark": len(plan.get("flash", [])),
         "need_god_spark": sum(1 for c in plan.get("flash", []) if c.get("god_spark")),
+        "target_equipment": [n for slot in range(3) for n in _equipment_priority(task, slot)],
     }
 
 
@@ -3304,10 +3307,11 @@ def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
         task.log_info("事件库未命中且选项文字里没有可识别的效果，交给原有关键词匹配")
         return False
     option_id = results[best][3]
-    if option_id and mode == chaos_strategy.MODE_EXPLORE:
+    if mode == chaos_strategy.MODE_EXPLORE:
         seen = getattr(task, "chaos_seen", None)
-        if seen is not None and option_id not in seen:
-            seen.add(option_id)
+        keys = chaos_strategy.option_seen_keys(tasks_info[best]["description"], option_id)
+        if seen is not None and not set(keys) <= seen:
+            seen.update(keys)
             chaos_strategy.save_seen(seen)
     task.log_info(f"[{mode}] 选择「{tasks_info[best]['description']}」")
     click_event_option(tasks_info[best])
@@ -4020,7 +4024,9 @@ def handle_rest(task: TriggerTask):
 
     if can_rest and can_meditate:
         hp_percent = _get_current_hp_percent(task)
-        choose_rest = hp_percent is not False and hp_percent < 50
+        # 目标卡组：目标卡闪错了要靠冥想重闪，优先于休息（用户 2026-10-24），血量太低才休息
+        rest_below = 25 if getattr(task, "chaos_mode", "") == chaos_strategy.MODE_TARGET else 50
+        choose_rest = hp_percent is not False and hp_percent < rest_below
         task.log_info(
             f"休息与冥想均可用，当前血量="
             f"{hp_percent if hp_percent is not False else '未识别'}%，"

@@ -85,7 +85,14 @@ def parse_effects(text):
     elif re.search(r"(失去|减少)\S*生命", t):
         e["hp_pct"] = -1
     if "装备" in t and "失去" not in t:
-        e["equipment"] = ["?"]
+        # norm 会去掉方括号，装备名要从原文抽
+        names = [norm(n) for n in re.findall(r"装备\s*[\[［【]([^\]］】]+)[\]］】]", text or "")]
+        e["equipment"] = names or ["?"]
+    if e.get("spark"):
+        if "选中" in t or "选择" in t:
+            e["spark_choose"] = True     # 选中主战员闪光（自己挑卡）
+        elif "随机" in t:
+            e["spark_random"] = True     # 随机主战员闪光
     return e
 
 
@@ -173,26 +180,44 @@ def score_effects(effects, mode, state=None):
         if effects.get("battle"):
             add(-6, "战斗")
     elif mode == MODE_TARGET:
+        # 用户 2026-10-24 定的优先级（分档，档间差距大）：目标装备 > 其他装备 > 复制 > 删卡（还没删够）> 选中主战员闪光
+        # > ≥200 信用点 > 随机主战员闪光（目标还有卡没闪）> <200 信用点 > 其他
+        equip = effects.get("equipment") or []
+        targets = state.get("target_equipment") or []
+        if any(n != "?" and any(norm(n) in norm(t) or norm(t) in norm(n) for t in targets) for n in equip):
+            add(1000, "目标装备")
+        elif equip:
+            add(500, "装备")
+        if effects.get("copy_card"):
+            add(300 if state.get("need_copy", 0) > 0 else -5, "复制")
         if rm and can_remove and state.get("need_remove", 0) > 0:
-            add(12 * min(rm, state["need_remove"]), f"移除{rm}张")
+            add(200, f"移除{rm}张")
         elif rm:
             add(-5, "多余的移除")
-        if effects.get("copy_card"):
-            add(15 if state.get("need_copy", 0) > 0 else -5, "复制")
-        if effects.get("spark"):
-            add(10 if state.get("need_spark", 0) > 0 else -3, "闪光")
+        if effects.get("spark") and state.get("need_spark", 0) > 0:
+            if effects.get("spark_random"):
+                add(60, "随机主战员闪光")
+            else:
+                add(150, "选中主战员闪光")
+        elif effects.get("spark"):
+            add(-3, "多余的闪光")
         if effects.get("god_spark"):
-            add(8 if state.get("need_god_spark", 0) > 0 else -15, "神闪")
+            add(150 if state.get("need_god_spark", 0) > 0 else -15, "神闪")
         for k, v, reason in (("neutral_card", -10, "中立卡"), ("curse_card", -15, "咒术卡"), ("event_card", -8, "获得卡")):
             if effects.get(k):
                 add(v, reason)
-        if credit:
-            add(max(-15, min(15, credit / 8)), "信用点")
-        if effects.get("equipment"):
-            add(4, "装备")
+        if credit >= 200:
+            add(100, "信用点≥200")
+        elif credit:
+            add(max(-15, min(50, credit / 4)), "信用点")
     elif mode == MODE_EXPLORE:
+        # 用户 2026-10-24：推进探索度时，没触发过的选项 / 没拿过的装备高于一切
         if state.get("unseen"):
-            add(40, "没见过的选项")
+            add(1000, "没选过的选项")
+        seen = state.get("seen") or set()
+        new_equip = [n for n in effects.get("equipment") or [] if n != "?" and equipment_key(n) not in seen]
+        if new_equip:
+            add(1000, f"没拿过的装备{new_equip}")
         if credit:
             add(max(-10, min(10, credit / 10)), "信用点")
         if effects.get("equipment"):
@@ -215,7 +240,7 @@ def score_effects(effects, mode, state=None):
     if effects.get("equipment_lost"):
         add(-6, "失去装备")
     if effects.get("requires_credit", 0) > state.get("credit", 10 ** 9):
-        add(-100, "信用点不够")
+        add(-5000, "信用点不够")
     return s, why
 
 
@@ -253,6 +278,18 @@ def pick_event_option(descs, mode, state=None, db=None):
 
 
 # ---------------- 「已见」记录（探索度） ----------------
+
+def equipment_key(name):
+    """探索度「拿过的装备」记录 key。"""
+    return "eq:" + norm(name)
+
+
+def option_seen_keys(desc, option_id):
+    """选中一个选项后要记进「已选」的 key：选项本身 + 里面的装备。"""
+    keys = [option_id or text_key(desc)]
+    keys += [equipment_key(n) for n in parse_effects(desc).get("equipment") or [] if n != "?"]
+    return keys
+
 
 def text_key(desc):
     """事件库匹配不上的选项的「已选」key：去掉数字、空白和标点（数值会随难度变），取前 24 个字。"""
@@ -361,6 +398,8 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "闪光卡牌列表": list(dict.fromkeys(flash_names)),
             "复制卡牌列表": list(dict.fromkeys(plan.get("copy", []))),
             "卡牌奖励优先级": list(dict.fromkeys(flash_names)),
+            # 闪光三选一没出现预设的变体 → 标成待冥想，篝火时重闪（冥想优先于休息）
+            "需要冥想的卡牌": list(dict.fromkeys(flash_names)),
             "任务优先级": ["复制", "移除", "信用点增加"],
             "拉黑任务": ["咒术卡牌", "压力"],
             "路线优先级": ["事件", "休息", "小怪", "精英"],
