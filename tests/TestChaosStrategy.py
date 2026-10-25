@@ -795,3 +795,11 @@ class TestEquipmentCnNames(unittest.TestCase):
         db = game_db.GameDB()
         self.assertIn("堕落之冠", db.equipment_aliases("坠落的王冠"))
         self.assertIn("过载动力机关", db.equipment_aliases("超负荷动力机关"))
+
+
+class TestOctopusRouteBonus(unittest.TestCase):
+    def test_normal_beats_event_bonus(self):
+        w = cs.route_weights(cs.MODE_TARGET, 0, None, 3, octopus=True)["types"]
+        self.assertGreater(w["小怪"], w["事件"])
+        w = cs.route_weights(cs.MODE_TARGET, 0, 50, 3, octopus=True)["types"]
+        self.assertGreater(w["小怪"], max(w["事件"], w["休息"]))

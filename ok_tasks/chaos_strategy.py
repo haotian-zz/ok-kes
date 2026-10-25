@@ -55,6 +55,9 @@ def route_weights(mode, layer=0, hp=None, event_bonus=0, octopus=False):
         t["精英"] = min(t["精英"], t["小怪"])
         t["休息"] += 2
     t["事件"] += event_bonus
+    if octopus and layer == 0:
+        # 目标装备来源事件加分后也不能和普通战打平（2026-10-25 实录 事件 4+3=7 = 普通战 7，路线一半是事件）
+        t["小怪"] = max(t["小怪"], max(v for k, v in t.items() if k != "小怪") + 1)
     return w
 
 
