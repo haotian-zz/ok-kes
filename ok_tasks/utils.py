@@ -3794,10 +3794,10 @@ def handle_route_selection(task: TriggerTask):
 
     # 找不到任何普通节点类型特征时，当前路线节点即为boss。
     # 例外：整层路线计划下一步不是首领（2026-10-24 实录：活动卡厄思两个橙色旗子的「结算」航点认不出，被当成首领，
-    # 结算时把层数多加了 1）。这时照样点中间的节点，但不标记到达首领。
+    # 结算时把层数多加了 1）。这时照样点中间的节点，但不标记到达首领。计划的最后一步总是首领（扫描偶尔把首领认成小怪）。
     plan = (getattr(task, "node_status", None) or {}).get("full_route")
     if (not nodes and plan and plan["layer"] == task.node_status.get("pass_final_boss_count", 0)
-            and plan["done"] < len(plan["steps"]) and plan["steps"][plan["done"]]["type"] != "首领"):
+            and plan["done"] < len(plan["steps"]) - 1 and plan["steps"][plan["done"]]["type"] != "首领"):
         step = plan["steps"][plan["done"]]
         plan["done"] += 1
         task.log_info(f"路线页没识别到节点特征，整层路线下一步是{step['type']}（不是首领），点中间的节点进入")
