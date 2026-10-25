@@ -1262,6 +1262,8 @@ def handle_chaos_reward_claim(task: TriggerTask):
         task.click_box(claim_box)
         task.sleep(1)
         return True
+    if cards == 0 and "体力" not in texts and isinstance(getattr(task, "node_status", None), dict):
+        task.node_status["reward_cards_out"] = True    # 本次运行后面的结算页不再点「获得」（弹窗里没有体力兑换）
     task.log_info("不兑换（没有验证卡且不用体力 / 弹窗里有付费字样 / 认不出），点取消")
     _move_and_click(task, 0.352, 0.708)
     task.sleep(1)
@@ -1305,7 +1307,8 @@ def handle_chaos_reward_settlement(task: TriggerTask):
     reward_box = find_box_at_point(task, 0.851, 0.389)
     # 每个结算页一次：首领后层数才 +1，同层的「结算」航点要靠节点计数区分（2026-10-25 第 2 层两个结算航点都被当成已点过）
     key = (status.get("total_rounds", 0), status.get("pass_final_boss_count", 0), status.get("node_count", 0))
-    if reward_box and "获得" in reward_box.name and status.get("reward_claim_tried") != key:
+    if (reward_box and "获得" in reward_box.name and status.get("reward_claim_tried") != key
+            and not status.get("reward_cards_out")):
         cards = _verify_cards(task, (0.94, 0.051))
         if _reward_wanted(task, cards):
             status["reward_claim_tried"] = key

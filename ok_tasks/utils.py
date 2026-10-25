@@ -4795,7 +4795,8 @@ def reset_mission_status(task: TriggerTask):
     if ns is not None:
         keep = {'total_rounds': ns.get('total_rounds', 0),
                 'success_rounds': ns.get('success_rounds', 0),
-                'save_target_member': ns.get('save_target_member', False)}
+                'save_target_member': ns.get('save_target_member', False),
+                'reward_cards_out': ns.get('reward_cards_out', False)}
         task.node_status = _initial_node_status()
         task.node_status['total_rounds'] = keep['total_rounds']
         task.node_status['success_rounds'] = keep['success_rounds']
