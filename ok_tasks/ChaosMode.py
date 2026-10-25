@@ -49,7 +49,7 @@ class ChaosMode(TriggerTask):
         self.default_config['记录流程追踪'] = True
         self.default_config['调整零式升级'] = True
         self.default_config['刷存档开梦境模式'] = True
-        self.default_config['刷存档最低PT'] = 150
+        self.default_config['刷存档最低PT'] = 130
         self.default_config['刷存档主战员'] = "海德玛丽"
         self.default_config['存储数据保存上限大于多少'] = 120
         self.default_config['保留大于多少TB的存档'] = 62000

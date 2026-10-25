@@ -255,8 +255,8 @@ def score_effects(effects, mode, state=None):
         if effects.get("battle"):
             add(-6, "战斗")
     elif mode == MODE_TARGET:
-        # 用户 2026-10-24 定的优先级（分档，档间差距大）：目标装备 > 复制 > 中立卡（预设里有中立卡时）> 删卡（还没删够）
-        # > 选择卡牌闪光 > 选中主战员闪光 > ≥200 信用点 > 随机主战员闪光 > 随机卡牌闪光 > 其他装备 > <200 信用点
+        # 用户 2026-10-24 定的优先级（分档，档间差距大）：目标装备 > 中立卡（预设里有中立卡时）> 删卡（还没删够）
+        # > 选择卡牌闪光 > 选中主战员闪光 > 复制（2026-10-25 降）> ≥200 信用点 > 随机主战员闪光 > 随机卡牌闪光 > 其他装备 > <200 信用点
         # > 神闪（预设要求时；局内最好不神闪）> 战斗；回血按血量动态，但不超过 ≥200 信用点
         equip = effects.get("equipment") or []
         targets = state.get("target_equipment") or []
@@ -265,13 +265,14 @@ def score_effects(effects, mode, state=None):
         elif equip:
             add(40, "装备")
         if effects.get("copy_card"):
-            # 用户 2026-10-24：复制会带上卡的一切（闪光等）；随机 3 选 1 的复制放到选择闪光后面
+            # 用户 2026-10-24：复制会带上卡的一切（闪光等）。2026-10-25 用户嫌复制太频繁：
+            # 指定复制降到选中主战员闪光（150）和 ≥200 信用点（100）之间，随机 3 选 1 的复制降到随机闪光后面
             if state.get("need_copy", 0) <= 0:
                 add(-5, "复制")
             elif effects.get("copy_random"):
-                add(140, "随机复制")
+                add(45, "随机复制")
             else:
-                add(300, "复制")
+                add(120, "复制")
         if effects.get("neutral_card"):
             add(250 if state.get("need_neutral", 0) > 0 else -10, "中立卡")
         if rm and can_remove and state.get("need_remove", 0) > 0:
@@ -336,7 +337,7 @@ def score_effects(effects, mode, state=None):
             add(5, f"移除{rm}张")
     if hp and mode == MODE_TARGET and hp > 0:
         # 回血按缺血程度动态排名，一般不超过 ≥200 信用点（100）；血量 <25% 时死了就只能带出最近航路点的存档，
-        # 回血排到仅次于目标装备和复制
+        # 回血排到仅次于目标装备（高于中立卡、删卡、复制）
         cur = state.get("hp_pct", 100)
         add(250 if cur < 25 else min(95, max(2, (100 - cur) * 1.4)), "回血")
     elif hp:
@@ -629,8 +630,8 @@ def config_overrides(mode, member=None, plan=None, db=None):
 
 # ---------------- 刷存档：观测词条（2026-10-25 调研，2game-helper docs/czn-chaos-option-priority.md 第 9 节） ----------------
 # PT 上限 =（TIER+2）×10，TIER ≈ 难度 + 词条级数之和（实录：Ⅵ+疾病3=110，Ⅶ+疾病3=120，Ⅹ+精英1+不安1=140），观测最高 170；梦境 +10。
-# 用户 2026-10-25：锁定难度 Ⅷ，最终上限（含梦境）≥150 就行——带出去用过编辑道具上限自动变 180，局外慢慢改。
-OBSERVE_MAX_PT = 150    # 默认「刷存档最低PT」（含梦境）
+# 用户 2026-10-25：锁定难度 Ⅷ，最终上限（含梦境）≥130 就行——带出去用过编辑道具上限自动变 180，局外慢慢改。
+OBSERVE_MAX_PT = 130    # 默认「刷存档最低PT」（含梦境）
 # 词条名 → 到这个级数就不接受（单输出 + 自动战斗）；不在表里的（精英/不安…）都接受
 MODIFIER_REJECT_LEVEL = {"松懈": 1, "疏忽": 1, "暴君": 3, "疾病": 2, "愤怒": 2, "硬化": 2, "复仇": 2, "坏疽": 3, "损失": 3}
 MODIFIER_REJECT_TEXT = re.compile(r"无法获得存储数据|正义属性.*减少|抽取卡牌.*减少|打击次数变更|若仍有AP|友军所受伤害")

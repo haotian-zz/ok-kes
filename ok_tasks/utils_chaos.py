@@ -232,7 +232,7 @@ def handle_season_chaos_initial_page(task: TriggerTask):
     dream = 0
     save_mode = bool(required_level) and getattr(task, "chaos_mode", "") in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EMPTY)
     if save_mode:
-        # 刷存档：最终上限（含梦境 +10）≥「刷存档最低PT」，难度锁定（用户 2026-10-25：Ⅷ、150PT）
+        # 刷存档：最终上限（含梦境 +10）≥「刷存档最低PT」，难度锁定（用户 2026-10-25：Ⅷ、130PT）
         dream = 10 if _get_config_value(task, "刷存档开梦境模式", True) else 0
         required_level = int(_get_config_value(task, "刷存档最低PT", chaos_strategy.OBSERVE_MAX_PT)) - dream
     mods = chaos_strategy.parse_modifiers(value_text) if required_level else []

@@ -3447,7 +3447,7 @@ def _chaos_strategy_state(task: TriggerTask):
         "hp_pct": hp if hp is not False else 100,
         "seen": getattr(task, "chaos_seen", set()),
         "need_remove": max(0, len(plan.get("remove", [])) - removed),
-        "need_copy": len(plan.get("copy", [])),
+        "need_copy": max(0, len(plan.get("copy", [])) - node_status.get("copy_count", 0)),
         "need_spark": len(plan.get("flash", [])),
         "need_god_spark": sum(1 for c in plan.get("flash", []) if c.get("god_spark")),
         "need_neutral": len(plan.get("neutral", [])),

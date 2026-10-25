@@ -93,8 +93,8 @@ class TestPriorities(unittest.TestCase):
         return [d for _, d in sorted(zip([r[0] for r in res], descs), reverse=True)]
 
     def test_target_order(self):
-        descs = ["要他回去获得装备[截骨机]", "复制选中的1张卡牌", "移除1张卡牌", "选择1张卡牌闪光", "选中主战员闪光1次",
-                 "信用点增加300", "随机主战员触发1次闪光", "获得装备[女神之泪]", "信用点增加100"]
+        descs = ["要他回去获得装备[截骨机]", "移除1张卡牌", "选择1张卡牌闪光", "选中主战员闪光1次",
+                 "复制选中的1张卡牌", "信用点增加300", "随机主战员触发1次闪光", "获得装备[女神之泪]", "信用点增加100"]
         self.assertEqual(descs, self.rank(list(reversed(descs))))
 
     def test_target_other_equipment_below_random_spark(self):
@@ -106,9 +106,9 @@ class TestPriorities(unittest.TestCase):
         st = dict(self.need, need_remove=0)
         self.assertEqual("选中主战员闪光1次", self.rank(["移除1张卡牌", "选中主战员闪光1次"], state=st)[0])
 
-    def test_target_neutral_between_copy_and_remove(self):
+    def test_target_neutral_above_remove_and_copy(self):
         st = dict(self.need, need_neutral=1)
-        self.assertEqual(["复制选中的1张卡牌", "获得1张中立卡牌", "移除1张卡牌"],
+        self.assertEqual(["获得1张中立卡牌", "移除1张卡牌", "复制选中的1张卡牌"],
                          self.rank(["移除1张卡牌", "获得1张中立卡牌", "复制选中的1张卡牌"], state=st))
         self.assertEqual("移除1张卡牌", self.rank(["获得1张中立卡牌", "移除1张卡牌"])[0])
 
@@ -169,9 +169,9 @@ class TestPriorities(unittest.TestCase):
         st = dict(self.need, hp_pct=60)
         self.assertEqual(["信用点增加300", "恢复50%生命值", "信用点增加100"],
                          self.rank(["信用点增加100", "恢复50%生命值", "信用点增加300"], state=st))
-        # 血量 <25%：死了只能带出最近航路点的存档，回血仅次于目标装备和复制
+        # 血量 <25%：死了只能带出最近航路点的存档，回血排到删卡、复制前面
         st = dict(self.need, hp_pct=10)
-        self.assertEqual(["复制选中的1张卡牌", "恢复50%生命值", "移除1张卡牌"],
+        self.assertEqual(["恢复50%生命值", "移除1张卡牌", "复制选中的1张卡牌"],
                          self.rank(["移除1张卡牌", "恢复50%生命值", "复制选中的1张卡牌"], state=st))
 
     def test_target_random_copy_after_spark(self):
@@ -407,7 +407,7 @@ class TestTrace(unittest.TestCase):
         self.assertEqual([], cs.parse_modifiers("[欺诈]威胁他退下"))      # 事件选项的方括号不算词条
         self.assertEqual(8, cs.observe_start_difficulty(None))          # 用户 2026-10-25：锁定 Ⅷ
         self.assertEqual(10, cs.observe_start_difficulty(10))
-        self.assertEqual(150, cs.config_overrides(cs.MODE_TARGET, "罗丝薇瑟", {})["存储数据保存上限大于多少"])
+        self.assertEqual(130, cs.config_overrides(cs.MODE_TARGET, "罗丝薇瑟", {})["存储数据保存上限大于多少"])
 
     def test_pt_ledger(self):
         from utils import _pt_used, _pt_room
@@ -428,6 +428,21 @@ class TestTrace(unittest.TestCase):
         remove, _ = cs.score_effects({"remove_card": 1}, cs.MODE_TARGET, base)
         self.assertLess(copy, -100)                        # 第 3 次复制要 40 > 剩 30
         self.assertGreater(remove, 0)                      # 删 1 张 20 ≤ 30
+
+    def test_need_copy_counts_done(self):
+        from utils import _chaos_strategy_state
+        import utils
+        task = SimpleNamespace(node_status={"copy_count": 2}, chaos_plan={"copy": ["剑鸣九霄", "剑鸣九霄"]})
+        orig = (utils._get_current_hp_percent, utils._get_current_credit, utils._member_deck_state, utils._equipment_priority)
+        utils._get_current_hp_percent = lambda t: 100
+        utils._get_current_credit = lambda t: 0
+        utils._member_deck_state = lambda t: {}
+        utils._equipment_priority = lambda t, slot: []
+        try:
+            self.assertEqual(0, _chaos_strategy_state(task)["need_copy"])   # 复制够了就不再加分
+        finally:
+            (utils._get_current_hp_percent, utils._get_current_credit, utils._member_deck_state,
+             utils._equipment_priority) = orig
 
     def test_last_shop(self):
         from utils import _is_last_shop
