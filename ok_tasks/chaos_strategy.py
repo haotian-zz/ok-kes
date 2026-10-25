@@ -350,7 +350,9 @@ def pick_event_option(descs, mode, state=None, db=None):
             if any(is_specific_equipment(n) for n in shown.get("equipment") or []):
                 effects["equipment"] = shown["equipment"]
             src = f"库:{event['name']}/{o.get('text')}"
-            st = dict(state, unseen=o.get("id") not in seen)
+            # 库的模糊匹配同一选项可能对到不同事件（2026-10-24 实录「拒绝触碰」先对到暗约、后对到银色遗骸瀑布），
+            # 所以选过的选项同时按文字记，两个都没有才算没选过
+            st = dict(state, unseen=o.get("id") not in seen and text_key(d) not in seen)
         else:
             # 库里没有的事件：用选项文字当 key 记「选过」，没选过的同样优先
             effects = parse_effects(d)
@@ -388,7 +390,7 @@ def equipment_key(name):
 
 def option_seen_keys(desc, option_id):
     """选中一个选项后要记进「已选」的 key：选项本身 + 里面的装备。"""
-    keys = [option_id or text_key(desc)]
+    keys = [option_id or text_key(desc), text_key(desc)]
     keys += [equipment_key(n) for n in parse_effects(desc).get("equipment") or [] if is_specific_equipment(n)]
     return keys
 

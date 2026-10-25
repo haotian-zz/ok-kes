@@ -235,6 +235,14 @@ class TestPriorities(unittest.TestCase):
         descs = ["尝试对话发生事件[无法给出答案之人]", "袭击白使者信用点增加160"]
         self.assertEqual(descs[0], self.rank(descs, cs.MODE_EXPLORE, {"seen": set()})[0])
 
+    def test_seen_by_text_even_if_db_match_moves(self):
+        # 同一选项上次对到库里 A 事件、这次对到 B 事件：按文字也要认出选过
+        db = SimpleNamespace(iter_events=lambda region=None: [
+            {"name": "银色遗骸瀑布", "options": [{"id": "b1", "text": "拒绝触碰", "effects": {"remove_card": 1}}]}])
+        keys = cs.option_seen_keys("拒绝触碰移除1张所选卡牌", "a1")
+        _, res = cs.pick_event_option(["拒绝触碰移除1张所选卡牌"], cs.MODE_EXPLORE, {"seen": set(keys)}, db=db)
+        self.assertLess(res[0][0], 1000)
+
     def test_explore_followup_unseen(self):
         opt = {"id": "a", "text": "进入", "effects": {},
                "next": [{"id": "a1", "text": "x", "effects": {}}, {"id": "a2", "text": "y", "effects": {}}]}
