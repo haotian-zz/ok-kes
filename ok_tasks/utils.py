@@ -1788,6 +1788,13 @@ def is_frame_stuck(task: TriggerTask, stuck_threshold_seconds=30, change_thresho
     frame = task.frame
     if frame is None:
         return False
+    # 前面的页面处理函数一直命中时这里不会被调用；隔了很久才调用就不能拿旧时间算卡住
+    # （2026-10-25 存档清理连续翻页 3 分多钟，回来一看「画面卡住 210 秒」，差点触发重开游戏）
+    now = time.time()
+    if now - getattr(task, '_last_stuck_check', now) > 15:
+        task._last_change_time = now
+        task._prev_frame_gray = None
+    task._last_stuck_check = now
 
     # 缩放灰度图以减少计算量
     h, w = frame.shape[:2]
