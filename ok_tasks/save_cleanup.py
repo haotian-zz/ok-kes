@@ -32,6 +32,7 @@ def enabled(task):
 BATCH_BUTTON = (0.931, 0.929)
 ROW_GAP = 0.189              # 列表一行的高度（TB 文字 y：0.237 → 0.426 → 0.615）
 CELL_CLICK = (-0.175, -0.037)   # 从格子的 TB 文字到头像（点头像=勾选）
+SLOW_DRAG = 2.5             # 每拖一行的秒数：拖快了松手有惯性会滚十几行，慢拖几乎没有（2026-10-25 实测 3 秒一行刚好一行）
 
 
 def start(task):
@@ -192,7 +193,7 @@ def align(cells, tbs, start, expect):
     """可见格子对到详情页看过的序列 tbs（按分数从低到高）上：返回第一格的序号。
     候选是 start 起每次一行；要求每个能比的格子 TB 都一样，同样吻合的取离 expect 最近的。对不上返回 None。"""
     best = None
-    for off in range(start, start + 3 * 12, 3):
+    for off in range(max(0, start), start + 3 * 12, 3):
         pairs = [(tbs[off + pos], v[0]) for pos, v in cells.items()
                  if off + pos < len(tbs) and tbs[off + pos] is not None]
         if not pairs or any(a != b for a, b in pairs):
@@ -257,6 +258,19 @@ def _select(task, st, cells):
     off = align(cells, tbs, 0 if st["offset"] is None else st["offset"], st.get("expect", 0))
     if off is None:
         return _abort(task, st, f"列表对不上详情页看过的顺序（可见 {[cells[k][0] for k in sorted(cells)]}）")
+    missed = sorted(i for i in todo - st["selected"] if i < off)
+    if missed:
+        # 滚过头了（快速拖动有惯性，2026-10-25 实录一次拖了十几行，把第 16～31 个跳过了）：往回拖一行再对
+        st["back"] = st.get("back", 0) + 1
+        if st["back"] > 6:
+            return _abort(task, st, f"列表滚过头了，第 {missed[:5]} 个回不去")
+        task.log_info(f"存档清理：滚过了第 {missed[:5]} 个，往回拖一行")
+        st["expect"] = max(0, off - 3)
+        st["offset"] = max(0, off - 9)
+        st["last_view"] = None
+        task.swipe_relative(0.5, 0.40, 0.5, 0.40 + ROW_GAP, duration=SLOW_DRAG)
+        task.sleep(1.5)
+        return True
     st["offset"] = off
     before = _selected_count(task) or 0
     clicked = delta = 0
@@ -295,7 +309,7 @@ def _select(task, st, cells):
         else:
             st["last_view"] = view
             st["expect"] = off + 6
-            task.swipe_relative(0.5, 0.70, 0.5, 0.70 - 2 * ROW_GAP, duration=1.2)
+            task.swipe_relative(0.5, 0.70, 0.5, 0.70 - 2 * ROW_GAP, duration=2 * SLOW_DRAG)
             task.sleep(1.5)
             return True
     if not st["selected"]:
