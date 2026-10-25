@@ -466,6 +466,10 @@ def recognize_cards_in_deck(
     return cards
 
 
+# 不是事件选项的底栏文字：装备/选卡页左下角的卡组统计「独特卡牌平均费用 0.9」会被事件图标特征误命中（2026-10-24 实录）
+NOT_EVENT_OPTION = re.compile(r"平均费用")
+
+
 def recognize_event_options(
     task: TriggerTask,
     region=(0.198, 0.840, 0.803, 1.000),
@@ -514,7 +518,7 @@ def recognize_event_options(
             min(1.0, center_y - 0.021),
         )
         description = _get_region_text(task, description_region).strip()
-        if not description:
+        if not description or NOT_EVENT_OPTION.search(description):
             continue
         event_options.append({
             "x": center_x,

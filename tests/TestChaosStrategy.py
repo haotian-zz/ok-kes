@@ -136,6 +136,11 @@ class TestPriorities(unittest.TestCase):
         self.assertIsNone(GOD_SPARK_PAGE.search("请决定闪光效果。"))
         self.assertIsNone(GOD_SPARK_PAGE.search("请选择1张要赋予闪光的卡牌。"))
 
+    def test_deck_stat_not_event_option(self):
+        from utils import NOT_EVENT_OPTION
+        self.assertTrue(NOT_EVENT_OPTION.search("独特卡牌平均费用0.9"))
+        self.assertIsNone(NOT_EVENT_OPTION.search("收起有用的东西随机获得稀有~传说装备"))
+
     def test_target_heal(self):
         st = dict(self.need, hp_pct=60)
         self.assertEqual(["信用点增加300", "恢复50%生命值", "信用点增加100"],
