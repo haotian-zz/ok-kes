@@ -3432,6 +3432,19 @@ def handle_event_task(task: TriggerTask):
     tasks_info = recognize_event_options(task, page="事件任务页面")
     if not tasks_info:
         return False
+    # 选项有入场动画：刚出现时只识别到 1 个就打分会错过后面的（2026-10-24 实录：只看到「拒绝触碰」就选了，
+    # 漏了没拿过的装备[模仿之手]）。按策略选之前隔一会儿再认一次，个数不变才算稳定
+    if (getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) != chaos_strategy.MODE_LEGACY
+            and all(t["y"] >= 0.925 for t in tasks_info)):
+        for _ in range(3):
+            task.sleep(0.6)
+            task.next_frame()
+            again = recognize_event_options(task, page="事件任务页面（稳定确认）")
+            if len(again) == len(tasks_info):
+                break
+            tasks_info = again
+        if not tasks_info:
+            return False
 
     selectable_tasks = []
     for task_info in tasks_info:
