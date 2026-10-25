@@ -57,6 +57,9 @@ def _save_img(t, name, frame, width=IMG_WIDTH):
     return name
 
 
+MAP_IMG_WIDTH = 3000         # 整层拼图很宽，缩到 1280 节点就看不清了
+
+
 def step(task, kind, title, frame=None, **data):
     """记一条决策/页面。frame 给了就存截图。出错不影响任务。"""
     if not enabled(task):
@@ -64,7 +67,8 @@ def step(task, kind, title, frame=None, **data):
     try:
         t = _state(task)
         t["seq"] += 1
-        img = _save_img(t, f"{t['seq']:04d}_{kind}.jpg", frame)
+        img = _save_img(t, f"{t['seq']:04d}_{kind}.jpg", frame,
+                        MAP_IMG_WIDTH if kind in ("map", "route") else IMG_WIDTH)
         _write(t, {"seq": t["seq"], "t": time.strftime("%H:%M:%S"), "kind": kind, "title": title,
                    "img": img, **_context(task), "data": data})
     except Exception as e:  # noqa: BLE001
