@@ -2193,8 +2193,9 @@ def handle_main_member_flash(task: TriggerTask):
     )
     if prioritized != click_positions:
         # 认出了目标主战员：先在她身上多点两次再退到别人。点击有动画，2 秒内没出确认就换人，
-        # 2026-10-25 实录闪光给了第 2 位辅战员
+        # 2026-10-25 实录两次闪光分别给了凛和米卡（罗丝薇瑟在第 1 位）
         prioritized = [prioritized[0]] * 3 + prioritized[1:]
+        task.sleep(1)       # 页面淡入时点击不生效
     click_positions = prioritized
 
     for cx, cy in click_positions:
