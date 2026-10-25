@@ -644,8 +644,12 @@ def parse_modifiers(text):
     out = []
     for i, m in enumerate(marks):
         end = marks[i + 1].start() if i + 1 < len(marks) else len(text)
-        out.append((m.group(1), int(m.group(2)), text[m.end():end]))
+        name = "".join(MODIFIER_OCR_FIX.get(ch, ch) for ch in m.group(1))
+        out.append((name, int(m.group(2)), text[m.end():end]))
     return out
+
+
+MODIFIER_OCR_FIX = {"疎": "疏"}     # 实录 OCR 把「疏忽」认成「疎忽」，没被拒
 
 
 def judge_modifiers(mods):

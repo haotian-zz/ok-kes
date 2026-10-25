@@ -544,3 +544,10 @@ class TestLayerReset(unittest.TestCase):
         self.assertTrue(_copy_needed(task))
         task.node_status["copy_count"] = 2
         self.assertFalse(_copy_needed(task))
+
+
+class TestModifierOcr(unittest.TestCase):
+    def test_variant_char(self):
+        mods = cs.parse_modifiers("【精英2】多2个精英【疎忽1】某效果")
+        self.assertEqual("疏忽", mods[1][0])
+        self.assertFalse(cs.judge_modifiers(mods)[0])
