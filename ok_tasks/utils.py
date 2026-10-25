@@ -1433,7 +1433,8 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
                 if card["selected"]:
                     continue
                 card_name = card["name"].strip()
-                if target not in card_name and card_name not in target and not _ocr_name_matches(chaos_strategy.base_card_name(card_name), target):
+                if target not in card_name and card_name not in target and not _ocr_name_matches(chaos_strategy.base_card_name(card_name), target) \
+                        and not _ocr_desc_matches(chaos_strategy.base_card_name(card_name), card.get("description", ""), target):
                     continue
                 task.log_info(
                     f"{page}: 命中优先级「{target}」，点击目标卡牌「{card['name']}」"
@@ -3091,18 +3092,58 @@ def _ocr_name_matches(ocr_name, target):
     """OCR 卡名错一个字也算目标卡：等长（≥3 字）、只差一个字、且 OCR 出的不是库里另一张真卡的名字。
     2026-10-25 实录重新闪光页把「明灭剑」认成「明灰剑」，没选上就点了跳过，冥想的 80 信用点白花。
     「黑云奥义：残」是真卡名，不会被当成「黑云奥义：灭」。"""
-    global _REAL_CARD_NAMES
     if len(ocr_name) != len(target) or len(target) < 3:
         return False
     if sum(1 for x, y in zip(ocr_name, target) if x != y) != 1:
         return False
+    return ocr_name not in _real_card_names()
+
+
+def _real_card_names():
+    global _REAL_CARD_NAMES
     if _REAL_CARD_NAMES is None:
         try:
             db = game_db.get_db()
             _REAL_CARD_NAMES = {c["name"] for c in list(db.cards) + list(db.neutral_cards)}
         except Exception:  # noqa: BLE001
             _REAL_CARD_NAMES = set()
-    return ocr_name not in _REAL_CARD_NAMES
+    return _REAL_CARD_NAMES
+
+
+_CARD_DESC_BIGRAMS = None
+
+
+def _bigrams(text):
+    t = re.sub(r"[\s:：，,。.、（）()【】\[\]%\d]", "", text or "")
+    return {t[i:i + 2] for i in range(len(t) - 1)}
+
+
+def _ocr_desc_matches(ocr_name, ocr_desc, target):
+    """OCR 卡名错得更多时按描述认：OCR 名不是真卡名、和目标至少共一个字，且整个卡库里描述（含各闪光变体）最像的就是目标。
+    2026-10-25 实录重新闪光页把「明灭剑」认成「灰剑」（描述「明暗分裂时，分裂成剑华：明、剑华：暗」），冥想 120 信用点白花。"""
+    global _CARD_DESC_BIGRAMS
+    if not ocr_name or not ocr_desc or not set(ocr_name) & set(target):
+        return False
+    if ocr_name in _real_card_names():
+        return False
+    if _CARD_DESC_BIGRAMS is None:
+        try:
+            db = game_db.get_db()
+            _CARD_DESC_BIGRAMS = {}
+            for c in list(db.cards) + list(db.neutral_cards):
+                grams = _bigrams(c.get("desc"))
+                for sp in c.get("sparks") or []:
+                    grams |= _bigrams(sp.get("desc"))
+                _CARD_DESC_BIGRAMS.setdefault(c["name"], set()).update(grams)
+        except Exception:  # noqa: BLE001
+            _CARD_DESC_BIGRAMS = {}
+    ocr = _bigrams(ocr_desc)
+    if len(ocr) < 4 or target not in _CARD_DESC_BIGRAMS:
+        return False
+    scores = {name: len(ocr & grams) / len(ocr) for name, grams in _CARD_DESC_BIGRAMS.items() if grams}
+    best = max(scores, key=scores.get)
+    # 实录「灰剑」：明灭剑 0.44，次高 0.28；描述 OCR 常有串行和漏字，阈值不能太高，靠和次高拉开差距防误认
+    return best == target and scores[target] >= 0.35 and scores[target] - sorted(scores.values())[-2] >= 0.1
 
 
 def _flash_done(task: TriggerTask, name):

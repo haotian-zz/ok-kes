@@ -561,6 +561,14 @@ class TestLayerReset(unittest.TestCase):
         self.assertFalse(_ocr_name_matches("明剑", "灭剑"))
         self.assertTrue(_ocr_name_matches(cs.base_card_name("明灰剑 (强化)"), "明灭剑"))
 
+    def test_ocr_desc_match(self):
+        from utils import _ocr_desc_matches
+        desc = "明暗分裂时，分裂成剑华：伤害464%明、剑华：暗1回合内士气1"
+        self.assertTrue(_ocr_desc_matches("灰剑", desc, "明灭剑"))
+        self.assertFalse(_ocr_desc_matches("灰剑", desc, "剑鸣九霄"))
+        self.assertFalse(_ocr_desc_matches("剑刃破晓", "伤害232%丢弃1", "明灭剑"))
+        self.assertFalse(_ocr_desc_matches("灰剑", "生成3张剑穗加入手牌", "明灭剑"))
+
     def test_run_state_roundtrip(self):
         import tempfile
         import utils
