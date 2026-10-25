@@ -638,10 +638,21 @@ def handle_codex_search(task: TriggerTask):
     return True
 
 
+def _keeps_damaged_saves(task):
+    """选了玩法（刷存档/探索度）时不做记忆消除：主战员深层创伤时结算出的存档是「受损数据」，咨询治好才能用，记忆消除会把它一起删掉。
+    2026-10-25 第八局罗丝薇瑟 68550TB 的存档就这样被消除了。"""
+    return getattr(task, 'chaos_mode', chaos_strategy.MODE_LEGACY) != chaos_strategy.MODE_LEGACY
+
+
 def handle_memory_elimination(task: TriggerTask):
-    """记忆消除页面: 点击记忆消除按钮。"""
+    """记忆消除页面: 点击记忆消除按钮（玩法模式点取消，保住受损数据）。"""
     box = find_box_at_point(task, 0.589, 0.703)
     if box and _get_game_text(task, '记忆消除') in box.name:
+        if _keeps_damaged_saves(task):
+            task.log_info("记忆消除会删掉受损的存档，玩法模式不消除，点取消")
+            _move_and_click(task, 0.340, 0.703)
+            task.sleep(1)
+            return True
         task.log_info("检测到记忆消除页面，点击记忆消除")
         task.click_box(box)
         task.sleep(0.5)
@@ -1057,9 +1068,16 @@ def handle_trauma_center(task: TriggerTask):
     task.sleep(0.5)
     travel_ticket = task.ocr(0.933, 0.904, 0.971, 0.943)
     if travel_ticket:
-        has_ticket = int(travel_ticket[0].name[0]) > 0
+        has_ticket = travel_ticket[0].name[:1].isdigit() and int(travel_ticket[0].name[0]) > 0
         prefer_gold = _get_config_value(task, '优先使用金币治疗', False)
-        if prefer_gold:
+        if _keeps_damaged_saves(task):
+            if has_ticket:
+                task.log_info("玩法模式用旅行券咨询（记忆消除会删掉受损的存档）")
+                _move_and_click(task, 0.798, 0.924)
+            else:
+                task.log_info("没有旅行券，玩法模式不做记忆消除，带着创伤离开（会强制梦境模式）", notify=True)
+                _move_and_click(task, 0.044, 0.046)
+        elif prefer_gold:
             task.log_info("优先使用金币治疗配置为True，点击金币治疗")
             _move_and_click(task, 0.702, 0.924)
         else:
