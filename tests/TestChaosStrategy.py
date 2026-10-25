@@ -559,6 +559,7 @@ class TestLayerReset(unittest.TestCase):
         self.assertTrue(_ocr_name_matches("明灰剑", "明灭剑"))
         self.assertFalse(_ocr_name_matches("黑云奥义：残", "黑云奥义：灭"))
         self.assertFalse(_ocr_name_matches("明剑", "灭剑"))
+        self.assertTrue(_ocr_name_matches(cs.base_card_name("明灰剑 (强化)"), "明灭剑"))
 
     def test_run_state_roundtrip(self):
         import tempfile

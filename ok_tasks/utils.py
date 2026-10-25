@@ -1433,7 +1433,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
                 if card["selected"]:
                     continue
                 card_name = card["name"].strip()
-                if target not in card_name and card_name not in target and not _ocr_name_matches(card_name, target):
+                if target not in card_name and card_name not in target and not _ocr_name_matches(chaos_strategy.base_card_name(card_name), target):
                     continue
                 task.log_info(
                     f"{page}: 命中优先级「{target}」，点击目标卡牌「{card['name']}」"
