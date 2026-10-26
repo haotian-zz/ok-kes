@@ -865,3 +865,10 @@ class TestMemoryProcessConfirm(unittest.TestCase):
         self.assertEqual(clicked, ["确认"])
         task.ocr = lambda *a, **k: []
         self.assertFalse(utils_chaos._click_memory_process_confirm(task))
+
+    def test_specified_memory_ocr_one_char(self):
+        import utils_chaos
+        card = lambda n: {"name": n, "description": "记忆/开幕己方技能卡牌叠加时"}
+        self.assertTrue(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：丧失")))
+        self.assertTrue(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：丧牛")))
+        self.assertFalse(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：誓约")))

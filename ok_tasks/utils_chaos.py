@@ -43,6 +43,15 @@ import utils_daily
 # ------------------------- 卡厄思模式独有页面处理函数 -------------------------
 
 
+def is_specified_memory(specified: str, card) -> bool:
+    """卡牌是不是指定的记忆卡。名字 OCR 错一个字也算（2026-10-25 实录「丧失」认成「丧牛」，精密加工页当成别的卡去加工、白跳过一次）。"""
+    if is_subsequence(specified, card["name"] + "：:" + card["description"]):
+        return True
+    norm = lambda t: re.sub(r"[\s:：]", "", t or "")
+    a, b = norm(specified), norm(card["name"])
+    return len(a) >= 3 and len(a) == len(b) and sum(x != y for x, y in zip(a, b)) <= 1
+
+
 def handle_memory_process(task: TriggerTask):
     """加工记忆页面：选择命中指定记忆的卡牌，否则跳过。"""
     title = _get_region_text(task, (0.420, 0.072, 0.584, 0.169))
@@ -61,7 +70,7 @@ def handle_memory_process(task: TriggerTask):
     )[:3]
     specified_memory = _get_config_value(task, "指定记忆卡牌", "")
     if specified_memory:
-        hits = [c for c in cards if is_subsequence(specified_memory, c["name"] + "：:" + c["description"])]
+        hits = [c for c in cards if is_specified_memory(specified_memory, c)]
         want = _get_config_value(task, "指定记忆描述", "")
         if hits and want:
             # 同名记忆的几种效果（自身攻击力 / 伤害总量…）只差描述，按预设描述最像的选
@@ -111,7 +120,7 @@ def handle_memory_card_select(task: TriggerTask):
     specified_memory = _get_config_value(task, "指定记忆卡牌", "")
     if specified_memory:
         for card in cards:
-            if is_subsequence(specified_memory, card["name"] + "：:" + card["description"]):
+            if is_specified_memory(specified_memory, card):
                 task.log_info(f"记忆卡牌选择页面：命中指定记忆卡牌「{card['name']}」")
                 _move_and_click(task, card["x"], card["y"])
                 task.sleep(1)
@@ -1232,7 +1241,7 @@ def handle_precision_memory_process(task: TriggerTask):
 
     specified_memory = _get_config_value(task, "指定记忆卡牌", "")
     if specified_memory and cards and not any(
-        is_subsequence(specified_memory, card["name"] + "：:" + card["description"])
+        is_specified_memory(specified_memory, card)
         for card in cards
     ):
         process_box = next(
