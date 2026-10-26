@@ -5249,10 +5249,6 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
             and task.node_status.get('pass_final_boss_count', 0) == 1
             and not task.node_status.get('octopus_seen') and not got):
         task.log_info("章鱼哥速刷：第一层没遇到章鱼哥（赛内克图斯），退出重进")
-        if hasattr(task, 'entry_checked') and not getattr(task, 'zero_upgrades_checked', True):
-            # 任务是在局内启动的、还没核对过零式升级：退出后到了难度页先回主页检查一次（局内进不了升级页）
-            task.log_info("本次任务还没检查零式升级，退出后先回主页检查")
-            task.recheck_zero_at_lobby = True
         _move_and_click(task, 0.959, 0.051)
         task.sleep(1)
         return True

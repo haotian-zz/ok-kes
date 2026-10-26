@@ -351,8 +351,9 @@ class ChaosMode(TriggerTask):
                 return
             self.start_window = False
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环
-        if getattr(self, 'recheck_zero_at_lobby', False) and self._at_lobby():
-            self.recheck_zero_at_lobby = False
+        # 任务在局内启动时没核对过零式升级：一局结束回到难度页（局外）就回主页补查一次
+        if not getattr(self, 'zero_upgrades_checked', True) and self.config.get('调整零式升级') and self._at_lobby():
+            self.zero_upgrades_checked = True
             self.entry_checked = False
             if self._enter_chaos_from_home():
                 return
