@@ -738,6 +738,19 @@ class TestOctopusRush(unittest.TestCase):
             got.node_status["chaos_core_got"] = "混沌之识"
             self.assertFalse(utils._finish_only_first_layer(got))
             self.assertEqual(clicks, [])
+            # 用户 2026-10-26：只认混沌之识时，第 2、3 层遇到章鱼哥没掉混沌之识也退出重开
+            late = self._task(seen=True, layers=2)
+            late.config["章鱼哥速刷只认混沌之识"] = True
+            self.assertTrue(utils._finish_only_first_layer(late))
+            clicks.clear()
+            late = self._task(seen=True, layers=2)
+            late.config["章鱼哥速刷只认混沌之识"] = True
+            late.node_status["chaos_core_got"] = "混沌之识"
+            self.assertFalse(utils._finish_only_first_layer(late))
+            late = self._task(seen=False, layers=2)
+            late.config["章鱼哥速刷只认混沌之识"] = True
+            self.assertFalse(utils._finish_only_first_layer(late))
+            self.assertEqual(clicks, [])
         finally:
             utils._move_and_click = old
 

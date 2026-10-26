@@ -5509,11 +5509,12 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
         task.sleep(1)
         return True
 
+    core_only = _get_config_value(task, OCTOPUS_CORE_ONLY, False) is True
+    got = task.node_status.get('chaos_core_got' if core_only else 'target_equip_got')
+    # 用户 2026-10-26：开了「只认混沌之识」时，别的目标装备也不算；不管第几层遇到章鱼哥没掉混沌之识，下一个结算页就退出重开
+    late_miss = core_only and task.node_status.get('octopus_seen') and not got
     if (_get_config_value(task, OCTOPUS_RUSH, False) is True
-            and task.node_status.get('pass_final_boss_count', 0) == 1):
-        # 用户 2026-10-26：开了「只认混沌之识」时，别的目标装备也不算，没掉混沌之识就退出重开
-        core_only = _get_config_value(task, OCTOPUS_CORE_ONLY, False) is True
-        got = task.node_status.get('chaos_core_got' if core_only else 'target_equip_got')
+            and (task.node_status.get('pass_final_boss_count', 0) == 1 or late_miss)):
         if got:
             if not task.node_status.get('octopus_rush_kept_logged'):
                 task.node_status['octopus_rush_kept_logged'] = True
