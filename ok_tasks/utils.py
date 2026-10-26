@@ -4403,15 +4403,22 @@ def _wait_for_rest_confirm(task: TriggerTask):
     return True
 
 
+SPECIAL_FLASH_THRESHOLD = 0.7
+
+
 def handle_rest(task: TriggerTask):
     """休息界面: 根据血量、信用点和冥想状态选择休息或冥想。"""
     if any("卡牌奖励" in b.name for b in task.all_texts or []):
         return False                         # 训练后弹出的卡牌奖励交给 handle_card_reward
+    # 主战员头上的金色卡牌气泡＝灵光一闪，要点（用户 2026-10-25）。
+    # 实录 trace 里匹配度只有 0.75～0.88，默认阈值 0.8 常常漏掉（冥想点击的金光只有 0.5 左右）
     special_flash = task.find_one(
         feature_name=["special_flash_luosi", "special_flash_luosi2"],
         box=task.box_of_screen(0.219, 0.208, 0.786, 0.814),
+        threshold=SPECIAL_FLASH_THRESHOLD,
     )
     if special_flash:
+        task.log_info(f"休息区有主战员头上的金色卡牌（灵光一闪），点开 置信度={special_flash.confidence:.2f}")
         _move_and_click(
             task,
             (special_flash.x + special_flash.width / 2) / task.width,
