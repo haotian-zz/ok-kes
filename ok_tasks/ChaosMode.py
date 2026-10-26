@@ -300,6 +300,8 @@ class ChaosMode(TriggerTask):
             ok = utils_chaos_prep.enter_event_chaos(self, difficulty)
             if ok == "restart":
                 return True     # 玩法刚切换，下一帧从难度页回主页按新玩法重新进
+            if ok == "stopped":
+                return True     # 没选到指定难度，已报错停任务
         elif mode == chaos_strategy.MODE_EXPLORE:
             ok = utils_chaos_prep.enter_chaos_figure(self)
         else:

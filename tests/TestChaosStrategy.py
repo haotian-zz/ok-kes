@@ -1055,12 +1055,12 @@ class TestSaveDifficultyAndModifiers(unittest.TestCase):
         r, calls, flags, _ = self._lock([130])
         self.assertTrue(r)
         self.assertEqual(calls, [8])
-        r, calls, flags, task = self._lock([80], switches=2)
+        r, calls, flags, task = self._lock([80], switches=1)
         self.assertFalse(r)
         self.assertEqual(task._difficulty_switches, 0)
 
     def test_stops_instead_of_playing_wrong_difficulty(self):
-        r, calls, flags, _ = self._lock([130], switches=3)
+        r, calls, flags, _ = self._lock([130], switches=1)
         self.assertTrue(r)
         self.assertEqual(calls, [])
         self.assertTrue(flags.get("disabled"))

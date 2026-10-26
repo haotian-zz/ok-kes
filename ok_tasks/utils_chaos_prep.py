@@ -717,7 +717,12 @@ def enter_event_chaos(task: BaseTask, difficulty=None):
     on_lobby = getattr(task, "on_chaos_lobby", None)
     if on_lobby and on_lobby() == "restart":
         return "restart"
-    select_difficulty(task, difficulty)
+    got = select_difficulty(task, difficulty)
+    if difficulty and got != difficulty:
+        # 用户 2026-10-26：选不到指定难度就不要开始，直接报错
+        task.log_error(f"卡厄思难度：要第 {difficulty} 档，没选到（当前 {got}），不开始，停止任务", notify=True)
+        task.disable()
+        return "stopped"
     if (getattr(task, "chaos_overrides", None) or {}).get("存储数据保存上限大于多少"):
         # 刷存档要先观测词条：停在难度页，交给 utils_chaos.handle_season_chaos_initial_page（再次观测 → 进入）
         return True
