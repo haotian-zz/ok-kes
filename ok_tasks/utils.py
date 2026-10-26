@@ -3097,12 +3097,87 @@ def _avoid_god_spark(task: TriggerTask):
 PT_COST = {"移除": 20, "复制": 40, "中立卡": 20, "神闪": 20}
 
 
-def _pt_used(task: TriggerTask):
-    ns = getattr(task, "node_status", None) or {}
+def _pt_ledger(ns):
     return (PT_COST["移除"] * ns.get("removed_card_count", 0)
             + PT_COST["复制"] * max(0, ns.get("copy_count", 0) - 2)
             + PT_COST["中立卡"] * ns.get("neutral_card_count", 0)
             + PT_COST["神闪"] * ns.get("god_spark_count", 0))
+
+
+def _pt_used(task: TriggerTask):
+    """已用 PT。选路页读过游戏「主战员」面板的「模糊的记忆」就以它为准，再加上读完以后脚本记的增量；
+    没读到才全靠自己记（2026-10-25 实录自己记的比存档页少 20～60：记忆卡等没算进去）。"""
+    ns = getattr(task, "node_status", None) or {}
+    raw = _pt_ledger(ns)
+    if ns.get("pt_game") is None:
+        return raw
+    return ns["pt_game"] + max(0, raw - ns.get("pt_game_ledger", raw))
+
+
+# 局内左上角头像点开的「主战员」面板（2026-10-25 实机）：每人一列，模糊的记忆 a/b、复制 a/3、移除 a/5、压力、装备
+MEMBER_PANEL_COLUMNS = ((0.14, 0.40), (0.41, 0.67), (0.68, 0.95))
+MEMBER_PANEL_ROWS = {"pt": "模糊的记忆", "copy": "复制", "remove": "移除"}
+
+
+def parse_member_panel(boxes, width, height):
+    """OCR 结果 → [{name, pt, pt_cap, copy, remove}]，每列一个。"""
+    def center(b):
+        return (b.x + b.width / 2) / width, (b.y + b.height / 2) / height
+
+    cols = []
+    for x0, x1 in MEMBER_PANEL_COLUMNS:
+        inside = [(b, *center(b)) for b in boxes if x0 <= center(b)[0] <= x1]
+        names = [b.name.strip() for b, _, y in inside if 0.33 <= y <= 0.40 and len(b.name.strip()) >= 1
+                 and not re.search(r"\d", b.name)]
+        col = {"name": max(names, key=len) if names else ""}
+        for key, label in MEMBER_PANEL_ROWS.items():
+            ys = [y for b, _, y in inside if label in b.name]
+            if not ys:
+                continue
+            for b, _, y in inside:
+                m = re.fullmatch(r"\s*(\d+)\s*/\s*(\d+)\s*", b.name)
+                if m and abs(y - ys[0]) <= 0.02:
+                    col[key] = int(m.group(1))
+                    if key == "pt":
+                        col["pt_cap"] = int(m.group(2))
+        cols.append(col)
+    return cols
+
+
+def read_member_panel(task: TriggerTask):
+    """选路页点开主战员面板读刷存档主战员的 PT/复制/移除，读完关掉。读到就同步进 node_status。"""
+    ns = getattr(task, "node_status", None)
+    target = str(_get_config_value(task, "刷存档主战员", "") or "").strip()
+    if ns is None or not target:
+        return None
+    _move_and_click(task, 0.30, 0.075)
+    task.sleep(1.5)
+    task.next_frame()
+    texts = _simplify_texts(task.ocr())
+    if not any("模糊的记忆" in b.name for b in texts):
+        task.log_info("主战员面板没打开，这次不读游戏里的 PT")
+        return None
+    cols = parse_member_panel(texts, task.width, task.height)
+    _move_and_click(task, 0.959, 0.050)      # 右上角 X 关面板
+    task.sleep(1)
+    col = next((c for c in cols if c.get("name") and (target in c["name"] or c["name"] in target)), None)
+    if not col or "pt" not in col:
+        task.log_info(f"主战员面板没找到「{target}」的模糊的记忆：{cols}")
+        return None
+    raw = _pt_ledger(ns)
+    task.log_info(f"主战员面板：{col['name']} 模糊的记忆 {col['pt']}/{col.get('pt_cap')}，"
+                  f"复制 {col.get('copy')}，移除 {col.get('remove')}")
+    if col["pt"] != _pt_used(task):
+        task.log_info(f"PT 以游戏为准：主战员面板 {col['pt']}/{col.get('pt_cap')}，脚本记的 {_pt_used(task)}")
+    ns["pt_game"], ns["pt_game_ledger"] = col["pt"], raw
+    if col.get("pt_cap"):
+        task.chaos_pt_cap = col["pt_cap"]
+    for key, ns_key in (("copy", "copy_count"), ("remove", "removed_card_count")):
+        if key in col and col[key] != ns.get(ns_key, 0):
+            task.log_info(f"{MEMBER_PANEL_ROWS[key]}次数以游戏为准：{ns.get(ns_key, 0)} → {col[key]}")
+            ns[ns_key] = col[key]
+            ns["pt_game_ledger"] = _pt_ledger(ns)
+    return col
 
 
 def _pt_cost(task: TriggerTask, what):
@@ -4002,6 +4077,7 @@ def handle_route_selection(task: TriggerTask):
             task.node_status['enter_new_node'] = False
             task.node_status['node_count'] += 1
             task.node_status['precision_memory_visited'] = False
+            task.node_status['pt_panel_read'] = False
             task.log_info(f"离开路线选择页面，当前节点计数: {task.node_status['node_count']}")
         return False
 
@@ -4026,6 +4102,10 @@ def handle_route_selection(task: TriggerTask):
         if _get_config_value(task, '进入商店', False):
             task.node_status['shop'] = True
             task.log_info(f"进入商店配置为True，更新 node_status['shop']=True")
+        # 刷存档：每到选路页读一次游戏里的 PT（模糊的记忆），PT 账以它为准
+        if _avoid_god_spark(task) and not task.node_status.get('pt_panel_read'):
+            task.node_status['pt_panel_read'] = True
+            read_member_panel(task)
     task.sleep(1)
 
     route_box = task.box_of_screen(0.656, 0.053, 0.977, 0.908)
@@ -5381,7 +5461,7 @@ def reset_layer_status(task: TriggerTask):
 
 
 RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok",
-                  "octopus_seen", "target_equip_got", "octopus_rush_kept_logged")
+                  "octopus_seen", "target_equip_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")

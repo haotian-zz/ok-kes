@@ -872,3 +872,31 @@ class TestMemoryProcessConfirm(unittest.TestCase):
         self.assertTrue(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：丧失")))
         self.assertTrue(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：丧牛")))
         self.assertFalse(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：誓约")))
+
+
+class TestMemberPanel(unittest.TestCase):
+    """局内主战员面板（2026-10-25 实机 OCR）：PT 以游戏为准。"""
+    ROWS = [(0.182, 0.365, "罗丝薇瑟"), (0.431, 0.367, "凛"), (0.713, 0.366, "米卡"),
+            (0.194, 0.578, "模糊的记忆"), (0.358, 0.578, "60/130"), (0.468, 0.577, "模糊的记忆"),
+            (0.632, 0.579, "0/130"), (0.742, 0.577, "模糊的记忆"), (0.906, 0.578, "20/130"),
+            (0.173, 0.626, "国复制"), (0.365, 0.629, "2/3"), (0.172, 0.671, "國移除"), (0.365, 0.674, "3/5"),
+            (0.446, 0.628, "复制"), (0.638, 0.628, "0/3"), (0.369, 0.519, "796")]
+
+    def boxes(self):
+        return [SimpleNamespace(x=x * 1920, y=y * 1080, width=0, height=0, name=n) for x, y, n in self.ROWS]
+
+    def test_parse(self):
+        import utils
+        cols = utils.parse_member_panel(self.boxes(), 1920, 1080)
+        self.assertEqual(cols[0], {"name": "罗丝薇瑟", "pt": 60, "pt_cap": 130, "copy": 2, "remove": 3})
+        self.assertEqual(cols[1]["name"], "凛")
+        self.assertEqual(cols[2]["pt"], 20)
+
+    def test_pt_used_prefers_game(self):
+        import utils
+        task = SimpleNamespace(node_status={"removed_card_count": 3, "copy_count": 2})
+        self.assertEqual(utils._pt_used(task), 60)
+        task.node_status.update(pt_game=100, pt_game_ledger=60)
+        self.assertEqual(utils._pt_used(task), 100)
+        task.node_status["copy_count"] = 3          # 读完以后又复制了一次（+40）
+        self.assertEqual(utils._pt_used(task), 140)
