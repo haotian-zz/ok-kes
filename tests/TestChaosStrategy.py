@@ -764,6 +764,11 @@ class TestOctopusRoute(unittest.TestCase):
     def test_first_layer_normal_first(self):
         w = cs.route_weights(cs.MODE_TARGET, 0, None, 0, octopus=True)["types"]
         self.assertGreater(w["小怪"], max(w["事件"], w["精英"], w["休息"]))
+        # 所有战斗都高于问号事件（用户 2026-10-25），事件有目标装备加分也一样
+        for bonus in (0, 3):
+            w = cs.route_weights(cs.MODE_TARGET, 0, 50, bonus, octopus=True)["types"]
+            self.assertGreater(w["精英"], max(w["事件"], w["休息"]))
+            self.assertGreater(w["小怪"], w["精英"])
         w2 = cs.route_weights(cs.MODE_TARGET, 1, None, 0, octopus=True)["types"]
         self.assertEqual(w2, cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"])
         self.assertEqual(cs.route_weights(cs.MODE_TARGET, 0)["types"], cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"])

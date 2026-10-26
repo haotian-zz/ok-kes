@@ -5,6 +5,7 @@ import json
 import re
 import random
 import time
+from types import SimpleNamespace
 import sys
 import cv2
 import os
@@ -171,7 +172,8 @@ def _get_route_priority(task: TriggerTask):
     ns = getattr(task, 'node_status', None)
     if (_get_config_value(task, OCTOPUS_RUSH, False) is True and isinstance(ns, dict)
             and ns.get('pass_final_boss_count', 0) == 0 and "小怪" in value):
-        value = ["小怪"] + [v for v in value if v != "小怪"]     # 章鱼哥速刷第一层普通战优先（没整层路线时的兜底）
+        # 章鱼哥速刷第一层：普通战 > 精英 > 其他（没整层路线时的兜底）
+        value = [v for v in ("小怪", "精英") if v in value] + [v for v in value if v not in ("小怪", "精英")]
     return value
 
 
@@ -4329,6 +4331,10 @@ def handle_leave(task: TriggerTask):
     """离开按钮。"""
     box = find_box_at_point(task, 0.945, 0.918)
     if box and _clean_match(box.name, "离开"):
+        # 休息区做完动作后金色气泡才冒出来，这时页面只剩「离开」（2026-10-25 20:58 漏点）：离开前先看几帧
+        at_rest = any(t in b.name for b in task.all_texts or [] for t in ("休息", "冥想", "训练"))
+        if at_rest and click_golden_card(task, frames=GOLDEN_CARD_FRAMES):
+            return True
         if is_button_active(task, box):
             task.log_info("检测到离开按钮，点击离开")
             task.click_box(box)
@@ -4404,6 +4410,71 @@ def _wait_for_rest_confirm(task: TriggerTask):
 
 
 SPECIAL_FLASH_THRESHOLD = 0.7
+GOLDEN_CARD_FRAMES = 4      # 金色气泡会一闪一闪，离开前多看几帧
+
+
+_golden_templates = None
+GOLDEN_CARD_REGION = (0.219, 0.208, 0.786, 0.814)
+GOLDEN_CARD_SCORE = 0.65   # 自己做 TM_CCOEFF_NORMED：trace 实录真气泡 0.72～0.88，冥想金光/篝火最高 0.58
+
+
+def _golden_card_templates():
+    """金色卡牌气泡模板：取 coco 标注里 special_flash_luosi / luosi2 两张原图裁出来（1920×1080 坐标）。"""
+    global _golden_templates
+    if _golden_templates is None:
+        base = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
+        with open(os.path.join(base, "coco_annotations.json"), encoding="utf-8") as f:
+            coco = json.load(f)
+        cats = {c["id"]: c["name"] for c in coco["categories"]}
+        files = {i["id"]: i["file_name"] for i in coco["images"]}
+        out = []
+        for a in coco["annotations"]:
+            if cats.get(a["category_id"]) in ("special_flash_luosi", "special_flash_luosi2"):
+                img = cv2.imread(os.path.join(base, files[a["image_id"]]))
+                x, y, w, h = [int(v) for v in a["bbox"]]
+                if img is not None:
+                    out.append(img[y:y + h, x:x + w])
+        _golden_templates = out
+    return _golden_templates
+
+
+def _find_golden_card(task: TriggerTask):
+    """ok-script 的 find_one 对这个会闪的气泡给分偏低（实录 0.75 的图实时只有不到 0.7，2026-10-25 连漏三次），自己匹配。"""
+    frame = getattr(task, "frame", None)
+    if frame is None:
+        return task.find_one(feature_name=["special_flash_luosi", "special_flash_luosi2"],
+                             box=task.box_of_screen(*GOLDEN_CARD_REGION), threshold=SPECIAL_FLASH_THRESHOLD)
+    h, w = frame.shape[:2]
+    x1, y1, x2, y2 = GOLDEN_CARD_REGION
+    ox, oy = int(w * x1), int(h * y1)
+    roi = frame[oy:int(h * y2), ox:int(w * x2)]
+    if roi.ndim == 3 and roi.shape[2] == 4:
+        roi = cv2.cvtColor(roi, cv2.COLOR_BGRA2BGR)
+    scale = w / 1920
+    best = None
+    for tpl in _golden_card_templates():
+        t = cv2.resize(tpl, None, fx=scale, fy=scale) if abs(scale - 1) > 0.01 else tpl
+        if t.shape[0] > roi.shape[0] or t.shape[1] > roi.shape[1]:
+            continue
+        _, v, _, loc = cv2.minMaxLoc(cv2.matchTemplate(roi, t, cv2.TM_CCOEFF_NORMED))
+        if best is None or v > best.confidence:
+            best = SimpleNamespace(x=ox + loc[0], y=oy + loc[1], width=t.shape[1], height=t.shape[0], confidence=v)
+    return best if best and best.confidence >= GOLDEN_CARD_SCORE else None
+
+
+def click_golden_card(task: TriggerTask, frames=1):
+    """休息区主战员头上的金色卡牌气泡＝灵光一闪，看到就点（用户 2026-10-25）。frames>1 时连看几帧（气泡有明暗动画）。"""
+    for i in range(frames):
+        if i:
+            task.sleep(0.4)
+            task.next_frame()
+        found = _find_golden_card(task)
+        if found:
+            task.log_info(f"休息区有主战员头上的金色卡牌（灵光一闪），点开 置信度={found.confidence:.2f}")
+            _move_and_click(task, (found.x + found.width / 2) / task.width, (found.y + found.height / 2) / task.height)
+            task.sleep(1)
+            return True
+    return False
 
 
 def handle_rest(task: TriggerTask):
@@ -4412,19 +4483,7 @@ def handle_rest(task: TriggerTask):
         return False                         # 训练后弹出的卡牌奖励交给 handle_card_reward
     # 主战员头上的金色卡牌气泡＝灵光一闪，要点（用户 2026-10-25）。
     # 实录 trace 里匹配度只有 0.75～0.88，默认阈值 0.8 常常漏掉（冥想点击的金光只有 0.5 左右）
-    special_flash = task.find_one(
-        feature_name=["special_flash_luosi", "special_flash_luosi2"],
-        box=task.box_of_screen(0.219, 0.208, 0.786, 0.814),
-        threshold=SPECIAL_FLASH_THRESHOLD,
-    )
-    if special_flash:
-        task.log_info(f"休息区有主战员头上的金色卡牌（灵光一闪），点开 置信度={special_flash.confidence:.2f}")
-        _move_and_click(
-            task,
-            (special_flash.x + special_flash.width / 2) / task.width,
-            (special_flash.y + special_flash.height / 2) / task.height,
-        )
-        task.sleep(1)
+    if click_golden_card(task):
         return True
 
     rest_feature = _find_rest_feature(task)

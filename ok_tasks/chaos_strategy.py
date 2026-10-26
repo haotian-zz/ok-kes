@@ -56,8 +56,11 @@ def route_weights(mode, layer=0, hp=None, event_bonus=0, octopus=False):
         t["休息"] += 2
     t["事件"] += event_bonus
     if octopus and layer == 0:
-        # 目标装备来源事件加分后也不能和普通战打平（2026-10-25 实录 事件 4+3=7 = 普通战 7，路线一半是事件）
-        t["小怪"] = max(t["小怪"], max(v for k, v in t.items() if k != "小怪") + 1)
+        # 用户 2026-10-25：速刷第一层所有战斗（普通战、精英）都高于问号事件和其他节点，普通战最高；
+        # 目标装备来源事件加分后也不能和战斗打平（实录 事件 4+3=7 = 普通战 7，路线一半是事件）
+        others = max(v for k, v in t.items() if k not in ("小怪", "精英"))
+        t["精英"] = max(t["精英"], others + 1)
+        t["小怪"] = max(t["小怪"], t["精英"] + 1)
     return w
 
 
