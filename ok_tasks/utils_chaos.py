@@ -1239,29 +1239,13 @@ def handle_precision_memory_process(task: TriggerTask):
     if status is not None:
         status["precision_memory_visited"] = True
 
+    # 加工记忆只换同一种记忆的效果（三选一全是同名卡，2026-10-25 实机「埋怨」「丧失」都是），换不出指定记忆；
+    # 原来没命中就去点加工记忆，结果三张都不是、只能跳过，白耗一次加工。现在直接精密加工
     specified_memory = _get_config_value(task, "指定记忆卡牌", "")
-    if specified_memory and cards and not any(
-        is_specified_memory(specified_memory, card)
-        for card in cards
-    ):
-        process_box = next(
-            (
-                box for box in task.all_texts
-                if 0.026 <= (box.x + box.width / 2) / task.width <= 0.315
-                and 0.708 <= (box.y + box.height / 2) / task.height <= 0.867
-                and "加工记忆" in box.name
-            ),
-            None,
-        )
-        if process_box:
-            task.log_info("当前卡牌未命中指定记忆卡牌，点击加工记忆")
-            _move_and_click(
-                task,
-                (process_box.x + process_box.width / 2) / task.width,
-                (process_box.y + process_box.height / 2) / task.height,
-            )
-            task.sleep(1)
-            return True
+    if specified_memory and cards and not any(is_specified_memory(specified_memory, card) for card in cards):
+        if status is not None and not status.get("memory_mismatch_logged"):
+            status["memory_mismatch_logged"] = True
+            task.log_info(f"当前记忆「{cards[0]['name']}」不是指定的「{specified_memory}」，加工记忆换不了种类，只做精密加工")
 
     region = (0.700, 0.730, 0.995, 0.870)
     box = next(
