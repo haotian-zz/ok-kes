@@ -50,6 +50,12 @@ def handle_memory_process(task: TriggerTask):
         return False
 
     task.log_info("检测到加工记忆页面")
+    if any("也会消耗加工机会" in b.name for b in task.all_texts):
+        # 跳过后的确认框「即使未选择卡牌，也会消耗加工机会。是否继续?」
+        task.log_info("加工记忆页面：跳过确认框，点确认")
+        _move_and_click(task, 0.666, 0.631)
+        task.sleep(1)
+        return True
     cards = recognize_cards(
         task, region=(0.095, 0.204, 0.887, 0.868), page="加工记忆页面"
     )[:3]
@@ -1431,6 +1437,7 @@ PAGE_HANDLERS = [
     handle_close_page, #点击屏幕关闭页面，优先于其他普通页面处理
     handle_training_select, #休息页点了训练后的选战斗员（要先于通用确认，没选人前别点确认）
 
+    handle_memory_process, #加工记忆三选一：要先于确认按钮（没选卡时确认是灰的，2026-10-25 一直点灰确认卡住）
     handle_refine_equipment_credit, #提炼装备信用点页面，优先于确认按钮
     handle_center_confirm, #页面中央确认按钮
     handle_archive_target_member, #信息统计页面，记录刷存档目标主战员
@@ -1470,7 +1477,6 @@ PAGE_HANDLERS = [
     handle_destiny_choice,
     handle_main_member_flash,
     handle_card_reward,
-    handle_memory_process,
     handle_memory_card_select,
     handle_select_card,
     handle_copy_member,
