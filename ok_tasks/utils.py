@@ -2181,7 +2181,7 @@ def handle_destiny_choice(task: TriggerTask):
                 return "".join(b.name for b in task.all_texts
                                if abs((b.x + b.width / 2) / task.width - cx) <= 0.09
                                and t.y <= b.y and (b.y + b.height / 2) / task.height <= 0.85)
-            safe = [t for t in titles if not re.search(r"中立|咒术", column_text(t))]
+            safe = [t for t in titles if not FATE_GIVES_NEUTRAL.search(column_text(t))]
             if safe and len(safe) < len(titles):
                 task.log_info(f"命运：跳过会给中立/咒术卡的 {[t.name for t in titles if t not in safe]}")
             titles = safe or titles
@@ -3096,6 +3096,10 @@ def _scroll_to_target_member_for_card_removal(task: TriggerTask):
 
 
 GOD_SPARK_PAGE = re.compile(r"神之闪光|闪光[:：]?\s*(" + chaos_strategy.GOD_NAMES + r")")
+
+
+# 命运描述里「获得1张咒术卡牌贫血」才算给牌；「灵感：每次生成除状态异常、咒术卡牌以外的卡牌时…」不算（2026-10-26 实录误跳）
+FATE_GIVES_NEUTRAL = re.compile(r"(获得|加入)[^。，,]{0,8}(中立|咒术)")
 
 
 def _avoid_god_spark(task: TriggerTask):

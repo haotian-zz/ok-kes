@@ -988,3 +988,12 @@ class TestGodSparkPage(unittest.TestCase):
         # 同一页第二帧：PT 账就算显示不够也不跳过，只重点一下确认，不再记账
         self.assertEqual(self._run(ns, target=True, room=False), [(0.5, 0.45)])
         self.assertEqual(ns["god_spark_count"], 1)
+
+
+class TestFateNeutral(unittest.TestCase):
+    def test_only_gaining_counts(self):
+        from utils import FATE_GIVES_NEUTRAL as f
+        self.assertTrue(f.search("拿取获得1张咒术卡牌贫血。"))
+        self.assertTrue(f.search("获得1张随机中立卡牌"))
+        self.assertIsNone(f.search("灵感每次生成除状态异常、咒术卡牌以外的卡牌时，有25%的概率多生成1张。"))
+        self.assertIsNone(f.search("信念战斗开始时，赋予手牌中的攻击卡牌粉碎。"))
