@@ -1201,3 +1201,49 @@ class TestOctopusMissEscape(unittest.TestCase):
             self.assertFalse(utils.handle_octopus_miss_escape(off))
         finally:
             utils._move_and_click, utils.is_route_selection_page, utils.handle_escape = old_click, old_route, old_esc
+
+
+class TestSelectDifficultySim(unittest.TestCase):
+    """模拟左侧难度列：10 档、Ⅹ 未解锁，列表可拖动；靠上沿（<0.2）的圆点了认不出选中。"""
+
+    def _run(self, top, want=8):
+        import utils_chaos_prep as prep
+        st = {"top": top, "sel": 6}
+        P = prep.DIFF_PITCH
+
+        def circles(_frame):
+            out = []
+            for i in range(10):
+                y = st["top"] + i * P
+                if 0.15 < y < 0.87:
+                    out.append((y, st["sel"] == i + 1, i == 9))
+            return out
+
+        def click(task, y):
+            for i in range(10):
+                cy = st["top"] + i * P
+                if abs(cy - y) < 0.03 and i < 9 and 0.17 < cy < 0.8:
+                    st["sel"] = i + 1
+                    return cy >= 0.2
+            return False
+
+        def swipe(x0, y0, x1, y1, duration=0):
+            st["top"] = min(0.2, max(0.2 - 9 * P + 0.5, st["top"] + (y1 - y0)))
+
+        import types
+        task = types.SimpleNamespace(frame=None, log_info=lambda *a, **k: None, sleep=lambda *a: None,
+                                     swipe_relative=swipe)
+        old = (prep.difficulty_circles, prep._click_difficulty, prep._difficulty_level, prep.refresh)
+        prep.difficulty_circles = circles
+        prep._click_difficulty = click
+        prep._difficulty_level = lambda t: prep.DIFF_LEVELS[st["sel"]]
+        prep.refresh = lambda t: None
+        try:
+            return prep.select_difficulty(task, want)
+        finally:
+            prep.difficulty_circles, prep._click_difficulty, prep._difficulty_level, prep.refresh = old
+
+    def test_reaches_eight(self):
+        import utils_chaos_prep as prep
+        for top in (0.2, 0.1, 0.0, -0.2, 0.2 - 9 * prep.DIFF_PITCH + 0.5):
+            self.assertEqual(self._run(top), 8, top)

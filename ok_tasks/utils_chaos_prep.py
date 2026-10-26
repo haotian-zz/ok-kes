@@ -647,19 +647,28 @@ def select_difficulty(task: BaseTask, want=None):
             _click_difficulty(task, circles[want - 1][0])
         else:
             # 在屏幕下方：先点一个可见的已解锁圆，按推荐等级认出它是第几档，再按间距算出目标的位置，不在可点范围就小幅拖动再算
-            for _ in range(6):
+            # 2026-10-26 15:32 实录：参照圆取了最上面那个（0.18，半挡在标题下），点了没认出选中就放弃，停在 Ⅵ。
+            # 改成取最靠中间的已解锁圆当参照，点完不对就按实际选中的档位再算一次，不放弃
+            for _ in range(8):
                 refresh(task)
                 circles = [c for c in difficulty_circles(task.frame) if DIFF_CLICK_Y[0] < c[0] < DIFF_CLICK_Y[1]]
-                ref = next((c for c in circles if not c[2]), None)
-                if not ref or not _click_difficulty(task, ref[0]):
+                unlocked = [c for c in circles if not c[2]]
+                if not unlocked:
                     break
+                ref = min(unlocked, key=lambda c: abs(c[0] - 0.5))
+                if not _click_difficulty(task, ref[0]):
+                    continue
                 base = _diff_of_level(_difficulty_level(task))
                 if not base:
+                    continue
+                if base == want:
                     break
                 y = ref[0] + (want - base) * DIFF_PITCH
                 if DIFF_CLICK_Y[0] < y < DIFF_CLICK_Y[1]:
                     _click_difficulty(task, y)
-                    break
+                    if _diff_of_level(_difficulty_level(task)) == want:
+                        break
+                    continue
                 # 目标在上面 → 往下拖（列表向上翻）；在下面 → 往上拖
                 dy = 0.08 if y < DIFF_CLICK_Y[0] else -0.08
                 task.swipe_relative(DIFF_COLUMN_X, 0.5 - dy / 2, DIFF_COLUMN_X, 0.5 + dy / 2, duration=0.6)
