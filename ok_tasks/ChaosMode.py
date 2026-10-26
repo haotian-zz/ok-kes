@@ -347,6 +347,11 @@ class ChaosMode(TriggerTask):
             self.log_info(f"存在 {PAUSE_AT_ROUTE_FILE}，停在路线页")
             self.sleep(3)
             return
+        if os.path.exists(PAUSE_AT_LOBBY_FILE) and self._at_lobby():
+            # 开发调试：一局打完回到难度页（局外）就停，方便查存档详情、核对 PT
+            self.log_info(f"存在 {PAUSE_AT_LOBBY_FILE}，停在局外难度页")
+            self.sleep(3)
+            return
         if not getattr(self, 'strategy_ready', False):
             self.setup_strategy()
         # 读预设、从主页进卡厄思只在启动那一刻做：之后的无文字帧（战斗开场、加载）不能当成主页
@@ -376,6 +381,7 @@ class ChaosMode(TriggerTask):
 
 TARGET_DECK_FILE = os.path.join("configs", "chaos_target_deck.json")
 PAUSE_AT_ROUTE_FILE = os.path.join("dev_out", "pause_at_route")
+PAUSE_AT_LOBBY_FILE = os.path.join("dev_out", "pause_at_lobby")
 
 
 def load_target_deck(member, preset):
