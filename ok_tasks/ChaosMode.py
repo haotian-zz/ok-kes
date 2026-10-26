@@ -210,6 +210,7 @@ class ChaosMode(TriggerTask):
         self.chaos_seen = chaos_strategy.load_seen()
         self.team_checked = False
         self.entry_checked = False
+        self.zero_upgrades_checked = False
         self.strategy_ready = True
         if mode in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EXPLORE):
             preset = load_target_deck(member, self.config.get('目标预设', 1))
@@ -281,6 +282,7 @@ class ChaosMode(TriggerTask):
                 utils_daily.refresh(self)
         if not utils_daily.go_home(self):
             return False
+        self.zero_upgrades_checked = True
         want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode, octopus=self.config.get('章鱼哥速刷') is True) if self.config.get('调整零式升级') else ([], [])
         if self.config.get('卡厄思地图', '活动卡厄思') == '活动卡厄思':
             if want_zero or want_max:
