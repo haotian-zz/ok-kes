@@ -195,7 +195,7 @@ def check_zero_upgrades(task: BaseTask, want_zero, want_max):
     """检查零式升级是否符合：want_zero 里的项必须 0 级，want_max 里的项必须满级。返回 (是否符合, 等级表)。只读不改。"""
     if not open_home_entry(task, "卡厄思"):
         return False, {}
-    box = wait_text(task, r"^零式系统$", timeout=8)
+    box = wait_text(task, r"^零式系统$", timeout=15)
     if not box:
         return False, {}
     click_text_box(task, box, after=4, reason="进入零式系统")
@@ -728,7 +728,7 @@ def enter_zero_system(task: BaseTask, want_zero=(), want_max=()):
     """主页 → 卡厄思 → 零式系统首页（之后由卡厄思模式原有的法典流程接手）。给了升级要求就先去升级页调好。"""
     if not open_home_entry(task, "卡厄思"):
         return False
-    if not click_text(task, r"^零式系统$", timeout=8, after=4):
+    if not click_text(task, r"^零式系统$", timeout=15, after=4):     # 卡厄思页加载实测要 10 秒多
         return False
     if not wait_text(task, r"零式系统", region=(0, 0, 0.3, 0.1), timeout=10):
         return False
