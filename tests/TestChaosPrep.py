@@ -139,3 +139,22 @@ class TestAtLobby(unittest.TestCase):
         # 结算奖励页确认按钮还没认出来时也有「每周进展」（2026-10-25 20:11）
         self.assertFalse(ChaosMode._at_lobby(page("每周进展", "8000/ 8000", "获得奖励")))
         self.assertFalse(ChaosMode._at_lobby(page("每周进展", "进入", "◎确认")))
+
+
+class TestCardNameOneCharOff(unittest.TestCase):
+    def test_one_char_ocr_error(self):
+        import game_db
+        db = game_db.get_db()
+        # 二元组系数只有 0.33，逐字兜底认出来（2026-10-25 预设里的剑刃破晓被读成剑刀破晓）
+        self.assertEqual("剑刃破晓", db.find_card("剑刀破晓")["name"])
+        self.assertEqual("明灭剑", db.find_card("明灰剑")["name"])
+
+    def test_rematch_cached_deck(self):
+        from ChaosMode import _rematch_unknown_cards
+        deck = {"member": "罗丝薇瑟", "cards": [
+            {"name": "剑刀破晓", "n": None, "god_spark": None,
+             "desc": "伤害452%\n本回合凝聚卡牌叠加时，\n基础伤害量+50%（最\n大500%）\n此卡伤害总量提\n升30%"},
+            {"name": "记忆：丧失4强化", "n": None, "god_spark": None, "desc": ""}]}
+        _rematch_unknown_cards(deck)
+        self.assertEqual(("剑刃破晓", 4), (deck["cards"][0]["name"], deck["cards"][0]["n"]))
+        self.assertIsNone(deck["cards"][1]["n"])

@@ -120,7 +120,23 @@ class GameDB:
             hit = self._best(pool, name, keys=("name", "name_intl"), min_score=0.66)
             if hit:
                 return hit
-        return None
+        # 短卡名错一个字时二元组系数掉得太狠（「剑刀破晓」对「剑刃破晓」只有 0.33，2026-10-25 预设读漏了它的闪光），
+        # 再按逐字比较兜底：同样长度、只错一个字、且唯一
+        return self._one_char_off(pools, name)
+
+    @staticmethod
+    def _one_char_off(pools, name):
+        target = norm(name)
+        if len(target) < 3:
+            return None
+        hits = {}
+        for pool in pools:
+            for it in pool:
+                for k in ("name", "name_intl"):
+                    v = norm(it.get(k) or "")
+                    if len(v) == len(target) and sum(a != b for a, b in zip(v, target)) == 1:
+                        hits[it.get("id") or id(it)] = it
+        return next(iter(hits.values())) if len(hits) == 1 else None
 
     def card_variants(self, card):
         """一张卡所有可能的卡面：基础（n=0）+ 5 个闪光变体（n=1~5）。"""

@@ -5,6 +5,7 @@ import os
 
 import chaos_strategy
 import chaos_trace
+import game_db
 import utils
 import utils_chaos
 import utils_chaos_prep
@@ -386,7 +387,22 @@ def load_target_deck(member, preset):
         return None
     if data.get("member") != member or int(data.get("preset", 0)) != int(preset):
         return None
+    _rematch_unknown_cards(data)
     return data
+
+
+def _rematch_unknown_cards(deck):
+    """缓存里认不出卡名（OCR 错字）的卡重新对一次库：名字纠正后再算闪光变体和神闪。
+    2026-10-25：「剑刀破晓」当时没对上「剑刃破晓」，闪光 4 + 神闪没进计划，闪错了也不重闪。"""
+    db = game_db.get_db()
+    for c in deck.get("cards", []):
+        if c.get("n") is not None or chaos_strategy.memory_name(c.get("name", "")):
+            continue
+        card = db.find_card(c.get("name", ""), owner=deck.get("member"), include_neutral=True)
+        if not card:
+            continue
+        m = db.match_spark(card, c.get("desc", ""))
+        c.update(name=card["name"], n=m["n"], god_spark=m["god_spark"])
 
 
 def save_target_deck(deck):
