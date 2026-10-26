@@ -47,9 +47,14 @@ def is_specified_memory(specified: str, card) -> bool:
     """卡牌是不是指定的记忆卡。名字 OCR 错一个字也算（2026-10-25 实录「丧失」认成「丧牛」，精密加工页当成别的卡去加工、白跳过一次）。"""
     if is_subsequence(specified, card["name"] + "：:" + card["description"]):
         return True
-    norm = lambda t: re.sub(r"[\s:：]", "", t or "")
-    a, b = norm(specified), norm(card["name"])
-    return len(a) >= 3 and len(a) == len(b) and sum(x != y for x, y in zip(a, b)) <= 1
+    # 配置可能只写「丧失」，卡名是「记忆：丧牛」：都去掉「记忆：」前缀再比
+    a = chaos_strategy.memory_name(specified) or re.sub(r"[\s:：]", "", specified or "")
+    b = chaos_strategy.memory_name(card["name"]) or re.sub(r"[\s:：]", "", card["name"] or "")
+    if not a or len(a) != len(b):
+        return False
+    diff = sum(x != y for x, y in zip(a, b))
+    # 两个字的记忆名只容许第二个字认错（「丧失」→「丧牛」），免得「丧失」和别的两字记忆混
+    return diff == 0 or (diff == 1 and (len(a) >= 3 or a[0] == b[0]))
 
 
 def handle_memory_process(task: TriggerTask):

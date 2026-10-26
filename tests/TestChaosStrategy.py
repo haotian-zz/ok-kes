@@ -872,6 +872,10 @@ class TestMemoryProcessConfirm(unittest.TestCase):
         self.assertTrue(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：丧失")))
         self.assertTrue(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：丧牛")))
         self.assertFalse(utils_chaos.is_specified_memory("记忆：丧失", card("记忆：誓约")))
+        # 配置只写「丧失」（2026-10-26 实录精密加工页没认出「记忆：丧牛」）
+        self.assertTrue(utils_chaos.is_specified_memory("丧失", card("记忆：丧牛")))
+        self.assertFalse(utils_chaos.is_specified_memory("丧失", card("记忆：埋怨")))
+        self.assertFalse(utils_chaos.is_specified_memory("丧失", card("记忆：失丧")))
 
 
 class TestMemberPanel(unittest.TestCase):
