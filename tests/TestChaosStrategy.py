@@ -712,7 +712,9 @@ class TestOctopusRush(unittest.TestCase):
             self.assertTrue(utils._finish_only_first_layer(self._task()))
             self.assertEqual(clicks, [(0.959, 0.051)])
             clicks.clear()
-            self.assertFalse(utils._finish_only_first_layer(self._task(seen=True)))
+            # 章鱼哥来了但没掉目标装备，也退出重开（用户 2026-10-25）
+            self.assertTrue(utils._finish_only_first_layer(self._task(seen=True)))
+            clicks.clear()
             self.assertFalse(utils._finish_only_first_layer(self._task(layers=2)))
             got = self._task()
             got.node_status["target_equip_got"] = "堕落之冠"
