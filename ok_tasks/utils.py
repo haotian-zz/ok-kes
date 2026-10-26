@@ -5158,8 +5158,26 @@ def handle_view_original(task: TriggerTask):
                 task.log_info(f"神闪变体页：「{pick['name']}」和预设神闪一致，PT 账够，选它（{pick['description']}）")
                 _move_and_click(task, pick["x"], pick["y"])
                 return True
+        if cards:
+            # 描述 OCR 会把行序打乱（2026-10-26 实录「生成3张剑穗加入手牌下一次明暗…」没对上），
+            # 游戏给预设那张钉了图钉（target），PT 够就按图钉选
+            target_boxes, target_click_positions = find_target_card(task)
+            if target_boxes:
+                task.node_status["god_spark_count"] = task.node_status.get("god_spark_count", 0) + 1
+                task.log_info("神闪变体页：描述没对上，但游戏钉了预设那张，PT 账够，选它")
+                _move_and_click(task, *target_click_positions[0])
+                return True
         if _click_bottom_skip(task, "神闪变体页，不是预设的神闪或 PT 不够"):
+            task.node_status["god_skip_waits"] = 0
             return True
+        # 「跳过」要等入场动画放完才出来；不能落到下面普通闪光那套（会点图钉那张，不查 PT 也不记账，2026-10-26 实录）
+        waits = task.node_status.get("god_skip_waits", 0)
+        if waits < 8:
+            task.node_status["god_skip_waits"] = waits + 1
+            task.log_info(f"神闪变体页：不选，等「跳过」出来（第 {waits + 1} 次）")
+            task.sleep(0.8)
+            return True
+        task.log_info("神闪变体页：等不到「跳过」，按普通闪光处理")
     cards = recognize_cards(task, page="卡牌闪光页面")
     if not cards:
         return False

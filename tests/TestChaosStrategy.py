@@ -942,3 +942,42 @@ class TestMemoryRefresh(unittest.TestCase):
         self.assertEqual(self._run([None, None, None], ns), [(0.711, 0.824)])
         # 都用完了：随机选一张
         self.assertEqual(self._run(["0/4", "0/4", "0/4"], {}), [(0.2, 0.4)])
+
+
+class TestGodSparkPage(unittest.TestCase):
+    """神闪三选一（2026-10-26 实录）：描述对不上时按游戏图钉选并记 PT；没图钉又没「跳过」就等，不落到普通闪光。"""
+
+    def _run(self, ns, target, skip=False, room=True):
+        import utils as u
+        clicks = []
+        task = SimpleNamespace(all_texts=[SimpleNamespace(x=0, y=0, width=0, height=0, name="闪光：瑟克洛斯")],
+                               width=1920, height=1080, node_status=ns, chaos_mode=u.chaos_strategy.MODE_TARGET,
+                               chaos_plan={"flash": [{"name": "剑鸣九霄", "god_spark": True, "description": "完全不同"}]},
+                               log_info=lambda *a, **k: None, sleep=lambda *a: None)
+        cards = [{"name": "剑鸣九霄", "description": d, "x": x, "y": 0.4}
+                 for d, x in (("抽取1张自身卡牌", 0.25), ("粉碎抽取1", 0.5), ("士气2", 0.75))]
+        names = ("find_box_at_point", "recognize_cards", "find_target_card", "_move_and_click", "_pt_room", "_click_bottom_skip")
+        old = {n: getattr(u, n) for n in names}
+        u.find_box_at_point = lambda t, x, y: SimpleNamespace(name="查看原件")
+        u.recognize_cards = lambda *a, **k: cards
+        u.find_target_card = lambda t: (([1], [(0.5, 0.45)]) if target else ([], []))
+        u._move_and_click = lambda t, x, y: clicks.append((x, y))
+        u._pt_room = lambda t, w: room
+        u._click_bottom_skip = lambda t, r: skip
+        try:
+            u.handle_view_original(task)
+        finally:
+            for n, f in old.items():
+                setattr(u, n, f)
+        return clicks
+
+    def test_pinned_variant_counts_pt(self):
+        ns = {}
+        self.assertEqual(self._run(ns, target=True), [(0.5, 0.45)])
+        self.assertEqual(ns["god_spark_count"], 1)
+
+    def test_no_room_waits_for_skip_instead_of_pin(self):
+        ns = {}
+        self.assertEqual(self._run(ns, target=True, room=False), [])
+        self.assertEqual(ns.get("god_spark_count", 0), 0)
+        self.assertEqual(ns["god_skip_waits"], 1)
