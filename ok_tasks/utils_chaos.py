@@ -105,6 +105,20 @@ def _click_memory_process_confirm(task: TriggerTask):
     return False
 
 
+MEMORY_SELECT_COLUMNS = ((0.10, 0.37), (0.37, 0.62), (0.62, 0.89))
+MEMORY_REFRESH_BUTTONS = ((0.211, 0.824), (0.461, 0.824), (0.711, 0.824))
+MEMORY_REFRESH_MAX = 4
+
+
+def _memory_refresh_clicks(task):
+    """本次「选择铭刻的记忆」每列点过几次重新搜索（选完离开选路页时清零）。"""
+    ns = getattr(task, "node_status", None)
+    if ns is None:
+        task._memory_refresh_clicks = getattr(task, "_memory_refresh_clicks", [0, 0, 0])
+        return task._memory_refresh_clicks
+    return ns.setdefault("memory_refresh_clicks", [0, 0, 0])
+
+
 def handle_memory_card_select(task: TriggerTask):
     """记忆卡牌选择页面：优先目标卡牌，其次指定记忆，否则刷新可搜索的卡牌。"""
     title = _get_region_text(task, (0.341, 0.011, 0.670, 0.171))
@@ -131,53 +145,35 @@ def handle_memory_card_select(task: TriggerTask):
                 task.sleep(1)
                 return True
 
-    search_boxes = []
-    count_boxes = []
-    for box in task.all_texts:
-        x = (box.x + box.width / 2) / task.width
-        y = (box.y + box.height / 2) / task.height
-        if not (0.109 <= x <= 0.880 and 0.779 <= y <= 0.874):
-            continue
-        if "重新搜索" in box.name:
-            search_boxes.append(box)
-        match = re.fullmatch(r"\s*(\d+)\s*/\s*(\d+)\s*", box.name)
-        if match:
-            count_boxes.append((box, int(match.group(1))))
-
-    refreshed = False
-    for count_box, remaining in sorted(count_boxes, key=lambda item: item[0].x)[:3]:
-        count_x = count_box.x + count_box.width / 2
-        count_y = count_box.y + count_box.height / 2
-        candidates = [
-            box for box in search_boxes
-            if box.x + box.width / 2 < count_x
-            and abs(box.y + box.height / 2 - count_y) <= 0.04 * task.height
-        ]
-        if not candidates:
-            continue
-        search_box = min(
-            candidates,
-            key=lambda box: (box.x + box.width / 2 - count_x) ** 2
-            + (box.y + box.height / 2 - count_y) ** 2,
-        )
-        search_boxes.remove(search_box)
-        if remaining == 0:
-            continue
-        task.log_info(f"记忆卡牌选择页面：剩余搜索次数={remaining}，点击重新搜索")
-        _move_and_click(
-            task,
-            (search_box.x + search_box.width / 2) / task.width,
-            (search_box.y + search_box.height / 2) / task.height,
-        )
+    # 三张卡各有自己的「重新搜索 a/上限」（科技后每张 4 次，共 12 次）。原来按 OCR 的次数框配按钮，
+    # 2026-10-26 实录第 1 张 4/4 一次没用、另两张还剩 1 次就说「没有可用的重新搜索」随机选了。
+    # 现在按列：读得到次数就用读数，读不到就按本页点过的次数（每列最多 MEMORY_REFRESH_MAX 次）；每帧只刷一张，刷完重新看有没有目标
+    clicks = _memory_refresh_clicks(task)
+    left = []
+    for col, (x0, x1) in enumerate(MEMORY_SELECT_COLUMNS):
+        remaining = None
+        for box in task.all_texts:
+            x = (box.x + box.width / 2) / task.width
+            y = (box.y + box.height / 2) / task.height
+            m = re.search(r"(\d+)\s*/\s*(\d+)", box.name)
+            if m and x0 <= x <= x1 and 0.779 <= y <= 0.874:
+                remaining = int(m.group(1))
+        if remaining is None:
+            remaining = MEMORY_REFRESH_MAX - clicks[col]
+        left.append(remaining)
+    col = next((i for i, r in enumerate(left) if r > 0 and clicks[i] < MEMORY_REFRESH_MAX), None)
+    if col is not None:
+        clicks[col] += 1
+        task.log_info(f"记忆卡牌选择页面：第 {col + 1} 张剩余搜索次数={left[col]}（各列剩余 {left}），点击重新搜索")
+        _move_and_click(task, *MEMORY_REFRESH_BUTTONS[col])
+        task.sleep(1.5)
+        return True
+    task.log_info(f"记忆卡牌选择页面：未命中目标，重新搜索都用完了（各列剩余 {left}，点过 {clicks}）")
+    if cards:
+        card = random.choice(cards)
+        task.log_info(f"未命中目标且无法继续刷新，随机选择「{card['name']}」")
+        _move_and_click(task, card["x"], card["y"])
         task.sleep(1)
-        refreshed = True
-    if not refreshed:
-        task.log_info("记忆卡牌选择页面：未命中目标，且未找到可用的重新搜索按钮")
-        if cards:
-            card = random.choice(cards)
-            task.log_info(f"未命中目标且无法继续刷新，随机选择「{card['name']}」")
-            _move_and_click(task, card["x"], card["y"])
-            task.sleep(1)
     return True
 
 

@@ -904,3 +904,36 @@ class TestMemberPanel(unittest.TestCase):
         self.assertEqual(utils._pt_used(task), 100)
         task.node_status["copy_count"] = 3          # 读完以后又复制了一次（+40）
         self.assertEqual(utils._pt_used(task), 140)
+
+
+class TestMemoryRefresh(unittest.TestCase):
+    """选择铭刻的记忆：三张卡各自 4 次重新搜索（2026-10-26 实录第 1 张 4/4 没用就随机选了）。"""
+
+    def _run(self, counts, ns):
+        import utils_chaos as uc
+        clicks = []
+        texts = [SimpleNamespace(x=x * 1920, y=0.824 * 1080, width=0, height=0, name=c)
+                 for x, c in zip((0.33, 0.58, 0.83), counts) if c]
+        task = SimpleNamespace(all_texts=texts, width=1920, height=1080, node_status=ns,
+                               log_info=lambda *a, **k: None, sleep=lambda *a: None)
+        old = (uc._get_region_text, uc.recognize_cards, uc.find_target_card, uc._get_config_value, uc._move_and_click)
+        uc._get_region_text = lambda t, r: "选择铭刻的记忆"
+        uc.recognize_cards = lambda *a, **k: [{"name": "记忆：埋怨", "description": "", "x": 0.2, "y": 0.4}]
+        uc.find_target_card = lambda t: ([], [])
+        uc._get_config_value = lambda t, k, d=None: "丧失" if k == "指定记忆卡牌" else d
+        uc._move_and_click = lambda t, x, y: clicks.append((x, y))
+        try:
+            uc.handle_memory_card_select(task)
+        finally:
+            (uc._get_region_text, uc.recognize_cards, uc.find_target_card, uc._get_config_value, uc._move_and_click) = old
+        return clicks
+
+    def test_uses_every_column(self):
+        ns = {}
+        self.assertEqual(self._run(["4/4", "1/4", "1/4"], ns), [(0.211, 0.824)])
+        self.assertEqual(self._run(["0/4", "1/4", "0/4"], ns), [(0.461, 0.824)])
+        # 次数读不到时按点过的次数，每列最多 4 次
+        ns = {"memory_refresh_clicks": [4, 4, 3]}
+        self.assertEqual(self._run([None, None, None], ns), [(0.711, 0.824)])
+        # 都用完了：随机选一张
+        self.assertEqual(self._run(["0/4", "0/4", "0/4"], {}), [(0.2, 0.4)])
