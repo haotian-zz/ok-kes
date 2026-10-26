@@ -294,6 +294,7 @@ def _observe_again(task: TriggerTask, observe_box, pt):
     tries[diff] = tries.get(diff, 0) + 1
     task.log_info(f"存储数据保存上限 {pt} 或词条不满足，点击再次观测（第 {diff} 档第 {tries[diff]} 次，共 {total + 1} 次）")
     task.click_box(observe_box)
+    task._last_change_time = time.time()   # 换词条画面变化很小，别被卡住检测当成卡死去重开游戏（2026-10-25 连刷 11 次到 31 秒）
     task.sleep(1.5)
     return True
 
