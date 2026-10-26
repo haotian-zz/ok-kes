@@ -981,3 +981,10 @@ class TestGodSparkPage(unittest.TestCase):
         self.assertEqual(self._run(ns, target=True, room=False), [])
         self.assertEqual(ns.get("god_spark_count", 0), 0)
         self.assertEqual(ns["god_skip_waits"], 1)
+
+    def test_second_frame_confirms_without_counting(self):
+        ns = {}
+        self._run(ns, target=True)
+        # 同一页第二帧：PT 账就算显示不够也不跳过，只重点一下确认，不再记账
+        self.assertEqual(self._run(ns, target=True, room=False), [(0.5, 0.45)])
+        self.assertEqual(ns["god_spark_count"], 1)

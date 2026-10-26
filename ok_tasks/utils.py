@@ -5127,6 +5127,13 @@ def handle_shop(task: TriggerTask):
     return False
 
 
+def _god_spark_pick(task: TriggerTask, x, y):
+    """选定神闪：一页只记一次 PT，记下位置供确认那下重点。"""
+    task.node_status["god_spark_count"] = task.node_status.get("god_spark_count", 0) + 1
+    task.node_status["god_pick"] = (x, y, time.time())
+    _move_and_click(task, x, y)
+
+
 def handle_view_original(task: TriggerTask):
     """卡牌闪光（查看原件）事件: 按类型特征识别卡牌，并按闪光优先级选择。"""
     box1 = find_box_at_point(task, 0.890, 0.051)
@@ -5138,6 +5145,12 @@ def handle_view_original(task: TriggerTask):
         # 变体页底部写「闪光：迪亚洛斯」= 神闪三选一（2026-10-24 实机随机选了，神闪落到剑鸣九霄上）。
         # 只有和预设一致的神闪、且 PT 账还够才选（用户 2026-10-25：正确的神闪也不能爆 PT）
         task.node_status["god_spark_pending"] = False
+        last = task.node_status.get("god_pick")
+        if last and time.time() - last[2] < 4:
+            # 同一页第二下是确认，不再查 PT、不再记账（2026-10-26 实录每帧都记一次，账 80 记成 120，把下一页预设神闪跳过了）
+            task.log_info("神闪变体页：刚选过这页，再点一下确认")
+            _move_and_click(task, last[0], last[1])
+            return True
         plan = getattr(task, "chaos_plan", None) or {}
         god_cards = [c for c in plan.get("flash", []) if c.get("god_spark")]
         cards = recognize_cards(task, page="神闪变体页") if god_cards and _pt_room(task, "神闪") else []
@@ -5151,21 +5164,19 @@ def handle_view_original(task: TriggerTask):
             index = chaos_strategy.pick_flash_variant(card["name"], cards, god_cards, min_sim=0.9)
             if index is not None:
                 pick = cards[index]
-                task.node_status["god_spark_count"] = task.node_status.get("god_spark_count", 0) + 1
                 ok = task.node_status.setdefault("god_ok", [])
                 if pick["name"] not in ok:
                     ok.append(pick["name"])
                 task.log_info(f"神闪变体页：「{pick['name']}」和预设神闪一致，PT 账够，选它（{pick['description']}）")
-                _move_and_click(task, pick["x"], pick["y"])
+                _god_spark_pick(task, pick["x"], pick["y"])
                 return True
         if cards:
             # 描述 OCR 会把行序打乱（2026-10-26 实录「生成3张剑穗加入手牌下一次明暗…」没对上），
             # 游戏给预设那张钉了图钉（target），PT 够就按图钉选
             target_boxes, target_click_positions = find_target_card(task)
             if target_boxes:
-                task.node_status["god_spark_count"] = task.node_status.get("god_spark_count", 0) + 1
                 task.log_info("神闪变体页：描述没对上，但游戏钉了预设那张，PT 账够，选它")
-                _move_and_click(task, *target_click_positions[0])
+                _god_spark_pick(task, *target_click_positions[0])
                 return True
         if _click_bottom_skip(task, "神闪变体页，不是预设的神闪或 PT 不够"):
             task.node_status["god_skip_waits"] = 0
