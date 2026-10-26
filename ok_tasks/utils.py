@@ -5491,6 +5491,34 @@ def note_octopus(task: TriggerTask):
         chaos_trace.step(task, "page", "章鱼哥", task.frame, text=hit)
 
 
+def octopus_core_missed(task: TriggerTask) -> bool:
+    """只认混沌之识：本局遇到了章鱼哥，但没拿到混沌之识。"""
+    ns = getattr(task, 'node_status', None)
+    return (isinstance(ns, dict)
+            and _get_config_value(task, OCTOPUS_RUSH, False) is True
+            and _get_config_value(task, OCTOPUS_CORE_ONLY, False) is True
+            and bool(ns.get('octopus_seen')) and not ns.get('chaos_core_got'))
+
+
+def handle_octopus_miss_escape(task: TriggerTask):
+    """用户 2026-10-26：章鱼哥掉的不是混沌之识就直接重开，不等第一层首领。
+    回到路线页就点右上菜单（和结算页退出同一个位置）→ 逃脱页由 handle_escape 点逃脱、确认。"""
+    if not octopus_core_missed(task) or task.node_status.get('is_escaped'):
+        return False
+    if not is_route_selection_page(task):
+        return False
+    ns = task.node_status
+    if time.time() - ns.get('octopus_escape_at', 0) < 5:
+        # 刚点过菜单，等页面切过去，别让路线处理去点节点
+        task.sleep(1)
+        return True
+    ns['octopus_escape_at'] = time.time()
+    task.log_info("章鱼哥速刷：章鱼哥没掉混沌之识，回到路线页立即逃脱重开")
+    _move_and_click(task, 0.959, 0.051)
+    task.sleep(1)
+    return True
+
+
 def _finish_only_first_layer(task: TriggerTask) -> bool:
     """检查并完成只打第一层的退出操作：如果 pass_final_boss_count >= 1 且配置'只打第一层'为 True，则成功次数+1、点击退出并返回 True。"""
     if not (

@@ -22,6 +22,7 @@ from utils import (
     is_button_active, is_subsequence, _clean_match,
     handle_shop,
     handle_escape,
+    handle_octopus_miss_escape,
     # handle_stage_clear,
     handle_auto_stop,
     clear_run_state,
@@ -1445,6 +1446,7 @@ PAGE_HANDLERS = [
     handle_storage_full, #存档存储满了：去分解页自动清理或停止（要先于通用确认，2026-10-25 在进入/确认间循环）
     save_cleanup.handle_save_cleanup, #存档清理流程：分解页/详情/分解确认
     handle_save_target_member,
+    handle_octopus_miss_escape, #只认混沌之识：章鱼哥没掉混沌之识，回路线页就逃脱重开（要先于路线选择）
     handle_route_selection,
     # handle_stage_clear,
     log_credit,

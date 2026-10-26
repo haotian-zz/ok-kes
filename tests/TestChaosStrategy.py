@@ -1157,3 +1157,36 @@ class TestResumeOnRestore(unittest.TestCase):
         st = {"saw_invalid": True}
         self.assertFalse(resume_step(st, False, True, 0))
         self.assertEqual(st, {})
+
+
+class TestOctopusMissEscape(unittest.TestCase):
+    def test_escape_on_route_page(self):
+        import types
+        import utils
+        clicks = []
+        old_click, old_route = utils._move_and_click, utils.is_route_selection_page
+        utils._move_and_click = lambda task, x, y: clicks.append((x, y))
+        utils.is_route_selection_page = lambda task: True
+        try:
+            def task(**ns):
+                t = types.SimpleNamespace(config={"章鱼哥速刷": True, "章鱼哥速刷只认混沌之识": True},
+                                          node_status=dict(ns))
+                t.log_info = lambda *a, **k: None
+                t.sleep = lambda *a: None
+                return t
+            # 没遇到章鱼哥：不逃脱
+            self.assertFalse(utils.handle_octopus_miss_escape(task()))
+            # 拿到混沌之识：不逃脱
+            self.assertFalse(utils.handle_octopus_miss_escape(task(octopus_seen=True, chaos_core_got="混沌之识")))
+            self.assertEqual(clicks, [])
+            # 遇到章鱼哥没掉混沌之识：点右上菜单，5 秒内不重复点但拦住路线处理
+            t = task(octopus_seen=True)
+            self.assertTrue(utils.handle_octopus_miss_escape(t))
+            self.assertTrue(utils.handle_octopus_miss_escape(t))
+            self.assertEqual(clicks, [(0.959, 0.051)])
+            # 选项关着：不逃脱
+            off = task(octopus_seen=True)
+            off.config["章鱼哥速刷只认混沌之识"] = False
+            self.assertFalse(utils.handle_octopus_miss_escape(off))
+        finally:
+            utils._move_and_click, utils.is_route_selection_page = old_click, old_route
