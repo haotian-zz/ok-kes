@@ -1064,3 +1064,44 @@ class TestSaveDifficultyAndModifiers(unittest.TestCase):
         self.assertTrue(r)
         self.assertEqual(calls, [])
         self.assertTrue(flags.get("disabled"))
+
+
+class TestChaosCoreHandover(unittest.TestCase):
+    """用户 2026-10-26：最后一层首领连败的话，拿到混沌之识就停下交给用户。"""
+
+    def setUp(self):
+        import utils as u, tempfile
+        self.u = u
+        self.old = u.LAST_BOSS_FAIL_FILE
+        u.LAST_BOSS_FAIL_FILE = os.path.join(tempfile.mkdtemp(), "f.json")
+
+    def tearDown(self):
+        self.u.LAST_BOSS_FAIL_FILE = self.old
+
+    def _task(self, passed=0):
+        flags = {}
+        return SimpleNamespace(chaos_mode=cs.MODE_TARGET, node_status={"pass_final_boss_count": passed},
+                               log_info=lambda *a, **k: None, log_error=lambda *a, **k: None,
+                               disable=lambda: flags.setdefault("disabled", True)), flags
+
+    def test_hand_over_after_two_last_boss_fails(self):
+        u = self.u
+        t, f = self._task()
+        u._hand_over_on_chaos_core(t, "混沌之识")
+        self.assertFalse(f)                                  # 还没连败，继续打
+        u._record_last_boss_result(self._task(passed=1)[0], False)   # 第 2 层死的不算
+        u._record_last_boss_result(self._task(passed=2)[0], False)
+        u._record_last_boss_result(self._task(passed=2)[0], False)
+        u._hand_over_on_chaos_core(t, "堕落之冠")
+        self.assertFalse(f)
+        u._hand_over_on_chaos_core(t, "混沌之识")
+        self.assertTrue(f.get("disabled"))
+
+    def test_success_resets(self):
+        u = self.u
+        u._record_last_boss_result(self._task(passed=2)[0], False)
+        u._record_last_boss_result(self._task(passed=2)[0], False)
+        u._record_last_boss_result(self._task(passed=3)[0], True)
+        t, f = self._task()
+        u._hand_over_on_chaos_core(t, "混沌之识")
+        self.assertFalse(f)

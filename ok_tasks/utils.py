@@ -2830,6 +2830,7 @@ def handle_equipment(task: TriggerTask):
                 if not task.node_status.get("target_equip_got"):
                     task.log_info(f"本局拿到目标装备「{new_equipment.get('name')}」")
                 task.node_status["target_equip_got"] = new_equipment.get("name")
+                _hand_over_on_chaos_core(task, new_equipment.get("name"))
 
         lv_texts = _find_member_level_tags(
             task,
@@ -5338,6 +5339,54 @@ def handle_escape(task: TriggerTask):
 #             task.node_status['final_boss_battle'] = False
 #     return False
 
+# 用户 2026-10-26：最后一层首领持续打不过的话，拿到混沌之识就停下交给用户手动打。
+# 「持续」= 刷存档局打到第 3 层（已过 2 个首领）后失败，连续 LAST_BOSS_FAIL_HANDOVER 次；通关一次就清零。跨重启记在文件里。
+LAST_BOSS_FAIL_HANDOVER = 2
+LAST_BOSS_FAIL_FILE = os.path.join("dev_out", "chaos_last_boss_fails.json")
+
+
+def _last_boss_fails():
+    try:
+        with open(LAST_BOSS_FAIL_FILE, encoding="utf-8") as f:
+            return int(json.load(f).get("fails", 0))
+    except Exception:  # noqa: BLE001
+        return 0
+
+
+def _set_last_boss_fails(n):
+    try:
+        os.makedirs(os.path.dirname(LAST_BOSS_FAIL_FILE), exist_ok=True)
+        with open(LAST_BOSS_FAIL_FILE, "w", encoding="utf-8") as f:
+            json.dump({"fails": n, "time": time.strftime("%Y-%m-%d %H:%M:%S")}, f)
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def _record_last_boss_result(task: TriggerTask, success):
+    if not _avoid_god_spark(task):
+        return
+    passed = (getattr(task, "node_status", None) or {}).get("pass_final_boss_count", 0)
+    if success:
+        if _last_boss_fails():
+            task.log_info("刷存档通关，最后一层首领连败清零")
+        _set_last_boss_fails(0)
+    elif passed >= 2:
+        n = _last_boss_fails() + 1
+        _set_last_boss_fails(n)
+        task.log_info(f"刷存档死在最后一层首领，连续 {n} 次（到 {LAST_BOSS_FAIL_HANDOVER} 次后拿到混沌之识就停下交给你）")
+
+
+def _hand_over_on_chaos_core(task: TriggerTask, name):
+    if not name or not re.search(r"混沌之识|混沌指控", name) or not _avoid_god_spark(task):
+        return
+    n = _last_boss_fails()
+    if n < LAST_BOSS_FAIL_HANDOVER:
+        task.log_info(f"拿到混沌之识；最后一层首领连败 {n} 次，没到 {LAST_BOSS_FAIL_HANDOVER} 次，脚本继续打")
+        return
+    task.log_error(f"拿到混沌之识，最后一层首领已连败 {n} 次：装完这件就停下，交给你手动打", notify=True)
+    task.disable()
+
+
 def handle_expedition_result(task: TriggerTask):
     """探险结果页面: 如果0.625,0.122处有"探险结果"，则为探险结果页面。
     如果0.928,0.122处有"完成"，则success_rounds+1。"""
@@ -5352,6 +5401,7 @@ def handle_expedition_result(task: TriggerTask):
         return False
 
     task.log_info("检测到探险结果页面")
+    success_before = (getattr(task, "node_status", None) or {}).get("success_rounds", 0)
     complete_box = find_box_at_point(task, 0.928, 0.122)
     failed_box = find_box_at_point(task, 0.296, 0.719)
     if hasattr(task, 'node_status'):
@@ -5377,6 +5427,7 @@ def handle_expedition_result(task: TriggerTask):
         task.log_info("卡厄思模式探险结果: 失败")
     task.log_info(f"探险完成，成功次数/总次数={task.node_status['success_rounds']}/{task.node_status['total_rounds']}")
     if hasattr(task, 'node_status'):
+        _record_last_boss_result(task, task.node_status['success_rounds'] > success_before)
         reset_mission_status(task)
     return False
 
