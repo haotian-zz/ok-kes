@@ -3172,11 +3172,11 @@ def read_member_panel(task: TriggerTask):
     ns["pt_game"], ns["pt_game_ledger"] = col["pt"], raw
     if col.get("pt_cap"):
         task.chaos_pt_cap = col["pt_cap"]
+    # 复制/移除次数只记日志不改：移除要等确认后才 +1（_pending_removed_card_count），面板已经算上了，
+    # 这时改计数会让之后补的那次再记一遍（2026-10-25 实录面板 40、脚本 60）。多算的增量到下个选路页重读就纠正
     for key, ns_key in (("copy", "copy_count"), ("remove", "removed_card_count")):
         if key in col and col[key] != ns.get(ns_key, 0):
-            task.log_info(f"{MEMBER_PANEL_ROWS[key]}次数以游戏为准：{ns.get(ns_key, 0)} → {col[key]}")
-            ns[ns_key] = col[key]
-            ns["pt_game_ledger"] = _pt_ledger(ns)
+            task.log_info(f"主战员面板{MEMBER_PANEL_ROWS[key]} {col[key]} 次，脚本记 {ns.get(ns_key, 0)} 次")
     return col
 
 
