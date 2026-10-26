@@ -1184,6 +1184,10 @@ class TestOctopusMissEscape(unittest.TestCase):
             self.assertTrue(utils.handle_octopus_miss_escape(t))
             self.assertTrue(utils.handle_octopus_miss_escape(t))
             self.assertEqual(clicks, [(0.959, 0.051)])
+            # 回到局外难度页清掉上一局的记录
+            utils.clear_octopus_seen(t)
+            self.assertNotIn("octopus_seen", t.node_status)
+            self.assertFalse(utils.handle_octopus_miss_escape(t))
             # 选项关着：不逃脱
             off = task(octopus_seen=True)
             off.config["章鱼哥速刷只认混沌之识"] = False

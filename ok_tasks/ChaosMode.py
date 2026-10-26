@@ -376,7 +376,11 @@ class ChaosMode(TriggerTask):
             if self._enter_chaos_from_home():
                 return
         if self.config.get('章鱼哥速刷'):
-            utils.note_octopus(self)
+            if self._at_lobby():
+                # 探险结果页列出的战利品（怪异之壳等）会被当成遇到章鱼哥；回到局外难度页就清掉，别带进下一局（2026-10-26 实录）
+                utils.clear_octopus_seen(self)
+            else:
+                utils.note_octopus(self)
         frame = self.frame
         chaos_trace.begin_frame(self)
         for handle_page in utils_chaos.PAGE_HANDLERS:

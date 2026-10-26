@@ -5491,6 +5491,13 @@ def note_octopus(task: TriggerTask):
         chaos_trace.step(task, "page", "章鱼哥", task.frame, text=hit)
 
 
+def clear_octopus_seen(task: TriggerTask):
+    ns = getattr(task, 'node_status', None)
+    if isinstance(ns, dict) and ns.pop('octopus_seen', None):
+        ns.pop('octopus_escape_at', None)
+        task.log_info("局外难度页：清掉上一局的「遇到章鱼哥」记录")
+
+
 def octopus_core_missed(task: TriggerTask) -> bool:
     """只认混沌之识：本局遇到了章鱼哥，但没拿到混沌之识。"""
     ns = getattr(task, 'node_status', None)
