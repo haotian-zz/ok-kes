@@ -5185,9 +5185,10 @@ def handle_view_original(task: TriggerTask):
         if _click_bottom_skip(task, "神闪变体页，不是预设的神闪或 PT 不够"):
             task.node_status["god_skip_waits"] = 0
             return True
-        # 「跳过」要等入场动画放完才出来；不能落到下面普通闪光那套（会点图钉那张，不查 PT 也不记账，2026-10-26 实录）
+        # 「跳过」要等入场动画放完才出来；不能马上落到下面普通闪光那套（会点图钉那张，不查 PT 也不记账，2026-10-26 实录）。
+        # 战斗后的神闪页（如队友的黑云奥义：灭，闪光：维托尔）根本没有「跳过」，只能三选一，等 3 次就够
         waits = task.node_status.get("god_skip_waits", 0)
-        if waits < 8:
+        if waits < 3:
             task.node_status["god_skip_waits"] = waits + 1
             task.log_info(f"神闪变体页：不选，等「跳过」出来（第 {waits + 1} 次）")
             task.sleep(0.8)
