@@ -851,3 +851,17 @@ class TestOctopusRouteBonus(unittest.TestCase):
         self.assertGreater(w["小怪"], w["事件"])
         w = cs.route_weights(cs.MODE_TARGET, 0, 50, 3, octopus=True)["types"]
         self.assertGreater(w["小怪"], max(w["事件"], w["休息"]))
+
+
+class TestMemoryProcessConfirm(unittest.TestCase):
+    def test_click_confirm_after_select(self):
+        import utils_chaos
+        clicked = []
+        box = SimpleNamespace(x=1560, y=980, width=60, height=30, name="确认")
+        task = SimpleNamespace(next_frame=lambda: None, log_info=lambda *a, **k: None,
+                               ocr=lambda *a, **k: [SimpleNamespace(name="免费"), box],
+                               click=lambda b, after_sleep=0: clicked.append(b.name))
+        self.assertTrue(utils_chaos._click_memory_process_confirm(task))
+        self.assertEqual(clicked, ["确认"])
+        task.ocr = lambda *a, **k: []
+        self.assertFalse(utils_chaos._click_memory_process_confirm(task))

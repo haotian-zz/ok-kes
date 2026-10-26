@@ -71,12 +71,24 @@ def handle_memory_process(task: TriggerTask):
             task.log_info(f"加工记忆页面：命中指定记忆卡牌「{card['name']}」{card['description'][:40]}")
             _move_and_click(task, card["x"], card["y"])
             task.sleep(1)
+            _click_memory_process_confirm(task)
             return True
 
     task.log_info("加工记忆页面：未匹配到指定记忆卡牌，点击跳过")
     _move_and_click(task, 0.762, 0.935)
     task.sleep(1)
     return True
+
+
+def _click_memory_process_confirm(task: TriggerTask):
+    """选中卡牌后右下角是「确认 免费」，不点就一直停在加工记忆页（2026-10-25 实录卡 70 秒）。"""
+    task.next_frame()
+    for box in task.ocr(0.70, 0.85, 1.0, 1.0) or []:
+        if "确认" in box.name:
+            task.log_info("加工记忆页面：已选中卡牌，点击确认")
+            task.click(box, after_sleep=1)
+            return True
+    return False
 
 
 def handle_memory_card_select(task: TriggerTask):
