@@ -299,6 +299,7 @@ def _lock_save_difficulty(task: TriggerTask):
     diff = utils_chaos_prep._diff_of_level(level)
     if diff == want:
         task._difficulty_switches = 0
+        task.log_info(f"卡厄思难度：核对是第 {diff} 档（推荐等级 {level}）")
         return False
     switches = getattr(task, "_difficulty_switches", 0)
     if switches >= 1:
