@@ -128,3 +128,14 @@ class TestDialogue(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestAtLobby(unittest.TestCase):
+    def test_lobby_needs_enter_button(self):
+        from types import SimpleNamespace
+        from ChaosMode import ChaosMode
+        page = lambda *names: SimpleNamespace(all_texts=[SimpleNamespace(name=n) for n in names])
+        self.assertTrue(ChaosMode._at_lobby(page("探索度", "每周进展", "8000/ 8000", "进入")))
+        # 结算奖励页确认按钮还没认出来时也有「每周进展」（2026-10-25 20:11）
+        self.assertFalse(ChaosMode._at_lobby(page("每周进展", "8000/ 8000", "获得奖励")))
+        self.assertFalse(ChaosMode._at_lobby(page("每周进展", "进入", "◎确认")))

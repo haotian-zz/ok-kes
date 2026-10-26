@@ -256,8 +256,12 @@ class ChaosMode(TriggerTask):
         return True
 
     def _at_lobby(self):
+        """卡厄思难度选择页（局外）：有「每周进展」和「进入」，没有确认/下一步。
+        结算后的奖励、存档页也有「每周进展」，确认按钮刚出来时可能还没认出来（2026-10-25 20:11 被当成难度页按了 ESC），
+        所以要求同时看到难度页独有的「进入」。"""
         texts = [box.name for box in self.all_texts or []]
-        return any("每周进展" in t for t in texts) and "确认" not in texts
+        return (any("每周进展" in t for t in texts) and "进入" in texts
+                and not any("确认" in t or "下一步" in t for t in texts))
 
     def _enter_chaos_from_home(self):
         """选了玩法且停在主页时自己进卡厄思：探索度 → 卡厄思具象探索度最低的区域；刷存档 → 零式系统。失败两次就停下。"""
