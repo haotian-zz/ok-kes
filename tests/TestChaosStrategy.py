@@ -1164,9 +1164,10 @@ class TestOctopusMissEscape(unittest.TestCase):
         import types
         import utils
         clicks = []
-        old_click, old_route = utils._move_and_click, utils.is_route_selection_page
+        old_click, old_route, old_esc = utils._move_and_click, utils.is_route_selection_page, utils.handle_escape
         utils._move_and_click = lambda task, x, y: clicks.append((x, y))
         utils.is_route_selection_page = lambda task: True
+        utils.handle_escape = lambda task: False
         try:
             def task(**ns):
                 t = types.SimpleNamespace(config={"章鱼哥速刷": True, "章鱼哥速刷只认混沌之识": True},
@@ -1184,6 +1185,12 @@ class TestOctopusMissEscape(unittest.TestCase):
             self.assertTrue(utils.handle_octopus_miss_escape(t))
             self.assertTrue(utils.handle_octopus_miss_escape(t))
             self.assertEqual(clicks, [(0.959, 0.051)])
+            # 菜单已打开：直接点逃脱，不再点菜单
+            utils.handle_escape = lambda task: True
+            t2 = task(octopus_seen=True)
+            self.assertTrue(utils.handle_octopus_miss_escape(t2))
+            self.assertEqual(clicks, [(0.959, 0.051)])
+            utils.handle_escape = lambda task: False
             # 回到局外难度页清掉上一局的记录
             utils.clear_octopus_seen(t)
             self.assertNotIn("octopus_seen", t.node_status)
@@ -1193,4 +1200,4 @@ class TestOctopusMissEscape(unittest.TestCase):
             off.config["章鱼哥速刷只认混沌之识"] = False
             self.assertFalse(utils.handle_octopus_miss_escape(off))
         finally:
-            utils._move_and_click, utils.is_route_selection_page = old_click, old_route
+            utils._move_and_click, utils.is_route_selection_page, utils.handle_escape = old_click, old_route, old_esc

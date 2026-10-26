@@ -5512,6 +5512,9 @@ def handle_octopus_miss_escape(task: TriggerTask):
     回到路线页就点右上菜单（和结算页退出同一个位置）→ 逃脱页由 handle_escape 点逃脱、确认。"""
     if not octopus_core_missed(task) or task.node_status.get('is_escaped'):
         return False
+    # 菜单（卡厄思信息页）打开了就先点逃脱：不然画面卡住处理会点右上 X 把菜单关掉，来回循环（2026-10-26 15:28 实录）
+    if handle_escape(task):
+        return True
     if not is_route_selection_page(task):
         return False
     ns = task.node_status
