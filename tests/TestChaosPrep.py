@@ -57,7 +57,7 @@ class TestZeroUpgrade(unittest.TestCase):
         self.assertEqual((["高维启示", "认知闪光"], []), cs.zero_upgrade_wants(cs.MODE_EMPTY))
         self.assertEqual((["高维启示"], ["认知闪光"]), cs.zero_upgrade_wants(cs.MODE_TARGET))
         self.assertEqual(([], []), cs.zero_upgrade_wants(cs.MODE_EXPLORE))
-        self.assertEqual((["高维启示"], ["认知闪光", "侦测敌对讯号", "威胁排除奖励"]),
+        self.assertEqual((["高维启示"], ["认知闪光", "敌对信号检测", "消除威胁的奖励"]),
                          cs.zero_upgrade_wants(cs.MODE_TARGET, octopus=True))
 
     def test_levels_ok(self):

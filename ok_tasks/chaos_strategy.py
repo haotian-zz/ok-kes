@@ -584,7 +584,8 @@ def pick_flash_variant(card_name, choices, target_cards, db=None, min_sim=0.8):
 GOD_SPARK_UPGRADE = "高维启示"   # 神之闪光触发率，空存和目标卡组都 0 级（用户 2026-10-24：局内最好不神闪）
 SPARK_UPGRADE = "认知闪光"       # 闪光触发率，空存 0 级、目标卡组满级
 # 章鱼哥（乱入的赛内克图斯）：侦测敌对讯号提高乱入率，威胁排除奖励击杀时友军压力 -10。零式升级对活动卡厄思同样生效（冥想、免费训练都靠它）
-OCTOPUS_UPGRADES = ["侦测敌对讯号", "威胁排除奖励"]
+# 国服升级页名称（2026-10-25 实机）：敌对信号检测（国际服「侦测敌对讯号」）、消除威胁的奖励（「威胁排除奖励」，行首带 *）
+OCTOPUS_UPGRADES = ["敌对信号检测", "消除威胁的奖励"]
 
 
 def zero_upgrade_wants(mode, octopus=False):
