@@ -77,7 +77,8 @@ def equipment_event_sources(names, db=None):
             if norm(e.get("name", "")) != event_name:
                 continue
             for o in e.get("options", []):
-                if any(norm(x) == norm(eq["name"]) for x in (o.get("effects") or {}).get("equipment") or []):
+                names = {norm(eq.get(k)) for k in ("name", "name_intl", "name_gamekee") if eq.get(k)}
+                if any(norm(x) in names for x in (o.get("effects") or {}).get("equipment") or []):
                     out.append({"equipment": eq["name"], "event": e["name"], "option": o.get("text"),
                                 "layer": AREA_LAYER.get(e.get("area"))})
     return out

@@ -374,11 +374,11 @@ class TestTrace(unittest.TestCase):
     def test_equipment_event_source_bonus(self):
         # 凝结的光辉残片只能在第 1 层（外围）「前往更深之处」选「劈向地脉」拿：第 1 层事件加分，拿到后不加
         src = cs.equipment_event_sources(["混沌指控", "凝结的光辉残片", "坠落的王冠"])
-        self.assertEqual([("凝结的光辉残片", "前往更深之处", "劈向地脉", 0)],
+        self.assertEqual([("凝聚的辉光残片", "前往更深之处", "劈向地脉", 0)],
                          [(s["equipment"], s["event"], s["option"], s["layer"]) for s in src])
         self.assertEqual(cs.EVENT_SOURCE_BONUS, cs.event_source_bonus(src, 0))
         self.assertEqual(0, cs.event_source_bonus(src, 1))
-        self.assertEqual(0, cs.event_source_bonus(src, 0, ["凝结的光辉残片"]))
+        self.assertEqual(0, cs.event_source_bonus(src, 0, ["凝聚的辉光残片"]))
         w = cs.route_weights(cs.MODE_TARGET, 0, 80, cs.event_source_bonus(src, 0))["types"]
         self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"]["事件"] + cs.EVENT_SOURCE_BONUS, w["事件"])
     def test_want_last_shop_once(self):
@@ -815,6 +815,8 @@ class TestEquipmentCnNames(unittest.TestCase):
         import game_db
         db = game_db.GameDB()
         self.assertIn("堕落之冠", db.equipment_aliases("坠落的王冠"))
+        # 国服客户端叫「凝聚的辉光残片」，配置写 gamekee 名也要认出来（2026-10-25 被乱世之触按品质顶掉）
+        self.assertIn("凝聚的辉光残片", db.equipment_aliases("凝结的光辉残片"))
         self.assertIn("过载动力机关", db.equipment_aliases("超负荷动力机关"))
 
 

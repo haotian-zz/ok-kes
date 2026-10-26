@@ -219,8 +219,8 @@ class GameDB:
     def find_equipment(self, name):
         """按装备名找装备（优先非出击专用版本），返回 dict（含 slot 1/2/3、rarity）。"""
         normal = [e for e in self.equipment if e.get("mode") != "出击"]
-        return self._best(normal, name, keys=("name", "name_intl"), min_score=0.75) or \
-            self._best(self.equipment, name, keys=("name", "name_intl"), min_score=0.75)
+        return self._best(normal, name, keys=self.EQUIPMENT_NAME_KEYS, min_score=0.75) or \
+            self._best(self.equipment, name, keys=self.EQUIPMENT_NAME_KEYS, min_score=0.75)
 
     EQUIPMENT_NAME_KEYS = ("name", "name_intl", "name_gamekee")
 

@@ -10924,7 +10924,7 @@
   },
   {
    "id": "gk_eq_724885",
-   "name": "凝结的光辉残片",
+   "name": "凝聚的辉光残片",
    "slot": 1,
    "slot_name": "武器",
    "rarity": "传说",
@@ -10941,6 +10941,7 @@
    "gk_content_id": 724885,
    "rarity_gamekee": "传说",
    "obtain": "天上防护墙：事件-前往更深之处",
+   "name_gamekee": "凝结的光辉残片",
    "season_name": "雪上凝结的约定",
    "icon": "equipment_icons/gk_724885.png"
   },
