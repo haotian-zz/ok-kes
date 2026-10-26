@@ -113,6 +113,11 @@ class TestPriorities(unittest.TestCase):
                          self.rank(["移除1张卡牌", "获得1张中立卡牌", "复制选中的1张卡牌"], state=st))
         self.assertEqual("移除1张卡牌", self.rank(["获得1张中立卡牌", "移除1张卡牌"])[0])
 
+    def test_target_never_takes_unlisted_neutral_or_curse(self):
+        # 用户 2026-10-26：预设外的中立卡（含咒术卡）一张都不能拿，选中主战员闪光也换不来
+        opts = ["甘受玷污强制获得咒术卡牌[赞美的试炼选中主战员闪光1次", "信用点增加50", "在随机3张中立传说卡牌中选择1张获得"]
+        self.assertEqual("信用点增加50", self.rank(opts)[0])
+
     def test_target_god_spark_never_and_battle_over_small_credit(self):
         # 用户 2026-10-24：局内神闪会爆存档，一律不要；战斗是闪光来源，排在 <200 信用点前
         st = dict(self.need, need_god_spark=1)

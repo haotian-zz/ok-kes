@@ -2174,6 +2174,17 @@ def handle_destiny_choice(task: TriggerTask):
             and len(b.name.strip()) > 1
             and b.name not in ["确认", "返回", "跳过"]
         ]
+        if titles and _avoid_god_spark(task):
+            # 刷存档：命运会塞中立/咒术卡就不选（用户 2026-10-26：预设外的中立卡一张都不能拿）
+            def column_text(t):
+                cx = (t.x + t.width / 2) / task.width
+                return "".join(b.name for b in task.all_texts
+                               if abs((b.x + b.width / 2) / task.width - cx) <= 0.09
+                               and t.y <= b.y and (b.y + b.height / 2) / task.height <= 0.85)
+            safe = [t for t in titles if not re.search(r"中立|咒术", column_text(t))]
+            if safe and len(safe) < len(titles):
+                task.log_info(f"命运：跳过会给中立/咒术卡的 {[t.name for t in titles if t not in safe]}")
+            titles = safe or titles
         if titles:
             chosen = random.choice(titles)
             task.log_info(f"随机选择命运: {chosen.name}")

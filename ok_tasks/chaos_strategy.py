@@ -295,8 +295,11 @@ def score_effects(effects, mode, state=None):
                 add(45, "随机复制")
             else:
                 add(120, "复制")
-        if effects.get("neutral_card"):
-            add(250 if state.get("need_neutral", 0) > 0 else -10, "中立卡")
+        # 用户 2026-10-26：预设里没有的中立卡一张都不能拿（咒术卡也是中立卡，占 PT、留在存档卡组里）
+        if effects.get("neutral_card") and state.get("need_neutral", 0) > 0:
+            add(250, "中立卡")
+        elif effects.get("neutral_card") or effects.get("curse_card"):
+            add(-2000, "预设外的中立卡（禁止）")
         if rm and can_remove and state.get("need_remove", 0) > 0:
             add(200, f"移除{rm}张")
         elif rm:
@@ -320,7 +323,7 @@ def score_effects(effects, mode, state=None):
                 add(160 if effects.get("god_spark_pick") else 30, "神闪（预设要）")
             else:
                 add(-40, "神闪")
-        for k, v, reason in (("curse_card", -15, "咒术卡"), ("event_card", -8, "获得卡"), ("lumen_card", -8, "获得卡"),
+        for k, v, reason in (("event_card", -8, "获得卡"), ("lumen_card", -8, "获得卡"),
                              ("desire_card", -8, "获得卡"), ("card_choice", -5, "选卡"), ("transform_card", -10, "转换卡")):
             if effects.get(k):
                 add(v, reason)
