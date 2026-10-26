@@ -255,6 +255,10 @@ class ChaosMode(TriggerTask):
         self.log_info(f"目标卡组计划：{self.chaos_plan}")
         return True
 
+    def _at_lobby(self):
+        texts = [box.name for box in self.all_texts or []]
+        return any("每周进展" in t for t in texts) and "确认" not in texts
+
     def _enter_chaos_from_home(self):
         """选了玩法且停在主页时自己进卡厄思：探索度 → 卡厄思具象探索度最低的区域；刷存档 → 零式系统。失败两次就停下。"""
         mode = getattr(self, 'chaos_mode', chaos_strategy.MODE_LEGACY)
@@ -265,8 +269,7 @@ class ChaosMode(TriggerTask):
         # 卡厄思难度选择页（有「每周进展」）也在局外：上一轮按轮数停下后就停在这里（2026-10-24 实机），
         # 直接点进入会跳过零式升级和难度选择，所以同样先回主页
         # 结算后的奖励页也有「每周进展」，但带「确认」按钮，要交给页面流程点确认、走存储数据收集（2026-10-25 实录被当成难度页按了 ESC）
-        texts = [box.name for box in self.all_texts or []]
-        at_lobby = any("每周进展" in t for t in texts) and "确认" not in texts
+        at_lobby = self._at_lobby()
         if not (utils_daily.is_home(self) or not self.all_texts or at_lobby):
             if not utils_chaos._at_chaos_initial_page(self):
                 utils.restore_run_state(self)     # 停在局内：读回 PT 账（中途重启不丢）
@@ -348,6 +351,11 @@ class ChaosMode(TriggerTask):
                 return
             self.start_window = False
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环
+        if getattr(self, 'recheck_zero_at_lobby', False) and self._at_lobby():
+            self.recheck_zero_at_lobby = False
+            self.entry_checked = False
+            if self._enter_chaos_from_home():
+                return
         if self.config.get('章鱼哥速刷'):
             utils.note_octopus(self)
         frame = self.frame

@@ -5190,6 +5190,20 @@ OCTOPUS_RUSH = "章鱼哥速刷"
 OCTOPUS_NAMES = ("赛内克图斯",)       # 章鱼哥：梦境模式清完怪后低概率乱入的精英，掉混沌之识（混沌指控）
 # 结算页的乱入计数（官方文本 ui_stage_result_break_into「乱入{0}」）；画面没出名字时靠它兜底。噬光者也算乱入，但只在零式法典词条里出现
 OCTOPUS_BREAK_IN = re.compile(r"^乱入\s*[1-9]")
+# 战斗界面不显示怪物名字（用户 2026-10-25），所以主要靠掉落：画面上出现它掉的六件神话装备之一就算遇到了
+_octopus_drops = None
+
+
+def octopus_drop_names():
+    """赛内克图斯掉落的装备名（国服名 + 国际服/gamekee 名），从装备库 obtain 字段取。"""
+    global _octopus_drops
+    if _octopus_drops is None:
+        names = set()
+        for e in game_db.get_db().equipment:
+            if any(n in str(e.get("obtain", "")) for n in OCTOPUS_NAMES):
+                names.update(e[k] for k in ("name", "name_intl", "name_gamekee") if e.get(k))
+        _octopus_drops = tuple(sorted(n for n in names if len(n) >= 3))
+    return _octopus_drops
 
 
 def note_octopus(task: TriggerTask):
@@ -5198,7 +5212,7 @@ def note_octopus(task: TriggerTask):
     if not isinstance(ns, dict) or ns.get('octopus_seen'):
         return
     hit = next((b.name for b in task.all_texts or []
-                if any(n in b.name for n in OCTOPUS_NAMES) or OCTOPUS_BREAK_IN.match(b.name)), None)
+                if any(n in b.name for n in OCTOPUS_NAMES + octopus_drop_names()) or OCTOPUS_BREAK_IN.match(b.name)), None)
     if hit:
         ns['octopus_seen'] = True
         task.log_info(f"遇到章鱼哥：「{hit}」（第 {ns.get('pass_final_boss_count', 0) + 1} 层）", notify=True)
@@ -5236,9 +5250,9 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
             and not task.node_status.get('octopus_seen') and not got):
         task.log_info("章鱼哥速刷：第一层没遇到章鱼哥（赛内克图斯），退出重进")
         if hasattr(task, 'entry_checked') and not getattr(task, 'zero_upgrades_checked', True):
-            # 任务是在局内启动的、还没核对过零式升级：退出后回主页检查一次（局内进不了升级页）
+            # 任务是在局内启动的、还没核对过零式升级：退出后到了难度页先回主页检查一次（局内进不了升级页）
             task.log_info("本次任务还没检查零式升级，退出后先回主页检查")
-            task.entry_checked = False
+            task.recheck_zero_at_lobby = True
         _move_and_click(task, 0.959, 0.051)
         task.sleep(1)
         return True

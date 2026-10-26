@@ -721,6 +721,24 @@ class TestOctopusRush(unittest.TestCase):
         self.assertFalse(utils.OCTOPUS_BREAK_IN.match("乱入0"))
         self.assertFalse(utils.OCTOPUS_BREAK_IN.match("暗星趁乱入侵"))
 
+    def test_octopus_drop_names(self):
+        import types
+        import utils
+        drops = utils.octopus_drop_names()
+        for n in ("混沌之识", "混沌指控", "乱世之触", "错乱之骰", "随机之球", "灾难之像", "怪异之壳"):
+            self.assertIn(n, drops)
+        self.assertNotIn("堕落之冠", drops)
+        t = self._task()
+        t.frame = None
+        t.all_texts = [types.SimpleNamespace(name="乱世之触")]
+        old = utils.chaos_trace.step
+        utils.chaos_trace.step = lambda *a, **k: None
+        try:
+            utils.note_octopus(t)
+        finally:
+            utils.chaos_trace.step = old
+        self.assertTrue(t.node_status["octopus_seen"])
+
 
 class TestOctopusRoute(unittest.TestCase):
     def test_first_layer_normal_first(self):
