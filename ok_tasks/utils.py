@@ -5386,7 +5386,9 @@ RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")
 RUN_STATE_MAX_AGE = 3 * 3600
-_PERSIST_KEYS = RUN_LEVEL_KEYS + ("removed_card_count", "neutral_card_count", "pass_final_boss_count")
+# reach_final_boss 也要落盘：首领战中途重启后结算不 +1 层，速刷把第二层当第一层（2026-10-25 21:06）
+_PERSIST_KEYS = RUN_LEVEL_KEYS + ("removed_card_count", "neutral_card_count", "pass_final_boss_count",
+                                  "reach_final_boss")
 
 
 def save_run_state(task: TriggerTask):
