@@ -158,3 +158,12 @@ class TestCardNameOneCharOff(unittest.TestCase):
         _rematch_unknown_cards(deck)
         self.assertEqual(("剑刃破晓", 4), (deck["cards"][0]["name"], deck["cards"][0]["n"]))
         self.assertIsNone(deck["cards"][1]["n"])
+
+    def test_flash_variant_with_ocr_name(self):
+        import chaos_strategy as cs
+        target = [{"name": "剑刃破晓", "n": 4, "god_spark": "add_r_spark_circen_01",
+                   "desc": "伤害452%\n本回合凝聚卡牌叠加时，\n基础伤害量+50%（最\n大500%）\n此卡伤害总量提\n升30%"}]
+        choices = [{"name": "剑刀破晓", "description": "丢弃最多1张手牌伤害348%费用减少2，下一次发动2张明、暗卡牌时恢复"},
+                   {"name": "剑刀破晓", "description": "伤害300%本回合凝聚卡牌叠加时，基础伤害量+50%(最大500%)"},
+                   {"name": "剑刀破晓", "description": "伤害232%丢弃最多1张手牌，丢弃后造成伤害174%1回合内坚定2"}]
+        self.assertEqual(1, cs.pick_flash_variant("剑刀破晓", choices, target))

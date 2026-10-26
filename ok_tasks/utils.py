@@ -2514,10 +2514,10 @@ def _matching_meditation_card_names(task: TriggerTask, cards):
     for configured_name in meditation_state:
         for card in cards:
             recognized_name = chaos_strategy.base_card_name(card.get("name", ""))
-            if (
-                recognized_name
-                and (configured_name in recognized_name or recognized_name in configured_name)
-                and _edit_distance(configured_name, recognized_name, max_dist=1)
+            # 同长度错一个字也算（「剑刀破晓」对「剑刃破晓」，2026-10-25 没记成待冥想）
+            if recognized_name and _edit_distance(configured_name, recognized_name, max_dist=1) and (
+                configured_name in recognized_name or recognized_name in configured_name
+                or len(configured_name) == len(recognized_name)
             ):
                 matched_names.append(configured_name)
                 break

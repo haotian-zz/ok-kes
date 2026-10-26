@@ -563,6 +563,8 @@ def pick_flash_variant(card_name, choices, target_cards, db=None, min_sim=0.8):
     best, best_s = None, 0.0
     card_name = base_card_name(card_name)
     card = db.find_card(card_name) if db else None
+    if card:
+        card_name = card["name"]      # OCR 错字（「剑刀破晓」）按库名对预设
     for i, ch in enumerate(choices):
         for t in target_cards:
             if t.get("name") != card_name or not t.get("desc"):
