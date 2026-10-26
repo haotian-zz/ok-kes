@@ -5377,7 +5377,10 @@ def _record_last_boss_result(task: TriggerTask, success):
 
 
 def _hand_over_on_chaos_core(task: TriggerTask, name):
-    if not name or not re.search(r"混沌之识|混沌指控", name) or not _avoid_god_spark(task):
+    if not name or not re.search(r"混沌之识|混沌指控", name):
+        return
+    task.node_status["chaos_core_got"] = name
+    if not _avoid_god_spark(task):
         return
     n = _last_boss_fails()
     if n < LAST_BOSS_FAIL_HANDOVER:
@@ -5455,6 +5458,7 @@ def _initial_member_status():
 
 
 OCTOPUS_RUSH = "章鱼哥速刷"
+OCTOPUS_CORE_ONLY = "章鱼哥速刷只认混沌之识"
 OCTOPUS_NAMES = ("赛内克图斯",)       # 章鱼哥：梦境模式清完怪后低概率乱入的精英，掉混沌之识（混沌指控）
 # 结算页的乱入计数（官方文本 ui_stage_result_break_into「乱入{0}」）；画面没出名字时靠它兜底。噬光者也算乱入，但只在零式法典词条里出现
 OCTOPUS_BREAK_IN = re.compile(r"^乱入\s*[1-9]")
@@ -5505,16 +5509,18 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
         task.sleep(1)
         return True
 
-    got = task.node_status.get('target_equip_got')
     if (_get_config_value(task, OCTOPUS_RUSH, False) is True
             and task.node_status.get('pass_final_boss_count', 0) == 1):
-        # 用户 2026-10-25：拿到过目标装备的局打完全部；章鱼哥来了但没掉目标装备（乱世之触、随机之球…）也退出重开
+        # 用户 2026-10-26：开了「只认混沌之识」时，别的目标装备也不算，没掉混沌之识就退出重开
+        core_only = _get_config_value(task, OCTOPUS_CORE_ONLY, False) is True
+        got = task.node_status.get('chaos_core_got' if core_only else 'target_equip_got')
         if got:
             if not task.node_status.get('octopus_rush_kept_logged'):
                 task.node_status['octopus_rush_kept_logged'] = True
-                task.log_info(f"章鱼哥速刷：本局拿到了目标装备「{got}」，不退出，继续打完")
+                task.log_info(f"章鱼哥速刷：本局拿到了「{got}」，不退出，继续打完")
         else:
-            why = "遇到了章鱼哥但没掉目标装备" if task.node_status.get('octopus_seen') else "第一层没遇到章鱼哥（赛内克图斯）"
+            miss = "混沌之识" if core_only else "目标装备"
+            why = f"遇到了章鱼哥但没掉{miss}" if task.node_status.get('octopus_seen') else "第一层没遇到章鱼哥（赛内克图斯）"
             task.log_info(f"章鱼哥速刷：{why}，退出重进")
             _move_and_click(task, 0.959, 0.051)
             task.sleep(1)
@@ -5583,7 +5589,7 @@ def reset_layer_status(task: TriggerTask):
 
 
 RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok",
-                  "octopus_seen", "target_equip_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger")
+                  "octopus_seen", "target_equip_got", "chaos_core_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")

@@ -721,8 +721,21 @@ class TestOctopusRush(unittest.TestCase):
             self.assertTrue(utils._finish_only_first_layer(self._task(seen=True)))
             clicks.clear()
             self.assertFalse(utils._finish_only_first_layer(self._task(layers=2)))
-            got = self._task()
-            got.node_status["target_equip_got"] = "堕落之冠"
+            # 默认（只认混沌之识关）：拿到别的目标装备就打完
+            other = self._task(seen=True)
+            other.node_status["target_equip_got"] = "堕落之冠"
+            self.assertFalse(utils._finish_only_first_layer(other))
+            self.assertEqual(clicks, [])
+            # 用户 2026-10-26：开了只认混沌之识，别的目标装备不算，没掉混沌之识就退出重开
+            other = self._task(seen=True)
+            other.config["章鱼哥速刷只认混沌之识"] = True
+            other.node_status["target_equip_got"] = "堕落之冠"
+            self.assertTrue(utils._finish_only_first_layer(other))
+            clicks.clear()
+            got = self._task(seen=True)
+            got.config["章鱼哥速刷只认混沌之识"] = True
+            got.node_status["target_equip_got"] = "混沌之识"
+            got.node_status["chaos_core_got"] = "混沌之识"
             self.assertFalse(utils._finish_only_first_layer(got))
             self.assertEqual(clicks, [])
         finally:

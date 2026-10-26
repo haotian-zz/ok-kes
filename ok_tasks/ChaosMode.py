@@ -94,6 +94,7 @@ class ChaosMode(TriggerTask):
         self.default_config['刷初始卡牌'] = ""
         self.default_config['只打第一层'] = False
         self.default_config['章鱼哥速刷'] = False
+        self.default_config['章鱼哥速刷只认混沌之识'] = False
         # 路线节点优先级 (列表), 越靠前优先级越高
         self.default_config['路线优先级'] = ["休息", "事件", "小怪", "精英"]
         self.default_config['几轮后停止(0为不停止)'] = 0
@@ -176,6 +177,9 @@ class ChaosMode(TriggerTask):
             "空白存档（0PT）、目标主战员的存档、读不准的都保留")
         self.config_description['章鱼哥速刷'] = (
             "刷章鱼哥（梦境模式乱入的精英赛内克图斯，掉混沌之识）：第一层打完首领时本局还没拿到目标装备就退出重进（遇到章鱼哥但掉的不是目标装备也一样）；拿到了就照常打完。需要开梦境模式"
+        )
+        self.config_description['章鱼哥速刷只认混沌之识'] = (
+            "配合「章鱼哥速刷」：开启后第一层打完首领时只要本局没拿到混沌之识就退出重进，别的目标装备（堕落之冠、过载动力机关等）不算；关闭时拿到任意目标装备就打完"
         )
         self.config_description['首层刷特定闪光'] = (
             "默认刷闪光优先级第一张，可刷神闪，第一层没刷出自动逃脱"
