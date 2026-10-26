@@ -4,11 +4,62 @@
 import os
 import re
 import subprocess
+import threading
 import time
 
 LAUNCH_BUTTON = (0.863, 0.941)      # 启动器窗口里「启动」按钮（实测 1600×900 的启动器窗口）
 LAUNCHER_MIN_WIDTH = 600
 LOGIN_TIMEOUT = 300
+
+
+# 游戏窗口被最小化时框架自动暂停（og.executor.pause pos_invalid），命令行 run_task 没有「开始」按钮能点，就一直停着。
+# 2026-10-26 用户切去玩 NIKKE 时误最小化了卡厄思，脚本停了 6 分钟；窗口还原后要自己接着跑。
+RESUME_AFTER = 5
+_resume_thread = None
+
+
+def resume_step(state, paused, pos_valid, now):
+    """返回 True 表示该恢复了。只恢复「因窗口失效而暂停」的：暂停期间没见过窗口失效的（用户手动暂停）不管。"""
+    if not paused:
+        state.clear()
+        return False
+    if not pos_valid:
+        state["saw_invalid"] = True
+        state.pop("valid_since", None)
+        return False
+    if not state.get("saw_invalid"):
+        return False
+    since = state.setdefault("valid_since", now)
+    if now - since < RESUME_AFTER:
+        return False
+    state.clear()
+    return True
+
+
+def start_resume_on_restore(task):
+    """后台线程：窗口还原后自动 og.executor.start()。每个进程只起一个。"""
+    global _resume_thread
+    if _resume_thread is not None:
+        return
+
+    def loop():
+        from ok import og
+        state = {}
+        while True:
+            time.sleep(1)
+            executor = getattr(og, "executor", None)
+            hwnd_window = getattr(getattr(og, "device_manager", None), "hwnd_window", None)
+            if executor is None or hwnd_window is None:
+                continue
+            try:
+                if resume_step(state, executor.paused, getattr(hwnd_window, "pos_valid", True), time.time()):
+                    task.log_info("游戏窗口已还原，自动继续（最小化时框架暂停了）")
+                    executor.start()
+            except Exception as e:  # noqa: BLE001
+                task.log_info(f"窗口还原自动继续出错：{e}")
+
+    _resume_thread = threading.Thread(target=loop, name="ResumeOnRestore", daemon=True)
+    _resume_thread.start()
 
 
 def launcher_path(game_exe):

@@ -5,6 +5,7 @@ import os
 
 import chaos_strategy
 import chaos_trace
+import game_restart
 import game_db
 import utils
 import utils_chaos
@@ -359,6 +360,7 @@ class ChaosMode(TriggerTask):
             self.sleep(3)
             return
         if not getattr(self, 'strategy_ready', False):
+            game_restart.start_resume_on_restore(self)
             self.setup_strategy()
         # 读预设、从主页进卡厄思只在启动那一刻做：之后的无文字帧（战斗开场、加载）不能当成主页
         # （2026-10-24 局内重启后首领战开场被当成主页，点了画面中心、按了 6 次 ESC）

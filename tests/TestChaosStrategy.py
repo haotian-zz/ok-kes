@@ -1118,3 +1118,29 @@ class TestChaosCoreHandover(unittest.TestCase):
         t, f = self._task()
         u._hand_over_on_chaos_core(t, "混沌之识")
         self.assertFalse(f)
+
+
+class TestResumeOnRestore(unittest.TestCase):
+    def test_resume_only_after_minimize(self):
+        from game_restart import resume_step
+        st = {}
+        # 用户手动暂停（窗口一直有效）：不恢复
+        self.assertFalse(resume_step(st, True, True, 0))
+        self.assertFalse(resume_step(st, True, True, 100))
+        st = {}
+        # 最小化 → 暂停；还原后 5 秒才恢复
+        self.assertFalse(resume_step(st, True, False, 0))
+        self.assertFalse(resume_step(st, True, True, 10))
+        self.assertFalse(resume_step(st, True, True, 13))
+        self.assertTrue(resume_step(st, True, True, 15))
+        self.assertEqual(st, {})
+        # 还原后又最小化：重新计时
+        self.assertFalse(resume_step(st, True, False, 20))
+        self.assertFalse(resume_step(st, True, True, 21))
+        self.assertFalse(resume_step(st, True, False, 22))
+        self.assertFalse(resume_step(st, True, True, 23))
+        self.assertTrue(resume_step(st, True, True, 28))
+        # 没暂停：清状态
+        st = {"saw_invalid": True}
+        self.assertFalse(resume_step(st, False, True, 0))
+        self.assertEqual(st, {})
