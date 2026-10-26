@@ -46,8 +46,8 @@ import utils_daily
 def handle_memory_process(task: TriggerTask):
     """加工记忆页面：选择命中指定记忆的卡牌，否则跳过。"""
     title = _get_region_text(task, (0.420, 0.072, 0.584, 0.169))
-    if "加工记忆" not in title:
-        return False
+    if "加工记忆" not in title or "精密" in title:
+        return False                     # 「精密加工记忆」是另一页（记忆之末），交给 handle_precision_memory_process
 
     task.log_info("检测到加工记忆页面")
     if any("也会消耗加工机会" in b.name for b in task.all_texts):
