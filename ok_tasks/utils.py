@@ -5386,14 +5386,16 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
     got = task.node_status.get('target_equip_got')
     if (_get_config_value(task, OCTOPUS_RUSH, False) is True
             and task.node_status.get('pass_final_boss_count', 0) == 1):
-        # 用户 2026-10-25：拿到过目标装备的局打完全部；章鱼哥来了但没掉目标装备（乱世之触、随机之球…）也退出重开
-        if got:
+        # 用户 2026-10-25：拿到过目标装备的局打完全部；2026-10-26 改：遇到章鱼哥（不管掉了哪件）也打完全部，
+        # 只有第一层没遇到章鱼哥、也没拿到目标装备才退出重开
+        octopus = task.node_status.get('octopus_seen')
+        if got or octopus:
             if not task.node_status.get('octopus_rush_kept_logged'):
                 task.node_status['octopus_rush_kept_logged'] = True
-                task.log_info(f"章鱼哥速刷：本局拿到了目标装备「{got}」，不退出，继续打完")
+                why = f"本局拿到了目标装备「{got}」" if got else "本局遇到了章鱼哥"
+                task.log_info(f"章鱼哥速刷：{why}，不退出，继续打完")
         else:
-            why = "遇到了章鱼哥但没掉目标装备" if task.node_status.get('octopus_seen') else "第一层没遇到章鱼哥（赛内克图斯）"
-            task.log_info(f"章鱼哥速刷：{why}，退出重进")
+            task.log_info("章鱼哥速刷：第一层没遇到章鱼哥（赛内克图斯），退出重进")
             _move_and_click(task, 0.959, 0.051)
             task.sleep(1)
             return True
