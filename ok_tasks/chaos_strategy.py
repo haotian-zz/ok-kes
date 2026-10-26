@@ -582,14 +582,17 @@ def pick_flash_variant(card_name, choices, target_cards, db=None, min_sim=0.8):
 
 GOD_SPARK_UPGRADE = "高维启示"   # 神之闪光触发率，空存和目标卡组都 0 级（用户 2026-10-24：局内最好不神闪）
 SPARK_UPGRADE = "认知闪光"       # 闪光触发率，空存 0 级、目标卡组满级
+# 章鱼哥（乱入的赛内克图斯）：侦测敌对讯号提高乱入率，威胁排除奖励击杀时友军压力 -10。零式升级对活动卡厄思同样生效（冥想、免费训练都靠它）
+OCTOPUS_UPGRADES = ["侦测敌对讯号", "威胁排除奖励"]
 
 
-def zero_upgrade_wants(mode):
-    """零式系统升级要求：(必须 0 级的项, 必须满级的项)。探索度和原有逻辑不在零式系统刷，不管。"""
+def zero_upgrade_wants(mode, octopus=False):
+    """零式系统升级要求：(必须 0 级的项, 必须满级的项)。探索度和原有逻辑不在零式系统刷，不管。
+    octopus：刷章鱼哥（速刷开着）时把乱入相关的项升满。"""
     if mode == MODE_EMPTY:
         return [GOD_SPARK_UPGRADE, SPARK_UPGRADE], []
     if mode == MODE_TARGET:
-        return [GOD_SPARK_UPGRADE], [SPARK_UPGRADE]
+        return [GOD_SPARK_UPGRADE], [SPARK_UPGRADE] + (OCTOPUS_UPGRADES if octopus else [])
     return [], []
 
 

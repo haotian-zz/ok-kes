@@ -281,7 +281,7 @@ class ChaosMode(TriggerTask):
                 utils_daily.refresh(self)
         if not utils_daily.go_home(self):
             return False
-        want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode) if self.config.get('调整零式升级') else ([], [])
+        want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode, octopus=self.config.get('章鱼哥速刷') is True) if self.config.get('调整零式升级') else ([], [])
         if self.config.get('卡厄思地图', '活动卡厄思') == '活动卡厄思':
             if want_zero or want_max:
                 utils_chaos_prep.enter_zero_system(self, want_zero, want_max)

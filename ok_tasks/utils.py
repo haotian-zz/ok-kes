@@ -5188,6 +5188,8 @@ def _initial_member_status():
 
 OCTOPUS_RUSH = "章鱼哥速刷"
 OCTOPUS_NAMES = ("赛内克图斯",)       # 章鱼哥：梦境模式清完怪后低概率乱入的精英，掉混沌之识（混沌指控）
+# 结算页的乱入计数（官方文本 ui_stage_result_break_into「乱入{0}」）；画面没出名字时靠它兜底。噬光者也算乱入，但只在零式法典词条里出现
+OCTOPUS_BREAK_IN = re.compile(r"^乱入\s*[1-9]")
 
 
 def note_octopus(task: TriggerTask):
@@ -5195,7 +5197,8 @@ def note_octopus(task: TriggerTask):
     ns = getattr(task, 'node_status', None)
     if not isinstance(ns, dict) or ns.get('octopus_seen'):
         return
-    hit = next((b.name for b in task.all_texts or [] if any(n in b.name for n in OCTOPUS_NAMES)), None)
+    hit = next((b.name for b in task.all_texts or []
+                if any(n in b.name for n in OCTOPUS_NAMES) or OCTOPUS_BREAK_IN.match(b.name)), None)
     if hit:
         ns['octopus_seen'] = True
         task.log_info(f"遇到章鱼哥：「{hit}」（第 {ns.get('pass_final_boss_count', 0) + 1} 层）", notify=True)

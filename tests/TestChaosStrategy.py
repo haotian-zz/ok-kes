@@ -717,6 +717,9 @@ class TestOctopusRush(unittest.TestCase):
             utils.chaos_trace.step = old
         self.assertTrue(t.node_status["octopus_seen"])
         self.assertIn("octopus_seen", utils.RUN_LEVEL_KEYS)
+        self.assertTrue(utils.OCTOPUS_BREAK_IN.match("乱入1"))
+        self.assertFalse(utils.OCTOPUS_BREAK_IN.match("乱入0"))
+        self.assertFalse(utils.OCTOPUS_BREAK_IN.match("暗星趁乱入侵"))
 
 
 class TestOctopusRoute(unittest.TestCase):
