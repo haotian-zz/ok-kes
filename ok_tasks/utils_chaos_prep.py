@@ -637,7 +637,7 @@ def _click_difficulty(task: BaseTask, y):
 
 def select_difficulty(task: BaseTask, want=None):
     """活动卡厄思首页选难度：want=None 选已解锁的最高难度，否则选第 want 档（Ⅰ=1）。
-    选不到 want（没解锁或认不出）就退回最高难度。返回最后选中的难度（认不出为 None）。"""
+    选不到 want 就返回当前档（认不出为 None），由调用方决定重试或停止，不退回最高难度。"""
     if want:
         _swipe_difficulty_list(task, to_top=True)
         refresh(task)
@@ -668,7 +668,9 @@ def select_difficulty(task: BaseTask, want=None):
         if got == want:
             task.log_info(f"卡厄思难度：选了第 {want} 档（推荐等级 {DIFF_LEVELS[want]}）")
             return want
-        task.log_info(f"卡厄思难度：没选到第 {want} 档（当前 {got}），改选最高难度")
+        # 指定了难度就绝不退回最高难度（2026-10-26 实录没认出 Ⅷ 就选了最高难度，之后一直在最高难度刷）
+        task.log_info(f"卡厄思难度：没选到第 {want} 档（当前 {got}）")
+        return got
     _swipe_difficulty_list(task, to_top=False)
     refresh(task)
     circles = [c for c in difficulty_circles(task.frame) if DIFF_CLICK_Y[0] < c[0] < DIFF_CLICK_Y[1]]

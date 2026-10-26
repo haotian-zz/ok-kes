@@ -1021,3 +1021,46 @@ class TestDisconnectDialog(unittest.TestCase):
         self.assertTrue(u.handle_title_start(task))
         task, clicks = self._task(["开始战斗"])
         self.assertFalse(u.handle_title_start(task))
+
+
+class TestSaveDifficultyAndModifiers(unittest.TestCase):
+    def test_user_banned_modifiers_any_level(self):
+        # 用户 2026-10-26：损失、暴君、愤怒、松懈任何级数都不要
+        for text in ("[损失1]战斗信用点减少40%", "[暴君1]精英、首领区异形的攻击与生命", "[愤怒1]异形每3回合获得士气1",
+                     "[松懈1]每回合随机丢掉1张卡牌"):
+            ok, _ = cs.judge_modifiers(cs.parse_modifiers(text))
+            self.assertFalse(ok, text)
+        ok, _ = cs.judge_modifiers(cs.parse_modifiers("[精英4]追加8个精英区[不安1]无法在安全区休息"))
+        self.assertTrue(ok)
+
+    def _lock(self, levels, switches=0):
+        import utils_chaos as uc
+        import utils_chaos_prep as prep
+        calls, flags = [], {}
+        task = SimpleNamespace(_difficulty_switches=switches, log_info=lambda *a, **k: None,
+                               log_error=lambda *a, **k: None, disable=lambda: flags.setdefault("disabled", True))
+        old = (prep._difficulty_level, prep.select_difficulty, uc._get_config_value)
+        it = iter(levels)
+        prep._difficulty_level = lambda t: next(it)
+        prep.select_difficulty = lambda t, want: calls.append(want)
+        uc._get_config_value = lambda t, k, d=None: d
+        try:
+            r = uc._lock_save_difficulty(task)
+        finally:
+            prep._difficulty_level, prep.select_difficulty, uc._get_config_value = old
+        return r, calls, flags, task
+
+    def test_unknown_top_difficulty_switches_back(self):
+        # 最高难度推荐等级 130 认不出是第几档，也要切回 Ⅷ（2026-10-26 实录被放行）
+        r, calls, flags, _ = self._lock([130])
+        self.assertTrue(r)
+        self.assertEqual(calls, [8])
+        r, calls, flags, task = self._lock([80], switches=2)
+        self.assertFalse(r)
+        self.assertEqual(task._difficulty_switches, 0)
+
+    def test_stops_instead_of_playing_wrong_difficulty(self):
+        r, calls, flags, _ = self._lock([130], switches=3)
+        self.assertTrue(r)
+        self.assertEqual(calls, [])
+        self.assertTrue(flags.get("disabled"))

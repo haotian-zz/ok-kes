@@ -291,14 +291,21 @@ OBSERVE_TRIES_TOTAL = 150      # 每次 10 冰封文明的遗产
 
 
 def _lock_save_difficulty(task: TriggerTask):
-    """刷存档锁定「刷存档难度」（默认 Ⅷ）：不在这一档就切过去（最多试 3 次，切不过去就按当前档继续）。"""
+    """刷存档锁定「刷存档难度」（默认 Ⅷ）：不在这一档（或认不出是哪档）就切过去，连续 3 次切不过去就停任务。
+    2026-10-26 实录：最高难度推荐等级 130 不在 DIFF_LEVELS 里认成 None，被当成没问题放行，之后一直在最高难度刷（用户要 Ⅷ）。"""
     want = chaos_strategy.observe_start_difficulty(_get_config_value(task, "刷存档难度", 8))
-    diff = utils_chaos_prep._diff_of_level(utils_chaos_prep._difficulty_level(task))
-    switches = getattr(task, "_difficulty_switches", 0)
-    if not diff or diff == want or switches >= 3:
+    level = utils_chaos_prep._difficulty_level(task)
+    diff = utils_chaos_prep._diff_of_level(level)
+    if diff == want:
+        task._difficulty_switches = 0
         return False
+    switches = getattr(task, "_difficulty_switches", 0)
+    if switches >= 3:
+        task.log_error(f"刷存档要第 {want} 档，切了 {switches} 次还是第 {diff} 档（推荐等级 {level}），停止，不在别的难度开打", notify=True)
+        task.disable()
+        return True
     task._difficulty_switches = switches + 1
-    task.log_info(f"当前第 {diff} 档，刷存档锁定第 {want} 档，切过去")
+    task.log_info(f"当前第 {diff} 档（推荐等级 {level}），刷存档锁定第 {want} 档，切过去（第 {switches + 1} 次）")
     utils_chaos_prep.select_difficulty(task, want)
     return True
 
