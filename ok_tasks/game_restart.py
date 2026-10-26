@@ -89,6 +89,7 @@ def _prefer_pc(task):
 def restart_game(task, reason):
     """结束并重新拉起游戏，等到能交回页面流程（主页或卡厄思里的页面）。成功返回 True。"""
     from ok.util.process import kill_exe
+    import utils
     import utils_daily
 
     exe = _game_exe()
@@ -147,12 +148,15 @@ def restart_game(task, reason):
         if utils_daily.is_home(task):
             task.log_info("重开后回到主页")
             return True
+        if utils.handle_chaos_disconnected(task):
+            continue
         box = utils_daily.find_text(task, r"^点击(开始|以|屏幕|画面)")
         if box:
             utils_daily.click_text_box(task, box, after=3, reason="重开后过标题页/登录弹窗")
             continue
         page = set(texts)
-        if len(texts) >= 3 and not any(re.search(r"适龄|版权|出版|著作权", t) for t in texts):
+        # 标题页/更新页（「patching dolphin」「prod:790 R:1325…」「ready」）不算进了游戏（2026-10-26 实录第二次重开在这里交回，停在点击开始）
+        if len(texts) >= 3 and not any(re.search(r"适龄|版权|出版|著作权|patching|prod:\d|Smilegate|^ready$", t) for t in texts):
             # 加载页的提示文字会变；连续两次看到差不多的页面才交回去
             if last_page and len(page & last_page) >= max(2, len(page) // 2):
                 task.log_info(f"重开后进入游戏页面：{' | '.join(texts[:6])}")

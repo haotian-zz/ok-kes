@@ -14,7 +14,7 @@ from utils import (
     handle_negotiation, handle_continue, handle_confirm, handle_enter,
     handle_event_task, handle_route_selection, handle_obtain_reward,
     handle_leave, handle_next_step, handle_select, handle_rest, handle_training_select, handle_view_original, handle_weakness_info,
-    handle_close_button,
+    handle_close_button, handle_chaos_disconnected, handle_title_start,
     handle_card_assign, handle_non_battle_page, handle_minimizemap, handle_held_cards_page, handle_craft,
     handle_remove, handle_three_choice_card_remove, handle_flash, handle_reflash, handle_grant_flash, handle_copy, handle_convert,
     handle_equipment_recast,
@@ -1433,6 +1433,8 @@ def _at_chaos_initial_page(task: TriggerTask):
 # 卡厄思模式 PAGE_HANDLERS
 PAGE_HANDLERS = [
     handle_chaos_auto_stop,
+    handle_chaos_disconnected, #重开游戏后「卡厄思连接意外断开。是否继续?」：点继续，不点逃脱
+    handle_title_start, #标题页「点击开始」
     handle_storage_full, #存档存储满了：去分解页自动清理或停止（要先于通用确认，2026-10-25 在进入/确认间循环）
     save_cleanup.handle_save_cleanup, #存档清理流程：分解页/详情/分解确认
     handle_save_target_member,

@@ -3506,6 +3506,32 @@ def handle_negotiation(task: TriggerTask):
     return False
 
 
+def handle_chaos_disconnected(task: TriggerTask):
+    """重开游戏后的「卡厄思连接意外断开。是否继续?」弹窗：点「继续」回到局内，绝不点「逃脱」（会放弃本局）。
+    2026-10-26 实录：游戏卡死自动重开后停在这个弹窗 5 分钟，又被判卡死重开了一次。"""
+    if not any("连接意外断开" in b.name for b in task.all_texts or []):
+        return False
+    box = next((b for b in task.all_texts if re.sub(r"\W", "", b.name) == "继续"), None)
+    if box:
+        task.log_info("卡厄思连接意外断开弹窗：点「继续」回到局内")
+        task.click_box(box)
+        task.sleep(3)
+        return True
+    task.log_info(f"卡厄思连接意外断开弹窗，没认出「继续」按钮（不点逃脱）：{' | '.join(b.name for b in task.all_texts)}")
+    return False
+
+
+def handle_title_start(task: TriggerTask):
+    """停在标题页「点击开始」（重开游戏后标题页没点过去，2026-10-26 实录）。"""
+    box = next((b for b in task.all_texts or [] if re.sub(r"\s", "", b.name) == "点击开始"), None)
+    if not box:
+        return False
+    task.log_info("停在标题页，点「点击开始」")
+    task.click_box(box)
+    task.sleep(3)
+    return True
+
+
 def handle_continue(task: TriggerTask):
     """通用"继续"按钮。"""
     continue_region = (0.459, 0.858, 0.992, 0.988)

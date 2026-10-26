@@ -997,3 +997,27 @@ class TestFateNeutral(unittest.TestCase):
         self.assertTrue(f.search("获得1张随机中立卡牌"))
         self.assertIsNone(f.search("灵感每次生成除状态异常、咒术卡牌以外的卡牌时，有25%的概率多生成1张。"))
         self.assertIsNone(f.search("信念战斗开始时，赋予手牌中的攻击卡牌粉碎。"))
+
+
+class TestDisconnectDialog(unittest.TestCase):
+    def _task(self, names):
+        clicks = []
+        boxes = [SimpleNamespace(name=n, x=i * 100, y=500, width=10, height=10) for i, n in enumerate(names)]
+        return SimpleNamespace(all_texts=boxes, width=1920, height=1080, click_box=clicks.append,
+                               log_info=lambda *a, **k: None, sleep=lambda *a: None), clicks
+
+    def test_clicks_continue_never_escape(self):
+        import utils as u
+        task, clicks = self._task(["卡厄思连接意外断开。", "是否继续?", "逃脱", "继续"])
+        self.assertTrue(u.handle_chaos_disconnected(task))
+        self.assertEqual([b.name for b in clicks], ["继续"])
+        task, clicks = self._task(["卡厄思连接意外断开。", "是否继续?", "逃脱"])
+        self.assertFalse(u.handle_chaos_disconnected(task))
+        self.assertEqual(clicks, [])
+
+    def test_title_start(self):
+        import utils as u
+        task, clicks = self._task(["ready", "点击开始"])
+        self.assertTrue(u.handle_title_start(task))
+        task, clicks = self._task(["开始战斗"])
+        self.assertFalse(u.handle_title_start(task))
