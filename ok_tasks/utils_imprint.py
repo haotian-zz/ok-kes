@@ -53,6 +53,8 @@ PICK_CARDS = [(0.035, 0.25, 0.32, 0.82), (0.345, 0.25, 0.63, 0.82), (0.655, 0.25
 PICK_ORBS = (0.70, 0.02, 0.81, 0.08)
 PICK_GOLD = (0.83, 0.02, 0.93, 0.08)
 PICK_NORMAL, PICK_CHAOS, PICK_CONFIRM = (0.15, 0.922), (0.46, 0.922), (0.879, 0.921)
+PICK_COSTS = [(0.54, 0.89, 0.62, 0.95), (0.22, 0.89, 0.31, 0.95)]   # 再合成按钮上的价格（卡厄思 / 普通）
+UNREAD_RETRY = 5                      # 珠/金币读不出来时最多再等几帧，不当成不够
 
 
 def cfg(task, key):
@@ -149,6 +151,15 @@ def _pay_and_synth(task, orbs_region, gold_region, chaos_pos, normal_pos, chaos_
     """先用卡厄思之珠（卡厄思合成），不够再用金币（普通合成）。"""
     orbs = parse_amount(_region_text(task, orbs_region))
     gold = parse_amount(_region_text(task, gold_region))
+    if orbs is None and gold is None:
+        # 读不出来多半是页面还在转场，等几帧再说（实录 2026-10-27 02:42 读成 None 直接停了任务）
+        unread = getattr(task, "_synth_unread", 0) + 1
+        task._synth_unread = unread
+        if unread <= UNREAD_RETRY:
+            task.log_info(f"刷刻印：卡厄思之珠、金币数量没读到，等页面加载（第 {unread} 次）")
+            task.sleep(1)
+            return True
+    task._synth_unread = 0
     chaos_cost = parse_amount(_region_text(task, chaos_cost_region)) or 0
     normal_cost = parse_amount(_region_text(task, normal_cost_region)) or 0
     if orbs is not None and orbs >= chaos_cost:
@@ -236,13 +247,23 @@ def handle_codex_synth(task):
                           (0.90, 0.89, 0.98, 0.95), (0.56, 0.89, 0.66, 0.95))
 
 
+def _free_pick(task):
+    """通关后「搜索新坐标」给的免费三选一：只有「确认」，右上没有珠/金币、底下没有再合成的价格。"""
+    regions = [PICK_ORBS, PICK_GOLD] + PICK_COSTS
+    return all(parse_amount(_region_text(task, r)) is None for r in regions) \
+        and find_text(task, r"^确认$", (0.80, 0.86, 0.98, 0.98)) is not None
+
+
 def handle_codex_pick(task):
-    """获得法典（三选一）：挑合格的（稀有命运高的优先）点确认；都不合格就再合成一次。"""
+    """获得法典（三选一）：挑合格的（稀有命运高的优先）点确认；都不合格就再合成一次。
+    通关后的免费那次（用户 2026-10-27：通关后免费生成一次，旧法典已经用掉）没有再合成按钮：都不合格就先领稀有命运最高的，
+    回选择法典页按原流程刷新 / 合成。"""
     if not enabled(task) or not find_text(task, r"获得法典", (0.3, 0.05, 0.7, 0.14)):
         return False
-    best = None
+    best, infos = None, []
     for i, region in enumerate(PICK_CARDS):
         info = parse_codex(_region_lines(task, region))
+        infos.append(info)
         bad = codex_problems(info, task)
         mods = "、".join(f"{n}{lv}" for n, lv in info["mods"]) or "无"
         task.log_info(f"刷刻印：候选法典{i + 1} 难度{info['difficulty']} PT{info['pt']} 稀有命运+{info['rare']}% "
@@ -254,8 +275,14 @@ def handle_codex_pick(task):
         click_rel(task, (x1 + x2) / 2, (y1 + y2) / 2, after=1.5, reason=f"刷刻印：选候选法典{best[0] + 1}")
         click_rel(task, *PICK_CONFIRM, after=3, reason="刷刻印：确认法典")
         return True
-    return _pay_and_synth(task, PICK_ORBS, PICK_GOLD, PICK_CHAOS, PICK_NORMAL,
-                          (0.54, 0.89, 0.62, 0.95), (0.22, 0.89, 0.31, 0.95))
+    if _free_pick(task):
+        i = max(range(len(infos)), key=lambda k: (infos[k]["rare"] or 0, infos[k]["pt"] or 0))
+        x1, y1, x2, y2 = PICK_CARDS[i]
+        click_rel(task, (x1 + x2) / 2, (y1 + y2) / 2, after=1.5,
+                  reason=f"刷刻印：通关后免费的三选一都不合格，先领候选法典{i + 1}（稀有命运最高），回选择法典页再刷新")
+        click_rel(task, *PICK_CONFIRM, after=3, reason="刷刻印：确认法典")
+        return True
+    return _pay_and_synth(task, PICK_ORBS, PICK_GOLD, PICK_CHAOS, PICK_NORMAL, *PICK_COSTS)
 
 
 # ------------------------- 装备刻印 -------------------------

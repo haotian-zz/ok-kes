@@ -814,7 +814,15 @@ class TestStorageFull(unittest.TestCase):
         t = types.SimpleNamespace(config={}, frame=None, all_texts=[box("存储空间不足"), box("确认")],
                                   log_info=lambda *a, **k: None, click_box=lambda b: state["clicks"].append(b.name),
                                   disable=lambda: state.update(disabled=True))
-        self.assertTrue(utils.handle_storage_full(t))
+        # 追踪写到临时目录：以前写进 dev_out/chaos_trace，留下一条假的「存储空间不足」（2026-10-27 查问题时被误导）
+        import tempfile
+        import chaos_trace
+        with tempfile.TemporaryDirectory() as tmp:
+            old_root, chaos_trace.TRACE_ROOT = chaos_trace.TRACE_ROOT, tmp
+            try:
+                self.assertTrue(utils.handle_storage_full(t))
+            finally:
+                chaos_trace.TRACE_ROOT = old_root
         self.assertTrue(state["disabled"])
         self.assertEqual(state["clicks"], ["确认"])
         t.all_texts = [box("进入")]

@@ -49,6 +49,24 @@ PICK_PAGE = [box(0.501, 0.101, "获得法典"), box(0.499, 0.152, "请选择1个
              box(0.767, 0.781, "无法获取存储数据"), box(0.578, 0.922, "120"), box(0.752, 0.049, "3,016"),
              box(0.881, 0.048, "18926K"), box(0.264, 0.922, "57600")]
 
+# 通关后「搜索新坐标」免费给的三选一（实机 2026-10-27 02:49）：只有「确认」，没有珠/金币和再合成按钮；三个都不合格
+FREE_PICK = [box(0.501, 0.101, "获得法典"), box(0.500, 0.150, "请选择1个"), box(0.106, 0.292, "裁决之沼"),
+             box(0.418, 0.292, "裁决之沼"), box(0.731, 0.290, "裁决之沼"), box(0.119, 0.346, "10|等级90|"),
+             box(0.431, 0.344, "10|等级90|"), box(0.744, 0.346, "10|等级90|"), box(0.176, 0.398, "卡厄思之珠获得量增加90%"),
+             box(0.492, 0.397, "卡厄思之珠获得量增加140%"), box(0.801, 0.397, "卡厄思之珠获得量增加90%"), box(0.139, 0.457, "回荡在银河中的歌声"),
+             box(0.451, 0.457, "回荡在银河中的歌声"), box(0.764, 0.457, "回荡在银河中的歌声"), box(0.197, 0.492, "将会出现面具卡牌和刻印装备，稀有种"),
+             box(0.170, 0.519, "战斗区将转换为面具战斗区。"), box(0.510, 0.492, "将会出现面具卡牌和刻印装备，稀有种"),
+             box(0.483, 0.519, "战斗区将转换为面具战斗区。"), box(0.823, 0.492, "将会出现面具卡牌和刻印装备，稀有种"),
+             box(0.794, 0.517, "战斗区将转换为面具战斗区。"), box(0.146, 0.585, "存储数据保存上限150PT"),
+             box(0.459, 0.585, "存储数据保存上限160PT"), box(0.771, 0.585, "存储数据保存上限150PT"),
+             box(0.146, 0.624, "稀有命运触发率增加10%"), box(0.456, 0.624, "稀有命运触发率增加3%"), box(0.772, 0.624, "稀有命运触发率增加30%"),
+             box(0.155, 0.685, "[疾病4]生命值上限减少50%"), box(0.491, 0.683, "[损失4]战中获得的信用点减少70%"),
+             box(0.779, 0.683, "[疾病2]命值上限减少30%"), box(0.192, 0.722, "[暴君4]精英、领区异形的攻击与命"),
+             box(0.111, 0.749, "值增加40%"), box(0.494, 0.722, "[疏忽1]回合开始时，随机丢掉1张卡牌"),
+             box(0.817, 0.722, "[暴君4]精英、领区异形的攻击与命"), box(0.191, 0.784, "[坏病11从第回合起，回合开始时，命"),
+             box(0.460, 0.759, "[不安1]无法在安全区休息"), box(0.736, 0.750, "值增加40%"), box(0.804, 0.783, "「损失31战中获得的信点减60%"),
+             box(0.879, 0.924, "确认")]
+
 
 class TestCodexParse(unittest.TestCase):
     def test_target_codex_ok(self):
@@ -81,6 +99,41 @@ class TestCodexParse(unittest.TestCase):
         self.assertEqual(3016, ui.parse_amount("3,016"))
         self.assertEqual(18926000, ui.parse_amount("18926K"))
         self.assertEqual(57600, ui.parse_amount("57600"))
+
+
+def pick_task(boxes):
+    clicks, logs = [], []
+    t = SimpleNamespace(width=1920, height=1080, all_texts=boxes, config={"刷刻印": True},
+                        log_info=logs.append, log_error=lambda *a, **k: logs.append(a[0]),
+                        sleep=lambda *a: None, move_relative=lambda *a: None,
+                        click=lambda x, y, **k: clicks.append((round(x, 3), round(y, 3))))
+    t.disabled = False
+    t.disable = lambda: setattr(t, "disabled", True)
+    return t, clicks
+
+
+class TestCodexPick(unittest.TestCase):
+    def test_free_pick_takes_best_and_confirms(self):
+        """实录 2026-10-27 02:42：通关后免费三选一都不合格，以前去读珠/金币读成 None 就停了任务。"""
+        t, clicks = pick_task(FREE_PICK)
+        self.assertTrue(ui._free_pick(t))
+        self.assertTrue(ui.handle_codex_pick(t))
+        self.assertFalse(t.disabled)
+        x1, y1, x2, y2 = ui.PICK_CARDS[2]                     # 第三个稀有命运 30% 最高
+        self.assertEqual([(round((x1 + x2) / 2, 3), round((y1 + y2) / 2, 3)), ui.PICK_CONFIRM], clicks)
+
+    def test_paid_pick_is_not_free(self):
+        self.assertFalse(ui._free_pick(task_with(PICK_PAGE)))
+
+    def test_unread_amounts_wait_then_stop(self):
+        t, clicks = pick_task([])
+        args = (ui.ORBS_TEXT, ui.GOLD_TEXT, ui.SYNTH_CHAOS, ui.SYNTH_NORMAL, *ui.PICK_COSTS)
+        for _ in range(ui.UNREAD_RETRY):
+            self.assertTrue(ui._pay_and_synth(t, *args))
+            self.assertFalse(t.disabled)
+        self.assertTrue(ui._pay_and_synth(t, *args))
+        self.assertTrue(t.disabled)
+        self.assertEqual([], clicks)
 
 
 
