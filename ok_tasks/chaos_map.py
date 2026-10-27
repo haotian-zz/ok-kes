@@ -391,6 +391,17 @@ def route_page(frame):
     return _button_score(frame, ZOOM_IN_REGION, "ref_zoom_in") >= 0.7
 
 
+def _wait_route_page(task, timeout):
+    waited = 0.0
+    while waited < timeout:
+        task.sleep(0.5)
+        waited += 0.5
+        if route_page(_grab(task)):
+            task.sleep(0.5)
+            return True
+    return False
+
+
 def close_map(task, tries=4):
     """关掉全屏地图、等回到路线页。返回是否回到了路线页。
 
@@ -435,10 +446,9 @@ def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None):
             continue
         if score < 0.6 and not reopened and not map_open(cur):
             # 拖动后全屏地图被关回了路线页（2026-10-27 08:15/08:31/08:37/08:45，按下点不在节点上、慢拖也有，原因没查清）。
-            # 刚关上时马上按 M 不响应（08:31「关地图后」还是路线页）：等转场完（路线页淡入 2～3 秒）再按，
-            # 地图记得滚动位置，接着拍
-            task.sleep(3)
-            if route_page(_grab(task)):
+            # 刚关上时马上按 M 不响应（08:31「关地图后」还是路线页）：等转场完、认出路线页再按，
+            # 地图记得滚动位置，接着拍。转场有时超过 3.5 秒（09:05 拖完 3.5 秒还没出小地图），按认出为准最多等 8 秒
+            if _wait_route_page(task, 8):
                 task.log_info(f"全屏地图拖动后被关掉了（匹配分 {score:.2f}），按 M 重新打开接着扫")
                 reopened = True
                 task.send_key("m")
