@@ -4328,6 +4328,9 @@ def handle_route_selection(task: TriggerTask):
         if hasattr(task, 'node_status'):
             task.node_status['reach_final_boss'] = True
             task.node_status['node_type'] = "boss"
+            # 马上落盘：2026-10-27 04:14 点了首领后重启，新进程读回 reach_final_boss=False，首领结算不算层数，
+            # 第二层被当成第一层（速刷不逃脱，二层首领打完法典就用掉了）
+            save_run_state(task)
 
         # 检查"第几层boss前自动暂停"配置
         pause_config = _get_config_value(task, '第几层boss前自动暂停', "不暂停")
