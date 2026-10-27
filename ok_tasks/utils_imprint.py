@@ -203,6 +203,9 @@ def handle_codex_select(task):
                   f"稀有命运+{info['rare']}% 词条 {mods}" + (f"（不合格：{'；'.join(bad)}）" if bad else "（合格）"))
     if not bad:
         if find_text(task, r"^进入$"):
+            # 进法典就是新的一局：清掉内存里上一局的装备/刻印/混沌之识记录（2026-10-27 15:54 上一局的状态被读回带进了新局）
+            import utils
+            utils.reset_mission_status(task)
             click_rel(task, *ENTER_POS, after=3, reason="刷刻印：进入法典")
             task._codex_enter_at = time.time()
         return True
@@ -381,7 +384,15 @@ def slot_imprints(task):
 
 
 def target_imprint_count(task):
-    return sum(1 for v in slot_imprints(task) if v == TARGET)
+    """这局目标刻印个数。只增不减：目标刻印的槽位只会被混沌之识（继承）或别的目标刻印装备换掉，记录变少只可能是误读
+    （2026-10-27 15:48 装备页淡入读成空槽，2 个变 0 个，第二层首领前把混沌之识那局逃脱了）。最高值记在 node_status 里落盘。"""
+    n = sum(1 for v in slot_imprints(task) if v == TARGET)
+    ns = getattr(task, "node_status", None)
+    if not isinstance(ns, dict):
+        return n
+    peak = max(n, ns.get("imprint_peak", 0))
+    ns["imprint_peak"] = peak
+    return peak
 
 
 def required_imprints(task):

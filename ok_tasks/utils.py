@@ -2914,6 +2914,14 @@ def handle_equipment(task: TriggerTask):
             for equipment_slot, live_quality in enumerate(live_qualities):
                 if live_quality is None or (not live_quality and not page_ready):
                     continue
+                if not live_quality and imprint_mode and (
+                        utils_imprint.is_top(equipment["names"][equipment_slot])
+                        or utils_imprint.slot_imprints(task)[equipment_slot] == utils_imprint.TARGET):
+                    # 混沌之识、带目标刻印的槽位只会被我们自己换掉（换的时候就记了），读成空一定是误读，清了会把混沌之识当空位
+                    # 装别的顶掉、或者按 0 个刻印逃脱（2026-10-27 15:48 实录）
+                    task.log_info(f"第{equipment_slot + 1}号装备位读成空，但记录是「{equipment['names'][equipment_slot]}」"
+                                  f"（{utils_imprint.slot_imprints(task)[equipment_slot] or '无刻印'}），当误读不清")
+                    continue
                 equipment["qualities"][equipment_slot] = live_quality
                 if not live_quality:
                     if equipment["names"][equipment_slot]:
@@ -5962,7 +5970,7 @@ def reset_layer_status(task: TriggerTask):
 
 RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok",
                   "octopus_seen", "target_equip_got", "chaos_core_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger",
-                  "save_member_index")
+                  "save_member_index", "imprint_peak")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")

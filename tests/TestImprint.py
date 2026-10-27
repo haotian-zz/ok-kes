@@ -292,6 +292,15 @@ class TestImprintDecision(unittest.TestCase):
         t.node_status["pass_final_boss_count"] = 0                   # 第一层首领前不管（第一层打完再看）
         self.assertIsNone(ui.rush_escape_reason(t, boss_next=True))
 
+    def test_imprint_count_never_drops(self):
+        """2026-10-27 15:48：装备页淡入读成空槽，记录里 2 个目标刻印被清成 0 个，第二层首领前把混沌之识那局逃脱了。"""
+        t = imprint_task((ui.TARGET, ui.TARGET, ""))
+        t.node_status = {}
+        self.assertEqual(2, ui.target_imprint_count(t))
+        t.member_status["equipment"]["imprints"] = ["", "", ""]
+        self.assertEqual(2, ui.target_imprint_count(t))
+        self.assertEqual(2, t.node_status["imprint_peak"])
+
     def test_deck_spend_waits_for_imprints(self):
         """实录 2026-10-27 04:29：第一层 0 个刻印还冥想 120+160、付费移除 120，第二个商店只剩 79 买不起刻印装备。"""
         t = imprint_task()
