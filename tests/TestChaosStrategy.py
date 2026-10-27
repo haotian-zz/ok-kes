@@ -905,6 +905,39 @@ class TestDiceReroll(unittest.TestCase):
         self.assertTrue(utils.handle_negotiation(t))
         self.assertEqual([(0.665, 0.899)], clicks)
 
+    def test_cost_missed_by_ocr_defaults_to_two(self):
+        """实录 07:55：页面写着 2、资源 18/30，OCR 没读到价格，以前就跳过了。"""
+        import utils
+        t, clicks = self._task(points="18/30")
+        t.all_texts = [b for b in t.all_texts if b.name != "2"]
+        self.assertTrue(utils.handle_negotiation(t))
+        self.assertLess(clicks[-1][0], 0.4)
+        t, clicks = self._task(points="1/30")
+        t.all_texts = [b for b in t.all_texts if b.name != "2"]
+        utils.handle_negotiation(t)
+        self.assertEqual([(0.665, 0.899)], clicks)
+
+    def test_wait_for_buttons_before_skipping(self):
+        import utils
+        t, clicks = self._task()
+        full = list(t.all_texts)
+        t.all_texts = [b for b in full if b.name in ("失败", "30/30")]
+        self.assertTrue(utils.handle_negotiation(t))
+        self.assertEqual([], clicks)                         # 按钮还没出来：不点下一步
+        t.all_texts = full
+        self.assertTrue(utils.handle_negotiation(t))
+        self.assertLess(clicks[-1][0], 0.4)                  # 出来了就重投
+
+    def test_no_reroll_button_skips_after_waits(self):
+        import utils
+        t, clicks = self._task()
+        t.all_texts = [b for b in t.all_texts if b.name != "再次滚动"]
+        for _ in range(utils.DICE_BUTTON_WAITS):
+            self.assertTrue(utils.handle_negotiation(t))
+        self.assertEqual([], clicks)
+        self.assertTrue(utils.handle_negotiation(t))
+        self.assertEqual([(0.665, 0.899)], clicks)
+
 
 class TestEquipmentQualityColor(unittest.TestCase):
     """装备品质按颜色认（实机 RGB）：空槽的暗灰色以前被当成传说。"""
