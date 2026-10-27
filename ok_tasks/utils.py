@@ -4478,7 +4478,8 @@ def _chaos_route_weights(task: TriggerTask):
     octopus = _get_config_value(task, OCTOPUS_RUSH, False) is True
     if octopus and layer == 0:
         task.log_info("章鱼哥速刷：第一层普通战优先")
-    return chaos_strategy.route_weights(mode, layer, hp, bonus, octopus=octopus)
+    import utils_imprint
+    return chaos_strategy.route_weights(mode, layer, hp, bonus, octopus=octopus, imprint=utils_imprint.enabled(task))
 
 
 BOSS_PAUSE_FILE = os.path.join("dev_out", "paused_before_boss")

@@ -38,15 +38,21 @@ AREA_LAYER = {"外围": 0, "核心": 1}   # 事件库 area → 层号（从 0 �
 
 
 OCTOPUS_FIRST_LAYER_NORMAL = 7    # 章鱼哥速刷第一层：普通战权重（高于事件/精英），精英降到 2
+# 刷刻印：带刻印的装备主要在商店（每次刷新 2～3 件带刻印）。2026-10-27 夜里 4 个目标刻印 3 个来自商店、1 个来自奖励；
+# 原来商店只 +1（商店节点 4 分 < 精英 5），04:05 那局整层只排了 1 个商店
+IMPRINT_SHOP_BONUS = 5
 
 
-def route_weights(mode, layer=0, hp=None, event_bonus=0, octopus=False):
+def route_weights(mode, layer=0, hp=None, event_bonus=0, octopus=False, imprint=False):
     """按本层情况调整路线权重：血量低精英降到普通战、休息 +2；本层有目标装备的来源事件时事件加分。
-    octopus：章鱼哥速刷的第一层普通战优先——章鱼哥（赛内克图斯）基本只在普通战后乱入、精英战极少（社区实测，用户 2026-10-25 定）。"""
+    octopus：章鱼哥速刷的第一层普通战优先——章鱼哥（赛内克图斯）基本只在普通战后乱入、精英战极少（社区实测，用户 2026-10-25 定）。
+    imprint：刷刻印，商店加分提到 IMPRINT_SHOP_BONUS。"""
     base = ROUTE_WEIGHTS.get(mode)
     if not base:
         return base
     w = {**base, "types": dict(base["types"])}
+    if imprint:
+        w["shop"] = max(w.get("shop", 0), IMPRINT_SHOP_BONUS)
     t = w["types"]
     if octopus and layer == 0:
         t["小怪"] = OCTOPUS_FIRST_LAYER_NORMAL

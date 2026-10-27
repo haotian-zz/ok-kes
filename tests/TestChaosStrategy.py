@@ -391,6 +391,12 @@ class TestTrace(unittest.TestCase):
         self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"]["休息"] + 2, low["休息"])
         self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["types"], cs.route_weights(cs.MODE_TARGET, 0, False)["types"])
 
+    def test_imprint_route_prefers_shop(self):
+        # 刷刻印：商店节点（休息 + 商店加分）要高过精英，目标刻印主要在商店
+        w = cs.route_weights(cs.MODE_TARGET, 0, 80, imprint=True)
+        self.assertGreater(w["types"]["休息"] + w["shop"], w["types"]["精英"])
+        self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["shop"], cs.route_weights(cs.MODE_TARGET, 0, 80)["shop"])
+
     def test_equipment_event_source_bonus(self):
         # 凝结的光辉残片只能在第 1 层（外围）「前往更深之处」选「劈向地脉」拿：第 1 层事件加分，拿到后不加
         src = cs.equipment_event_sources(["混沌指控", "凝结的光辉残片", "坠落的王冠"])
