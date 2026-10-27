@@ -1127,7 +1127,7 @@ def handle_trauma_center(task: TriggerTask):
         prefer_gold = _get_config_value(task, '优先使用金币治疗', False)
         if _keeps_damaged_saves(task):
             if has_ticket:
-                task.log_info("玩法模式用旅行券咨询（记忆消除会删掉受损的存档）")
+                task.log_info(f"玩法模式用旅行券咨询（记忆消除会删掉受损的存档），旅行券「{travel_ticket[0].name}」")
                 _move_and_click(task, 0.798, 0.924)
             else:
                 task.log_info("没有旅行券，玩法模式不做记忆消除，带着创伤离开（会强制梦境模式）", notify=True)
