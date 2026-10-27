@@ -122,6 +122,14 @@ class TestMergeNearCenter(unittest.TestCase):
         self.assertEqual("当前位置", next(n for n in info["nodes"] if n["col"] == 0)["type"])
 
 
+class TestMapOpen(unittest.TestCase):
+    def test_zoom_button_tells_map_from_route_page(self):
+        # 拖动后地图被关回路线页时要能认出来（2026-10-27 08:45 实录的路线页）
+        self.assertTrue(cm.map_open(cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))))
+        self.assertTrue(cm.map_open(cv2.imread(os.path.join(FIX, "layer1_b0.png"))))
+        self.assertFalse(cm.map_open(cv2.imread(os.path.join(FIX, "route_page.jpg"))))
+
+
 class TestDragHeight(unittest.TestCase):
     def test_drag_between_rows(self):
         # 按在节点上拖会被当成点节点、全屏地图关掉（2026-10-27 实录 0.55 在第 3 行节点下尖角）
@@ -189,7 +197,10 @@ class TestDragHeight(unittest.TestCase):
         """拍到第 2 帧后再拖，地图关回路线页；m_reopens=False 时按 M 也不响应。"""
         import numpy as np
         good = cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))
-        views = [good, np.roll(good, -200, axis=1)]
+        moved = good.copy()
+        top = int(0.885 * good.shape[0])                     # 只平移地图部分，左下角「缩小 M」按钮不动
+        moved[:top] = np.roll(good[:top], -200, axis=1)
+        views = [good, moved]
         route = np.random.default_rng(1).integers(0, 255, good.shape, dtype=np.uint8)
         st = {"open": True, "pos": 0, "swipes": 0, "keys": 0, "logs": []}
 
@@ -209,20 +220,19 @@ class TestDragHeight(unittest.TestCase):
                 elif st["swipes"] == 3:
                     st["open"] = False
 
-        t = T()
-        return t, st, (lambda: t.frame is route)
+        return T(), st
 
     def test_scan_reopens_map_closed_by_drag(self):
         # 2026-10-27 08:31：拖动被当成点击、地图关回路线页；按 M 重新打开接着扫，不放弃
-        t, st, is_route = self._closing_task(m_reopens=True)
-        cm.scan_layer(t, max_frames=3, is_route_page=is_route)
+        t, st = self._closing_task(m_reopens=True)
+        cm.scan_layer(t, max_frames=3)
         self.assertTrue(any("按 M 重新打开" in m for m in st["logs"]))
         self.assertFalse(any("放弃这次扫描" in m for m in st["logs"]))
         self.assertEqual(3, st["keys"])                      # 打开、重开、扫完关掉
 
     def test_scan_gives_up_without_opening_map_on_route_page(self):
-        t, st, is_route = self._closing_task(m_reopens=False)
-        self.assertIsNone(cm.scan_layer(t, max_frames=3, is_route_page=is_route))
+        t, st = self._closing_task(m_reopens=False)
+        self.assertIsNone(cm.scan_layer(t, max_frames=3))
         self.assertTrue(any("放弃这次扫描" in m for m in st["logs"]))
         self.assertEqual(2, st["keys"])                      # 还在路线页：最后不再按 M（会把地图打开）
 

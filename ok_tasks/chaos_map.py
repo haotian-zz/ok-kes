@@ -13,6 +13,7 @@ ROW_Y = [224, 386, 548, 710, 872]       # 5 行节点中心
 # 拖地图的高度取第 3、4 行节点正中间：原来 0.55 正好在第 3 行节点的下尖角，按在节点上拖会被当成点节点，
 # 全屏地图关掉去预览那个节点（2026-10-27 06:33 起层开头扫描屡次「拖动后对不上上一帧」，流程追踪截图确认）
 DRAG_Y = (ROW_Y[2] + ROW_Y[3]) / 2 / REF_H
+ZOOM_REGION = (0.0, 0.86, 0.2, 0.99)    # 全屏地图左下角「缩小（M）」按钮所在区域
 LINE_DY = 14                           # 连线端点比节点中心低这么多
 COL_PITCH = 246                        # 列间距
 TIP_DX = 79                            # 连线端点离节点中心的水平距离
@@ -364,16 +365,29 @@ def _settle(task, timeout=6.0):
     return prev
 
 
-def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None, is_route_page=None):
+def map_open(frame):
+    """全屏地图开着：左下角有「缩小（M）」按钮。路线页、开关地图的转场都没有（实测地图帧 ≥0.98、其他 ≤0.23）。"""
+    s = _scale(frame)
+    h, w = frame.shape[:2]
+    x1, y1, x2, y2 = ZOOM_REGION
+    reg = cv2.cvtColor(frame[int(y1 * h):int(y2 * h), int(x1 * w):int(x2 * w)], cv2.COLOR_BGR2GRAY)
+    if s != 1:
+        reg = cv2.resize(reg, (int(reg.shape[1] / s), int(reg.shape[0] / s)))
+    tpl = _ref("ref_zoom_out")
+    if reg.shape[0] < tpl.shape[0] or reg.shape[1] < tpl.shape[1]:
+        return False
+    return float(cv2.matchTemplate(reg, tpl, cv2.TM_CCOEFF_NORMED).max()) >= 0.7
+
+
+def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None):
     """路线页：按 M 打开全屏地图 → 先拖到最左端 → 每次往左拖 drag 屏宽拍一帧直到拖不动 → 再按 M 关掉。
 
     地图会记住上次的滚动位置，所以每次都先拖回最左端。返回 map_info，失败返回 None。
-    is_route_page：判断当前帧是不是路线页（地图被关掉了）的回调，用来重开地图、以及失败时别再按 M 把地图打开。
     """
     task.send_key("m")
     task.sleep(1.5)
     frames, offsets, total = [_drag_to_left(task)], [0.0], 0.0
-    ok, retried, reopened, closed = True, False, False, False
+    ok, retried, reopened = True, False, False
     while len(frames) < max_frames:
         x0 = gap_x(frames[-1], 0.6)
         _drag(task, x0, DRAG_Y, x0 - drag)
@@ -385,25 +399,18 @@ def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None, is_route_page=None
             retried = True
             frames = [_drag_to_left(task)]
             continue
-        if score < 0.6 and is_route_page is not None:
-            # 拖动偶尔被当成点击、全屏地图关回了路线页（2026-10-27 08:31 按下点在两列之间的连线上，不在节点上）。
-            # 刚关上时马上按 M 不响应（那次「关地图后」还是路线页）：等转场完再按，地图记得滚动位置，接着拍。
-            # 路线页淡入要 2～3 秒，1.5 秒时还认不出（08:37 实录），多看几次
-            for _ in range(4):
-                task.sleep(1)
-                _grab(task)
-                closed = bool(is_route_page())
-                if closed:
-                    break
-            if closed and not reopened:
-                task.log_info(f"全屏地图拖动后回到了路线页（匹配分 {score:.2f}），按 M 重新打开接着扫")
+        if score < 0.6 and not reopened and not map_open(cur):
+            # 拖动后全屏地图被关回了路线页（2026-10-27 08:15/08:31/08:37/08:45，按下点不在节点上、慢拖也有，原因没查清）。
+            # 刚关上时马上按 M 不响应（08:31「关地图后」还是路线页）：等转场完（路线页淡入 2～3 秒）再按，
+            # 地图记得滚动位置，接着拍
+            task.sleep(3)
+            if not map_open(_grab(task)):
+                task.log_info(f"全屏地图拖动后被关掉了（匹配分 {score:.2f}），按 M 重新打开接着扫")
                 reopened = True
                 task.send_key("m")
                 task.sleep(1.5)
                 cur = _settle(task)
                 dx, score = strip_shift(frames[-1], cur)
-                _grab(task)
-                closed = bool(is_route_page())
         if score < 0.6:
             task.log_info(f"全屏地图拖动后对不上上一帧（匹配分 {score:.2f}，平移可能超过半屏），放弃这次扫描")
             # 2026-10-27 06:33 起层开头频繁失败，原因还没看到：前后两帧存进流程追踪
@@ -421,8 +428,8 @@ def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None, is_route_page=None
         total += dx
         frames.append(cur)
         offsets.append(total)
-    if not closed:
-        task.send_key("m")
+    if map_open(_grab(task)):
+        task.send_key("m")      # 地图已经被关掉时再按会把它打开，停在全屏地图上
     task.sleep(2)
     if not ok:
         import chaos_trace
