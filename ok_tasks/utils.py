@@ -3354,6 +3354,9 @@ def _copy_pending_names(task: TriggerTask):
     return [chaos_strategy.base_card_name(n) for n in plan.get("copy", [])[done:]]
 
 
+COPIED_TAG = re.compile(r"[已巴己]复制")
+
+
 def _drop_unique_if_copy_pending(task: TriggerTask, cards):
     """用户 2026-10-27：还要复制的卡不能先闪成带「唯一」的变体（唯一不能复制），就算是目标闪光也不行；
     复制完再冥想成目标闪光。返回 (可选的卡, 是否去掉过)。OCR 常把「[唯一]」认成「[唯」「唯牌」，按「唯」字判断。"""
@@ -3363,7 +3366,10 @@ def _drop_unique_if_copy_pending(task: TriggerTask, cards):
     def copy_pending(card):
         name = chaos_strategy.base_card_name(card.get("name", ""))
         return bool(name) and any(p in name or name in p for p in pending)
-    keep = [c for c in cards if not (copy_pending(c) and "唯" in c.get("description", ""))]
+    # 闪的是复制出来的那张（描述带「[安息/已复制]」，OCR 常把「已」认成「巴」）就不管：原卡还在、可以接着复制，
+    # 「只有这一张才不能选唯一」（实录 2026-10-27 03:15 复制品被挡掉目标唯一闪光，随机闪成了别的、还要冥想）
+    keep = [c for c in cards if not (copy_pending(c) and "唯" in c.get("description", "")
+                                     and not COPIED_TAG.search(c.get("description", "")))]
     if len(keep) == len(cards):
         return cards, False
     task.log_info(f"「{cards[0].get('name')}」还要复制，不选带「唯一」的闪光变体（唯一不能复制，复制完再冥想成目标闪光）")

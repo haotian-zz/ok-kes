@@ -40,6 +40,15 @@ class TestUniqueFlash(unittest.TestCase):
         cards = [dict(c, description="[唯一]" + c["description"]) for c in CARDS]
         self.assertEqual((cards, False), utils._drop_unique_if_copy_pending(task(), cards))
 
+    def test_copied_instance_may_take_unique(self):
+        """实录 2026-10-27 03:15：闪的是复制品（OCR「[安息/已复制]」常认成「巴复制」），原卡还能复制，唯一可以选。"""
+        cards = [{"name": "展开极光", "description": "安息已复制生成2张极光剑加入手牌1回合内，极光剑伤害量+50%抽取1"},
+                 {"name": "展开极光", "description": "回合开始时，安息/唯一巴复制]光剑加入手牌生成2张极极光剑伤害量+50%"}]
+        task2 = task()
+        task2.chaos_plan = {"copy": ["展开极光", "展开极光"]}
+        task2.node_status = {"copy_count": 1}
+        self.assertEqual((cards, False), utils._drop_unique_if_copy_pending(task2, cards))
+
 
 if __name__ == "__main__":
     unittest.main()
