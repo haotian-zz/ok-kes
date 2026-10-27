@@ -128,6 +128,48 @@ class TestMapOpen(unittest.TestCase):
         self.assertTrue(cm.map_open(cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))))
         self.assertTrue(cm.map_open(cv2.imread(os.path.join(FIX, "layer1_b0.png"))))
         self.assertFalse(cm.map_open(cv2.imread(os.path.join(FIX, "route_page.jpg"))))
+        # 地图上开着节点信息面板时「缩小」按钮被盖住（2026-10-27 08:54 实录首领面板）
+        self.assertFalse(cm.map_open(cv2.imread(os.path.join(FIX, "map_node_panel.jpg"))))
+
+    def test_zoom_in_button_tells_route_page(self):
+        self.assertTrue(cm.route_page(cv2.imread(os.path.join(FIX, "route_page.jpg"))))
+        for name in ("drag_hit_node.jpg", "layer1_b0.png", "map_node_panel.jpg", "cards_flash_pins.jpg"):
+            self.assertFalse(cm.route_page(cv2.imread(os.path.join(FIX, name))), name)
+
+
+class TestCloseMap(unittest.TestCase):
+    def _task(self, start):
+        views = {k: cv2.imread(os.path.join(FIX, f)) for k, f in
+                 (("panel", "map_node_panel.jpg"), ("map", "layer1_b0.png"), ("route", "route_page.jpg"))}
+        st = {"view": start, "keys": 0, "clicks": [], "logs": []}
+
+        class T:
+            frame = None
+            def next_frame(self): self.frame = views[st["view"]]
+            def sleep(self, s): pass
+            def log_info(self, msg, *a, **k): st["logs"].append(msg)
+            def send_key(self, k):
+                st["keys"] += 1
+                if st["view"] == "map":
+                    st["view"] = "route"
+            def click(self, x, y):
+                st["clicks"].append((x, y))
+                if st["view"] == "panel":
+                    st["view"] = "map"
+
+        return T(), st
+
+    def test_dismiss_node_panel_then_close(self):
+        # 2026-10-27 08:54：扫完地图开着首领面板，没按 M，点路线节点点中了地图上的首领；先点空白处关面板再按 M
+        t, st = self._task("panel")
+        self.assertTrue(cm.close_map(t))
+        self.assertEqual([cm.EMPTY_SPOT], st["clicks"])
+        self.assertEqual(1, st["keys"])
+
+    def test_already_on_route_page(self):
+        t, st = self._task("route")
+        self.assertTrue(cm.close_map(t))
+        self.assertEqual((0, []), (st["keys"], st["clicks"]))
 
 
 class TestDragHeight(unittest.TestCase):
@@ -194,21 +236,23 @@ class TestDragHeight(unittest.TestCase):
         self.assertTrue(all(e[3] == cm.MK_LBUTTON for e in ev[2:-1]))
 
     def _closing_task(self, m_reopens):
-        """拍到第 2 帧后再拖，地图关回路线页；m_reopens=False 时按 M 也不响应。"""
+        """拍到第 2 帧后再拖，地图关回路线页；m_reopens=False 时按 M 也不响应（打不开）。"""
         import numpy as np
         good = cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))
         moved = good.copy()
         top = int(0.885 * good.shape[0])                     # 只平移地图部分，左下角「缩小 M」按钮不动
         moved[:top] = np.roll(good[:top], -200, axis=1)
         views = [good, moved]
-        route = np.random.default_rng(1).integers(0, 255, good.shape, dtype=np.uint8)
-        st = {"open": True, "pos": 0, "swipes": 0, "keys": 0, "logs": []}
+        route = cv2.resize(cv2.imread(os.path.join(FIX, "route_page.jpg")), (good.shape[1], good.shape[0]))
+        st = {"open": False, "pos": 0, "swipes": 0, "keys": 0, "logs": []}
 
         class T:
             frame = None
             def send_key(self, k):
                 st["keys"] += 1
-                if st["keys"] > 1 and m_reopens:
+                if st["open"]:
+                    st["open"] = False
+                elif st["keys"] == 1 or m_reopens:
                     st["open"] = True
             def sleep(self, s): pass
             def log_info(self, msg, *a, **k): st["logs"].append(msg)
@@ -229,12 +273,14 @@ class TestDragHeight(unittest.TestCase):
         self.assertTrue(any("按 M 重新打开" in m for m in st["logs"]))
         self.assertFalse(any("放弃这次扫描" in m for m in st["logs"]))
         self.assertEqual(3, st["keys"])                      # 打开、重开、扫完关掉
+        self.assertFalse(st["open"])
 
     def test_scan_gives_up_without_opening_map_on_route_page(self):
         t, st = self._closing_task(m_reopens=False)
         self.assertIsNone(cm.scan_layer(t, max_frames=3))
         self.assertTrue(any("放弃这次扫描" in m for m in st["logs"]))
         self.assertEqual(2, st["keys"])                      # 还在路线页：最后不再按 M（会把地图打开）
+        self.assertFalse(st["open"])
 
 
 if __name__ == "__main__":

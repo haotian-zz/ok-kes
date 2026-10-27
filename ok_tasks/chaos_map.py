@@ -14,6 +14,8 @@ ROW_Y = [224, 386, 548, 710, 872]       # 5 行节点中心
 # 全屏地图关掉去预览那个节点（2026-10-27 06:33 起层开头扫描屡次「拖动后对不上上一帧」，流程追踪截图确认）
 DRAG_Y = (ROW_Y[2] + ROW_Y[3]) / 2 / REF_H
 ZOOM_REGION = (0.0, 0.86, 0.2, 0.99)    # 全屏地图左下角「缩小（M）」按钮所在区域
+ZOOM_IN_REGION = (0.33, 0.58, 0.47, 0.78)   # 路线页小地图右上角「放大（M）」按钮所在区域
+EMPTY_SPOT = (0.62, 0.9)                # 全屏地图最下一行节点下面的空白处；路线页同一位置也是空背景
 LINE_DY = 14                           # 连线端点比节点中心低这么多
 COL_PITCH = 246                        # 列间距
 TIP_DX = 79                            # 连线端点离节点中心的水平距离
@@ -365,18 +367,50 @@ def _settle(task, timeout=6.0):
     return prev
 
 
-def map_open(frame):
-    """全屏地图开着：左下角有「缩小（M）」按钮。路线页、开关地图的转场都没有（实测地图帧 ≥0.98、其他 ≤0.23）。"""
+def _button_score(frame, region, name):
     s = _scale(frame)
     h, w = frame.shape[:2]
-    x1, y1, x2, y2 = ZOOM_REGION
+    x1, y1, x2, y2 = region
     reg = cv2.cvtColor(frame[int(y1 * h):int(y2 * h), int(x1 * w):int(x2 * w)], cv2.COLOR_BGR2GRAY)
     if s != 1:
         reg = cv2.resize(reg, (int(reg.shape[1] / s), int(reg.shape[0] / s)))
-    tpl = _ref("ref_zoom_out")
+    tpl = _ref(name)
     if reg.shape[0] < tpl.shape[0] or reg.shape[1] < tpl.shape[1]:
-        return False
-    return float(cv2.matchTemplate(reg, tpl, cv2.TM_CCOEFF_NORMED).max()) >= 0.7
+        return 0.0
+    return float(cv2.matchTemplate(reg, tpl, cv2.TM_CCOEFF_NORMED).max())
+
+
+def map_open(frame):
+    """全屏地图开着：左下角有「缩小（M）」按钮。路线页、开关地图的转场都没有（实测地图帧 ≥0.98、其他 ≤0.25）。
+    地图上点开了节点信息面板时按钮被面板盖住，也认不出来。"""
+    return _button_score(frame, ZOOM_REGION, "ref_zoom_out") >= 0.7
+
+
+def route_page(frame):
+    """回到了路线页：小地图右上角有「放大（M）」按钮（实测路线页 ≥0.88、全屏地图/转场/节点面板 ≤0.24）。"""
+    return _button_score(frame, ZOOM_IN_REGION, "ref_zoom_in") >= 0.7
+
+
+def close_map(task, tries=4):
+    """关掉全屏地图、等回到路线页。返回是否回到了路线页。
+
+    2026-10-27 08:54：扫完最后一帧时地图上开着首领的信息面板（盖住了「缩小」按钮），只在认出按钮时才按 M，
+    结果地图没关，接着点路线节点点中了地图上的首领，卡了一分钟。所以按「回到路线页」判断：
+    还认得出「缩小」按钮就按 M，两个按钮都认不出（面板挡着或在转场）就点地图空白处关面板，再看。
+    """
+    for _ in range(tries):
+        cur = _grab(task)
+        if route_page(cur):
+            return True
+        if map_open(cur):
+            task.send_key("m")
+        else:
+            task.click(*EMPTY_SPOT)
+        task.sleep(2)
+    if route_page(_grab(task)):
+        return True
+    task.log_info("全屏地图关不回路线页（按了 M、点了空白处都没回来）")
+    return False
 
 
 def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None):
@@ -404,7 +438,7 @@ def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None):
             # 刚关上时马上按 M 不响应（08:31「关地图后」还是路线页）：等转场完（路线页淡入 2～3 秒）再按，
             # 地图记得滚动位置，接着拍
             task.sleep(3)
-            if not map_open(_grab(task)):
+            if route_page(_grab(task)):
                 task.log_info(f"全屏地图拖动后被关掉了（匹配分 {score:.2f}），按 M 重新打开接着扫")
                 reopened = True
                 task.send_key("m")
@@ -428,9 +462,7 @@ def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None):
         total += dx
         frames.append(cur)
         offsets.append(total)
-    if map_open(_grab(task)):
-        task.send_key("m")      # 地图已经被关掉时再按会把它打开，停在全屏地图上
-    task.sleep(2)
+    close_map(task)
     if not ok:
         import chaos_trace
         chaos_trace.step(task, "map_fail", "关地图后", _grab(task))
