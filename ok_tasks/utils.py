@@ -491,7 +491,9 @@ def at_save_library(task):
     """局外「存储数据」存档库页：有「批量分解」，再加「收藏自定义」或「编辑存储数据」。"""
     texts = [b.name for b in getattr(task, "all_texts", None) or []]
     return any("批量分解" in t for t in texts) and any("收藏自定义" in t or "编辑存储数据" in t for t in texts)
-NOT_EVENT_OPTION = re.compile(r"平均费用|^\W*\w?\s*[\d,]{3,}\s*TB\W*$")
+# 只有数字的「选项」：切到路线页时 event9 特征会在路线图上误中（0.70～0.77），读到「5」「0」「901」就当事件点了，
+# 多半是打开大地图，2026-10-27 14:57 点中了下面的小怪节点，没按整层路线走就开打了（当天 7 次）
+NOT_EVENT_OPTION = re.compile(r"平均费用|^\W*\w?\s*[\d,]{3,}\s*TB\W*$|^\W*[\d,.]+\W*$")
 
 
 def recognize_event_options(

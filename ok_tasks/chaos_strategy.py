@@ -127,11 +127,15 @@ def _names_neutral_card(raw):
     if any(_is_neutral(db, n) for n in re.findall(r"卡牌?\s*[\[［【]\s*([^\]］】]+?)\s*[\]］】]", raw)):
         return True
     t = norm(raw)
+    if "装备" in t or not re.search(r"转换为卡牌?|获得卡牌?", t):
+        return False
+    names = [n for n in (norm(c["name"]) for c in db.neutral_cards) if len(n) >= 2]
     for m in re.finditer(r"(转换为|获得)卡牌?", t):
-        rest = t[m.end():]
-        if any(len(n) >= 2 and rest.startswith(n) for n in (norm(c["name"]) for c in db.neutral_cards)):
+        if any(t[m.end():].startswith(n) for n in names):
             return True
-    return False
+    # 两行乱序把方括号拆开：「舍弃世俗战术射击]将选择的普通卡牌转换为卡牌[」（2026-10-27 14:57 实录），卡名贴着括号
+    parts = [norm(p) for p in re.split(r"[\[\]［］【】]", raw)] if re.search(r"[\[\]［］【】]", raw) else []
+    return any(p.endswith(n) or p.startswith(n) for p in parts for n in names)
 
 
 def parse_effects(text):

@@ -126,7 +126,8 @@ class TestPriorities(unittest.TestCase):
 
     def test_named_neutral_card_is_forbidden(self):
         # 2026-10-27 14:40 开局凯尔肯的传令兵「舍弃世俗」：点名转换成中立卡战术射击，字面没有「中立」，只算了转换卡 -10
-        for d in ("舍弃世俗将选择的普通卡牌转换为卡牌[战术射击]", "舍弃世俗将选择的普通卡牌转换为卡牌战术射击"):
+        for d in ("舍弃世俗将选择的普通卡牌转换为卡牌[战术射击]", "舍弃世俗将选择的普通卡牌转换为卡牌战术射击",
+                  "舍弃世俗战术射击]将选择的普通卡牌转换为卡牌["):     # 14:57 两行乱序
             self.assertTrue(cs.parse_effects(d).get("neutral_card"), d)
         self.assertNotIn("neutral_card", cs.parse_effects("将选择的普通卡牌转换为卡牌[明灭剑]"))   # 罗丝薇瑟的卡
         self.assertNotIn("neutral_card", cs.parse_effects("献上肉身最大生命值减少20%，获得装备[阿萨辛之牙]"))
@@ -212,6 +213,9 @@ class TestPriorities(unittest.TestCase):
         self.assertTrue(NOT_EVENT_OPTION.search("39823TB"))
         self.assertTrue(NOT_EVENT_OPTION.search("B3813 TB."))
         self.assertIsNone(NOT_EVENT_OPTION.search("收起有用的东西随机获得稀有~传说装备"))
+        for d in ("5", "0", "901", "12"):      # 路线图上 event9 误中读到的数字
+            self.assertTrue(NOT_EVENT_OPTION.search(d), d)
+        self.assertIsNone(NOT_EVENT_OPTION.search("献上赞美信用点增加100"))
 
     def test_target_heal(self):
         st = dict(self.need, hp_pct=60)
