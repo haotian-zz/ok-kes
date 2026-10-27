@@ -314,13 +314,16 @@ class ChaosMode(TriggerTask):
             self.sleep(1)
             utils_daily.refresh(self)
         at_lobby = self._at_lobby()
-        if not (utils_daily.is_home(self) or not self.all_texts or at_lobby):
+        # 用户看完存档停在「存储数据」页就启动了脚本，这页被当成局内事件页连点（2026-10-27 12:02 实录）
+        at_library = utils.at_save_library(self)
+        if not (utils_daily.is_home(self) or not self.all_texts or at_lobby or at_library):
             if not utils_chaos._at_chaos_initial_page(self):
                 utils.restore_run_state(self)     # 停在局内：读回 PT 账（中途重启不丢）
             return False
-        if at_lobby:
+        if at_lobby or at_library:
             # 难度页 → ESC → 活动页 → ESC → 主页；切页有动画，每次 ESC 后等够再判断，免得在主页多按一次 ESC
-            self.log_info("停在卡厄思难度选择页（局外），按 ESC 回主页再按玩法准备")
+            page = "存储数据页" if at_library else "卡厄思难度选择页"
+            self.log_info(f"停在{page}（局外），按 ESC 回主页再按玩法准备")
             for _ in range(4):
                 if utils_daily.is_home(self):
                     break

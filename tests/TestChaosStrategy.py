@@ -191,6 +191,12 @@ class TestPriorities(unittest.TestCase):
         self.assertTrue(NOT_EVENT_PAGE.search("正在保存战斗数据"))
         self.assertTrue(NOT_EVENT_PAGE.search("存储数据收集完成"))
         self.assertTrue(NOT_EVENT_PAGE.search("请决定闪光效果。"))   # 闪光变体页被当成事件点了第 1 张（2026-10-25）
+        self.assertTrue(NOT_EVENT_PAGE.search("收藏自定义"))   # 存档库页被当成事件连点（2026-10-27 12:02）
+        self.assertTrue(NOT_EVENT_PAGE.search("批量分解"))
+        from utils import at_save_library
+        page = lambda *names: SimpleNamespace(all_texts=[SimpleNamespace(name=n) for n in names])
+        self.assertTrue(at_save_library(page("存储数据", "批量分解", "收藏自定义", "装备")))
+        self.assertFalse(at_save_library(page("存储数据收集完成", "下一步")))
         self.assertTrue(NOT_EVENT_OPTION.search("独特卡牌平均费用0.9"))
         self.assertTrue(NOT_EVENT_OPTION.search("4368 TB"))
         self.assertTrue(NOT_EVENT_OPTION.search("39823TB"))
@@ -1187,6 +1193,38 @@ class TestFateNeutral(unittest.TestCase):
         self.assertTrue(f.search("获得1张随机中立卡牌"))
         self.assertIsNone(f.search("灵感每次生成除状态异常、咒术卡牌以外的卡牌时，有25%的概率多生成1张。"))
         self.assertIsNone(f.search("信念战斗开始时，赋予手牌中的攻击卡牌粉碎。"))
+
+    def test_swap_basic_cards_counts(self):
+        # 选完游戏面板多 40PT、多 1 次移除：基础卡被换成了中立卡（10-26 02:11、10-27 07:20）
+        from utils import FATE_GIVES_NEUTRAL as f
+        self.assertTrue(f.search("3张基础普通卡牌更换为"))
+        self.assertIsNone(f.search("基础卡牌伤害次数增加1"))
+
+    def _destiny_task(self, columns):
+        """命运页：每列一个标题 + 下面的描述，标题在 y≈0.53。"""
+        boxes = [SimpleNamespace(name="请选择你的命运", x=900, y=1000, width=120, height=20)]
+        for i, (title, desc) in enumerate(columns):
+            x = int((0.3 + 0.2 * i) * W)
+            boxes.append(SimpleNamespace(name=title, x=x, y=int(0.52 * H), width=60, height=20))
+            boxes.append(SimpleNamespace(name=desc, x=x - 20, y=int(0.62 * H), width=100, height=20))
+        clicked = []
+        task = SimpleNamespace(all_texts=boxes, width=W, height=H, chaos_mode=cs.MODE_TARGET,
+                               log_info=lambda *a, **k: None, sleep=lambda *a: None, click_box=clicked.append)
+        return task, clicked
+
+    def test_destiny_skips_leader(self):
+        # 10-27 07:45「领导」：开局卡组多了中立卡「致命射击」，存进了 08:12 的存档
+        import utils as u
+        task, clicked = self._destiny_task([("领导", "x"), ("忍耐", "y"), ("3张基础普通卡牌更换为", "z")])
+        orig = u.find_box_at_point
+        u.find_box_at_point = lambda t, x, y: t.all_texts[0]
+        try:
+            for _ in range(10):
+                clicked.clear()
+                self.assertTrue(u.handle_destiny_choice(task))
+                self.assertEqual(["忍耐"], [b.name for b in clicked])
+        finally:
+            u.find_box_at_point = orig
 
 
 class TestDisconnectDialog(unittest.TestCase):

@@ -482,7 +482,15 @@ def recognize_cards_in_deck(
 
 # 不是事件选项的文字：装备/选卡页左下角的卡组统计「独特卡牌平均费用 0.9」、存档收集页的存档价值「4368 TB」
 # 会被事件图标特征误命中（2026-10-24 实录）
-NOT_EVENT_PAGE = re.compile(r"保存战斗数据|存储数据收集|决定闪光效果|长按卡牌以查看信息")
+# 局外「存储数据」存档库（批量分解 / 收藏自定义 / 编辑存储数据）：收藏自定义左边的图标被当成事件，连点了 3 分钟，
+# 旁边就是「批量分解」（2026-10-27 12:02 实录，用户看完存档停在这页时启动了脚本）
+NOT_EVENT_PAGE = re.compile(r"保存战斗数据|存储数据收集|决定闪光效果|长按卡牌以查看信息|批量分解|收藏自定义|编辑存储数据")
+
+
+def at_save_library(task):
+    """局外「存储数据」存档库页：有「批量分解」，再加「收藏自定义」或「编辑存储数据」。"""
+    texts = [b.name for b in getattr(task, "all_texts", None) or []]
+    return any("批量分解" in t for t in texts) and any("收藏自定义" in t or "编辑存储数据" in t for t in texts)
 NOT_EVENT_OPTION = re.compile(r"平均费用|^\W*\w?\s*[\d,]{3,}\s*TB\W*$")
 
 
@@ -2194,7 +2202,9 @@ def handle_destiny_choice(task: TriggerTask):
                 return "".join(b.name for b in task.all_texts
                                if abs((b.x + b.width / 2) / task.width - cx) <= 0.09
                                and t.y <= b.y and (b.y + b.height / 2) / task.height <= 0.85)
-            safe = [t for t in titles if not FATE_GIVES_NEUTRAL.search(column_text(t))]
+            task.log_info("命运选项：" + " / ".join(column_text(t) for t in titles))
+            safe = [t for t in titles if not (FATE_GIVES_NEUTRAL.search(column_text(t))
+                                              or t.name.strip() in FATE_NEUTRAL_TITLES)]
             if safe and len(safe) < len(titles):
                 task.log_info(f"命运：跳过会给中立/咒术卡的 {[t.name for t in titles if t not in safe]}")
             titles = safe or titles
@@ -3168,8 +3178,12 @@ def _scroll_to_target_member_for_card_removal(task: TriggerTask):
 GOD_SPARK_PAGE = re.compile(r"神之闪光|闪光[:：]?\s*(" + chaos_strategy.GOD_NAMES + r")")
 
 
-# 命运描述里「获得1张咒术卡牌贫血」才算给牌；「灵感：每次生成除状态异常、咒术卡牌以外的卡牌时…」不算（2026-10-26 实录误跳）
-FATE_GIVES_NEUTRAL = re.compile(r"(获得|加入)[^。，,]{0,8}(中立|咒术)")
+# 命运描述里「获得1张咒术卡牌贫血」才算给牌；「灵感：每次生成除状态异常、咒术卡牌以外的卡牌时…」不算（2026-10-26 实录误跳）。
+# 「3张基础普通卡牌更换为…」把基础卡换成中立卡：选完游戏面板比脚本记的多 40PT、多 1 次移除（10-26 02:11、10-27 07:20 实录）
+FATE_GIVES_NEUTRAL = re.compile(r"(获得|加入)[^。，,]{0,8}(中立|咒术)|(更换|转换)为")
+# 描述没认出换卡字样、只能按标题认的：「领导」选完同样多 40PT、多 1 次移除（10-27 07:45、08:14），
+# 07:45 那局开局卡组就多了中立卡「致命射击」，存进了 08:12 通关的存档（用户 2026-10-27 发现）
+FATE_NEUTRAL_TITLES = {"领导"}
 
 
 def _avoid_god_spark(task: TriggerTask):
