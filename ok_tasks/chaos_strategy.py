@@ -119,6 +119,21 @@ GOD_NAMES = (r"迪亚洛斯|戴奥斯|(?:基尔肯|凯尔肯)(?!的神眷者)|�
              r"|CALIGO|caligo|卡利戈")
 
 
+def _names_neutral_card(raw):
+    """选项点名给的卡是不是中立卡：「将选择的普通卡牌转换为卡牌[战术射击]」（2026-10-27 14:40 开局凯尔肯的传令兵「舍弃世俗」，
+    字面没有「中立」只算了转换卡 -10，战术射击在中立卡库里；那次装备选项 +40 排在前面才没选它）。OCR 可能丢方括号，
+    所以「转换为/获得卡牌」后面紧跟的字以中立卡名开头也算。"""
+    db = get_db()
+    if any(_is_neutral(db, n) for n in re.findall(r"卡牌?\s*[\[［【]\s*([^\]］】]+?)\s*[\]］】]", raw)):
+        return True
+    t = norm(raw)
+    for m in re.finditer(r"(转换为|获得)卡牌?", t):
+        rest = t[m.end():]
+        if any(len(n) >= 2 and rest.startswith(n) for n in (norm(c["name"]) for c in db.neutral_cards)):
+            return True
+    return False
+
+
 def parse_effects(text):
     """从画面上的选项文字（选项名 + 结果说明）粗略解析出效果，键名和 events.json 的 effects 一致。"""
     t = norm(text)
@@ -156,7 +171,7 @@ def parse_effects(text):
         e["copy_card"] = 1
         if "随机" in t or re.search(r"\d张\S{0,6}中选", t):
             e["copy_random"] = True      # 随机 3 张稀有里选 1：不一定有要复制的卡
-    if "中立" in t:
+    if "中立" in t or _names_neutral_card(raw):
         e["neutral_card"] = 1
     if "咒术" in t and "移除" not in t:
         e["curse_card"] = 1

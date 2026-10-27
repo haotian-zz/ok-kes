@@ -124,6 +124,16 @@ class TestPriorities(unittest.TestCase):
                  "复制选中的1张卡牌", "信用点增加300", "随机主战员触发1次闪光", "获得装备[女神之泪]", "信用点增加100"]
         self.assertEqual(descs, self.rank(list(reversed(descs))))
 
+    def test_named_neutral_card_is_forbidden(self):
+        # 2026-10-27 14:40 开局凯尔肯的传令兵「舍弃世俗」：点名转换成中立卡战术射击，字面没有「中立」，只算了转换卡 -10
+        for d in ("舍弃世俗将选择的普通卡牌转换为卡牌[战术射击]", "舍弃世俗将选择的普通卡牌转换为卡牌战术射击"):
+            self.assertTrue(cs.parse_effects(d).get("neutral_card"), d)
+        self.assertNotIn("neutral_card", cs.parse_effects("将选择的普通卡牌转换为卡牌[明灭剑]"))   # 罗丝薇瑟的卡
+        self.assertNotIn("neutral_card", cs.parse_effects("献上肉身最大生命值减少20%，获得装备[阿萨辛之牙]"))
+        st = dict(self.need, need_neutral=0)
+        self.assertEqual("献上赞美信用点减少50", self.rank(["舍弃世俗将选择的普通卡牌转换为卡牌[战术射击]", "献上赞美信用点减少50"],
+                                                   state=st)[0])
+
     def test_target_other_equipment_below_random_spark(self):
         # 用户 2026-10-24：其他装备放在随机卡牌闪光和 <200 信用点之间
         self.assertEqual("移除1张卡牌", self.rank(["获得装备[女神之泪]", "移除1张卡牌"])[0])
