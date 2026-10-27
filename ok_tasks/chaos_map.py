@@ -15,7 +15,9 @@ ROW_Y = [224, 386, 548, 710, 872]       # 5 行节点中心
 DRAG_Y = (ROW_Y[2] + ROW_Y[3]) / 2 / REF_H
 ZOOM_REGION = (0.0, 0.86, 0.2, 0.99)    # 全屏地图左下角「缩小（M）」按钮所在区域
 ZOOM_IN_REGION = (0.33, 0.58, 0.47, 0.78)   # 路线页小地图右上角「放大（M）」按钮所在区域
-EMPTY_SPOT = (0.62, 0.9)                # 全屏地图最下一行节点下面的空白处；路线页同一位置也是空背景
+# 全屏地图最下一行节点下面的空白处，避开左下角缩放按钮和左半边的节点信息面板；路线页（含不带顶栏的节点大图状态）
+# 这里也是空背景：左边小地图到 0.42、右边节点大图从 0.52 起
+EMPTY_SPOT = (0.5, 0.96)
 LINE_DY = 14                           # 连线端点比节点中心低这么多
 COL_PITCH = 246                        # 列间距
 TIP_DX = 79                            # 连线端点离节点中心的水平距离
@@ -391,7 +393,10 @@ def route_page(frame):
     return _button_score(frame, ZOOM_IN_REGION, "ref_zoom_in") >= 0.7
 
 
-def _wait_route_page(task, timeout):
+def _back_to_route_page(task, timeout=8):
+    """拖动把全屏地图关掉以后，路线页停在不带顶栏、小地图的节点大图状态，等多久都不恢复（2026-10-27 09:33 等了 8 秒），
+    这时按 M 也不响应；点一下空白处才回到正常路线页（同一次 close_map 点空白处后 2 秒就认出来了）。"""
+    task.click(*EMPTY_SPOT)
     waited = 0.0
     while waited < timeout:
         task.sleep(0.5)
@@ -446,9 +451,9 @@ def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None):
             continue
         if score < 0.6 and not reopened and not map_open(cur):
             # 拖动后全屏地图被关回了路线页（2026-10-27 08:15/08:31/08:37/08:45，按下点不在节点上、慢拖也有，原因没查清）。
-            # 刚关上时马上按 M 不响应（08:31「关地图后」还是路线页）：等转场完、认出路线页再按，
-            # 地图记得滚动位置，接着拍。转场有时超过 3.5 秒（09:05 拖完 3.5 秒还没出小地图），按认出为准最多等 8 秒
-            if _wait_route_page(task, 8):
+            # 关上后停在节点大图状态，按 M 不响应（08:31「关地图后」还是路线页）：先点空白处回到正常路线页、认出来再按，
+            # 地图记得滚动位置，接着拍
+            if _back_to_route_page(task):
                 task.log_info(f"全屏地图拖动后被关掉了（匹配分 {score:.2f}），按 M 重新打开接着扫")
                 reopened = True
                 task.send_key("m")

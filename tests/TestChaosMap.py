@@ -244,7 +244,8 @@ class TestDragHeight(unittest.TestCase):
         moved[:top] = np.roll(good[:top], -200, axis=1)
         views = [good, moved]
         route = cv2.resize(cv2.imread(os.path.join(FIX, "route_page.jpg")), (good.shape[1], good.shape[0]))
-        st = {"open": False, "pos": 0, "swipes": 0, "keys": 0, "logs": []}
+        preview = np.random.default_rng(1).integers(0, 255, good.shape, dtype=np.uint8)   # 不带顶栏的节点大图
+        st = {"open": False, "pos": 0, "swipes": 0, "keys": 0, "logs": [], "preview": False, "clicks": 0}
 
         class T:
             frame = None
@@ -256,13 +257,18 @@ class TestDragHeight(unittest.TestCase):
                     st["open"] = True
             def sleep(self, s): pass
             def log_info(self, msg, *a, **k): st["logs"].append(msg)
-            def next_frame(self): self.frame = views[st["pos"]] if st["open"] else route
+            def next_frame(self):
+                self.frame = views[st["pos"]] if st["open"] else preview if st["preview"] else route
+            def click(self, x, y):
+                st["clicks"] += 1
+                st["preview"] = False
             def swipe_relative(self, *a, **k):
                 st["swipes"] += 1               # 第 1 下拖到左端（已经在左端），第 2 下拍到第 2 帧，第 3 下关了地图
                 if st["swipes"] == 2:
                     st["pos"] = 1
                 elif st["swipes"] == 3:
                     st["open"] = False
+                    st["preview"] = True
 
         return T(), st
 
@@ -273,6 +279,7 @@ class TestDragHeight(unittest.TestCase):
         self.assertTrue(any("按 M 重新打开" in m for m in st["logs"]))
         self.assertFalse(any("放弃这次扫描" in m for m in st["logs"]))
         self.assertEqual(3, st["keys"])                      # 打开、重开、扫完关掉
+        self.assertEqual(1, st["clicks"])                    # 节点大图状态先点空白处才按 M（2026-10-27 09:33）
         self.assertFalse(st["open"])
 
     def test_scan_gives_up_without_opening_map_on_route_page(self):
