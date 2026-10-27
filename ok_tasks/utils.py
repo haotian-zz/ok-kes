@@ -2895,7 +2895,7 @@ def handle_equipment(task: TriggerTask):
             if imprint_mode:
                 # 刷刻印：刻印优先于装备，三件目标装备都是传说，不管「一个主战员只装一件传说」
                 should_install_first, install_reason = utils_imprint.install_decision(
-                    task, new_equipment, slot, should_install_first, install_reason
+                    task, new_equipment, slot, should_install_first, install_reason, current_name
                 )
             elif (
                 new_equipment["quality"] == "传说"

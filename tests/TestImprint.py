@@ -174,6 +174,35 @@ class TestImprintDecision(unittest.TestCase):
         t = imprint_task((ui.TARGET, "", ""))
         self.assertIsNone(ui.pick_candidate(t, cands))
 
+    def test_chaos_core_outranks_imprint(self):
+        t = imprint_task()
+        t.member_status["equipment"]["names"] = ["混沌之识", "", ""]
+        # 用户 2026-10-27：装着混沌之识，来了带目标刻印的武器也不换
+        self.assertFalse(ui.install_decision(t, {"name": "绯刃", "imprint": ui.TARGET, "rank": None}, 0, False, "",
+                                             "混沌之识")[0])
+        # 混沌之识来了，就算当前武器带目标刻印也换（没刻印的混沌之识会继承）
+        t = imprint_task((ui.TARGET, "", ""))
+        self.assertTrue(ui.install_decision(t, {"name": "混沌之识", "imprint": "", "rank": 0}, 0, True, "",
+                                            "命令：108号")[0])
+
+    def test_required_with_chaos_core(self):
+        t = imprint_task(("", "", ui.TARGET))
+        t.member_status["equipment"]["names"] = ["混沌之识", "精灵王的金冠", "非典型立方体"]
+        self.assertEqual(2, ui.required_imprints(t))
+        t.member_status["equipment"]["imprints"] = [ui.TARGET, "", ui.TARGET]   # 混沌之识继承到了目标刻印
+        self.assertEqual(3, ui.required_imprints(t))
+        t.member_status["equipment"]["names"] = ["欺骗暗影的匕首", "", ""]
+        self.assertEqual(3, ui.required_imprints(t))
+
+    def test_pick_candidate_chaos_core_first(self):
+        t = imprint_task()
+        t.member_status["equipment"]["names"] = ["", "", ""]
+        cands = [{"ocr_name": "绯刃", "name": "绯刃", "slot": 0, "description": "暴击" + TARGET_DESC},
+                 {"ocr_name": "混沌之识", "name": "混沌之识", "slot": 0, "description": "……"}]
+        self.assertEqual(1, ui.pick_candidate(t, cands))
+        t.member_status["equipment"]["names"] = ["混沌之识", "", ""]
+        self.assertIsNone(ui.pick_candidate(t, cands[:1]))
+
     def test_special_price(self):
         import utils
         self.assertEqual(67, utils._parse_discounted_price("-96 67"))
