@@ -5186,9 +5186,6 @@ def handle_shop(task: TriggerTask):
             shop_items.append((credit_icon, item_name, price, is_card))
 
             if is_card:
-                if imprint_mode and (reason := utils_imprint.deck_spend_reason(task)):
-                    task.log_info(f"德朗商店: 刷刻印：{reason}，不买卡牌「{item_name}」")
-                    continue
                 if _neutral_card_limit_reached(task):
                     neutral_card_count = task.node_status.get(
                         "neutral_card_count", 0,
@@ -5204,6 +5201,9 @@ def handle_shop(task: TriggerTask):
                  if name and (name in item_name or item_name in name)),
                 None,
                 )
+                if matched_name and imprint_mode and (reason := utils_imprint.deck_spend_reason(task)):
+                    task.log_info(f"德朗商店: 刷刻印：{reason}，不买卡牌「{item_name}」")
+                    continue
             else:
                 matched_name = next(
                 (canonical_name
