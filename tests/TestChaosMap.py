@@ -101,5 +101,13 @@ class TestCardPins(unittest.TestCase):
         self.assertEqual([0, 1, 3, 4, 5], self.pinned("cards_flash_pins"))  # 除了酷寒斗士都标了
 
 
+class TestDragHeight(unittest.TestCase):
+    def test_drag_between_rows(self):
+        # 按在节点上拖会被当成点节点、全屏地图关掉（2026-10-27 实录 0.55 在第 3 行节点下尖角）
+        y = cm.DRAG_Y * cm.REF_H
+        self.assertTrue(all(abs(y - r) > 60 for r in cm.ROW_Y))
+
+
 if __name__ == "__main__":
     unittest.main()
+

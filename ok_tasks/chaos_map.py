@@ -8,6 +8,9 @@ import numpy as np
 
 REF_H = 1080
 ROW_Y = [224, 386, 548, 710, 872]       # 5 行节点中心
+# 拖地图的高度取第 3、4 行节点正中间：原来 0.55 正好在第 3 行节点的下尖角，按在节点上拖会被当成点节点，
+# 全屏地图关掉去预览那个节点（2026-10-27 06:33 起层开头扫描屡次「拖动后对不上上一帧」，流程追踪截图确认）
+DRAG_Y = (ROW_Y[2] + ROW_Y[3]) / 2 / REF_H
 LINE_DY = 14                           # 连线端点比节点中心低这么多
 COL_PITCH = 246                        # 列间距
 TIP_DX = 79                            # 连线端点离节点中心的水平距离
@@ -315,7 +318,7 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
     task.sleep(1.5)
     frame = _settle(task)
     for _ in range(6):
-        task.swipe_relative(0.3, 0.55, 0.7, 0.55, duration=0.8)
+        task.swipe_relative(0.3, DRAG_Y, 0.7, DRAG_Y, duration=0.8)
         cur = _settle(task)
         moved = frame_shift(frame, cur)[0]
         frame = cur
@@ -324,7 +327,7 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
     frames, offsets, total = [frame], [0.0], 0.0
     ok = True
     for _ in range(max_frames - 1):
-        task.swipe_relative(0.6, 0.55, 0.6 - drag, 0.55, duration=1.0)
+        task.swipe_relative(0.6, DRAG_Y, 0.6 - drag, DRAG_Y, duration=1.0)
         cur = _settle(task)
         dx, score = strip_shift(frames[-1], cur)
         if score < 0.6:
