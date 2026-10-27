@@ -1,8 +1,11 @@
-# 刷刻印（utils_imprint）单测：法典面板/三选一卡片解析和合格判断（实机 2026-10-27 OCR）
+# 刷刻印（utils_imprint）单测：法典面板/三选一卡片解析和合格判断（实机 2026-10-27 OCR）、装备刻印图标和装不装的判断
 import os
 import sys
 import unittest
 from types import SimpleNamespace
+
+import cv2
+import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "ok_tasks"))
@@ -78,6 +81,105 @@ class TestCodexParse(unittest.TestCase):
         self.assertEqual(3016, ui.parse_amount("3,016"))
         self.assertEqual(18926000, ui.parse_amount("18926K"))
         self.assertEqual(57600, ui.parse_amount("57600"))
+
+
+
+# 实机 trace 截图（1280x720 放大到 1920x1080）裁出来的条带，贴回空白画面原位置：(文件, 左上角像素)
+FIXTURES = os.path.join(ROOT, "tests", "fixtures")
+
+
+def frame_with(name, left, top):
+    frame = np.zeros((1080, 1920, 3), dtype=np.uint8)
+    crop = cv2.imread(os.path.join(FIXTURES, f"imprint_{name}.jpg"))
+    frame[top:top + crop.shape[0], left:left + crop.shape[1]] = crop
+    return frame
+
+
+# 商店五个商品的信用点图标中心（1920x1080，左右两头的卡片位置高一些、中间那张低一些）
+SHOP_CREDIT = [(117, 868), (492, 898), (867, 916), (1242, 898), (1617, 868)]
+TARGET_DESC = "友军使用能力生成5张以上卡牌时，自身额外攻击伤害量+30%（每回合1次）"
+
+
+class TestImprintIcons(unittest.TestCase):
+    def test_install_page_dark_imprint(self):
+        t = task_with([])
+        t.frame = frame_with("0043", 326, 518)
+        desc = "攻击卡牌的伤害总量提升40% (每场战斗1次)回合开始时，若手牌中持有安息卡牌，则对随机敌人造成固定伤害60%"
+        self.assertEqual((ui.OTHER, ui.DARK), ui.equipment_imprint(t, desc))
+        self.assertEqual((ui.TARGET, ui.DARK), ui.equipment_imprint(t, "暴击伤害+12%" + TARGET_DESC))
+        t.frame = np.zeros((1080, 1920, 3), dtype=np.uint8)
+        self.assertEqual(("", None), ui.equipment_imprint(t, "战斗开始时，保存1"))
+
+    def _shop_kinds(self, name):
+        t = task_with([])
+        t.frame = frame_with(name, 0, 756)
+        dx, dy = ui.SHOP_ICON_OFFSET
+        hx, hy = ui.SHOP_ICON_HALF
+        kinds = []
+        for x, y in SHOP_CREDIT:
+            cx, cy = x / 1920 + dx, y / 1080 + dy
+            kinds.append(ui.icon_kind(t, (cx - hx, cy - hy, cx + hx, cy + hy), win=2 * hy, min_frac=0.25))
+        return kinds
+
+    def test_shop_icons(self):
+        # 0099：第2件「讥笑匕首」暗之刻印；第1件特价（橙色标签）、第3/4件传说（橙色底）都不能当成光之刻印
+        self.assertEqual([None, ui.DARK, None, None, None], self._shop_kinds("0099"))
+        # 0101：第2件光之刻印（黄色太阳）
+        self.assertEqual([None, ui.LIGHT, None, None, None], self._shop_kinds("0101"))
+
+    def test_target_is_light(self):
+        self.assertEqual({ui.LIGHT}, ui.target_kinds(task_with([])))
+
+
+def imprint_task(imprints=("", "", "")):
+    t = task_with([])
+    t.member_status = {"equipment": {"imprints": list(imprints)}}
+    t.log_info = lambda *a, **k: None
+    return t
+
+
+class TestImprintDecision(unittest.TestCase):
+    def test_target_imprint_first(self):
+        t = imprint_task()
+        ok, why = ui.install_decision(t, {"imprint": ui.TARGET, "rank": None}, 0, False, "品质普通不高于传说")
+        self.assertTrue(ok, why)
+
+    def test_keep_target_imprint(self):
+        t = imprint_task((ui.TARGET, "", ""))
+        # 目标装备但带别的刻印：不换，免得把目标刻印顶掉
+        self.assertFalse(ui.install_decision(t, {"imprint": ui.OTHER, "rank": 0}, 0, True, "配置优先级更高")[0])
+        # 目标装备没刻印：换上去继承目标刻印
+        self.assertTrue(ui.install_decision(t, {"imprint": "", "rank": 0}, 0, True, "配置优先级更高")[0])
+        # 不是目标装备：不换
+        self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": None}, 0, True, "品质传说高于普通")[0])
+
+    def test_non_target_refined(self):
+        t = imprint_task()
+        self.assertFalse(ui.install_decision(t, {"imprint": ui.OTHER, "rank": None}, 1, True, "品质普通高于未安装")[0])
+        self.assertTrue(ui.install_decision(t, {"imprint": "", "rank": 0}, 1, True, "配置优先级更高")[0])
+
+    def test_record_inherits(self):
+        t = imprint_task((ui.TARGET, "", ""))
+        ui.record_install(t, 0, {"imprint": ""})
+        ui.record_install(t, 1, {"imprint": ui.TARGET})
+        ui.record_install(t, 2, {"imprint": ui.OTHER})
+        self.assertEqual([ui.TARGET, ui.TARGET, ui.OTHER], ui.slot_imprints(t))
+        self.assertEqual(2, ui.target_imprint_count(t))
+
+    def test_pick_candidate_prefers_imprint(self):
+        t = imprint_task()
+        cands = [{"ocr_name": "欺骗暗影的匕首", "slot": 0, "description": "暴击伤害+12%"},
+                 {"ocr_name": "命令：108号", "slot": 0, "description": "攻击卡牌的伤害总量提升40%" + TARGET_DESC}]
+        self.assertEqual(1, ui.pick_candidate(t, cands))
+        t = imprint_task((ui.TARGET, "", ""))
+        self.assertIsNone(ui.pick_candidate(t, cands))
+
+    def test_special_price(self):
+        import utils
+        self.assertEqual(67, utils._parse_discounted_price("-96 67"))
+        self.assertEqual(67, utils._parse_discounted_price("-9667"))
+        self.assertEqual(140, utils._parse_discounted_price("200140"))
+        self.assertEqual(96, utils._parse_discounted_price("96"))
 
 
 if __name__ == "__main__":

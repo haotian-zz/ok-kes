@@ -238,7 +238,11 @@ def _parse_discounted_price(price_text):
     """解析可能将折扣前后价格连在一起的 OCR 数字。"""
     price_text = price_text.strip()
     if not re.fullmatch(r"\d+", price_text):
-        return None
+        # 特价商品原价划线：「-96 67」「96 67」，取最后一个数（实录 2026-10-27 特价那件一直读成 None）
+        numbers = re.findall(r"\d+", price_text)
+        if len(numbers) >= 2:
+            return int(numbers[-1])
+        return _parse_discounted_price(numbers[0]) if numbers else None
     if len(price_text) == 6:
         return int(price_text[-3:])
     if len(price_text) in (4, 5):
@@ -2824,6 +2828,11 @@ def handle_equipment(task: TriggerTask):
             return False
         equipment_desc = new_equipment["description"]
         task.log_info(f"待安装装备描述: 「{equipment_desc}」")
+        import utils_imprint
+        imprint_mode = utils_imprint.enabled(task)
+        if imprint_mode:
+            new_equipment["imprint"], imprint_kind = utils_imprint.equipment_imprint(task, equipment_desc)
+            task.log_info(f"刷刻印：待安装装备刻印={new_equipment['imprint'] or '无'}（图标颜色 {imprint_kind or '无'}）")
         if not is_purchase_page:
             _mark_equipment_obtained(task, new_equipment.get("name"))
             if new_equipment.get("rank") is not None and isinstance(getattr(task, "node_status", None), dict):
@@ -2869,6 +2878,8 @@ def handle_equipment(task: TriggerTask):
                         )
                     equipment["names"][equipment_slot] = ""
                     equipment["descriptions"][equipment_slot] = ""
+                    if imprint_mode:
+                        utils_imprint.slot_imprints(task)[equipment_slot] = ""
             current_name, _ = _current_equipment_for_slot(task, equipment, slot)
             current_quality = equipment["qualities"][slot]
             should_install_first, install_reason = _should_install_equipment(
@@ -2881,7 +2892,12 @@ def handle_equipment(task: TriggerTask):
                 quality == "传说" and equipment_slot != slot
                 for equipment_slot, quality in enumerate(live_qualities)
             )
-            if (
+            if imprint_mode:
+                # 刷刻印：刻印优先于装备，三件目标装备都是传说，不管「一个主战员只装一件传说」
+                should_install_first, install_reason = utils_imprint.install_decision(
+                    task, new_equipment, slot, should_install_first, install_reason
+                )
+            elif (
                 new_equipment["quality"] == "传说"
                 and has_legendary_in_other_slot
             ):
@@ -2897,6 +2913,8 @@ def handle_equipment(task: TriggerTask):
                 equipment["names"][slot] = new_equipment["name"]
                 equipment["descriptions"][slot] = equipment_desc
                 equipment["qualities"][slot] = new_equipment["quality"] or ""
+                if imprint_mode:
+                    utils_imprint.record_install(task, slot, new_equipment)
             member_label = (
                 "刷存档主战员"
                 if target_member_index is not None
@@ -2918,6 +2936,21 @@ def handle_equipment(task: TriggerTask):
                 task.sleep(1)
                 return True
             return False
+
+        if imprint_mode and (preferred_member_index is not None or is_purchase_page):
+            # 用户 2026-10-27：用不上的装备不分给队友，购买页取消、奖励提炼换信用点（商店刷新要钱）
+            if is_purchase_page:
+                task.log_info(f"刷刻印：{slot + 1}号位不买「{new_equipment['name']}」（{install_reason}），点「取消」")
+                task.click_box(cancel_box)
+                task.sleep(1)
+                return True
+            refine_box = next((b for b in bottom_buttons if "提炼" in b.name), None)
+            if refine_box:
+                task.log_info(f"刷刻印：{slot + 1}号位不装「{new_equipment['name']}」（{install_reason}），提炼换信用点")
+                task.click_box(refine_box)
+                task.sleep(1)
+                return True
+            task.log_info("刷刻印：没找到提炼按钮，按原来的规则分给其他主战员")
 
         other_members = [
             level_box for index, level_box in enumerate(lv_texts)
@@ -2997,7 +3030,12 @@ def handle_equipment(task: TriggerTask):
     )
 
     chosen_index = None
+    import utils_imprint
+    if utils_imprint.enabled(task):
+        chosen_index = utils_imprint.pick_candidate(task, candidates)
     for slot in range(3):
+        if chosen_index is not None:
+            break
         current_name, current_rank = _current_equipment_for_slot(task, equipment, slot)
         for index, candidate in enumerate(candidates):
             if candidate["slot"] != slot or candidate["rank"] is None:
@@ -5013,11 +5051,16 @@ def handle_shop(task: TriggerTask):
             card_icon_indexes.add(closest_index)
             task.log_info(f"德朗商店: {feature_name}特征绑定第{closest_index + 1}个信用点图标")
 
+        import utils_imprint
+        imprint_mode = utils_imprint.enabled(task)
+        # 刷刻印：先把带目标颜色刻印图标的装备逐个点开看（刻印优先于装备）
+        if utils_imprint.shop_inspect(task, credit_icons, card_icon_indexes, current_credit):
+            return True
         card_priority = _get_card_reward_priority(task)
         equipment_priorities = [_equipment_priority(task, slot) for slot in range(3)]
         unaffordable_items = []
         shop_items = []
-        last_shop = _is_last_shop(task)
+        last_shop = _is_last_shop(task) and not imprint_mode
         if last_shop:
             task.log_info("德朗商店：最后一个商店（下一步是最终首领），信用点全部用来买装备和刷新")
         for index, credit_icon in enumerate(credit_icons):
@@ -5035,6 +5078,8 @@ def handle_shop(task: TriggerTask):
             item_type = "卡牌" if is_card else "装备"
             task.log_info(f"德朗商店第{index + 1}个商品: 类型={item_type}，名称=「{item_name}」，价格={price}")
             if not item_name or price is None:
+                continue
+            if imprint_mode and utils_imprint.shop_seen(task, index):
                 continue
             shop_items.append((credit_icon, item_name, price, is_card))
 
@@ -5079,6 +5124,8 @@ def handle_shop(task: TriggerTask):
             f"德朗商店: {item_type}「{item_name}」命中配置「{matched_name}」，"
             f"价格{price}小于当前信用点{current_credit}，点击信用点图标"
             )
+            if imprint_mode:
+                utils_imprint.mark_shop_seen(task, index)
             task.click_box(credit_icon)
             task.sleep(1)
             return True
@@ -5107,6 +5154,7 @@ def handle_shop(task: TriggerTask):
                 )
             else:
                 task.log_info("德朗商店没有符合要求的商品，点击「免费」刷新")
+            utils_imprint.on_shop_refresh(task)
             task.click_box(free_box)
             task.sleep(1)
             return True
@@ -5136,7 +5184,7 @@ def handle_shop(task: TriggerTask):
             refresh_credit_threshold = int(refresh_credit_threshold)
         except (TypeError, ValueError):
             refresh_credit_threshold = 300
-        if current_credit <= refresh_credit_threshold and not last_shop:
+        if current_credit <= refresh_credit_threshold and not last_shop and not imprint_mode:
             task.log_info(
                 f"德朗商店免费刷新已用完，当前信用点{current_credit}未超过阈值"
                 f"{refresh_credit_threshold}，不付费刷新"
@@ -5161,11 +5209,18 @@ def handle_shop(task: TriggerTask):
                 "不足，不刷新"
             )
             return False
+        if imprint_mode and not utils_imprint.shop_refresh_ok(task, current_credit, refresh_price):
+            task.log_info(
+                f"刷刻印：付费刷新需{refresh_price}信用点，当前{current_credit}，"
+                f"刷完不够买一件装备（{utils_imprint.SHOP_RESERVE}），不刷新"
+            )
+            return False
 
         task.log_info(
             f"德朗商店免费刷新已用完，当前信用点{current_credit}超过阈值"
             f"{refresh_credit_threshold}，付费刷新需{refresh_price}信用点，点击刷新"
         )
+        utils_imprint.on_shop_refresh(task)
         task.click_box(refresh_price_box)
         task.sleep(1)
         return True

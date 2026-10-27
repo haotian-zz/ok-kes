@@ -37,6 +37,7 @@ SLOT_POS = {1: (0.088, 0.340), 2: (0.088, 0.535), 3: (0.088, 0.720)}
 PANEL = (0.67, 0.17, 0.995, 0.83)
 REFRESH_POS = (0.967, 0.152)          # 面板右上角刷新
 ENTER_POS = (0.935, 0.899)            # 「进入」/ 空槽时是「合成」
+ENTER_GRACE = 15                      # 点「进入」后这么多秒内不再处理选择法典页
 # 合成法典页
 SYNTH_MAP_LIST = (0.0, 0.10, 0.25, 0.86)
 SYNTH_TITLE_MAP = (0.55, 0.36, 0.78, 0.42)
@@ -169,6 +170,11 @@ def handle_codex_select(task):
     """零式系统「选择法典」页：点配置的槽位，合格就进入；空槽点合成；不合格点刷新 → 确认 → 合成页。"""
     if not enabled(task) or not _title(task, r"零式系统") or not find_text(task, r"^选择法典$"):
         return False
+    import time
+    # 点了「进入」后转场那几秒还是这一页、右边面板已经空了（实录 2026-10-27 02:00 空面板被当成不合格点了刷新），先等着
+    if time.time() - getattr(task, "_codex_enter_at", 0) < ENTER_GRACE:
+        task.sleep(1)
+        return True
     slot = int(cfg(task, SLOT_KEY))
     click_rel(task, *SLOT_POS.get(slot, SLOT_POS[1]), after=1.5, reason=f"刷刻印：选 {slot} 号法典")
     refresh(task)
@@ -176,6 +182,10 @@ def handle_codex_select(task):
         click_rel(task, *ENTER_POS, after=3, reason=f"刷刻印：{slot} 号没有法典，点合成")
         return True
     info = parse_codex(_region_lines(task, PANEL))
+    if info["map"] is None or info["difficulty"] is None:
+        task.log_info(f"刷刻印：{slot} 号法典面板没读全（地图 {info['map']}、难度 {info['difficulty']}），等页面加载，不刷新")
+        task.sleep(1)
+        return True
     bad = codex_problems(info, task)
     mods = "、".join(f"{n}{lv}" for n, lv in info["mods"]) or "无"
     task.log_info(f"刷刻印：{slot} 号法典 {info['map']} 难度{info['difficulty']} PT{info['pt']} "
@@ -183,6 +193,7 @@ def handle_codex_select(task):
     if not bad:
         if find_text(task, r"^进入$"):
             click_rel(task, *ENTER_POS, after=3, reason="刷刻印：进入法典")
+            task._codex_enter_at = time.time()
         return True
     click_rel(task, *REFRESH_POS, after=2, reason="刷刻印：法典不合格，点刷新")
     refresh(task)
@@ -248,6 +259,16 @@ def handle_codex_pick(task):
 
 
 # ------------------------- 装备刻印 -------------------------
+# 实机 2026-10-27：刻印装备在装备页名称后面、刻印那行描述开头各有一个圆形小图标——光之刻印黄色太阳、暗之刻印紫色漩涡；
+# 德朗商店卡片左下角（信用点图标左上方）也有同样的图标。描述文字＝装备本身效果 + 刻印效果，接在一起。
+# 用户 2026-10-27：刻印优先于装备；目标主战员用不上的装备一律提炼换信用点（商店刷新要钱），不分给队友。
+TARGET, OTHER = "目标", "其他"
+LIGHT, DARK = "光", "暗"
+DESC_ICON_STRIP = (0.184, 0.49, 0.204, 0.67)    # 安装/购买装备页：描述区左边一条（刻印那行开头的图标）
+SHOP_ICON_OFFSET = (-0.008, -0.081)             # 商店：刻印图标中心相对信用点图标中心
+SHOP_ICON_HALF = (0.013, 0.022)
+SHOP_RESERVE = 96                               # 商店刷新后至少还要够买一件稀有装备（96），不然刷出来也买不起
+
 
 def _norm(text):
     return re.sub(r"[\s，,。.、：:（）()【】\[\]{}]", "", text or "")
@@ -261,18 +282,164 @@ def is_target_imprint(task, text):
     return bool(words) and all(_norm(w) in flat for w in words)
 
 
+def icon_kind(task, region, win=0.025, min_frac=0.3):
+    """区域里按颜色找刻印图标：紫色漩涡＝暗，黄色太阳＝光，都没有返回 None。滑窗取占比最高的。"""
+    frame = getattr(task, "frame", None)
+    if frame is None:
+        return None
+    import cv2
+    h, w = frame.shape[:2]
+    x1, y1, x2, y2 = region
+    roi = frame[max(0, int(y1 * h)):int(y2 * h), max(0, int(x1 * w)):int(x2 * w)]
+    if roi.size == 0:
+        return None
+    hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    hue, sat, val = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    masks = {DARK: (hue >= 125) & (hue <= 155) & (sat > 90) & (val > 120),
+             LIGHT: (hue >= 12) & (hue <= 32) & (sat > 120) & (val > 150)}
+    win_px = max(1, min(roi.shape[0], int(win * h)))
+    best, best_frac = None, min_frac
+    for top in range(0, roi.shape[0] - win_px + 1, max(1, win_px // 3)):
+        for kind, mask in masks.items():
+            frac = float(mask[top:top + win_px].mean())
+            if frac >= best_frac:
+                best, best_frac = kind, frac
+    return best
+
+
+def target_kinds(task):
+    """目标刻印是光还是暗：按关键词在刻印库（imprints.json）里找；找不到就两种都看。"""
+    try:
+        import json
+        import os
+        import game_db
+        with open(os.path.join(game_db.DATA_DIR, "imprints.json"), encoding="utf-8") as f:
+            data = json.load(f)
+        kinds = {x["type"][0] for x in data.get("imprints", []) if x.get("type", "")[:1] in (LIGHT, DARK)
+                 and is_target_imprint(task, x.get("desc", ""))}
+        if kinds:
+            return kinds
+    except Exception:  # noqa: BLE001
+        pass
+    return {LIGHT, DARK}
+
+
+def equipment_imprint(task, description):
+    """安装/购买装备页上这件装备的刻印：TARGET / OTHER / ""，和图标颜色。"""
+    kind = icon_kind(task, DESC_ICON_STRIP)
+    if is_target_imprint(task, description):
+        return TARGET, kind
+    return (OTHER if kind else ""), kind
+
+
 def slot_imprints(task):
-    """目标主战员三个装备位上的刻印描述（空串＝没有刻印），记在装备状态里，跟装备名一起维护。"""
+    """目标主战员三个装备位上的刻印（TARGET / OTHER / ""），记在装备状态里跟装备名一起维护。
+    换装备时新装备没有刻印就继承原来的（用户 2026-10-27），所以只在新装备自带刻印时改写。"""
     equipment = task.member_status.setdefault("equipment", {})
     values = equipment.get("imprints")
     if not isinstance(values, list):
         values = []
-    equipment["imprints"] = (values + ["", "", ""])[:3]
+    equipment["imprints"] = [v if v in (TARGET, OTHER) else "" for v in (values + ["", "", ""])[:3]]
     return equipment["imprints"]
 
 
 def target_imprint_count(task):
-    return sum(1 for text in slot_imprints(task) if text and is_target_imprint(task, text))
+    return sum(1 for v in slot_imprints(task) if v == TARGET)
+
+
+def install_decision(task, new_eq, slot, better, why):
+    """刷刻印模式下这件装不装给目标主战员。better/why 是原来按配置优先级、品质比较的结果。
+    刻印优先于装备：带目标刻印的先装（槽位没有目标刻印时）；槽位已有目标刻印时，只换没刻印的更好的目标装备（继承刻印）。"""
+    have = slot_imprints(task)[slot]
+    new = new_eq.get("imprint", "")
+    if new == TARGET:
+        if have != TARGET:
+            return True, "带目标刻印（刻印优先于装备）"
+        return better, f"这件和当前装备都带目标刻印，{why}"
+    if have == TARGET:
+        if new == OTHER:
+            return False, "槽位已有目标刻印，这件带别的刻印，换上去会把目标刻印顶掉"
+        if new_eq.get("rank") is not None and better:
+            return True, f"目标装备、没有刻印，换上去继承槽位的目标刻印（{why}）"
+        return False, "槽位已有目标刻印，这件不是更好的目标装备"
+    if new_eq.get("rank") is not None and better:
+        return True, f"目标装备（{why}）"
+    return False, "不是目标刻印也不是更好的目标装备"
+
+
+def record_install(task, slot, new_eq):
+    imprints = slot_imprints(task)
+    if new_eq.get("imprint"):
+        imprints[slot] = new_eq["imprint"]
+    task.log_info(f"刷刻印：装备位刻印 {['{}号{}'.format(i + 1, v or '无') for i, v in enumerate(imprints)]}，"
+                  f"目标刻印 {target_imprint_count(task)} 个")
+
+
+def pick_candidate(task, candidates):
+    """选择装备（二选一）页：有带目标刻印、且对应槽位还没目标刻印的就选它（刻印优先于装备）。"""
+    imprints = slot_imprints(task)
+    for i, c in enumerate(candidates):
+        if is_target_imprint(task, c.get("description", "")) and imprints[c["slot"]] != TARGET:
+            task.log_info(f"刷刻印：候选装备「{c['ocr_name']}」带目标刻印，选它（刻印优先于装备）")
+            return i
+    return None
+
+
+# ------------------------- 德朗商店 -------------------------
+
+def _shop_seen(task):
+    """这个商店里点开看过的商品：(商店, 第几次刷新, 第几个)。刷新一次 gen+1。"""
+    import utils
+    ns = task.node_status
+    key = list(utils._shop_key(task))
+    state = ns.get("imprint_shop")
+    if not isinstance(state, dict) or state.get("shop") != key:
+        state = {"shop": key, "gen": 0, "seen": []}
+        ns["imprint_shop"] = state
+    return state
+
+
+def shop_seen(task, index):
+    state = _shop_seen(task)
+    return [state["gen"], index] in state["seen"]
+
+
+def mark_shop_seen(task, index):
+    state = _shop_seen(task)
+    state["seen"].append([state["gen"], index])
+
+
+def on_shop_refresh(task):
+    if enabled(task):
+        _shop_seen(task)["gen"] += 1
+
+
+def shop_inspect(task, credit_icons, card_indexes, credit):
+    """商店里带目标颜色刻印图标的装备逐个点信用点图标打开购买页看刻印全文（购买页由 handle_equipment 决定买还是取消）。"""
+    if not enabled(task):
+        return False
+    kinds = target_kinds(task)
+    dx, dy = SHOP_ICON_OFFSET
+    hx, hy = SHOP_ICON_HALF
+    for index, icon in enumerate(credit_icons):
+        if index in card_indexes or shop_seen(task, index):
+            continue
+        cx = (icon.x + icon.width / 2) / task.width + dx
+        cy = (icon.y + icon.height / 2) / task.height + dy
+        kind = icon_kind(task, (cx - hx, cy - hy, cx + hx, cy + hy), win=2 * hy, min_frac=0.25)
+        if kind not in kinds:
+            continue
+        mark_shop_seen(task, index)
+        task.log_info(f"刷刻印：德朗商店第{index + 1}个装备有{kind}之刻印图标，点开看刻印（信用点 {credit}）")
+        task.click_box(icon)
+        task.sleep(1.5)
+        return True
+    return False
+
+
+def shop_refresh_ok(task, credit, price):
+    """刷刻印模式下商店刷新不看「商店刷新信用点阈值」，只要刷完还够买一件稀有装备就刷。"""
+    return credit - price >= SHOP_RESERVE
 
 
 def rush_escape_reason(task):
