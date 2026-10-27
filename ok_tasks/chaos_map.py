@@ -216,8 +216,12 @@ def build_map(frames, offsets, line_threshold=0.75):
             col = int(round((gx - origin) / pitch))
             key = (col, n["row"])
             seen_in.setdefault(key, []).append((i, n))
-            if key not in merged:
-                merged[key] = dict(n, col=col, px=gx)
+            # 同一个节点好几帧都拍到：类型/商店取离屏幕中间最近那帧的。屏幕右边缘有暗角，火焰图标的白色不全会认成罗盘
+            # （2026-10-27 08:24 两个休息[商店]在第一次露出的右边缘那帧认成了结算，走到跟前重扫才认对）
+            edge = abs(n["x"] - frame.shape[1] / 2)
+            if key not in merged or edge < merged[key]["edge"]:
+                was_current = key in merged and merged[key]["current"]
+                merged[key] = dict(n, col=col, px=gx, edge=edge, current=n["current"] or was_current)
             elif n["current"]:
                 merged[key]["current"] = True
         boss = detect_boss(frame)
@@ -225,7 +229,7 @@ def build_map(frames, offsets, line_threshold=0.75):
             boss_gx, boss_gy = boss[0] - off, boss[1]
     if boss_gx is not None:
         # 首领只露出一部分时面积不够、认不成首领，它左边那截会被当成普通节点
-        merged = {k: n for k, n in merged.items() if n["x"] - offsets[seen_in[k][0][0]] < boss_gx - 180 * s}
+        merged = {k: n for k, n in merged.items() if n["px"] < boss_gx - 180 * s}
     if not merged:
         return {"nodes": [], "adjacency": {}, "current": None}
     # 当前位置在打开地图时的第一帧里；有多个候选取最左边的

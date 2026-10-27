@@ -101,6 +101,27 @@ class TestCardPins(unittest.TestCase):
         self.assertEqual([0, 1, 3, 4, 5], self.pinned("cards_flash_pins"))  # 除了酷寒斗士都标了
 
 
+class TestMergeNearCenter(unittest.TestCase):
+    def test_type_from_frame_nearest_center(self):
+        # 2026-10-27 08:24：休息[商店]第一次露出在右边缘（暗角）认成结算，往左拖到中间那帧认对了；合并取中间那帧
+        import numpy as np
+        frames = [np.zeros((1080, 1920, 3), np.uint8) for _ in range(2)]
+        seen = [[{"x": 300.0, "y": 710.0, "row": 3, "type": "精英", "shop": False, "current": True},
+                 {"x": 1846.0, "y": 710.0, "row": 3, "type": "结算", "shop": False, "current": False}],
+                [{"x": 1100.0, "y": 710.0, "row": 3, "type": "休息", "shop": True, "current": False}]]
+        calls = iter(seen)
+        old = cm.detect_nodes
+        cm.detect_nodes = lambda frame: next(calls)
+        try:
+            info = cm.build_map(frames, [0.0, -746.0])
+        finally:
+            cm.detect_nodes = old
+        node = next(n for n in info["nodes"] if n["col"] == 6)
+        self.assertEqual("休息", node["type"])
+        self.assertTrue(node["special_features"])
+        self.assertEqual("当前位置", next(n for n in info["nodes"] if n["col"] == 0)["type"])
+
+
 class TestDragHeight(unittest.TestCase):
     def test_drag_between_rows(self):
         # 按在节点上拖会被当成点节点、全屏地图关掉（2026-10-27 实录 0.55 在第 3 行节点下尖角）
