@@ -858,6 +858,15 @@ class TestDiceReroll(unittest.TestCase):
         utils.handle_negotiation(t)
         self.assertLess(clicks[-1][0], 0.4)
 
+    def test_cost_ignores_icon_read_as_nine(self):
+        import types
+        import utils
+        t, clicks = self._task(points="3/30")
+        t.all_texts.insert(0, types.SimpleNamespace(name="9", x=0.408 * 1920 - 10, y=0.9 * 1080 - 15, width=20,
+                                                    height=30, area=lambda: 600))
+        self.assertTrue(utils.handle_negotiation(t))
+        self.assertLess(clicks[-1][0], 0.4)                  # 花 2、剩 3，够重投
+
     def test_not_enough_points(self):
         import utils
         t, clicks = self._task(points="1/30")

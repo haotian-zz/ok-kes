@@ -3585,7 +3585,13 @@ def _dice_reroll(task: TriggerTask):
     box = next((b for b in task.all_texts if _clean_match(b.name, "再次滚动")), None)
     if not box:
         return None
-    cost = re.search(r"\d+", _get_region_text(task, DICE_REROLL_COST))
+    # 价格左边的骰子图标常被 OCR 认成「9」，取最右边的数字（实录 2026-10-27 03:24 读成 9，实际花 2）
+    cost = None
+    for b in sorted(task.all_texts, key=lambda b: b.x):
+        cx, cy = (b.x + b.width / 2) / task.width, (b.y + b.height / 2) / task.height
+        x1, y1, x2, y2 = DICE_REROLL_COST
+        found = re.findall(r"\d+", b.name) if x1 <= cx <= x2 and y1 <= cy <= y2 else []
+        cost = re.match(r"\d+", found[-1]) if found else cost
     points = re.search(r"(\d+)\s*/\s*\d+", _get_region_text(task, DICE_POINTS))
     if not cost or not points or int(points.group(1)) < int(cost.group()):
         return None
