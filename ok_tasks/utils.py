@@ -2960,10 +2960,18 @@ def handle_equipment(task: TriggerTask):
                 return True
             refine_box = next((b for b in bottom_buttons if "提炼" in b.name), None)
             if refine_box:
+                task._refine_waits = 0
                 task.log_info(f"刷刻印：{slot + 1}号位不装「{new_equipment['name']}」（{install_reason}），提炼换信用点")
                 task.click_box(refine_box)
                 task.sleep(1)
                 return True
+            # 装备页还在淡入时底部按钮没出来（2026-10-27 07:11 实录，描述也是乱序的），先等几帧再按老规则分给队友
+            if getattr(task, "_refine_waits", 0) < 3:
+                task._refine_waits = getattr(task, "_refine_waits", 0) + 1
+                task.log_info("刷刻印：提炼按钮还没出来，等一下再看")
+                task.sleep(1)
+                return True
+            task._refine_waits = 0
             task.log_info("刷刻印：没找到提炼按钮，按原来的规则分给其他主战员")
 
         other_members = [
