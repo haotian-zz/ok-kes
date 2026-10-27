@@ -6,6 +6,7 @@ import os
 import chaos_strategy
 import chaos_trace
 import game_restart
+import game_speed
 import game_db
 import utils
 import utils_chaos
@@ -97,6 +98,7 @@ class ChaosMode(TriggerTask):
         self.default_config['只打第一层'] = False
         self.default_config['章鱼哥速刷'] = False
         self.default_config['章鱼哥速刷只认混沌之识'] = False
+        self.default_config[game_speed.SPEED_KEY] = True
         # 路线节点优先级 (列表), 越靠前优先级越高
         self.default_config['路线优先级'] = ["休息", "事件", "小怪", "精英"]
         self.default_config['几轮后停止(0为不停止)'] = 0
@@ -185,6 +187,10 @@ class ChaosMode(TriggerTask):
         )
         self.config_description['章鱼哥速刷只认混沌之识'] = (
             "配合「章鱼哥速刷」：开启后第一层打完首领时只要本局没拿到混沌之识就退出重进，别的目标装备（堕落之冠、过载动力机关等）不算；不管第几层，章鱼哥掉的不是混沌之识就在回到路线页时立即逃脱重开；关闭时拿到任意目标装备就打完"
+        )
+        self.config_description[game_speed.SPEED_KEY] = (
+            "国服自带变速：任务开始（和游戏重开后）按一次 F8 唤出「变速功能」浮窗，点 3.0x 再关掉。"
+            "F8 只认真实按键，会把游戏切到前台一下再切回原来的窗口"
         )
         self.config_description['首层刷特定闪光'] = (
             "默认刷闪光优先级第一张，可刷神闪，第一层没刷出自动逃脱"
@@ -366,6 +372,8 @@ class ChaosMode(TriggerTask):
         if not getattr(self, 'strategy_ready', False):
             game_restart.start_resume_on_restore(self)
             self.setup_strategy()
+        if game_speed.ensure_speed(self):
+            return
         # 读预设、从主页进卡厄思只在启动那一刻做：之后的无文字帧（战斗开场、加载）不能当成主页
         # （2026-10-24 局内重启后首领战开场被当成主页，点了画面中心、按了 6 次 ESC）
         if getattr(self, 'start_window', True):
