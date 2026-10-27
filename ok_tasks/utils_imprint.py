@@ -393,7 +393,8 @@ def required_imprints(task):
 def install_decision(task, new_eq, slot, better, why, current_name=""):
     """刷刻印模式下这件装不装给目标主战员。better/why 是原来按配置优先级、品质比较的结果。
     混沌之识 > 刻印 > 装备：混沌之识装上就不换、来了就装；带目标刻印的先装（槽位没有目标刻印时）；
-    槽位已有目标刻印时，只换没刻印、且更好（配置优先级更高，或同级时品质更高）的装备（继承刻印）。"""
+    槽位已有目标刻印时，只换没刻印、且更好（配置优先级更高，或同级时品质更高）的装备（继承刻印）；
+    槽位还没有目标刻印时，不带目标刻印的目标装备也不装（会被之后的刻印装备顶掉）。"""
     cur_top, new_top = is_top(current_name), is_top(new_eq.get("name"))
     if cur_top and not new_top:
         return False, f"当前是「{current_name}」，优先级高于刻印，不换"
@@ -414,7 +415,9 @@ def install_decision(task, new_eq, slot, better, why, current_name=""):
             return True, f"{kind}、没有刻印，换上去继承槽位的目标刻印（{why}）"
         return False, f"槽位已有目标刻印，这件不比当前好（{why}）"
     if new_eq.get("rank") is not None and better:
-        return True, f"目标装备（{why}）"
+        # 槽位还没有目标刻印时先装目标装备没用：之后带目标刻印的装备换上来会把它顶掉（新装备的刻印覆盖、装备本身也没了），
+        # 正确顺序是先刻印、再用目标装备继承。商店里白花信用点（实录 2026-10-27 03:37 买了金冠 140、匕首 200），掉落的不如提炼。
+        return False, f"目标装备但没带目标刻印，槽位还没有目标刻印，先装会被之后的刻印装备顶掉（{why}）"
     return False, "不是目标刻印也不是更好的目标装备"
 
 
