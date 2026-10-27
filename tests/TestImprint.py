@@ -255,30 +255,40 @@ class TestImprintDecision(unittest.TestCase):
     def test_required_with_chaos_core(self):
         t = imprint_task(("", "", ui.TARGET))
         t.member_status["equipment"]["names"] = ["混沌之识", "精灵王的金冠", "非典型立方体"]
-        self.assertEqual(2, ui.required_imprints(t))
-        # 混沌之识继承到了目标刻印也是 2 个（2026-10-27 15:54 第 14 局按 3 个算，逃脱了）
+        # 用户 2026-10-27 16:0x：拿到混沌之识不管几个目标刻印都打完存档；最终目标里混沌之识没刻印的槽位不算
+        self.assertEqual(0, ui.required_imprints(t))
+        self.assertEqual(2, ui.goal_imprints(t))
+        # 混沌之识继承到了目标刻印（2026-10-27 15:54 第 14 局按 3 个算，逃脱了）
         t.member_status["equipment"]["imprints"] = [ui.TARGET, ui.TARGET, ""]
-        self.assertEqual(2, ui.required_imprints(t))
+        self.assertEqual(0, ui.required_imprints(t))
+        self.assertEqual(3, ui.goal_imprints(t))
+        # 没有混沌之识：两个就打首领（用户 16:1x 降低要求），最终目标还是三个
         t.member_status["equipment"]["names"] = ["欺骗暗影的匕首", "", ""]
-        self.assertEqual(3, ui.required_imprints(t))
+        self.assertEqual(2, ui.required_imprints(t))
+        self.assertEqual(3, ui.goal_imprints(t))
         # 装备记录被误清了，混沌之识掉落记录还在也认
         t.node_status = {"chaos_core_got": "混沌之识"}
-        self.assertEqual(2, ui.required_imprints(t))
+        self.assertEqual(0, ui.required_imprints(t))
 
     def test_escape_before_layer2_boss(self):
         """实录 2026-10-27 03:27：裁决之沼二层首领打完直接结算（离开），结算页来不及逃脱，法典用掉了。首领前就要逃。"""
-        t = imprint_task((ui.TARGET, ui.TARGET, ""))
+        t = imprint_task((ui.TARGET, "", ""))
         t.config = {"刷刻印": True, "刷刻印速刷": True}
         t.member_status["equipment"]["names"] = ["欺骗暗影的匕首", "不朽鳞片", ""]
         t.node_status = {"pass_final_boss_count": 1,
                          "full_route": {"layer": 1, "done": 3, "steps": [{"type": "事件"}] * 3 + [{"type": "首领"}]}}
         self.assertIn("首领前", ui.rush_escape_reason(t))
-        t.node_status["full_route"]["done"] = 2                     # 下一步还不是首领
-        self.assertIsNone(ui.rush_escape_reason(t))
+        t.node_status["full_route"]["done"] = 2                     # 下一步还不是首领：只剩第一层的 2 个门槛
+        self.assertIn("第一层打完", ui.rush_escape_reason(t))
         self.assertIn("首领前", ui.rush_escape_reason(t, boss_next=True))   # 没有路线计划、路线页只剩首领
-        t.member_status["equipment"]["imprints"] = [ui.TARGET] * 3
+        t.member_status["equipment"]["imprints"] = [ui.TARGET, ui.TARGET, ""]   # 用户 2026-10-27 16:1x：两个就打完
         self.assertIsNone(ui.rush_escape_reason(t, boss_next=True))
-        t.member_status["equipment"]["imprints"] = [ui.TARGET, ui.TARGET, ""]
+        t.member_status["equipment"]["imprints"] = [ui.TARGET, "", ""]
+        t.member_status["equipment"]["names"] = ["混沌之识", "不朽鳞片", ""]     # 拿到混沌之识不管几个都打完
+        t.node_status["chaos_core_got"] = "混沌之识"
+        self.assertIsNone(ui.rush_escape_reason(t, boss_next=True))
+        del t.node_status["chaos_core_got"]
+        t.member_status["equipment"]["names"] = ["欺骗暗影的匕首", "不朽鳞片", ""]
         t.node_status["pass_final_boss_count"] = 0                   # 第一层首领前不管（第一层打完再看）
         self.assertIsNone(ui.rush_escape_reason(t, boss_next=True))
 

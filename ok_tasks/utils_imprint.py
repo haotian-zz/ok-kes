@@ -385,13 +385,20 @@ def target_imprint_count(task):
 
 
 def required_imprints(task):
-    """要凑几个目标刻印：3 个；拿到混沌之识就是 2 个——混沌之识 + 两个目标刻印，不管混沌之识自己有没有继承到刻印
-    （跟 10-27 08:12 达标那份一个标准）。2026-10-27 15:54 第 14 局：混沌之识继承了 1 号位目标刻印 + 2 号位兜帽，
-    旧规则只在混沌之识槽位没刻印时才减一，还要 3 个，第二层首领前逃脱了。混沌之识掉落记录在 node_status 里一起落盘，
-    装备记录被误清时也认。"""
+    """第二层首领前至少几个目标刻印才打首领存档（不够就逃脱）：2 个（用户 2026-10-27 16:1x 降低要求：第一层拿到两个就
+    无论如何打完；原来是 3 个）。拿到混沌之识就不要求（用户 16:0x：不管几个目标刻印都打完存档）。
+    2026-10-27 15:54 第 14 局：混沌之识 + 2 个目标刻印，旧规则还要 3 个，第二层首领前逃脱了。
+    混沌之识掉落记录在 node_status 里一起落盘，装备记录被误清时也认。"""
     ns = getattr(task, "node_status", None)
     got = isinstance(ns, dict) and ns.get("chaos_core_got")
-    return 2 if got or any(is_top(n) for n in _slot_names(task)) else 3
+    return 0 if got or any(is_top(n) for n in _slot_names(task)) else 2
+
+
+def goal_imprints(task):
+    """最终目标几个目标刻印（不够也不逃，但信用点留着买刻印装备）：3 个；装着混沌之识且没继承到目标刻印的槽位
+    不算（混沌之识不会被换掉，这个槽位拿不到刻印了）。用户 2026-10-27 16:1x：最终目标还是三个刻印。"""
+    imprints, names = slot_imprints(task), _slot_names(task)
+    return 3 - sum(1 for i in range(3) if is_top(names[i]) and imprints[i] != TARGET)
 
 
 def install_decision(task, new_eq, slot, better, why, current_name=""):
@@ -531,9 +538,11 @@ def deck_spend_reason(task):
         if n >= 2 or ns.get("chaos_core_got"):
             return None
         return f"第一层目标刻印 {n}/2，不够这局会逃脱，信用点留着买刻印装备"
-    need = required_imprints(task)
-    if n >= need:
+    goal, need = goal_imprints(task), required_imprints(task)
+    if n >= goal:
         return None
+    if n >= need:
+        return f"第二层目标刻印 {n}/{goal}，够打首领了，信用点还是留着买刻印装备凑满"
     return f"第二层目标刻印 {n}/{need}，不够首领前会逃脱，信用点留着买刻印装备"
 
 
@@ -553,7 +562,7 @@ def _boss_next(ns):
 
 def rush_escape_reason(task, boss_next=False):
     """刷刻印速刷要不要逃脱重开：第一层打完不到 2 个目标刻印（拿到混沌之识除外）；
-    第二层首领前不到 3 个（拿到混沌之识就是 2 个，用户 2026-10-27 混沌之识优先级高于刻印）。"""
+    第二层首领前不到 2 个（用户 2026-10-27 16:1x 从 3 降到 2，最终目标还是 3 个；拿到混沌之识就不逃，打完存档）。"""
     if not enabled(task) or cfg(task, SPEEDRUN_KEY) is not True:
         return None
     ns = getattr(task, "node_status", None)
