@@ -216,7 +216,10 @@ class TestDragHeight(unittest.TestCase):
         ev = []
 
         class Inter:
-            def move(self, x, y, down_btn=0): ev.append(("move", x, y, down_btn))
+            def move(self, x, y, down_btn=0):
+                ev.append(("move", x, y, down_btn))
+                return (x, y)
+            def post(self, msg, wparam, lparam): ev.append(("post", msg, wparam, lparam))
 
         class T:
             width, height = 1920, 1080
@@ -232,7 +235,9 @@ class TestDragHeight(unittest.TestCase):
             cm.time.sleep = old
         self.assertEqual(("down", 1152, 540), ev[1])
         self.assertEqual(("move", 806, 540, cm.MK_LBUTTON), ev[-2])
-        self.assertEqual(("up",), ev[-1])
+        # 在终点松开：框架 mouse_up 会在 (0, 0) 松开
+        self.assertEqual(("post", cm.WM_LBUTTONUP, 0, (806, 540)), ev[-1])
+        self.assertNotIn(("up",), ev)
         self.assertTrue(all(e[3] == cm.MK_LBUTTON for e in ev[2:-1]))
 
     def _closing_task(self, m_reopens):

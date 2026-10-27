@@ -319,6 +319,7 @@ def gap_x(frame, near):
 
 
 MK_LBUTTON = 0x0001
+WM_LBUTTONUP = 0x0202
 
 
 def _drag(task, x0, y, x1, duration=0.6, steps=20):
@@ -334,11 +335,17 @@ def _drag(task, x0, y, x1, duration=0.6, steps=20):
     inter.move(ax, ay)
     time.sleep(0.05)
     task.mouse_down(ax, ay)
+    pos = None
     for i in range(1, steps + 1):
         time.sleep(duration / steps)
-        inter.move(int(ax + (bx - ax) * i / steps), ay, down_btn=MK_LBUTTON)
+        pos = inter.move(int(ax + (bx - ax) * i / steps), ay, down_btn=MK_LBUTTON)
     time.sleep(0.15)
-    task.mouse_up()
+    if hasattr(inter, "post") and pos is not None:
+        # 框架 PostMessage 的 mouse_up 总在客户区 (0, 0) 松开（mouse_pos 初始化后从没更新），游戏看到松开时指针跳到左上角；
+        # 2026-10-27 拖动约 1/4 会把全屏地图关成节点大图，按真人习惯在终点松开
+        inter.post(WM_LBUTTONUP, 0, pos)
+    else:
+        task.mouse_up()
 
 
 def _drag_to_left(task):
