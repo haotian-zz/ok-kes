@@ -329,6 +329,10 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
         dx, score = strip_shift(frames[-1], cur)
         if score < 0.6:
             task.log_info(f"全屏地图拖动后对不上上一帧（匹配分 {score:.2f}，平移可能超过半屏），放弃这次扫描")
+            # 2026-10-27 06:33 起层开头频繁失败，原因还没看到：前后两帧存进流程追踪
+            import chaos_trace
+            chaos_trace.step(task, "map_fail", f"拖动前（第{len(frames)}帧）", frames[-1], score=round(score, 2))
+            chaos_trace.step(task, "map_fail", "拖动后", cur, score=round(score, 2))
             ok = False
             break
         if abs(dx) < 10 * _scale(cur):
@@ -343,6 +347,8 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
     task.send_key("m")
     task.sleep(2)
     if not ok:
+        import chaos_trace
+        chaos_trace.step(task, "map_fail", "关地图后", _grab(task))
         return None
     if dump_dir:
         os.makedirs(dump_dir, exist_ok=True)
