@@ -39,6 +39,17 @@ class TestParseEffects(unittest.TestCase):
         self.assertEqual(1, best, results)
         self.assertLess(results[2][0], 0, results[2])
 
+    def test_info_option_not_picked(self):
+        # 2026-10-27 04:51 实录：「警告」事件另两个选项都是负分，一直选「确认信息」卡了 20 分钟
+        descs = ["询问对方的身份确认信息[森林看守]", "解释自己没有恶意移除2张所选卡牌",
+                 "想要占有森林强制获得咒术卡牌[根深蒂固]将选择的普通卡牌转换为卡牌[乱和]"]
+        best, results = cs.pick_event_option(descs, cs.MODE_TARGET, {"need_remove": 0, "removed": 3})
+        self.assertEqual(1, best, results)
+        # 探索模式没看过的说明还是看一次；看过了就不再选
+        best, _ = cs.pick_event_option(descs, cs.MODE_EXPLORE, {"seen": set()})
+        self.assertIn(best, (0, 1, 2))
+        self.assertEqual(0, cs.pick_event_option(descs[:1], cs.MODE_TARGET, {})[0])   # 只有它时照选
+
 
 class TestEventPick(unittest.TestCase):
     descs = ["购买他手上的短刀 信用点减少40 获得窃取者的短刀", "抢走信用点箱 信用点增加120", "夸赞他的技术 获得随机卡厄思教团稀有装备"]

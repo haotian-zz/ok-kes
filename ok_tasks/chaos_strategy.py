@@ -449,7 +449,8 @@ def pick_event_option(descs, mode, state=None, db=None):
     event, matched = match_event_options(descs, db=db)
     seen = state.get("seen") or set()
     results = []
-    for d, o in zip(descs, matched):
+    info_skip = set()
+    for i, (d, o) in enumerate(zip(descs, matched)):
         if o is not None:
             # 库里只有选项名没有效果（如开局的凯尔肯的传令兵）时，用画面上的效果说明补
             shown = parse_effects(d)
@@ -467,6 +468,10 @@ def pick_event_option(descs, mode, state=None, db=None):
             src = "文字解析"
             st = dict(state, unseen=text_key(d) not in seen and _legacy_text_key(d) not in seen)
         score, why = score_effects(effects, mode, st)
+        if "确认信息" in norm(d) and not (mode == MODE_EXPLORE and st["unseen"]):
+            # 「确认信息[…]」只是看说明，看完回到同一页。2026-10-27 04:51 森林看守的「警告」事件里另两个选项都是负分，
+            # 一直选 0 分的「询问对方的身份」卡了 20 分钟。有别的选项就不选它（探索模式没看过的还是要看一次）
+            info_skip.add(i)
         if o is None and mode == MODE_EXPLORE and st["unseen"] and "发生事件" in d:
             # 库里没有的后续事件：只能经这个选项进去，这个没选过时后续的选项大概率也都没见过（库里有后续树的同类选项
             # 实测 +2054），按「后续还有一个没选过的选项」算，略低于确定的新装备
@@ -477,7 +482,8 @@ def pick_event_option(descs, mode, state=None, db=None):
         results.append((score, why, src, o.get("id") if o else text_key(d)))
     if not results:
         return None, results
-    best = max(range(len(results)), key=lambda i: results[i][0])
+    pool = [i for i in range(len(results)) if i not in info_skip] or range(len(results))
+    best = max(pool, key=lambda i: results[i][0])
     return best, results
 
 
