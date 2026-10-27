@@ -1181,6 +1181,12 @@ class TestOctopusMissEscape(unittest.TestCase):
                 return t
             # 没遇到章鱼哥：不逃脱
             self.assertFalse(utils.handle_octopus_miss_escape(task()))
+            # 第一层打完、结算页漏退出进了第二层：也逃脱（2026-10-26 22:09）
+            l2 = task(pass_final_boss_count=1)
+            self.assertTrue(utils.handle_octopus_miss_escape(l2))
+            self.assertEqual(clicks, [(0.959, 0.051)])
+            clicks.clear()
+            self.assertFalse(utils.handle_octopus_miss_escape(task(pass_final_boss_count=1, chaos_core_got="混沌之识")))
             # 拿到混沌之识：不逃脱
             self.assertFalse(utils.handle_octopus_miss_escape(task(octopus_seen=True, chaos_core_got="混沌之识")))
             self.assertEqual(clicks, [])

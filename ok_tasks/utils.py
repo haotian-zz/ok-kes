@@ -5516,12 +5516,14 @@ def clear_octopus_seen(task: TriggerTask):
 
 
 def octopus_core_missed(task: TriggerTask) -> bool:
-    """只认混沌之识：本局遇到了章鱼哥，但没拿到混沌之识。"""
+    """只认混沌之识：本局遇到了章鱼哥（或第一层已经打完）但没拿到混沌之识。
+    第一层打完正常在奖励结算页退出；结算页没认出来、被「继续」点过去进了第二层时（2026-10-26 22:09 实录），回到路线页也要逃脱。"""
     ns = getattr(task, 'node_status', None)
     return (isinstance(ns, dict)
             and _get_config_value(task, OCTOPUS_RUSH, False) is True
             and _get_config_value(task, OCTOPUS_CORE_ONLY, False) is True
-            and bool(ns.get('octopus_seen')) and not ns.get('chaos_core_got'))
+            and (bool(ns.get('octopus_seen')) or ns.get('pass_final_boss_count', 0) >= 1)
+            and not ns.get('chaos_core_got'))
 
 
 def handle_octopus_miss_escape(task: TriggerTask):
@@ -5540,7 +5542,8 @@ def handle_octopus_miss_escape(task: TriggerTask):
         task.sleep(1)
         return True
     ns['octopus_escape_at'] = time.time()
-    task.log_info("章鱼哥速刷：章鱼哥没掉混沌之识，回到路线页立即逃脱重开")
+    why = "章鱼哥没掉混沌之识" if ns.get('octopus_seen') else "第一层打完还没拿到混沌之识"
+    task.log_info(f"章鱼哥速刷：{why}，回到路线页立即逃脱重开")
     _move_and_click(task, 0.959, 0.051)
     task.sleep(1)
     return True
