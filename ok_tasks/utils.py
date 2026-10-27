@@ -3609,8 +3609,15 @@ DICE_BUTTON_WAITS = 3                          # 失败页按钮还没出来时�
 
 
 def _dice_reroll(task: TriggerTask):
-    """失败页「再次滚动」：右上角资源够消耗、这个骰子重投没超过上限就再滚（用户 2026-10-27：骰子失败了可以重投）。
-    返回 (是否重投, 说明)。不点资源旁边的「+」。"""
+    """失败页「再次滚动」：稀有事件、右上角资源够消耗、这个骰子重投没超过上限就再滚（用户 2026-10-27：骰子失败了可以重投；
+    资源用光后要过一阵才补满（实录 09:15 用光、11:24 又是 30），重投只用于稀有事件）。返回 (是否重投, 说明)。不点资源旁边的「+」。"""
+    ns = getattr(task, "node_status", None) or {}
+    node = ns.get("node_count", 0)
+    event_node, rarity, event_name = getattr(task, "_event_rarity", (None, None, None))
+    if event_node != node or not event_name:
+        return False, "没认出是哪个事件，重投只用于稀有事件"
+    if rarity != "稀有":
+        return False, f"「{event_name}」是{rarity or '未知'}事件，重投只用于稀有事件"
     # 价格那个单独的「2」OCR 常漏掉、左边的骰子图标常被认成「9」：只看图标右边，读不到就按 2 算
     # （实录 2026-10-27 07:55 页面写着 2、资源 18/30，读不到价格就没重投）
     cost = None
@@ -3625,14 +3632,12 @@ def _dice_reroll(task: TriggerTask):
         return False, "右上角骰子资源没读到"
     if int(points.group(1)) < cost:
         return False, f"骰子资源 {points.group(1)} 不够花 {cost}"
-    ns = getattr(task, "node_status", None) or {}
-    node = ns.get("node_count", 0)
     done = getattr(task, "_dice_rerolls", (None, 0))
     used = done[1] if done[0] == node else 0
     if used >= DICE_REROLL_MAX:
         return False, f"这个骰子已经重投 {used} 次"
     task._dice_rerolls = (node, used + 1)
-    return True, f"第 {used + 1} 次重投，花 {cost}（剩 {points.group(1)}）"
+    return True, f"稀有事件「{event_name}」第 {used + 1} 次重投，花 {cost}（剩 {points.group(1)}）"
 
 
 def handle_negotiation(task: TriggerTask):
@@ -3946,11 +3951,17 @@ def _same_option_text(a, b):
 
 def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
     """选了卡厄思玩法时，用事件库 + 选项文字给选项打分，点分数最高的；原有逻辑返回 False 交给关键词匹配。"""
-    mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
-    if mode == chaos_strategy.MODE_LEGACY or not tasks_info:
+    if not tasks_info:
         return False
     descs = [t["description"] for t in tasks_info]
-    best, results = chaos_strategy.pick_event_option(descs, mode, _chaos_strategy_state(task))
+    match = chaos_strategy.match_event_options(descs)
+    # 记下这个节点的事件是不是稀有版（同名事件分普通/稀有，选项不同），骰子失败只给稀有事件重投
+    node = (getattr(task, "node_status", None) or {}).get("node_count", 0)
+    task._event_rarity = (node, (match[0] or {}).get("rarity"), (match[0] or {}).get("name"))
+    mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
+    if mode == chaos_strategy.MODE_LEGACY:
+        return False
+    best, results = chaos_strategy.pick_event_option(descs, mode, _chaos_strategy_state(task), match=match)
     for t, (score, why, src, _oid) in zip(tasks_info, results):
         task.log_info(f"[{mode}] 事件选项「{t['description']}」{score:+.1f} ({src}; {' '.join(why) or '无效果'})")
     if best is None:

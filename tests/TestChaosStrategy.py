@@ -864,7 +864,7 @@ class TestStorageFull(unittest.TestCase):
 class TestDiceReroll(unittest.TestCase):
     """掷骰子失败页（实机 2026-10-27 03:00）：「再次滚动」消耗 2，右上角资源 30/30。用户：骰子失败了可以重投。"""
 
-    def _task(self, points="30/30", node=5):
+    def _task(self, points="30/30", node=5, rarity="稀有"):
         import types
         box = lambda x, y, n: types.SimpleNamespace(name=n, x=x * 1920 - 40, y=y * 1080 - 15, width=80, height=30,
                                                     area=lambda: 2400)
@@ -874,7 +874,8 @@ class TestDiceReroll(unittest.TestCase):
                                              box(0.466, 0.9, "2"), box(0.666, 0.9, "下一步"),
                                              box(0.916, 0.104, points)],
                                   log_info=lambda *a, **k: None, sleep=lambda *a: None,
-                                  move_relative=lambda *a: None, click=lambda x, y, **k: clicks.append((x, y)))
+                                  move_relative=lambda *a: None, click=lambda x, y, **k: clicks.append((x, y)),
+                                  _event_rarity=(node, rarity, "生命循环"))
         return t, clicks
 
     def test_reroll_until_limit_then_next(self):
@@ -887,8 +888,27 @@ class TestDiceReroll(unittest.TestCase):
         self.assertEqual(utils.DICE_REROLL_MAX, sum(1 for x, _ in clicks if x < 0.4))
         self.assertEqual((0.665, 0.899), clicks[-1])
         t.node_status["node_count"] = 6                      # 下一个节点的骰子重新计数
+        t._event_rarity = (6, "稀有", "生命循环")
         utils.handle_negotiation(t)
         self.assertLess(clicks[-1][0], 0.4)
+
+    def test_only_rare_events(self):
+        """用户 2026-10-27：重投只用于稀有事件；普通事件、没认出的事件（或上个节点的记录）直接下一步。"""
+        import utils
+        for rarity, node in (("普通", 5), (None, 5), ("稀有", 4)):
+            t, clicks = self._task(rarity=rarity)
+            t._event_rarity = (node, rarity, "生命循环" if rarity else None)
+            self.assertTrue(utils.handle_negotiation(t))
+            self.assertEqual([(0.665, 0.899)], clicks, (rarity, node))
+
+    def test_event_rarity_from_options(self):
+        """同名事件分普通/稀有两版、选项不同：按画面选项对到哪一版。"""
+        rare = ["协助精灵仪式 移除2张所选卡牌 最大生命值增加5%", "接过生命之火 在随机3张中立普通~稀有卡牌中选择1张获得",
+                "摘走花朵 强制获得精灵的咒术 获得生命之花"]
+        normal = ["尝试拯救花朵 移除1张所选卡牌 最大生命值增加5%", "接过生命之火 在随机3张中立普通卡牌中选择1张获得",
+                  "摘走花朵 强制获得精灵的咒术 获得暮色生命之花"]
+        self.assertEqual(("生命之花", "稀有"), (lambda e: (e["name"], e["rarity"]))(cs.match_event_options(rare)[0]))
+        self.assertEqual(("生命之花", "普通"), (lambda e: (e["name"], e["rarity"]))(cs.match_event_options(normal)[0]))
 
     def test_cost_ignores_icon_read_as_nine(self):
         import types

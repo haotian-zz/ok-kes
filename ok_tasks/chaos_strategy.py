@@ -443,10 +443,10 @@ def followup_best(option, mode, state, depth=FOLLOWUP_DEPTH):
     return best
 
 
-def pick_event_option(descs, mode, state=None, db=None):
-    """给画面上的几个事件选项打分。返回 (最佳下标, [(分数, 理由, 来源)])。"""
+def pick_event_option(descs, mode, state=None, db=None, match=None):
+    """给画面上的几个事件选项打分。返回 (最佳下标, [(分数, 理由, 来源)])。match=已算好的 match_event_options 结果。"""
     state = dict(state or {})
-    event, matched = match_event_options(descs, db=db)
+    event, matched = match or match_event_options(descs, db=db)
     seen = state.get("seen") or set()
     results = []
     info_skip = set()
