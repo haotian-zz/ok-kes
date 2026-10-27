@@ -5442,9 +5442,11 @@ def handle_shop(task: TriggerTask):
             )
             return False
 
+        # 刷刻印不看阈值，只要刷完还够买一件装备（日志别写「超过阈值」：12:45 实录 278 也写成超过 300）
+        why = (f"刷刻印：刷完还够买一件装备（{utils_imprint.SHOP_RESERVE}）" if imprint_mode
+               else f"超过阈值{refresh_credit_threshold}")
         task.log_info(
-            f"德朗商店免费刷新已用完，当前信用点{current_credit}超过阈值"
-            f"{refresh_credit_threshold}，付费刷新需{refresh_price}信用点，点击刷新"
+            f"德朗商店免费刷新已用完，当前信用点{current_credit}，{why}，付费刷新需{refresh_price}信用点，点击刷新"
         )
         utils_imprint.on_shop_refresh(task)
         task.click_box(refresh_price_box)
