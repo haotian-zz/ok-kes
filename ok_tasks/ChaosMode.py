@@ -56,6 +56,7 @@ class ChaosMode(TriggerTask):
         self.default_config['存储数据保存上限大于多少'] = 120
         self.default_config['保留大于多少TB的存档'] = 62000
         self.default_config['存档满了自动清理'] = True
+        self.default_config['存档清理保留空白存档'] = True
         self.default_config['额外战利品：有战利品验证卡就用'] = True
         self.default_config['额外战利品：验证卡用完后用体力兑换'] = True
         self.default_config['额外战利品：体力不足时用免费道具补充体力'] = False
@@ -172,6 +173,9 @@ class ChaosMode(TriggerTask):
         )
         self.config_description['刷空档'] = (
             "初始任务必须包含“移除2张”，否则重新开始；不能与“刷初始卡牌”同时使用。"
+        )
+        self.config_description['存档清理保留空白存档'] = (
+            "自动清理存档时保留空白存档（0PT）。关掉后空白存档也会被分解；目标主战员的存档始终保留"
         )
         self.config_description['存档满了自动清理'] = (
             "存档存储满了（进不去卡厄思）时去分解页，按分数从低到高分解，腾出 50 个位置；"

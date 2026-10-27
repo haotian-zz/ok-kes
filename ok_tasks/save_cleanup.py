@@ -25,6 +25,10 @@ CANCEL = (0.347, 0.667)
 CARD_NAME_ROWS = ((0.42, 0.25, 0.84, 0.28), (0.42, 0.52, 0.84, 0.55))
 
 
+# 2026-10-26 用户：章鱼哥速刷每局逃脱都留一个空白存档，存储很快满；现在只留罗丝薇瑟带混沌之识的存档，空白存档可以删
+KEEP_BLANK = '存档清理保留空白存档'
+
+
 def enabled(task):
     return _get_config_value(task, '存档满了自动清理', True) is True
 
@@ -105,11 +109,11 @@ def owners_of(names, db=None):
     return out
 
 
-def keep_reason(tb, pt, owners, target):
-    """返回保留原因；None 表示可以分解。"""
+def keep_reason(tb, pt, owners, target, keep_blank=True):
+    """返回保留原因；None 表示可以分解。keep_blank=False：空白存档也可以分解（目标主战员的照样保留）。"""
     if tb is None or pt is None:
         return "TB/PT 读不准"
-    if pt == 0:
+    if pt == 0 and keep_blank:
         return "空白存档（0PT）"
     if not owners:
         return "认不出角色"
@@ -213,7 +217,8 @@ def _on_grid(task, st):
     n, cap = count
     if st["need"] is None:
         st["need"] = max(0, n - (cap - FREE_SLOTS))
-        task.log_info(f"存档清理：现有 {n}/{cap}，要分解 {st['need']} 个（空白存档、目标主战员的存档保留）")
+        task.log_info(f"存档清理：现有 {n}/{cap}，要分解 {st['need']} 个（目标主战员的存档保留"
+                     f"{'、空白存档保留' if _get_config_value(task, KEEP_BLANK, True) is not False else '，空白存档可删'}）")
         if st["need"] == 0:
             st["phase"] = "done"
     if st["phase"] == "done":
@@ -355,7 +360,8 @@ def _on_detail(task, st):
         _click(task, CLOSE_DETAIL, 2)
         return True
     owners = owners_of(names)
-    reason = keep_reason(tb, pt, owners, _get_config_value(task, '目标主战员', ''))
+    reason = keep_reason(tb, pt, owners, _get_config_value(task, '目标主战员', ''),
+                         keep_blank=_get_config_value(task, KEEP_BLANK, True) is not False)
     dec.append({"tb": tb, "pt": pt, "owners": sorted(owners), "delete": reason is None})
     st["viewed"] = len(dec)
     if st["same"] == 0:

@@ -827,6 +827,10 @@ class TestSaveCleanup(unittest.TestCase):
         self.assertEqual(sc.owners_of(["剑光", "万众英雄"]), {"海德玛丽"})
         self.assertIsNone(sc.keep_reason(11520, 20, {"海德玛丽"}, "罗丝薇瑟"))
         self.assertIn("空白", sc.keep_reason(8400, 0, {"绯"}, "罗丝薇瑟"))
+        # 用户 2026-10-26：空白存档可删，但目标主战员的、认不出角色的照样保留
+        self.assertIsNone(sc.keep_reason(8400, 0, {"绯"}, "罗丝薇瑟", keep_blank=False))
+        self.assertIn("目标", sc.keep_reason(8400, 0, {"罗丝薇瑟"}, "罗丝薇瑟", keep_blank=False))
+        self.assertIsNotNone(sc.keep_reason(8400, 0, set(), "罗丝薇瑟", keep_blank=False))
         self.assertIn("目标", sc.keep_reason(66000, 60, sc.owners_of(["斩念", "入鞘"]), "罗丝薇瑟"))
         self.assertIsNotNone(sc.keep_reason(None, 20, {"绯"}, "罗丝薇瑟"))
         self.assertIsNotNone(sc.keep_reason(9000, 20, set(), "罗丝薇瑟"))
