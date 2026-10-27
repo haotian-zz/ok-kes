@@ -275,6 +275,23 @@ class TestImprintDecision(unittest.TestCase):
         t.node_status["pass_final_boss_count"] = 0                   # 第一层首领前不管（第一层打完再看）
         self.assertIsNone(ui.rush_escape_reason(t, boss_next=True))
 
+    def test_deck_spend_waits_for_imprints(self):
+        """实录 2026-10-27 04:29：第一层 0 个刻印还冥想 120+160、付费移除 120，第二个商店只剩 79 买不起刻印装备。"""
+        t = imprint_task()
+        t.config = {"刷刻印": True, "刷刻印速刷": True}
+        t.member_status["equipment"]["names"] = ["", "", ""]
+        t.node_status = {"pass_final_boss_count": 0}
+        self.assertIn("0/2", ui.deck_spend_reason(t))
+        t.member_status["equipment"]["imprints"] = [ui.TARGET, ui.TARGET, ""]
+        self.assertIsNone(ui.deck_spend_reason(t))                  # 第一层够 2 个了，这局能继续
+        t.node_status["pass_final_boss_count"] = 1
+        self.assertIn("2/3", ui.deck_spend_reason(t))
+        t.member_status["equipment"]["imprints"] = [ui.TARGET] * 3
+        self.assertIsNone(ui.deck_spend_reason(t))
+        t.config = {"刷刻印": True, "刷刻印速刷": False}               # 不速刷就不限制
+        t.member_status["equipment"]["imprints"] = ["", "", ""]
+        self.assertIsNone(ui.deck_spend_reason(t))
+
     def test_pick_candidate_chaos_core_first(self):
         t = imprint_task()
         t.member_status["equipment"]["names"] = ["", "", ""]

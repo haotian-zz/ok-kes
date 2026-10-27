@@ -4821,6 +4821,11 @@ def handle_rest(task: TriggerTask):
         and current_credit >= meditation_credit_threshold
         and current_credit >= meditation_cost
     )
+    if can_meditate:
+        import utils_imprint
+        if reason := utils_imprint.deck_spend_reason(task):
+            task.log_info(f"刷刻印：{reason}，这次不冥想")
+            can_meditate = False
 
     train_box = find_text_in_region(task, r"^训练$", TRAIN_REGION)
     can_train = bool(flash_or_rest and train_box and find_text_in_region(task, r"免费", TRAIN_REGION))
@@ -5069,6 +5074,7 @@ def _last_shop_pick(task: TriggerTask, shop_items, credit):
 
 def handle_shop(task: TriggerTask):
     """德朗商店: 优先移除卡牌，其次按配置购买卡牌或装备，最后尝试免费或付费刷新。"""
+    import utils_imprint
     box = find_box_at_point(task, 0.729, 0.261)
     soldout = find_box_at_point(task, 0.727, 0.286)
     if (box and "移除卡牌" in box.name) or (soldout and "售" in soldout.name):
@@ -5092,6 +5098,8 @@ def handle_shop(task: TriggerTask):
                 elif (getattr(task, "chaos_mode", None) == chaos_strategy.MODE_TARGET
                       and _chaos_strategy_state(task)["need_remove"] <= 0):
                     task.log_info("德朗商店: 目标卡组要删的卡已经删够，不付费移除")
+                elif reason := utils_imprint.deck_spend_reason(task):
+                    task.log_info(f"德朗商店: 刷刻印：{reason}，不付费移除")
                 elif cost <= current_credit and task.node_status['shop'] is True:
                     task.log_info(f"德朗商店: 移除卡牌需{cost}信用点，当前{current_credit}，足够，点击移除")
                     task.click_box(box)
@@ -5146,7 +5154,6 @@ def handle_shop(task: TriggerTask):
             card_icon_indexes.add(closest_index)
             task.log_info(f"德朗商店: {feature_name}特征绑定第{closest_index + 1}个信用点图标")
 
-        import utils_imprint
         imprint_mode = utils_imprint.enabled(task)
         # 刷刻印：先把带目标颜色刻印图标的装备逐个点开看（刻印优先于装备）
         if utils_imprint.shop_inspect(task, credit_icons, card_icon_indexes, current_credit):
@@ -5179,6 +5186,9 @@ def handle_shop(task: TriggerTask):
             shop_items.append((credit_icon, item_name, price, is_card))
 
             if is_card:
+                if imprint_mode and (reason := utils_imprint.deck_spend_reason(task)):
+                    task.log_info(f"德朗商店: 刷刻印：{reason}，不买卡牌「{item_name}」")
+                    continue
                 if _neutral_card_limit_reached(task):
                     neutral_card_count = task.node_status.get(
                         "neutral_card_count", 0,

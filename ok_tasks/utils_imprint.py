@@ -513,6 +513,26 @@ def shop_inspect(task, credit_icons, card_indexes, credit):
     return False
 
 
+def deck_spend_reason(task):
+    """刷刻印速刷：目标刻印还没达到这一层的要求时，这局多半会逃脱重开，花信用点改卡组（冥想、付费移除、买卡）都白花，
+    钱留着在商店买带目标刻印的装备（2026-10-27 04:29 实录：第一层 0 个刻印，冥想 120+160、付费移除 120，
+    到第二个商店只剩 79，看到带刻印的装备也买不起）。返回不花的原因，None＝可以花。"""
+    if not enabled(task) or cfg(task, SPEEDRUN_KEY) is not True:
+        return None
+    ns = getattr(task, "node_status", None)
+    if not isinstance(ns, dict):
+        return None
+    n = target_imprint_count(task)
+    if ns.get("pass_final_boss_count", 0) == 0:
+        if n >= 2 or ns.get("chaos_core_got"):
+            return None
+        return f"第一层目标刻印 {n}/2，不够这局会逃脱，信用点留着买刻印装备"
+    need = required_imprints(task)
+    if n >= need:
+        return None
+    return f"第二层目标刻印 {n}/{need}，不够首领前会逃脱，信用点留着买刻印装备"
+
+
 def shop_refresh_ok(task, credit, price):
     """刷刻印模式下商店刷新不看「商店刷新信用点阈值」，只要刷完还够买一件稀有装备就刷。"""
     return credit - price >= SHOP_RESERVE
