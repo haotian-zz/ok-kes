@@ -203,23 +203,20 @@ class TestImprintDecision(unittest.TestCase):
         self.assertFalse(ui.install_decision(t, {"imprint": ui.OTHER, "rank": 0}, 0, True, "配置优先级更高")[0])
         # 目标装备没刻印：换上去继承目标刻印
         self.assertTrue(ui.install_decision(t, {"imprint": "", "rank": 0}, 0, True, "配置优先级更高")[0])
-        # 不是目标装备但品质更高、没刻印：换上去继承目标刻印（用户 2026-10-27）
-        self.assertTrue(ui.install_decision(t, {"imprint": "", "rank": None}, 0, True, "品质传说高于普通")[0])
+        # 不是目标装备，品质再高也不装，提炼换信用点（用户 2026-10-27 11:5x）
+        self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": None}, 0, True, "品质传说高于普通")[0])
+        self.assertFalse(ui.install_decision(t, {"imprint": ui.TARGET, "rank": None}, 0, True, "品质传说高于普通")[0])
         # 不比当前好：不换（提炼）
         self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": None}, 0, False, "品质普通不高于传说")[0])
 
     def test_non_target_refined(self):
         t = imprint_task()
         self.assertFalse(ui.install_decision(t, {"imprint": ui.OTHER, "rank": None}, 1, True, "品质普通高于未安装")[0])
-        # 槽位还没有目标刻印：目标装备买了会被之后的刻印装备顶掉，不买（实录 2026-10-27 03:37 商店白花 340 信用点）
-        self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": 0}, 1, True, "配置优先级更高", purchase=True)[0])
-        self.assertFalse(ui.install_decision(t, {"imprint": ui.OTHER, "rank": 0}, 1, True, "配置优先级更高",
-                                             purchase=True)[0])
-        # 白拿的（掉落、事件奖励）照装（用户 2026-10-27）
-        self.assertTrue(ui.install_decision(t, {"imprint": "", "rank": 0}, 1, True, "配置优先级更高")[0])
-        self.assertTrue(ui.install_decision(t, {"imprint": ui.OTHER, "rank": 0}, 1, True, "配置优先级更高")[0])
-        # 不比当前的目标装备好：不装
-        self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": 1}, 1, False, "配置优先级更低")[0])
+        # 槽位还没有目标刻印：目标装备装了会被之后的刻印装备顶掉，买的、白拿的都提炼（用户 2026-10-27 11:5x）
+        self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": 0}, 1, True, "配置优先级更高")[0])
+        self.assertFalse(ui.install_decision(t, {"imprint": ui.OTHER, "rank": 0}, 1, True, "配置优先级更高")[0])
+        # 带目标刻印的目标装备照装
+        self.assertTrue(ui.install_decision(t, {"imprint": ui.TARGET, "rank": 0}, 1, False, "配置优先级更低")[0])
 
     def test_event_target_equipment(self):
         names = [["欺骗暗影的匕首"], ["精灵王的金冠"], ["深绿桎梏", "深绿黑夜"]]

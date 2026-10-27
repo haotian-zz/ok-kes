@@ -50,5 +50,25 @@ class TestUniqueFlash(unittest.TestCase):
         self.assertEqual((cards, False), utils._drop_unique_if_copy_pending(task2, cards))
 
 
+
+class TestNeutralVariant(unittest.TestCase):
+    """用户 2026-10-27：存档里不允许任何中立卡。实录 02:33 神闪页随机选中漩涡「视作中立卡牌」的变体。"""
+    VORTEX = [{"name": "漩涡", "x": 0.27, "description": "对全体敌人造成伤害228%抽取1张中立卡牌淼视作中立卡牌"},
+              {"name": "漩涡", "x": 0.52, "description": "对全体敌人造成伤害228%每命中1个目标即可治愈100%"},
+              {"name": "漩涡", "x": 0.77, "description": "对全体敌人造成伤害228%1回合内不屈3"}]
+
+    def test_drop_neutral_variant_in_save_mode(self):
+        keep, dropped = utils._drop_neutral_variants(task(), self.VORTEX)
+        self.assertEqual(self.VORTEX[1:], keep)
+        self.assertEqual(self.VORTEX[:1], dropped)
+
+    def test_keep_all_outside_save_mode_or_all_neutral(self):
+        t = task()
+        t.chaos_mode = chaos_strategy.MODE_LEGACY
+        self.assertEqual((self.VORTEX, []), utils._drop_neutral_variants(t, self.VORTEX))
+        only = self.VORTEX[:1]
+        self.assertEqual((only, []), utils._drop_neutral_variants(task(), only))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -2918,8 +2918,7 @@ def handle_equipment(task: TriggerTask):
             if imprint_mode:
                 # 刷刻印：刻印优先于装备，三件目标装备都是传说，不管「一个主战员只装一件传说」
                 should_install_first, install_reason = utils_imprint.install_decision(
-                    task, new_equipment, slot, should_install_first, install_reason, current_name,
-                    purchase=is_purchase_page,
+                    task, new_equipment, slot, should_install_first, install_reason, current_name
                 )
             elif (
                 new_equipment["quality"] == "传说"
@@ -3404,6 +3403,23 @@ def _drop_unique_if_copy_pending(task: TriggerTask, cards):
         task.log_info("三个变体都带「唯一」，只能照常选")
         return cards, False
     return keep, True
+
+
+SAVE_MODES = (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EMPTY)
+
+
+def _drop_neutral_variants(task: TriggerTask, cards):
+    """存档模式不选描述带「中立」的闪光/神闪变体（「视作中立卡牌」，选了这张卡就算中立卡留在存档里）。
+    用户 2026-10-27：存档里不允许任何中立卡。实录 02:33 神闪页等不到「跳过」、按普通闪光随机选中了漩涡的这种变体，
+    那局通关存了档。返回 (可选的卡, 去掉的卡)；全是这种就不删。"""
+    if getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) not in SAVE_MODES:
+        return cards, []
+    keep = [c for c in cards if "中立" not in c.get("description", "")]
+    if not keep or len(keep) == len(cards):
+        return cards, []
+    dropped = [c for c in cards if c not in keep]
+    task.log_info(f"闪光变体：不选「视作中立卡牌」的「{dropped[0].get('name')}」变体（存档里不要中立卡）")
+    return keep, dropped
 
 
 def _record_copy(task: TriggerTask):
@@ -5502,6 +5518,7 @@ def handle_view_original(task: TriggerTask):
     task.node_status["flash_page_waits"] = 0
     _dump_card_page(task, "view_original")
     cards, dropped_unique = _drop_unique_if_copy_pending(task, cards)
+    cards, dropped_neutral = _drop_neutral_variants(task, cards)
 
     flash_priority = []
     for keyword in _get_card_list(task, '闪光优先级'):
@@ -5545,6 +5562,11 @@ def handle_view_original(task: TriggerTask):
     target_boxes, target_click_positions = find_target_card(task)
     if dropped_unique:
         target_boxes, target_click_positions = [], []     # 图钉钉的可能就是那张「唯一」的预设闪光
+    if dropped_neutral:
+        # 钉在「视作中立」那张上的图钉不跟（图钉和卡的 x 差不到 0.03，卡之间隔 0.25）
+        near = lambda pos: any(abs(pos[0] - c["x"]) < 0.1 for c in dropped_neutral)
+        target_click_positions = [pos for pos in target_click_positions if not near(pos)]
+        target_boxes = target_boxes[:len(target_click_positions)] if target_click_positions else []
     matched_meditation_cards = _matching_meditation_card_names(task, cards)
     if matched_meditation_cards:
         meditation_state = _member_deck_state(task)["冥想"]
@@ -6088,6 +6110,13 @@ def handle_card_assign(task: TriggerTask):
         task.log_info(f"卡牌「{card_name}」命中奖励优先级「{matched_card_name}」")
     else:
         task.log_info(f"卡牌「{card_name}」未命中奖励优先级")
+        if (not is_purchase_page and getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) in SAVE_MODES
+                and not chaos_strategy.memory_name(card_name)):
+            # 用户 2026-10-27：存档里不允许预设外的中立卡。精英战后的怪物卡（主宰者、恶灵杜拉汉）不点主战员，
+            # 交给卡牌奖励页点「跳过」+ 确认丢弃——这页底部的「跳过」贴着屏幕底边常 OCR 不到。
+            # 实录 08:37 / 10:49 先点了主战员（多记了一张中立牌），随后才被奖励页跳过丢弃
+            task.log_info("存档模式：预设外的卡不发给主战员，交给卡牌奖励页跳过丢弃")
+            return False
         if is_purchase_page:
             task.log_info("购买卡牌未命中奖励优先级，点击「取消」")
             task.click_box(cancel_box)
