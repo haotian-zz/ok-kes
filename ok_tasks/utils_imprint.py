@@ -504,7 +504,16 @@ def shop_refresh_ok(task, credit, price):
     return credit - price >= SHOP_RESERVE
 
 
-def rush_escape_reason(task):
+def _boss_next(ns):
+    """整层路线计划的下一步是首领。"""
+    plan = ns.get("full_route")
+    if not plan or plan.get("layer") != ns.get("pass_final_boss_count", 0):
+        return False
+    steps = plan.get("steps", [])
+    return plan.get("done", 0) < len(steps) and steps[plan["done"]].get("type") == "首领"
+
+
+def rush_escape_reason(task, boss_next=False):
     """刷刻印速刷要不要逃脱重开：第一层打完不到 2 个目标刻印（拿到混沌之识除外）；
     第二层首领打完不到 3 个（装着混沌之识的武器位不算，就是 2 个，用户 2026-10-27 混沌之识优先级高于刻印）。"""
     if not enabled(task) or cfg(task, SPEEDRUN_KEY) is not True:
@@ -516,6 +525,10 @@ def rush_escape_reason(task):
     n, need = target_imprint_count(task), required_imprints(task)
     if layer >= 2 and n < need:
         return f"第二层首领打完目标刻印只有 {n} 个（要 {need} 个）"
+    # 裁决之沼只有两层：第二层首领打完就结算（按钮是「离开」）、法典用掉，结算页来不及逃脱（实录 2026-10-27 03:27）。
+    # 所以第二层下一步是首领时就检查，不够就不打首领，逃脱保留法典。
+    if layer >= 1 and n < need and (boss_next or _boss_next(ns)):
+        return f"第二层首领前目标刻印只有 {n} 个（要 {need} 个），首领打完就结算、法典会用掉"
     if layer >= 1 and n < 2 and not ns.get("chaos_core_got"):
         return f"第一层打完目标刻印只有 {n} 个（要 2 个，章鱼哥掉混沌之识除外）"
     return None

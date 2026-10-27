@@ -249,6 +249,23 @@ class TestImprintDecision(unittest.TestCase):
         t.member_status["equipment"]["names"] = ["欺骗暗影的匕首", "", ""]
         self.assertEqual(3, ui.required_imprints(t))
 
+    def test_escape_before_layer2_boss(self):
+        """实录 2026-10-27 03:27：裁决之沼二层首领打完直接结算（离开），结算页来不及逃脱，法典用掉了。首领前就要逃。"""
+        t = imprint_task((ui.TARGET, ui.TARGET, ""))
+        t.config = {"刷刻印": True, "刷刻印速刷": True}
+        t.member_status["equipment"]["names"] = ["欺骗暗影的匕首", "不朽鳞片", ""]
+        t.node_status = {"pass_final_boss_count": 1,
+                         "full_route": {"layer": 1, "done": 3, "steps": [{"type": "事件"}] * 3 + [{"type": "首领"}]}}
+        self.assertIn("首领前", ui.rush_escape_reason(t))
+        t.node_status["full_route"]["done"] = 2                     # 下一步还不是首领
+        self.assertIsNone(ui.rush_escape_reason(t))
+        self.assertIn("首领前", ui.rush_escape_reason(t, boss_next=True))   # 没有路线计划、路线页只剩首领
+        t.member_status["equipment"]["imprints"] = [ui.TARGET] * 3
+        self.assertIsNone(ui.rush_escape_reason(t, boss_next=True))
+        t.member_status["equipment"]["imprints"] = [ui.TARGET, ui.TARGET, ""]
+        t.node_status["pass_final_boss_count"] = 0                   # 第一层首领前不管（第一层打完再看）
+        self.assertIsNone(ui.rush_escape_reason(t, boss_next=True))
+
     def test_pick_candidate_chaos_core_first(self):
         t = imprint_task()
         t.member_status["equipment"]["names"] = ["", "", ""]

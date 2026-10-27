@@ -4310,6 +4310,14 @@ def handle_route_selection(task: TriggerTask):
         task.sleep(2)
         return True
     if not nodes:
+        import utils_imprint
+        reason = utils_imprint.rush_escape_reason(task, boss_next=True)
+        if reason:
+            # 刷刻印：首领前目标刻印不够就不打（没有整层路线计划时走这里，有计划时 handle_rush_escape 先处理了）
+            task.log_info(f"刷刻印速刷：{reason}，不打首领，逃脱重开（法典保留）")
+            _move_and_click(task, 0.959, 0.051)
+            task.sleep(1)
+            return True
         task.log_info("检测到最终boss节点，点击进入")
         if hasattr(task, 'node_status'):
             task.node_status['reach_final_boss'] = True
