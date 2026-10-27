@@ -5579,7 +5579,7 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
                 task.log_info(f"章鱼哥速刷：本局拿到了「{got}」，不退出，继续打完")
         else:
             miss = "混沌之识" if core_only else "目标装备"
-            why = f"遇到了章鱼哥但没掉{miss}" if task.node_status.get('octopus_seen') else "第一层没遇到章鱼哥（赛内克图斯）"
+            why = f"遇到了章鱼哥但没掉{miss}" if task.node_status.get('octopus_seen') else "第一层整层没遇到章鱼哥"
             task.log_info(f"章鱼哥速刷：{why}，退出重进")
             _move_and_click(task, 0.959, 0.051)
             task.sleep(1)
