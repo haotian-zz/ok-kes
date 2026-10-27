@@ -122,6 +122,35 @@ class TestMergeNearCenter(unittest.TestCase):
         self.assertEqual("当前位置", next(n for n in info["nodes"] if n["col"] == 0)["type"])
 
 
+class TestLayerStartPin(unittest.TestCase):
+    def _build(self, seen):
+        import numpy as np
+        frames = [np.zeros((1080, 1920, 3), np.uint8)]
+        old = cm.detect_nodes
+        cm.detect_nodes = lambda frame: seen
+        try:
+            return cm.build_map(frames, [0.0])
+        finally:
+            cm.detect_nodes = old
+
+    @staticmethod
+    def _node(x, row, current=False, t="小怪"):
+        return {"x": x, "y": 300.0 + 100 * row, "row": row, "type": t, "shop": False, "current": current}
+
+    def test_pin_in_column_with_other_nodes_ignored(self):
+        # 2026-10-27 11:37 第二层开头：第一列 3 个小怪，最上面那个认出了图钉 → 当前位置是第一列之前的虚拟起点
+        info = self._build([self._node(500, 0, True), self._node(500, 2), self._node(500, 3), self._node(746, 1)])
+        cur = next(n for n in info["nodes"] if n["id"] == info["current"])
+        self.assertEqual(-1, cur["col"])
+        self.assertEqual(3, len(info["adjacency"][info["current"]]))
+        self.assertEqual(3, sum(1 for n in info["nodes"] if n["col"] == 0 and n["type"] == "小怪"))
+
+    def test_pin_alone_in_column_kept(self):
+        info = self._build([self._node(500, 2, True), self._node(746, 1), self._node(746, 3)])
+        cur = next(n for n in info["nodes"] if n["id"] == info["current"])
+        self.assertEqual((0, 2, "当前位置"), (cur["col"], cur["row"], cur["type"]))
+
+
 class TestMapOpen(unittest.TestCase):
     def test_zoom_button_tells_map_from_route_page(self):
         # 拖动后地图被关回路线页时要能认出来（2026-10-27 08:45 实录的路线页）

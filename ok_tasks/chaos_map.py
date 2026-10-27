@@ -239,8 +239,11 @@ def build_map(frames, offsets, line_threshold=0.75):
         merged = {k: n for k, n in merged.items() if n["px"] < boss_gx - 180 * s}
     if not merged:
         return {"nodes": [], "adjacency": {}, "current": None}
-    # 当前位置在打开地图时的第一帧里；有多个候选取最左边的
-    cur_key = min((k for k, n in merged.items() if n["current"]), default=None)
+    # 当前位置在打开地图时的第一帧里；有多个候选取最左边的。站上一个节点后同列别的节点都变灰（认不成节点），
+    # 所以同列还有别的有色节点的「图钉」是误认：刚进新一层时第一列顶上那个常被认出图钉（2026-10-27 03:11/04:16/
+    # 05:24/06:11/11:37 都是「列0:当前位置@0,小怪@2,小怪@3」这种，整层路线第 1 步对不上只好交给小地图）
+    cur_key = min((k for k, n in merged.items()
+                   if n["current"] and not any(o[0] == k[0] and o != k for o in merged)), default=None)
     min_col = cur_key[0] if cur_key else min(k[0] for k in merged)
     keys = sorted(k for k in merged if k[0] >= min_col)
     ids = {k: i for i, k in enumerate(keys)}
