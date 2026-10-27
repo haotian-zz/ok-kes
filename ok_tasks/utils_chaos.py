@@ -749,6 +749,18 @@ def handle_chaos_mask_engraving(task: TriggerTask):
     if not (confirm_box and _clean_match(confirm_box.name, "确认")):
         return False
 
+    mask_card = _get_config_value(task, '指定面具卡牌', "丢弃最多2张卡牌")
+    if not (mask_card.strip() if isinstance(mask_card, str) else mask_card):
+        # 不要面具卡牌（刷刻印 2026-10-27）：刻印也不给，直接跳过，免得默认点「确认」
+        task.log_info("指定面具卡牌配置为空，面具卡牌刻印直接跳过")
+        skip_box = find_text(task, r'跳过')
+        if skip_box:
+            task.click_box(skip_box)
+        else:
+            _move_and_click(task, 0.747, 0.932)
+        task.sleep(1)
+        return True
+
     specify_text = _get_config_value(task, '面具卡牌刻印', "自身攻击卡牌伤害总量提升30%")
     new_desc_region = (0.589, 0.601, 0.902, 0.762)
     slot_desc_region = (0.589, 0.336, 0.898, 0.487)
@@ -858,6 +870,18 @@ def handle_chaos_mask_engraving(task: TriggerTask):
     return False
 
 
+MASK_SKIP_POS = (0.762, 0.929)   # 国服「[面具]获得卡牌」页跳过是确认左边的 ▶| 图标，没有「跳过」字（实录 2026-10-27）
+
+
+def _click_mask_skip(task: TriggerTask):
+    skip_box = find_text(task, r'跳过')
+    if skip_box:
+        task.click_box(skip_box)
+    else:
+        _move_and_click(task, *MASK_SKIP_POS)
+    task.sleep(1)
+
+
 def handle_mask_card(task: TriggerTask):
     """面具获得卡牌页面: 根据0.507,0.090处的面具获得提示判断页面。
     检测0.120,0.228,0.945,0.418范围内是否有三个"人格面具"文本，
@@ -879,21 +903,14 @@ def handle_mask_card(task: TriggerTask):
     specify_text = specify_text.strip() if isinstance(specify_text, str) else ""
     if not specify_text:
         task.log_info("指定面具卡牌配置为空，直接点击跳过")
-        skip_box = find_text(task, r'跳过')
-        if skip_box:
-            task.click_box(skip_box)
-            task.sleep(0.5)
+        _click_mask_skip(task)
         return True
 
     cards = recognize_cards(task, page="人格面具卡牌获得页面")
     mask_cards = [card for card in cards if "人格面具" in card["name"]]
     if len(mask_cards) < 3:
         task.log_info("已选择过人格面具，点击跳过")
-        skip_box = find_text(task, r'跳过')
-        if skip_box:
-            task.click_box(skip_box)
-            task.sleep(0.5)
-            # _move_and_click(task, 0.654, 0.626)
+        _click_mask_skip(task)
         return True
 
     task.log_info("检测到3张人格面具卡牌")
@@ -967,11 +984,7 @@ def handle_mask_card(task: TriggerTask):
                 return True
 
     task.log_info("无刷新次数或无需刷新，点击跳过")
-    skip_box = find_text(task, r'跳过')
-    if skip_box:
-        task.click_box(skip_box)
-        task.sleep(0.5)
-        # _move_and_click(task, 0.654, 0.626)
+    _click_mask_skip(task)
     return True
 
 

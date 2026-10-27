@@ -182,5 +182,40 @@ class TestImprintDecision(unittest.TestCase):
         self.assertEqual(96, utils._parse_discounted_price("96"))
 
 
+
+class Box(SimpleNamespace):
+    def area(self):
+        return max(1, self.width * self.height)
+
+
+def ocr_box(x, y, name, w=0.06, h=0.03):
+    return Box(x=(x - w / 2) * 1920, y=(y - h / 2) * 1080, width=w * 1920, height=h * 1080, name=name)
+
+
+class TestMaskSkip(unittest.TestCase):
+    """国服「[面具]获得卡牌」页没有「跳过」字（只有 ▶| 图标），以前一直找字点不到，10 秒后画面卡住兜底点了卡（实录 2026-10-27）。"""
+
+    def _task(self, texts):
+        clicks = []
+        t = SimpleNamespace(width=1920, height=1080, all_texts=texts, config={"指定面具卡牌": ""},
+                            log_info=lambda *a, **k: None, sleep=lambda *a: None,
+                            move_relative=lambda *a: None, click=lambda x, y, **k: clicks.append((x, y)),
+                            click_box=lambda b, **k: clicks.append(b.name))
+        return t, clicks
+
+    def test_mask_card_page_clicks_skip_icon(self):
+        import utils_chaos
+        t, clicks = self._task([ocr_box(0.507, 0.090, "[面具]获得卡牌"), ocr_box(0.93, 0.93, "确认")])
+        self.assertTrue(utils_chaos.handle_mask_card(t))
+        self.assertEqual([utils_chaos.MASK_SKIP_POS], clicks)
+
+    def test_engraving_page_skips(self):
+        import utils_chaos
+        t, clicks = self._task([ocr_box(0.499, 0.126, "面具卡牌刻印"), ocr_box(0.921, 0.931, "确认"),
+                                ocr_box(0.747, 0.928, "跳过")])
+        self.assertTrue(utils_chaos.handle_chaos_mask_engraving(t))
+        self.assertEqual(["跳过"], clicks)
+
+
 if __name__ == "__main__":
     unittest.main()
