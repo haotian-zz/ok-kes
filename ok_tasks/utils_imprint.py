@@ -385,9 +385,13 @@ def target_imprint_count(task):
 
 
 def required_imprints(task):
-    """要凑几个目标刻印：3 个；装着混沌之识（且没继承到目标刻印）的槽位不算（混沌之识不会被换掉）。"""
-    imprints, names = slot_imprints(task), _slot_names(task)
-    return 3 - sum(1 for i in range(3) if is_top(names[i]) and imprints[i] != TARGET)
+    """要凑几个目标刻印：3 个；拿到混沌之识就是 2 个——混沌之识 + 两个目标刻印，不管混沌之识自己有没有继承到刻印
+    （跟 10-27 08:12 达标那份一个标准）。2026-10-27 15:54 第 14 局：混沌之识继承了 1 号位目标刻印 + 2 号位兜帽，
+    旧规则只在混沌之识槽位没刻印时才减一，还要 3 个，第二层首领前逃脱了。混沌之识掉落记录在 node_status 里一起落盘，
+    装备记录被误清时也认。"""
+    ns = getattr(task, "node_status", None)
+    got = isinstance(ns, dict) and ns.get("chaos_core_got")
+    return 2 if got or any(is_top(n) for n in _slot_names(task)) else 3
 
 
 def install_decision(task, new_eq, slot, better, why, current_name=""):
@@ -549,7 +553,7 @@ def _boss_next(ns):
 
 def rush_escape_reason(task, boss_next=False):
     """刷刻印速刷要不要逃脱重开：第一层打完不到 2 个目标刻印（拿到混沌之识除外）；
-    第二层首领打完不到 3 个（装着混沌之识的武器位不算，就是 2 个，用户 2026-10-27 混沌之识优先级高于刻印）。"""
+    第二层首领前不到 3 个（拿到混沌之识就是 2 个，用户 2026-10-27 混沌之识优先级高于刻印）。"""
     if not enabled(task) or cfg(task, SPEEDRUN_KEY) is not True:
         return None
     ns = getattr(task, "node_status", None)

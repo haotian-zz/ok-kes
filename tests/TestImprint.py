@@ -256,10 +256,14 @@ class TestImprintDecision(unittest.TestCase):
         t = imprint_task(("", "", ui.TARGET))
         t.member_status["equipment"]["names"] = ["混沌之识", "精灵王的金冠", "非典型立方体"]
         self.assertEqual(2, ui.required_imprints(t))
-        t.member_status["equipment"]["imprints"] = [ui.TARGET, "", ui.TARGET]   # 混沌之识继承到了目标刻印
-        self.assertEqual(3, ui.required_imprints(t))
+        # 混沌之识继承到了目标刻印也是 2 个（2026-10-27 15:54 第 14 局按 3 个算，逃脱了）
+        t.member_status["equipment"]["imprints"] = [ui.TARGET, ui.TARGET, ""]
+        self.assertEqual(2, ui.required_imprints(t))
         t.member_status["equipment"]["names"] = ["欺骗暗影的匕首", "", ""]
         self.assertEqual(3, ui.required_imprints(t))
+        # 装备记录被误清了，混沌之识掉落记录还在也认
+        t.node_status = {"chaos_core_got": "混沌之识"}
+        self.assertEqual(2, ui.required_imprints(t))
 
     def test_escape_before_layer2_boss(self):
         """实录 2026-10-27 03:27：裁决之沼二层首领打完直接结算（离开），结算页来不及逃脱，法典用掉了。首领前就要逃。"""
