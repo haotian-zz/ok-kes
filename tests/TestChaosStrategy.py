@@ -1272,3 +1272,19 @@ class TestOctopusAfterRunEnd(unittest.TestCase):
             self.assertTrue(t.node_status.get("octopus_seen"))
         finally:
             utils.chaos_trace.step = old
+
+
+class TestLobbyEnterGuard(unittest.TestCase):
+    def test_no_enter_without_check(self):
+        import time
+        import types
+        import chaos_strategy
+        import utils
+        texts = [types.SimpleNamespace(name="每周进展")]
+        t = types.SimpleNamespace(chaos_mode=chaos_strategy.MODE_TARGET, all_texts=texts)
+        self.assertTrue(utils._lobby_needs_check(t))
+        t._lobby_checked_at = time.time()
+        self.assertFalse(utils._lobby_needs_check(t))
+        # 不是入口页、不是刷存档：不拦
+        self.assertFalse(utils._lobby_needs_check(types.SimpleNamespace(chaos_mode=chaos_strategy.MODE_TARGET, all_texts=[])))
+        self.assertFalse(utils._lobby_needs_check(types.SimpleNamespace(chaos_mode="", all_texts=texts)))

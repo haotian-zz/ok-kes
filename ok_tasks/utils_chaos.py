@@ -279,6 +279,7 @@ def handle_season_chaos_initial_page(task: TriggerTask):
         return True
     if data_value_level >= required_level and mods_ok:
         task._observe_tries = {}
+        task._lobby_checked_at = time.time()
         if required_level:
             clear_run_state(task)
             task.chaos_pt_cap = data_value_level + dream

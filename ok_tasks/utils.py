@@ -3705,6 +3705,15 @@ def handle_copy(task: TriggerTask):
             return False
     return False
 
+def _lobby_needs_check(task):
+    """刷存档模式在卡厄思入口页（有「每周进展」）：5 秒内没通过难度/词条核对就不能进。"""
+    if getattr(task, "chaos_mode", "") not in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EMPTY):
+        return False
+    if not any("每周进展" in b.name for b in task.all_texts or []):
+        return False
+    return time.time() - getattr(task, "_lobby_checked_at", 0) > 5
+
+
 def handle_enter(task: TriggerTask):
     """通用"进入"按钮。"""
     enter_region = (0.017, 0.771, 0.996, 0.992)
@@ -3722,6 +3731,11 @@ def handle_enter(task: TriggerTask):
         ),
         None,
     )
+    if box and _lobby_needs_check(task):
+        # 刷存档：卡厄思入口页没核对过难度/词条就不点进入，等入口页处理先核对
+        # （2026-10-26 20:22 存档清理回来直接点了进入，没核对）
+        task.sleep(1)
+        return True
     if box:
         task.log_info("检测到进入按钮，点击进入")
         task.click_box(box)
