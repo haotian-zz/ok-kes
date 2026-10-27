@@ -577,7 +577,8 @@ def handle_rush_escape(task):
         return False
     if utils.handle_escape(task):
         return True
-    if not utils.is_route_selection_page(task):
+    if not utils.is_route_selection_page(task) or utils.route_click_settling(task):
+        # 刚点了首领前最后一个节点（比如商店）时路线页还会露几秒，这时「下一步是首领」还没到，别逃脱
         return False
     ns = task.node_status
     if time.time() - ns.get("imprint_escape_at", 0) < 5:

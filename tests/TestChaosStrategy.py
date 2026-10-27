@@ -1401,3 +1401,44 @@ class TestLobbyEnterGuard(unittest.TestCase):
         # 不是入口页、不是刷存档：不拦
         self.assertFalse(utils._lobby_needs_check(types.SimpleNamespace(chaos_mode=chaos_strategy.MODE_TARGET, all_texts=[])))
         self.assertFalse(utils._lobby_needs_check(types.SimpleNamespace(chaos_mode="", all_texts=texts)))
+
+
+class TestRouteClickSettle(unittest.TestCase):
+    """实录 2026-10-27 06:10：点精英后 4 秒路线页又露出来、节点已淡出，被当成「下一步结算」点了中间、整层路线多算一步。"""
+
+    def run_route(self, clicked_ago):
+        import time
+        import types
+        import utils
+        import utils_imprint
+        logs = []
+        ns = {"enter_new_node": False, "node_count": 8, "pass_final_boss_count": 1,
+              "route_clicked_at": time.time() - clicked_ago,
+              "full_route": {"layer": 1, "steps": [{"type": "精英"}, {"type": "首领"}], "done": 1}}
+        t = types.SimpleNamespace(node_status=ns, config={"刷刻印": True, "刷刻印速刷": True},
+                                  member_status={"equipment": {"imprints": ["", "", ""]}},
+                                  log_info=logs.append, sleep=lambda s: None,
+                                  move_relative=lambda x, y: None, click=lambda x, y: logs.append(("click", x, y)))
+        orig = utils.is_route_selection_page, utils.handle_escape
+        utils.is_route_selection_page = lambda task: True
+        utils.handle_escape = lambda task: False
+        try:
+            escaped = utils_imprint.handle_rush_escape(t)
+            handled = None if escaped else utils.handle_route_selection(t)
+        finally:
+            utils.is_route_selection_page, utils.handle_escape = orig
+        return escaped, handled, ns, logs
+
+    def test_wait_while_settling(self):
+        escaped, handled, ns, logs = self.run_route(clicked_ago=4)
+        self.assertFalse(escaped)              # 首领前商店刚点进去，不能当成「下一步首领」逃脱
+        self.assertTrue(handled)
+        self.assertFalse(ns["enter_new_node"])  # 不重复计节点
+        self.assertEqual(1, ns["full_route"]["done"])
+        self.assertIn("刚点过路线节点", logs[0])
+
+    def test_escape_after_settle(self):
+        escaped, _, _, logs = self.run_route(clicked_ago=30)
+        self.assertTrue(escaped)
+        self.assertIn("首领前", logs[0])
+        self.assertEqual(("click", 0.959, 0.051), logs[-1])

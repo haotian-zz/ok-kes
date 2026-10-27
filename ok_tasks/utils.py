@@ -4236,6 +4236,21 @@ def _track_layer_route(task: TriggerTask, map_info, route_plan):
     node_status["layer_route"] = {"layer": layer, "steps": steps, "done": 1}
 
 
+ROUTE_SETTLE_SECONDS = 10
+
+
+def route_click_settling(task):
+    """刚点过路线节点、画面还在过渡：点精英后路线页会再露几秒（2026-10-27 06:00 / 06:10 实录，点完 3～4 秒又认出路线页，
+    一次节点还在、一次节点已淡出），再处理就把整层路线下一步也算掉了，还会在过渡画面上点「中间节点」或重扫地图。"""
+    ns = getattr(task, "node_status", None)
+    return isinstance(ns, dict) and time.time() - ns.get("route_clicked_at", 0) < ROUTE_SETTLE_SECONDS
+
+
+def _mark_route_click(task):
+    if isinstance(getattr(task, "node_status", None), dict):
+        task.node_status["route_clicked_at"] = time.time()
+
+
 def is_route_selection_page(task: TriggerTask):
     position_box = task.box_of_screen(0.335, 0.568, 0.453, 0.751)
     position_feature = task.find_feature(feature_name="position", box=position_box)
@@ -4257,6 +4272,14 @@ def handle_route_selection(task: TriggerTask):
             task.node_status['pt_panel_read'] = False
             task.log_info(f"离开路线选择页面，当前节点计数: {task.node_status['node_count']}")
         return False
+
+    if route_click_settling(task):
+        ns = task.node_status
+        if ns.get("route_settle_logged") != ns["route_clicked_at"]:
+            ns["route_settle_logged"] = ns["route_clicked_at"]
+            task.log_info(f"刚点过路线节点 {time.time() - ns['route_clicked_at']:.1f} 秒，路线页又露出来（画面还在过渡），等它切走")
+        task.sleep(1)
+        return True
 
     # 是路线选择页面，标记进入新节点
     if hasattr(task, 'node_status'):
@@ -4313,6 +4336,7 @@ def handle_route_selection(task: TriggerTask):
         plan["done"] += 1
         task.log_info(f"路线页没识别到节点特征，整层路线下一步是{step['type']}（不是首领），点中间的节点进入")
         _move_and_click(task, 0.815, 0.492)
+        _mark_route_click(task)
         task.sleep(2)
         return True
     if not nodes:
@@ -4344,6 +4368,7 @@ def handle_route_selection(task: TriggerTask):
                 pass
 
         _move_and_click(task, 0.815, 0.492)
+        _mark_route_click(task)
         task.sleep(2)
         return True
 
@@ -4520,6 +4545,7 @@ def _click_route_node(task: TriggerTask, node):
         f"（特殊特征: {node['special_features']}，位置: {click_x:.3f}, {click_y:.3f}）"
     )
     _move_and_click(task, click_x, click_y)
+    _mark_route_click(task)
 
     task.sleep(2)
 
