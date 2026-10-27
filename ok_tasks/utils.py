@@ -2413,6 +2413,7 @@ _EQUIPMENT_QUALITY_RANKS = {"": 0, "普通": 1, "史诗": 2, "传说": 3}
 _EQUIPMENT_NORMAL_RGB = (61, 76, 138)
 _EQUIPMENT_EPIC_RGB = (160, 88, 69)
 _EQUIPMENT_EMPTY_RGB = (15, 15, 15)
+_EQUIPMENT_LEGENDARY_RGB = (135, 82, 164)
 _EQUIPMENT_RGB_TOLERANCE = 30
 
 
@@ -2574,13 +2575,17 @@ def _equipment_quality_at(task: TriggerTask, point, allow_empty=False):
     rgb = _pixel_rgb(task, point)
     if rgb is None:
         return None, None
-    if allow_empty and _rgb_is_close(rgb, _EQUIPMENT_EMPTY_RGB):
+    # 空槽是发暗、没什么颜色的灰（背景透出来，实测 (24,42,46)/(57,61,70) 都有）
+    if allow_empty and (_rgb_is_close(rgb, _EQUIPMENT_EMPTY_RGB) or (max(rgb) <= 90 and max(rgb) - min(rgb) <= 30)):
         return "", rgb
     if _rgb_is_close(rgb, _EQUIPMENT_NORMAL_RGB):
         return "普通", rgb
     if _rgb_is_close(rgb, _EQUIPMENT_EPIC_RGB):
         return "史诗", rgb
-    return "传说", rgb
+    # 传说也要对上紫色；以前其他颜色一律当传说，空槽/转场画面被认成传说（实录 2026-10-27 03:04 空的 3 号位）
+    if _rgb_is_close(rgb, _EQUIPMENT_LEGENDARY_RGB):
+        return "传说", rgb
+    return None, rgb
 
 
 def _member_equipment_qualities(task: TriggerTask, level_box):

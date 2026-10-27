@@ -865,6 +865,28 @@ class TestDiceReroll(unittest.TestCase):
         self.assertEqual([(0.665, 0.899)], clicks)
 
 
+class TestEquipmentQualityColor(unittest.TestCase):
+    """装备品质按颜色认（实机 RGB）：空槽的暗灰色以前被当成传说。"""
+
+    def _quality(self, rgb, allow_empty=True):
+        import numpy as np
+        import utils
+        frame = np.zeros((1080, 1920, 3), np.uint8)
+        frame[540, 960] = rgb[::-1]                          # BGR
+        t = SimpleNamespace(frame=frame, width=1920, height=1080)
+        return utils._equipment_quality_at(t, (0.5, 0.5), allow_empty=allow_empty)[0]
+
+    def test_real_colors(self):
+        for rgb, want in [((61, 75, 136), "普通"), ((72, 89, 160), "普通"), ((161, 89, 69), "史诗"),
+                          ((165, 110, 86), "史诗"), ((135, 82, 164), "传说"), ((136, 96, 184), "传说"),
+                          ((20, 20, 21), ""), ((24, 42, 46), ""), ((57, 61, 70), ""), ((55, 62, 81), "")]:
+            self.assertEqual(want, self._quality(rgb), rgb)
+
+    def test_candidate_unknown_not_legendary(self):
+        self.assertIsNone(self._quality((33, 43, 52), allow_empty=False))
+        self.assertEqual("传说", self._quality((136, 96, 184), allow_empty=False))
+
+
 class TestSaveCleanup(unittest.TestCase):
     def test_keep_reason(self):
         import save_cleanup as sc
