@@ -307,6 +307,12 @@ class ChaosMode(TriggerTask):
         # 卡厄思难度选择页（有「每周进展」）也在局外：上一轮按轮数停下后就停在这里（2026-10-24 实机），
         # 直接点进入会跳过零式升级和难度选择，所以同样先回主页
         # 结算后的奖励页也有「每周进展」，但带「确认」按钮，要交给页面流程点确认、走存储数据收集（2026-10-25 实录被当成难度页按了 ESC）
+        # 第一帧正好在转场（整帧没字）会被当成主页、在局内按 ESC（实录 2026-10-27 03:30 中途重启）：多看几帧再判断
+        for _ in range(3):
+            if self.all_texts:
+                break
+            self.sleep(1)
+            utils_daily.refresh(self)
         at_lobby = self._at_lobby()
         if not (utils_daily.is_home(self) or not self.all_texts or at_lobby):
             if not utils_chaos._at_chaos_initial_page(self):
