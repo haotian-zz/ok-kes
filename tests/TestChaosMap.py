@@ -107,6 +107,39 @@ class TestDragHeight(unittest.TestCase):
         y = cm.DRAG_Y * cm.REF_H
         self.assertTrue(all(abs(y - r) > 60 for r in cm.ROW_Y))
 
+    def test_drag_between_columns(self):
+        # 2026-10-27 08:15 实录：在 x=0.6 按下拖，按到那列节点、地图关掉去预览；按下点要落在两列中间
+        frame = cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))
+        w, pitch = frame.shape[1], cm.COL_PITCH * cm._scale(frame)
+        nodes = cm.detect_nodes(frame)
+        self.assertTrue(nodes)
+        for near in (0.3, 0.6):
+            x = cm.gap_x(frame, near) * w
+            self.assertLessEqual(abs(x - near * w), pitch / 2 + 1)
+            self.assertTrue(all(abs(x - n["x"]) >= 0.4 * pitch for n in nodes), (near, x))
+        self.assertTrue(any(abs(0.6 * w - n["x"]) < 0.3 * pitch for n in nodes))   # 原来的按下点贴着节点列
+
+    def test_scan_retries_transition_first_frame(self):
+        # 第一帧是转场画面、拖一下就对不上：拖回最左端重拍，不放弃整次扫描
+        import numpy as np
+        calls = {"swipes": 0, "logs": []}
+        good = cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))
+        wipe = np.random.default_rng(0).integers(0, 255, good.shape, dtype=np.uint8)
+        seq = iter([wipe] * 4 + [good] * 200)
+
+        class T:
+            frame = None
+            def send_key(self, k): pass
+            def sleep(self, s): pass
+            def log_info(self, msg, *a, **k): calls["logs"].append(msg)
+            def next_frame(self): self.frame = next(seq)
+            def swipe_relative(self, *a, **k): calls["swipes"] += 1
+
+        cm.scan_layer(T(), max_frames=3)
+        self.assertTrue(any("拖回最左端重拍" in m for m in calls["logs"]))
+        self.assertFalse(any("放弃这次扫描" in m for m in calls["logs"]))
+        self.assertEqual(4, calls["swipes"])                 # 拖到左端 1 + 对不上 1 + 重拖到左端 1 + 拖不动 1
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -295,6 +295,32 @@ def _grab(task):
     return task.frame.copy()
 
 
+def gap_x(frame, near):
+    """离 near（屏宽比例）最近的两列节点正中间的 x（比例）。拖地图按下的点要落在列与列之间：
+    只避开行还不够，2026-10-27 08:15 按在 0.6 那列节点的光晕下面，照样被当成点节点、关了地图去预览。"""
+    s = _scale(frame)
+    phase = column_phase(cv2.cvtColor(frame, cv2.COLOR_BGR2HSV), s)
+    if phase is None:
+        return near
+    pitch, w = COL_PITCH * s, frame.shape[1]
+    k = round((near * w - phase - pitch / 2) / pitch)
+    return (phase + pitch / 2 + k * pitch) / w
+
+
+def _drag_to_left(task):
+    """地图会记住上次的滚动位置：往右拖到拖不动（最左端），返回停下后的帧。"""
+    frame = _settle(task)
+    for _ in range(6):
+        x0 = gap_x(frame, 0.3)
+        task.swipe_relative(x0, DRAG_Y, x0 + 0.4, DRAG_Y, duration=0.8)
+        cur = _settle(task)
+        moved = frame_shift(frame, cur)[0]
+        frame = cur
+        if abs(moved) < 10 * _scale(cur):
+            break
+    return frame
+
+
 def _settle(task, timeout=6.0):
     """等地图停下（打开动画、拖动惯性）：连续两帧平移小于 3 像素。返回最后一帧。"""
     prev = _grab(task)
@@ -316,20 +342,19 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
     """
     task.send_key("m")
     task.sleep(1.5)
-    frame = _settle(task)
-    for _ in range(6):
-        task.swipe_relative(0.3, DRAG_Y, 0.7, DRAG_Y, duration=0.8)
-        cur = _settle(task)
-        moved = frame_shift(frame, cur)[0]
-        frame = cur
-        if abs(moved) < 10 * _scale(cur):
-            break
-    frames, offsets, total = [frame], [0.0], 0.0
-    ok = True
-    for _ in range(max_frames - 1):
-        task.swipe_relative(0.6, DRAG_Y, 0.6 - drag, DRAG_Y, duration=1.0)
+    frames, offsets, total = [_drag_to_left(task)], [0.0], 0.0
+    ok, retried = True, False
+    while len(frames) < max_frames:
+        x0 = gap_x(frames[-1], 0.6)
+        task.swipe_relative(x0, DRAG_Y, x0 - drag, DRAG_Y, duration=1.0)
         cur = _settle(task)
         dx, score = strip_shift(frames[-1], cur)
+        if score < 0.6 and len(frames) == 1 and not retried:
+            # 第一帧可能拍到了打开地图的像素擦除转场（2026-10-27 08:15 刚回路线页就扫描）：拖回最左端重拍一次
+            task.log_info(f"全屏地图第一帧对不上（匹配分 {score:.2f}），可能拍到了打开动画，拖回最左端重拍")
+            retried = True
+            frames = [_drag_to_left(task)]
+            continue
         if score < 0.6:
             task.log_info(f"全屏地图拖动后对不上上一帧（匹配分 {score:.2f}，平移可能超过半屏），放弃这次扫描")
             # 2026-10-27 06:33 起层开头频繁失败，原因还没看到：前后两帧存进流程追踪
