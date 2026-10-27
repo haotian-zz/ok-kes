@@ -204,6 +204,17 @@ class TestDialogueLine(unittest.TestCase):
         task = SimpleNamespace(width=W, height=H, all_texts=[box("趁着炮塔和异形分神之际，众人迅速离开了战斗区域。", 0.5, 0.85)])
         self.assertIsNotNone(_dialogue_line(task))
 
+    def test_comic_bubble_dialogue(self):
+        # 实录 2026-10-27 06:42 漫画格剧情，气泡在左边，Space 提示在气泡右下角
+        texts = [box("2362 /2508", 0.211, 0.039), box("662", 0.732, 0.050), box("Ctrl", 0.879, 0.080),
+                 box("Q", 0.959, 0.080), box("等", 0.098, 0.606), box("说说，", 0.110, 0.651),
+                 box("等一", 0.143, 0.606), box("一下，", 0.173, 0.607), box("你想要什么！", 0.194, 0.654),
+                 box("Space", 0.281, 0.686)]
+        line = _dialogue_line(SimpleNamespace(width=W, height=H, all_texts=texts))
+        self.assertEqual("你想要什么！", line.name)
+        # 没有 Space 提示就不认
+        self.assertIsNone(_dialogue_line(SimpleNamespace(width=W, height=H, all_texts=texts[:-1])))
+
     def test_confirm_page_is_not_dialogue(self):
         task = SimpleNamespace(width=W, height=H, all_texts=[box("请确认是否可投入主战员。", 0.5, 0.82), box("确认", 0.6, 0.9)])
         self.assertIsNone(_dialogue_line(task))

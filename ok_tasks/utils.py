@@ -2101,6 +2101,8 @@ def handle_auto_chat(task: TriggerTask):
 def _dialogue_line(task: TriggerTask):
     """剧情对白页面: 画面文字很少，且底部中间有一行较长的台词。"""
     texts = getattr(task, "all_texts", None) or []
+    center = lambda b: ((b.x + b.width / 2) / task.width, (b.y + b.height / 2) / task.height)
+    space = next((b for b in texts if b.name.strip() == "Space" and center(b)[1] > 0.12), None)
     # 卡厄思局内顶栏（血量、信用点、Ctrl/Q 按键提示）和右下角 Space 提示不算页面文字
     texts = [
         b for b in texts
@@ -2113,10 +2115,17 @@ def _dialogue_line(task: TriggerTask):
     if any(re.fullmatch(r"确认|取消|继续|下一步|选择|进入|离开|跳过", b.name.strip()) for b in texts):
         return None
     for box in texts:
-        cx = (box.x + box.width / 2) / task.width
-        cy = (box.y + box.height / 2) / task.height
+        cx, cy = center(box)
         if 0.78 <= cy <= 0.92 and 0.25 <= cx <= 0.75 and len(box.name) >= 6:
             return box
+    # 漫画格剧情：气泡在画面任意位置，气泡右下角有 Space 提示（2026-10-27 06:42 实录气泡在左边
+    # 「等、等一下，说说，你想要什么！」，没认出来卡了 2 分多钟）
+    if space:
+        sx, sy = center(space)
+        near = [b for b in texts if sx - 0.35 <= center(b)[0] <= sx and sy - 0.2 <= center(b)[1] <= sy + 0.02
+                and re.search(r"[\u4e00-\u9fff]", b.name)]
+        if sum(len(b.name) for b in near) >= 4:
+            return max(near, key=lambda b: len(b.name))
     return None
 
 
