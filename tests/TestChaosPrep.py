@@ -140,6 +140,14 @@ class TestAtLobby(unittest.TestCase):
         self.assertFalse(ChaosMode._at_lobby(page("每周进展", "8000/ 8000", "获得奖励")))
         self.assertFalse(ChaosMode._at_lobby(page("每周进展", "进入", "◎确认")))
 
+    def test_out_of_run_pages(self):
+        from types import SimpleNamespace
+        from ChaosMode import ChaosMode
+        page = lambda *names: SimpleNamespace(all_texts=[SimpleNamespace(name=n) for n in names])
+        self.assertEqual("存储数据页", ChaosMode._out_of_run_page(page("存储数据", "编辑存储数据", "批量分解", "收藏自定义", "装备")))
+        self.assertEqual("每日礼物弹窗", ChaosMode._out_of_run_page(page("死灵之书每日礼物", "剩余天数：25天", "点击以领取补给")))
+        self.assertIsNone(ChaosMode._out_of_run_page(page("事件", "收起有用的东西", "点击屏幕可关闭")))
+
 
 class TestCardNameOneCharOff(unittest.TestCase):
     def test_one_char_ocr_error(self):

@@ -297,6 +297,17 @@ class ChaosMode(TriggerTask):
         return (any("每周进展" in t for t in texts) and "进入" in texts
                 and not any("确认" in t or "下一步" in t for t in texts))
 
+    @staticmethod
+    def _out_of_run_page(task):
+        """启动第一帧停在这些局外页，要先回主页再进卡厄思（否则会被当成局内页）。"""
+        # 用户看完存档停在「存储数据」页就启动了脚本，这页被当成局内事件页连点（2026-10-27 12:02 实录）
+        if utils.at_save_library(task):
+            return "存储数据页"
+        # 跨过每日刷新回到主页时先弹「死灵之书每日礼物 / 点击以领取补给」（2026-10-27 12:19 实录），go_home 会点掉
+        if utils_daily.has_text(task, r"^点击以领取"):
+            return "每日礼物弹窗"
+        return None
+
     def _enter_chaos_from_home(self):
         """选了玩法且停在主页时自己进卡厄思：探索度 → 卡厄思具象探索度最低的区域；刷存档 → 零式系统。失败两次就停下。"""
         mode = getattr(self, 'chaos_mode', chaos_strategy.MODE_LEGACY)
@@ -314,16 +325,17 @@ class ChaosMode(TriggerTask):
             self.sleep(1)
             utils_daily.refresh(self)
         at_lobby = self._at_lobby()
-        # 用户看完存档停在「存储数据」页就启动了脚本，这页被当成局内事件页连点（2026-10-27 12:02 实录）
-        at_library = utils.at_save_library(self)
-        if not (utils_daily.is_home(self) or not self.all_texts or at_lobby or at_library):
+        out_page = self._out_of_run_page(self)
+        if not (utils_daily.is_home(self) or not self.all_texts or at_lobby or out_page):
             if not utils_chaos._at_chaos_initial_page(self):
                 utils.restore_run_state(self)     # 停在局内：读回 PT 账（中途重启不丢）
             return False
-        if at_lobby or at_library:
+        if out_page:
+            self.log_info(f"停在{out_page}（局外），先回主页再按玩法准备")
+        if at_lobby or out_page == "存储数据页":
             # 难度页 → ESC → 活动页 → ESC → 主页；切页有动画，每次 ESC 后等够再判断，免得在主页多按一次 ESC
-            page = "存储数据页" if at_library else "卡厄思难度选择页"
-            self.log_info(f"停在{page}（局外），按 ESC 回主页再按玩法准备")
+            if at_lobby:
+                self.log_info("停在卡厄思难度选择页（局外），按 ESC 回主页再按玩法准备")
             for _ in range(4):
                 if utils_daily.is_home(self):
                     break
