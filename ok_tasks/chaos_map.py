@@ -400,12 +400,14 @@ def route_page(frame):
     return _button_score(frame, ZOOM_IN_REGION, "ref_zoom_in") >= 0.7
 
 
-def _back_to_route_page(task, timeout=8):
+def _back_to_route_page(task, timeout=8, every=2):
     """拖动把全屏地图关掉以后，路线页停在不带顶栏、小地图的节点大图状态，等多久都不恢复（2026-10-27 09:33 等了 8 秒），
-    这时按 M 也不响应；点一下空白处才回到正常路线页（同一次 close_map 点空白处后 2 秒就认出来了）。"""
-    task.click(*EMPTY_SPOT)
+    这时按 M 也不响应；点一下空白处才回到正常路线页（同一次 close_map 点空白处后 2 秒就认出来了）。
+    没回来就每 every 秒再点一次：一下可能落在关地图的转场里被吞掉（11:31 只点一次 8 秒没回来，close_map 再点 2 秒就回来了）。"""
     waited = 0.0
     while waited < timeout:
+        if waited % every == 0:
+            task.click(*EMPTY_SPOT)
         task.sleep(0.5)
         waited += 0.5
         if route_page(_grab(task)):

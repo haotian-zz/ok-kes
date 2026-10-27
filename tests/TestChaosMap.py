@@ -240,7 +240,7 @@ class TestDragHeight(unittest.TestCase):
         self.assertNotIn(("up",), ev)
         self.assertTrue(all(e[3] == cm.MK_LBUTTON for e in ev[2:-1]))
 
-    def _closing_task(self, m_reopens):
+    def _closing_task(self, m_reopens, swallow=0):
         """拍到第 2 帧后再拖，地图关回路线页；m_reopens=False 时按 M 也不响应（打不开）。"""
         import numpy as np
         good = cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))
@@ -250,7 +250,8 @@ class TestDragHeight(unittest.TestCase):
         views = [good, moved]
         route = cv2.resize(cv2.imread(os.path.join(FIX, "route_page.jpg")), (good.shape[1], good.shape[0]))
         preview = np.random.default_rng(1).integers(0, 255, good.shape, dtype=np.uint8)   # 不带顶栏的节点大图
-        st = {"open": False, "pos": 0, "swipes": 0, "keys": 0, "logs": [], "preview": False, "clicks": 0}
+        st = {"open": False, "pos": 0, "swipes": 0, "keys": 0, "logs": [], "preview": False, "clicks": 0,
+              "swallow": swallow}
 
         class T:
             frame = None
@@ -266,6 +267,9 @@ class TestDragHeight(unittest.TestCase):
                 self.frame = views[st["pos"]] if st["open"] else preview if st["preview"] else route
             def click(self, x, y):
                 st["clicks"] += 1
+                if st["preview"] and st["swallow"]:      # 落在关地图转场里的点击被吞掉
+                    st["swallow"] -= 1
+                    return
                 st["preview"] = False
             def swipe_relative(self, *a, **k):
                 st["swipes"] += 1               # 第 1 下拖到左端（已经在左端），第 2 下拍到第 2 帧，第 3 下关了地图
@@ -286,6 +290,14 @@ class TestDragHeight(unittest.TestCase):
         self.assertEqual(3, st["keys"])                      # 打开、重开、扫完关掉
         self.assertEqual(1, st["clicks"])                    # 节点大图状态先点空白处才按 M（2026-10-27 09:33）
         self.assertFalse(st["open"])
+
+    def test_reopen_clicks_again_when_first_click_swallowed(self):
+        # 2026-10-27 11:31：点一次空白处没回来、等满 8 秒放弃；每 2 秒再点一次
+        t, st = self._closing_task(m_reopens=True, swallow=1)
+        cm.scan_layer(t, max_frames=3)
+        self.assertTrue(any("按 M 重新打开" in m for m in st["logs"]))
+        self.assertFalse(any("放弃这次扫描" in m for m in st["logs"]))
+        self.assertEqual(2, st["clicks"])
 
     def test_scan_gives_up_without_opening_map_on_route_page(self):
         t, st = self._closing_task(m_reopens=False)
