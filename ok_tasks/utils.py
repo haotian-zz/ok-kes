@@ -4316,15 +4316,32 @@ def handle_route_selection(task: TriggerTask):
         "event": "事件",
         "settlement": "结算",
     }
-    nodes = []
-    for feature_name, node_type in node_feature_types.items():
-        for feature_box in task.find_feature(feature_name=feature_name, box=route_box):
-            nodes.append({
-                "feature_name": feature_name,
-                "node_type": node_type,
-                "box": feature_box,
-                "special_features": [],
-            })
+
+    def detect_nodes():
+        found = []
+        for feature_name, node_type in node_feature_types.items():
+            for feature_box in task.find_feature(feature_name=feature_name, box=route_box):
+                found.append({
+                    "feature_name": feature_name,
+                    "node_type": node_type,
+                    "box": feature_box,
+                    "special_features": [],
+                })
+        return found
+
+    # 认不出节点先再看两次再当成首领/点中间：读完主战员面板、关小地图后节点偶尔 1～3 秒认不出
+    # （2026-10-27 04:48 盲点中间走错了路，06:27 也一样），没有整层路线计划时还会被当成首领（刷刻印第二层就提前逃脱了）
+    nodes = detect_nodes()
+    for retry in range(2):
+        if nodes or not is_route_selection_page(task):
+            break
+        task.sleep(1)
+        nodes = detect_nodes()
+        if nodes:
+            task.log_info(f"路线页第 {retry + 2} 次识别才认出节点：{[n['node_type'] for n in nodes]}")
+    if not nodes and not is_route_selection_page(task):
+        task.node_status['enter_new_node'] = False      # 没点就离开了路线页，不算进了新节点
+        return False
 
     # 找不到任何普通节点类型特征时，当前路线节点即为boss。
     # 例外：整层路线计划下一步不是首领（2026-10-24 实录：活动卡厄思两个橙色旗子的「结算」航点认不出，被当成首领，

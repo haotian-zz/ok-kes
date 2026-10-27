@@ -1442,3 +1442,41 @@ class TestRouteClickSettle(unittest.TestCase):
         self.assertTrue(escaped)
         self.assertIn("首领前", logs[0])
         self.assertEqual(("click", 0.959, 0.051), logs[-1])
+
+
+class TestRouteNodeRetry(unittest.TestCase):
+    """实录 2026-10-27 04:48 / 06:27：读完主战员面板后节点一时认不出，直接盲点中间（04:48 走错了路）。"""
+
+    def run_route(self, pages):
+        import types
+        import utils
+        logs, finds = [], []
+        ns = {"enter_new_node": False, "node_count": 3, "pass_final_boss_count": 0, "pt_panel_read": True,
+              "full_route": {"layer": 0, "steps": [{"type": "小怪"}, {"type": "精英"}, {"type": "首领"}], "done": 1}}
+        t = types.SimpleNamespace(node_status=ns, config={}, log_info=logs.append, sleep=lambda s: None,
+                                  width=1920, height=1080, box_of_screen=lambda *a: None,
+                                  find_feature=lambda **k: finds.append(k["feature_name"]) or [])
+        page = iter(pages)
+        orig = utils.is_route_selection_page, utils._move_and_click
+        utils.is_route_selection_page = lambda task: next(page, pages[-1])
+        utils._move_and_click = lambda task, x, y: logs.append(("click", x, y))
+        try:
+            handled = utils.handle_route_selection(t)
+        finally:
+            utils.is_route_selection_page, utils._move_and_click = orig
+        return handled, ns, logs, finds
+
+    def test_retry_then_fallback(self):
+        handled, ns, logs, finds = self.run_route([True])
+        self.assertTrue(handled)
+        self.assertEqual(15, len(finds))                     # 5 种节点特征 × 3 次
+        self.assertIn("点中间的节点进入", logs[-2])
+        self.assertEqual(("click", 0.815, 0.492), logs[-1])
+        self.assertEqual(2, ns["full_route"]["done"])
+
+    def test_page_left_during_retry(self):
+        handled, ns, logs, finds = self.run_route([True, True, False])
+        self.assertFalse(handled)
+        self.assertFalse(ns["enter_new_node"])
+        self.assertEqual(1, ns["full_route"]["done"])
+        self.assertNotIn(("click", 0.815, 0.492), logs)
