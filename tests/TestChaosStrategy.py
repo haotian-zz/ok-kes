@@ -1247,3 +1247,24 @@ class TestSelectDifficultySim(unittest.TestCase):
         import utils_chaos_prep as prep
         for top in (0.2, 0.1, 0.0, -0.2, 0.2 - 9 * prep.DIFF_PITCH + 0.5):
             self.assertEqual(self._run(top), 8, top)
+
+
+class TestOctopusAfterRunEnd(unittest.TestCase):
+    def test_no_note_after_result(self):
+        import types
+        import utils
+        box = types.SimpleNamespace(name="怪异之壳")
+        t = types.SimpleNamespace(node_status={}, all_texts=[box], frame=None,
+                                  log_info=lambda *a, **k: None)
+        old = utils.chaos_trace.step
+        utils.chaos_trace.step = lambda *a, **k: None
+        try:
+            t._run_ended = True
+            utils.note_octopus(t)
+            self.assertNotIn("octopus_seen", t.node_status)
+            # 回到局外难度页后恢复识别
+            utils.clear_octopus_seen(t)
+            utils.note_octopus(t)
+            self.assertTrue(t.node_status.get("octopus_seen"))
+        finally:
+            utils.chaos_trace.step = old

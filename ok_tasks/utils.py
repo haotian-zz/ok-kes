@@ -5404,6 +5404,8 @@ def handle_expedition_result(task: TriggerTask):
         return False
 
     task.log_info("检测到探险结果页面")
+    # 本局已结束：之后的结算/存档页会列出战利品（怪异之壳等），别当成遇到章鱼哥，回到局外难度页再恢复（2026-10-26 用户要修）
+    task._run_ended = True
     success_before = (getattr(task, "node_status", None) or {}).get("success_rounds", 0)
     complete_box = find_box_at_point(task, 0.928, 0.122)
     failed_box = find_box_at_point(task, 0.296, 0.719)
@@ -5481,7 +5483,7 @@ def octopus_drop_names():
 def note_octopus(task: TriggerTask):
     """每帧看画面文字里有没有章鱼哥；看到就记下（整局有效），第一次存一张截图方便校准识别。"""
     ns = getattr(task, 'node_status', None)
-    if not isinstance(ns, dict) or ns.get('octopus_seen'):
+    if not isinstance(ns, dict) or ns.get('octopus_seen') or getattr(task, '_run_ended', False):
         return
     hit = next((b.name for b in task.all_texts or []
                 if any(n in b.name for n in OCTOPUS_NAMES + octopus_drop_names()) or OCTOPUS_BREAK_IN.match(b.name)), None)
@@ -5492,6 +5494,7 @@ def note_octopus(task: TriggerTask):
 
 
 def clear_octopus_seen(task: TriggerTask):
+    task._run_ended = False
     ns = getattr(task, 'node_status', None)
     if isinstance(ns, dict) and ns.pop('octopus_seen', None):
         ns.pop('octopus_escape_at', None)
