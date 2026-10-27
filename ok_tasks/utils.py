@@ -5935,6 +5935,9 @@ def restore_run_state(task: TriggerTask):
     if isinstance(data.get("equipment"), dict):
         task.member_status["equipment"] = data["equipment"]
     task._run_state_saved = None
+    # 「进入商店」标记只在路线页置 True：节点中途重启后休息点带的商店会被跳过（2026-10-27 07:23 实录）
+    if _get_config_value(task, '进入商店', False):
+        task.node_status['shop'] = True
     task.log_info(f"启动时在局内，读回落盘的局内状态：PT 上限 {task.chaos_pt_cap}，{data.get('ns')}")
     return True
 

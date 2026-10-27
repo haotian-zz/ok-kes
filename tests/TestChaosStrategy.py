@@ -1503,3 +1503,27 @@ class TestSaveTargetMemberBackoff(unittest.TestCase):
         finally:
             utils_chaos._get_current_hp_percent, utils_chaos._move_and_click = orig
         self.assertEqual(4, len(clicks))
+
+
+class TestRestoreShopFlag(unittest.TestCase):
+    """实录 2026-10-27 07:23：休息点（带商店）中途重启，新进程 shop=False，商店没进。"""
+
+    def test_restore_sets_shop(self):
+        import json
+        import os
+        import tempfile
+        import types
+        import utils
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "state.json")
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({"cap": 180, "ns": {"pass_final_boss_count": 0}}, f)
+            orig = utils.RUN_STATE_FILE
+            utils.RUN_STATE_FILE = path
+            try:
+                t = types.SimpleNamespace(node_status={"shop": False}, member_status={}, config={"进入商店": True},
+                                          log_info=lambda *a: None)
+                self.assertTrue(utils.restore_run_state(t))
+                self.assertTrue(t.node_status["shop"])
+            finally:
+                utils.RUN_STATE_FILE = orig
