@@ -3563,10 +3563,42 @@ def handle_convert_card(task: TriggerTask):
     return False
 
 
+DICE_REROLL_MAX = 3                       # 同一个骰子最多再滚几次
+DICE_REROLL_COST = (0.38, 0.86, 0.49, 0.94)    # 「再次滚动」按钮上的消耗
+DICE_POINTS = (0.85, 0.06, 0.99, 0.14)         # 右上角骰子资源「30/30」
+
+
+def _dice_reroll(task: TriggerTask):
+    """失败页「再次滚动」：右上角资源够消耗、这个骰子重投没超过上限就再滚（用户 2026-10-27：骰子失败了可以重投）。
+    返回 None 表示不重投，否则返回说明。不点资源旁边的「+」。"""
+    box = next((b for b in task.all_texts if _clean_match(b.name, "再次滚动")), None)
+    if not box:
+        return None
+    cost = re.search(r"\d+", _get_region_text(task, DICE_REROLL_COST))
+    points = re.search(r"(\d+)\s*/\s*\d+", _get_region_text(task, DICE_POINTS))
+    if not cost or not points or int(points.group(1)) < int(cost.group()):
+        return None
+    ns = getattr(task, "node_status", None) or {}
+    node = ns.get("node_count", 0)
+    done = getattr(task, "_dice_rerolls", (None, 0))
+    used = done[1] if done[0] == node else 0
+    if used >= DICE_REROLL_MAX:
+        return None
+    task._dice_rerolls = (node, used + 1)
+    return f"第 {used + 1} 次重投，花 {cost.group()}（剩 {points.group(1)}）"
+
+
 def handle_negotiation(task: TriggerTask):
-    """谈判失败页面: 点击下一步跳过。"""
+    """掷骰子失败页面: 能重投就点「再次滚动」，不然点下一步跳过。"""
     title = find_box_at_point(task, 0.498, 0.683)
     if title and "失败" in title.name:
+        why = _dice_reroll(task)
+        if why:
+            task.log_info(f"掷骰子失败，再次滚动：{why}")
+            box = next(b for b in task.all_texts if _clean_match(b.name, "再次滚动"))
+            _move_and_click(task, (box.x + box.width / 2) / task.width, (box.y + box.height / 2) / task.height)
+            task.sleep(1)
+            return True
         task.log_info("检测到掷骰子失败，跳过掷骰子")
         _move_and_click(task, 0.665, 0.899)
         return True

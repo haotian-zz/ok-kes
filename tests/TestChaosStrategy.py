@@ -829,6 +829,42 @@ class TestStorageFull(unittest.TestCase):
         self.assertFalse(utils.handle_storage_full(t))
 
 
+class TestDiceReroll(unittest.TestCase):
+    """掷骰子失败页（实机 2026-10-27 03:00）：「再次滚动」消耗 2，右上角资源 30/30。用户：骰子失败了可以重投。"""
+
+    def _task(self, points="30/30", node=5):
+        import types
+        box = lambda x, y, n: types.SimpleNamespace(name=n, x=x * 1920 - 40, y=y * 1080 - 15, width=80, height=30,
+                                                    area=lambda: 2400)
+        clicks = []
+        t = types.SimpleNamespace(width=1920, height=1080, node_status={"node_count": node},
+                                  all_texts=[box(0.5, 0.678, "失败"), box(0.266, 0.9, "再次滚动"),
+                                             box(0.466, 0.9, "2"), box(0.666, 0.9, "下一步"),
+                                             box(0.916, 0.104, points)],
+                                  log_info=lambda *a, **k: None, sleep=lambda *a: None,
+                                  move_relative=lambda *a: None, click=lambda x, y, **k: clicks.append((x, y)))
+        return t, clicks
+
+    def test_reroll_until_limit_then_next(self):
+        import utils
+        t, clicks = self._task()
+        for _ in range(utils.DICE_REROLL_MAX):
+            self.assertTrue(utils.handle_negotiation(t))
+        self.assertTrue(utils.handle_negotiation(t))
+        self.assertAlmostEqual(0.266, clicks[0][0], places=2)
+        self.assertEqual(utils.DICE_REROLL_MAX, sum(1 for x, _ in clicks if x < 0.4))
+        self.assertEqual((0.665, 0.899), clicks[-1])
+        t.node_status["node_count"] = 6                      # 下一个节点的骰子重新计数
+        utils.handle_negotiation(t)
+        self.assertLess(clicks[-1][0], 0.4)
+
+    def test_not_enough_points(self):
+        import utils
+        t, clicks = self._task(points="1/30")
+        self.assertTrue(utils.handle_negotiation(t))
+        self.assertEqual([(0.665, 0.899)], clicks)
+
+
 class TestSaveCleanup(unittest.TestCase):
     def test_keep_reason(self):
         import save_cleanup as sc
