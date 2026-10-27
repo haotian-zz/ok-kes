@@ -2908,8 +2908,11 @@ def handle_equipment(task: TriggerTask):
             live_qualities = _member_equipment_qualities(
                 task, lv_texts[preferred_member_index]
             )
+            # 装备页淡入时槽位颜色偏暗会读成「未安装」，清掉已记的装备和刻印（2026-10-27 15:48 实录：混沌之识和带目标刻印的
+            # 兜帽被清掉，第二层 2 个目标刻印变 0 个；2 秒后同一页读出传说/普通）。底部按钮出来了才信空槽
+            page_ready = bool(bottom_buttons)
             for equipment_slot, live_quality in enumerate(live_qualities):
-                if live_quality is None:
+                if live_quality is None or (not live_quality and not page_ready):
                     continue
                 equipment["qualities"][equipment_slot] = live_quality
                 if not live_quality:
