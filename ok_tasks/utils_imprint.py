@@ -366,7 +366,7 @@ def required_imprints(task):
 def install_decision(task, new_eq, slot, better, why, current_name=""):
     """刷刻印模式下这件装不装给目标主战员。better/why 是原来按配置优先级、品质比较的结果。
     混沌之识 > 刻印 > 装备：混沌之识装上就不换、来了就装；带目标刻印的先装（槽位没有目标刻印时）；
-    槽位已有目标刻印时，只换没刻印的更好的目标装备（继承刻印）。"""
+    槽位已有目标刻印时，只换没刻印、且更好（配置优先级更高，或同级时品质更高）的装备（继承刻印）。"""
     cur_top, new_top = is_top(current_name), is_top(new_eq.get("name"))
     if cur_top and not new_top:
         return False, f"当前是「{current_name}」，优先级高于刻印，不换"
@@ -381,9 +381,11 @@ def install_decision(task, new_eq, slot, better, why, current_name=""):
     if have == TARGET:
         if new == OTHER:
             return False, "槽位已有目标刻印，这件带别的刻印，换上去会把目标刻印顶掉"
-        if new_eq.get("rank") is not None and better:
-            return True, f"目标装备、没有刻印，换上去继承槽位的目标刻印（{why}）"
-        return False, "槽位已有目标刻印，这件不是更好的目标装备"
+        if better:
+            # 用户 2026-10-27：没刻印、但比当前好（目标装备，或稀有度更高）就换上去继承刻印，不提炼
+            kind = "目标装备" if new_eq.get("rank") is not None else "比当前好"
+            return True, f"{kind}、没有刻印，换上去继承槽位的目标刻印（{why}）"
+        return False, f"槽位已有目标刻印，这件不比当前好（{why}）"
     if new_eq.get("rank") is not None and better:
         return True, f"目标装备（{why}）"
     return False, "不是目标刻印也不是更好的目标装备"

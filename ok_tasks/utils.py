@@ -3340,6 +3340,34 @@ def _copy_needed(task: TriggerTask):
     return len(plan.get("copy", [])) > done
 
 
+def _copy_pending_names(task: TriggerTask):
+    """目标卡组还没复制的卡：复制列表按顺序，已复制次数从前往后抵。"""
+    if getattr(task, "chaos_mode", "") != chaos_strategy.MODE_TARGET:
+        return []
+    plan = getattr(task, "chaos_plan", None) or {}
+    done = (getattr(task, "node_status", None) or {}).get("copy_count", 0)
+    return [chaos_strategy.base_card_name(n) for n in plan.get("copy", [])[done:]]
+
+
+def _drop_unique_if_copy_pending(task: TriggerTask, cards):
+    """用户 2026-10-27：还要复制的卡不能先闪成带「唯一」的变体（唯一不能复制），就算是目标闪光也不行；
+    复制完再冥想成目标闪光。返回 (可选的卡, 是否去掉过)。OCR 常把「[唯一]」认成「[唯」「唯牌」，按「唯」字判断。"""
+    pending = _copy_pending_names(task)
+    if not pending:
+        return cards, False
+    def copy_pending(card):
+        name = chaos_strategy.base_card_name(card.get("name", ""))
+        return bool(name) and any(p in name or name in p for p in pending)
+    keep = [c for c in cards if not (copy_pending(c) and "唯" in c.get("description", ""))]
+    if len(keep) == len(cards):
+        return cards, False
+    task.log_info(f"「{cards[0].get('name')}」还要复制，不选带「唯一」的闪光变体（唯一不能复制，复制完再冥想成目标闪光）")
+    if not keep:
+        task.log_info("三个变体都带「唯一」，只能照常选")
+        return cards, False
+    return keep, True
+
+
 def _record_copy(task: TriggerTask):
     ns = task.node_status
     key = (ns.get("total_rounds", 0), ns.get("pass_final_boss_count", 0), ns.get("node_count", 0))
@@ -5259,6 +5287,7 @@ def handle_view_original(task: TriggerTask):
             task.log_info(f"神闪三选一只认出 {len(cards)} 张，等动画结束再判断")
             task.sleep(0.8)
             return True
+        cards, god_dropped_unique = _drop_unique_if_copy_pending(task, cards)
         for card in cards:
             # 神闪选错存档就废，比普通闪光要求更像（0.9）
             index = chaos_strategy.pick_flash_variant(card["name"], cards, god_cards, min_sim=0.9)
@@ -5270,7 +5299,7 @@ def handle_view_original(task: TriggerTask):
                 task.log_info(f"神闪变体页：「{pick['name']}」和预设神闪一致，PT 账够，选它（{pick['description']}）")
                 _god_spark_pick(task, pick["x"], pick["y"])
                 return True
-        if cards:
+        if cards and not god_dropped_unique:
             # 描述 OCR 会把行序打乱（2026-10-26 实录「生成3张剑穗加入手牌下一次明暗…」没对上），
             # 游戏给预设那张钉了图钉（target），PT 够就按图钉选
             target_boxes, target_click_positions = find_target_card(task)
@@ -5304,6 +5333,7 @@ def handle_view_original(task: TriggerTask):
             return True
     task.node_status["flash_page_waits"] = 0
     _dump_card_page(task, "view_original")
+    cards, dropped_unique = _drop_unique_if_copy_pending(task, cards)
 
     flash_priority = []
     for keyword in _get_card_list(task, '闪光优先级'):
@@ -5345,6 +5375,8 @@ def handle_view_original(task: TriggerTask):
                 break
 
     target_boxes, target_click_positions = find_target_card(task)
+    if dropped_unique:
+        target_boxes, target_click_positions = [], []     # 图钉钉的可能就是那张「唯一」的预设闪光
     matched_meditation_cards = _matching_meditation_card_names(task, cards)
     if matched_meditation_cards:
         meditation_state = _member_deck_state(task)["冥想"]

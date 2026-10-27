@@ -150,8 +150,10 @@ class TestImprintDecision(unittest.TestCase):
         self.assertFalse(ui.install_decision(t, {"imprint": ui.OTHER, "rank": 0}, 0, True, "配置优先级更高")[0])
         # 目标装备没刻印：换上去继承目标刻印
         self.assertTrue(ui.install_decision(t, {"imprint": "", "rank": 0}, 0, True, "配置优先级更高")[0])
-        # 不是目标装备：不换
-        self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": None}, 0, True, "品质传说高于普通")[0])
+        # 不是目标装备但品质更高、没刻印：换上去继承目标刻印（用户 2026-10-27）
+        self.assertTrue(ui.install_decision(t, {"imprint": "", "rank": None}, 0, True, "品质传说高于普通")[0])
+        # 不比当前好：不换（提炼）
+        self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": None}, 0, False, "品质普通不高于传说")[0])
 
     def test_non_target_refined(self):
         t = imprint_task()
