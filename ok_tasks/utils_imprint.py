@@ -388,7 +388,8 @@ def pick_candidate(task, candidates):
 # ------------------------- 德朗商店 -------------------------
 
 def _shop_seen(task):
-    """这个商店里点开看过的商品：(商店, 第几次刷新, 第几个)。刷新一次 gen+1。"""
+    """这个商店里点开看过的商品：(商店, 第几次刷新, 卡片位置)。刷新一次 gen+1。
+    按卡片横坐标记，不按第几个信用点图标：买走一件后它的信用点图标没了，后面的序号会前移（实录 2026-10-27）。"""
     import utils
     ns = task.node_status
     key = list(utils._shop_key(task))
@@ -399,14 +400,18 @@ def _shop_seen(task):
     return state
 
 
-def shop_seen(task, index):
-    state = _shop_seen(task)
-    return [state["gen"], index] in state["seen"]
+def _card_pos(task, icon):
+    return round((icon.x + icon.width / 2) / task.width, 1)
 
 
-def mark_shop_seen(task, index):
+def shop_seen(task, icon):
     state = _shop_seen(task)
-    state["seen"].append([state["gen"], index])
+    return [state["gen"], _card_pos(task, icon)] in state["seen"]
+
+
+def mark_shop_seen(task, icon):
+    state = _shop_seen(task)
+    state["seen"].append([state["gen"], _card_pos(task, icon)])
 
 
 def on_shop_refresh(task):
@@ -422,14 +427,14 @@ def shop_inspect(task, credit_icons, card_indexes, credit):
     dx, dy = SHOP_ICON_OFFSET
     hx, hy = SHOP_ICON_HALF
     for index, icon in enumerate(credit_icons):
-        if index in card_indexes or shop_seen(task, index):
+        if index in card_indexes or shop_seen(task, icon):
             continue
         cx = (icon.x + icon.width / 2) / task.width + dx
         cy = (icon.y + icon.height / 2) / task.height + dy
         kind = icon_kind(task, (cx - hx, cy - hy, cx + hx, cy + hy), win=2 * hy, min_frac=0.25)
         if kind not in kinds:
             continue
-        mark_shop_seen(task, index)
+        mark_shop_seen(task, icon)
         task.log_info(f"刷刻印：德朗商店第{index + 1}个装备有{kind}之刻印图标，点开看刻印（信用点 {credit}）")
         task.click_box(icon)
         task.sleep(1.5)

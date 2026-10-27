@@ -5079,7 +5079,7 @@ def handle_shop(task: TriggerTask):
             task.log_info(f"德朗商店第{index + 1}个商品: 类型={item_type}，名称=「{item_name}」，价格={price}")
             if not item_name or price is None:
                 continue
-            if imprint_mode and utils_imprint.shop_seen(task, index):
+            if imprint_mode and utils_imprint.shop_seen(task, credit_icon):
                 continue
             shop_items.append((credit_icon, item_name, price, is_card))
 
@@ -5125,7 +5125,7 @@ def handle_shop(task: TriggerTask):
             f"价格{price}小于当前信用点{current_credit}，点击信用点图标"
             )
             if imprint_mode:
-                utils_imprint.mark_shop_seen(task, index)
+                utils_imprint.mark_shop_seen(task, credit_icon)
             task.click_box(credit_icon)
             task.sleep(1)
             return True
@@ -5727,8 +5727,10 @@ def save_run_state(task: TriggerTask):
     if not cap or ns is None:
         return
     try:
+        # 装备（含刷刻印的装备位刻印）也落盘：重启后忘了已拿到的目标刻印，速刷会误判逃脱（2026-10-27）
         body = json.dumps({"cap": cap, "ns": {k: ns[k] for k in _PERSIST_KEYS if k in ns},
-                           "deck": _member_deck_state(task)}, ensure_ascii=False, default=list, sort_keys=True)
+                           "deck": _member_deck_state(task), "equipment": _equipment_state(task)},
+                          ensure_ascii=False, default=list, sort_keys=True)
         if body == getattr(task, "_run_state_saved", None):
             return
         os.makedirs(os.path.dirname(RUN_STATE_FILE), exist_ok=True)
@@ -5761,6 +5763,8 @@ def restore_run_state(task: TriggerTask):
     task.node_status.update(data.get("ns", {}))
     if isinstance(data.get("deck"), dict):
         task.member_status["deck"] = data["deck"]
+    if isinstance(data.get("equipment"), dict):
+        task.member_status["equipment"] = data["equipment"]
     task._run_state_saved = None
     task.log_info(f"启动时在局内，读回落盘的局内状态：PT 上限 {task.chaos_pt_cap}，{data.get('ns')}")
     return True
