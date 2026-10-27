@@ -560,6 +560,15 @@ def handle_save_target_member(task: TriggerTask):
         return False
     if task.node_status.get("save_target_member", False):
         return False
+    # 顶栏信息按钮被弹窗挡住时点了没用（2026-10-27 07:23 重启时停在休息点「训练」确认框，点了 8 分钟）：
+    # 连点 3 次没进统计页就先让给别的页面处理，30 秒后再试
+    now = time.time()
+    tries, since = getattr(task, "_save_member_tries", (0, 0.0))
+    if tries >= 3:
+        if now - since < 30:
+            return False
+        tries = 0
+    task._save_member_tries = (tries + 1, now)
 
     task.log_info("前往获取刷存档主战员头像特征")
     _move_and_click(task, 0.182, 0.081)

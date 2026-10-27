@@ -1480,3 +1480,26 @@ class TestRouteNodeRetry(unittest.TestCase):
         self.assertFalse(ns["enter_new_node"])
         self.assertEqual(1, ns["full_route"]["done"])
         self.assertNotIn(("click", 0.815, 0.492), logs)
+
+
+class TestSaveTargetMemberBackoff(unittest.TestCase):
+    """实录 2026-10-27 07:23：重启时停在「训练」确认框，顶栏信息按钮点了 8 分钟没反应。"""
+
+    def test_backoff_after_three_tries(self):
+        import time
+        import types
+        import utils_chaos
+        clicks = []
+        t = types.SimpleNamespace(node_status={}, config={"刷存档主战员": "海德玛丽"}, log_info=lambda *a: None,
+                                  sleep=lambda s: None)
+        orig = utils_chaos._get_current_hp_percent, utils_chaos._move_and_click
+        utils_chaos._get_current_hp_percent = lambda task: 100
+        utils_chaos._move_and_click = lambda task, x, y: clicks.append((x, y))
+        try:
+            results = [utils_chaos.handle_save_target_member(t) for _ in range(5)]
+            self.assertEqual([True, True, True, False, False], results)
+            t._save_member_tries = (3, time.time() - 31)        # 30 秒后再试
+            self.assertTrue(utils_chaos.handle_save_target_member(t))
+        finally:
+            utils_chaos._get_current_hp_percent, utils_chaos._move_and_click = orig
+        self.assertEqual(4, len(clicks))
