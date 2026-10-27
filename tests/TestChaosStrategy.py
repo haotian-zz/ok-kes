@@ -216,6 +216,11 @@ class TestPriorities(unittest.TestCase):
         for d in ("5", "0", "901", "12"):      # 路线图上 event9 误中读到的数字
             self.assertTrue(NOT_EVENT_OPTION.search(d), d)
         self.assertIsNone(NOT_EVENT_OPTION.search("献上赞美信用点增加100"))
+        from utils import not_event_option
+        for d in ("-", "X", "•", "京四", "日92", "1684暴击", "弱点", "T9"):
+            self.assertTrue(not_event_option(d), d)
+        for d in ("拿走树枝", "就此离开事件结束", "献上赞美信用点增加100"):
+            self.assertFalse(not_event_option(d), d)
 
     def test_target_heal(self):
         st = dict(self.need, hp_pct=60)

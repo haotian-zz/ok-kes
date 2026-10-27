@@ -496,6 +496,13 @@ def at_save_library(task):
 NOT_EVENT_OPTION = re.compile(r"平均费用|^\W*\w?\s*[\d,]{3,}\s*TB\W*$|^\W*[\d,.]+\W*$")
 
 
+def not_event_option(description):
+    """不像事件选项的文字：真选项是选项名 + 结果说明，至少三个汉字（最短实录「拿走树枝」）；event9 误中的
+    「-」「X」「京四」「日92」「1684暴击」「弱点」都不到（2026-10-27 全天 108 次 event9 命中几乎都是误中）。"""
+    return (not description or bool(NOT_EVENT_OPTION.search(description))
+            or len(re.findall(r"[\u4e00-\u9fff]", description)) < 3)
+
+
 def recognize_event_options(
     task: TriggerTask,
     region=(0.198, 0.840, 0.803, 1.000),
@@ -544,7 +551,7 @@ def recognize_event_options(
             min(1.0, center_y - 0.021),
         )
         description = _get_region_text(task, description_region).strip()
-        if not description or NOT_EVENT_OPTION.search(description):
+        if not_event_option(description):
             continue
         event_options.append({
             "x": center_x,
