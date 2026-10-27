@@ -161,6 +161,30 @@ class TestDragHeight(unittest.TestCase):
         self.assertFalse(any("放弃这次扫描" in m for m in calls["logs"]))
         self.assertEqual(4, calls["swipes"])                 # 拖到左端 1 + 对不上 1 + 重拖到左端 1 + 拖不动 1
 
+    def test_slow_drag_reaches_end_with_button_held(self):
+        # 框架 swipe 实际 0.1 秒甩动、最后一步只到 90%；慢拖要按住左键一路移到终点再松开
+        ev = []
+
+        class Inter:
+            def move(self, x, y, down_btn=0): ev.append(("move", x, y, down_btn))
+
+        class T:
+            width, height = 1920, 1080
+            executor = type("E", (), {"interaction": Inter()})()
+            def mouse_down(self, x, y): ev.append(("down", x, y))
+            def mouse_up(self): ev.append(("up",))
+
+        old = cm.time.sleep
+        cm.time.sleep = lambda s: None
+        try:
+            cm._drag(T(), 0.6, 0.5, 0.42)
+        finally:
+            cm.time.sleep = old
+        self.assertEqual(("down", 1152, 540), ev[1])
+        self.assertEqual(("move", 806, 540, cm.MK_LBUTTON), ev[-2])
+        self.assertEqual(("up",), ev[-1])
+        self.assertTrue(all(e[3] == cm.MK_LBUTTON for e in ev[2:-1]))
+
     def _closing_task(self, m_reopens):
         """拍到第 2 帧后再拖，地图关回路线页；m_reopens=False 时按 M 也不响应。"""
         import numpy as np

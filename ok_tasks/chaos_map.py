@@ -1,7 +1,9 @@
 # 卡厄思全屏地图（路线页按 M）整层扫描：小步拖动地图拍几帧，相位相关算平移拼起来，按网格认节点、按白线认连通，
 # 输出和小地图识别（utils.recognize_map_connections）同格式的 map_info，交给 find_best_map_route_by_priority 求整条路径。
 # 坐标按 1920×1080 国服实机量取（2026-10-24），其他分辨率按高度等比缩放。图像函数都是纯函数，方便用截图单测。
+import inspect
 import os
+import time
 
 import cv2
 import numpy as np
@@ -311,12 +313,35 @@ def gap_x(frame, near):
     return (phase + pitch / 2 + k * pitch) / w
 
 
+MK_LBUTTON = 0x0001
+
+
+def _drag(task, x0, y, x1, duration=0.6, steps=20):
+    """慢拖：按下 → 分 steps 步匀速移到终点（每步真等）→ 停住再松开，地图只移动拖的距离、不甩。
+    框架的 PostMessage swipe 把 duration 当毫秒、每 100ms 一步：swipe_relative(duration=1.0) 实际只有 10 步 × 10ms，
+    0.1 秒的甩动（地图惯性滑出 2.6 倍）；游戏一卡帧，按下和松开落在同一帧就成了点击，全屏地图被关回路线页
+    （2026-10-27 08:15/08:31/08:37 三次，按下点都不在节点上）。"""
+    inter = getattr(getattr(task, "executor", None), "interaction", None)
+    if inter is None or "down_btn" not in inspect.signature(inter.move).parameters:
+        task.swipe_relative(x0, y, x1, y, duration=duration)
+        return
+    ax, ay, bx = int(x0 * task.width), int(y * task.height), int(x1 * task.width)
+    inter.move(ax, ay)
+    time.sleep(0.05)
+    task.mouse_down(ax, ay)
+    for i in range(1, steps + 1):
+        time.sleep(duration / steps)
+        inter.move(int(ax + (bx - ax) * i / steps), ay, down_btn=MK_LBUTTON)
+    time.sleep(0.15)
+    task.mouse_up()
+
+
 def _drag_to_left(task):
     """地图会记住上次的滚动位置：往右拖到拖不动（最左端），返回停下后的帧。"""
     frame = _settle(task)
-    for _ in range(6):
+    for _ in range(10):
         x0 = gap_x(frame, 0.3)
-        task.swipe_relative(x0, DRAG_Y, x0 + 0.4, DRAG_Y, duration=0.8)
+        _drag(task, x0, DRAG_Y, x0 + 0.4)
         cur = _settle(task)
         moved = frame_shift(frame, cur)[0]
         frame = cur
@@ -339,7 +364,7 @@ def _settle(task, timeout=6.0):
     return prev
 
 
-def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None, is_route_page=None):
+def scan_layer(task, max_frames=12, drag=0.18, dump_dir=None, is_route_page=None):
     """路线页：按 M 打开全屏地图 → 先拖到最左端 → 每次往左拖 drag 屏宽拍一帧直到拖不动 → 再按 M 关掉。
 
     地图会记住上次的滚动位置，所以每次都先拖回最左端。返回 map_info，失败返回 None。
@@ -351,7 +376,7 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None, is_route_page=None
     ok, retried, reopened, closed = True, False, False, False
     while len(frames) < max_frames:
         x0 = gap_x(frames[-1], 0.6)
-        task.swipe_relative(x0, DRAG_Y, x0 - drag, DRAG_Y, duration=1.0)
+        _drag(task, x0, DRAG_Y, x0 - drag)
         cur = _settle(task)
         dx, score = strip_shift(frames[-1], cur)
         if score < 0.6 and len(frames) == 1 and not retried:
@@ -362,10 +387,14 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None, is_route_page=None
             continue
         if score < 0.6 and is_route_page is not None:
             # 拖动偶尔被当成点击、全屏地图关回了路线页（2026-10-27 08:31 按下点在两列之间的连线上，不在节点上）。
-            # 刚关上时马上按 M 不响应（那次「关地图后」还是路线页）：等转场完再按，地图记得滚动位置，接着拍
-            task.sleep(1.5)
-            _grab(task)
-            closed = bool(is_route_page())
+            # 刚关上时马上按 M 不响应（那次「关地图后」还是路线页）：等转场完再按，地图记得滚动位置，接着拍。
+            # 路线页淡入要 2～3 秒，1.5 秒时还认不出（08:37 实录），多看几次
+            for _ in range(4):
+                task.sleep(1)
+                _grab(task)
+                closed = bool(is_route_page())
+                if closed:
+                    break
             if closed and not reopened:
                 task.log_info(f"全屏地图拖动后回到了路线页（匹配分 {score:.2f}），按 M 重新打开接着扫")
                 reopened = True
