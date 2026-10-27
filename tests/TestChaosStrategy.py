@@ -24,6 +24,21 @@ class TestParseEffects(unittest.TestCase):
         self.assertTrue(cs.parse_effects("赋予神之闪光")["god_spark"])
         self.assertNotIn("god_spark", cs.parse_effects("随机卡牌闪光"))
 
+    def test_credit_percent(self):
+        # norm 把 100% 换成 #%，以前「信用点减少100%」认不出来（2026-10-27 03:45 实录花光 358 信用点换提炼装备）
+        self.assertEqual(-100, cs.parse_effects("奉献信念信用点减少100%，获得装备[云端漫游者]")["credit_pct"])
+        self.assertEqual(-50, cs.parse_effects("信用点减少50％")["credit_pct"])
+        self.assertEqual(-40, cs.parse_effects("信用点减少40 获得窃取者的短刀")["credit"])
+
+    def test_imprint_mode_keeps_credit(self):
+        # 2026-10-27 03:45 实录（刷刻印，358 信用点）：不能为一件会提炼的装备花光信用点
+        descs = ["铭记教诲择1张获得，普通战斗3次期间异在随机3张中立稀有卡牌中选形生命值变为1",
+                 "献上赞美信用点增加100", "奉献信念信用点减少100%，获得装备[云端漫游者]"]
+        st = {"imprint": True, "credit": 358, "target_equipment": ["欺骗暗影的匕首"]}
+        best, results = cs.pick_event_option(descs, cs.MODE_TARGET, st)
+        self.assertEqual(1, best, results)
+        self.assertLess(results[2][0], 0, results[2])
+
 
 class TestEventPick(unittest.TestCase):
     descs = ["购买他手上的短刀 信用点减少40 获得窃取者的短刀", "抢走信用点箱 信用点增加120", "夸赞他的技术 获得随机卡厄思教团稀有装备"]

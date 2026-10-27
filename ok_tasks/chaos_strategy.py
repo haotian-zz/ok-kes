@@ -126,8 +126,13 @@ def parse_effects(text):
     elif "移" in t and (m := re.search(r"除(\d|[一两二三四五])张\S{0,4}卡", t)):
         # 两行乱序把「移除」拆开：「除2张所选卡牌移」（2026-10-25 实录，移除 2 张被当成无效果，选了装备）
         e["remove_card"] = _num(m.group(1))
-    if re.search(r"信用点(减少|消耗)(100#%|全部|所有)|献上一切信用点", t):
+    # norm 把百分数换成 #%，比例要从原文读：「信用点减少100%，获得装备[云端漫游者]」（2026-10-27 实录没认出来，
+    # 只算了装备 +40，把 358 信用点全花了换一件提炼的装备）
+    raw = "".join(text) if isinstance(text, (list, tuple)) else (text or "")
+    if re.search(r"信用点(减少|消耗)(全部|所有)|献上一切信用点", t):
         e["credit"] = -999
+    elif m := re.search(r"信用点\s*(减少|消耗)\s*(\d+)\s*[%％]", raw):
+        e["credit_pct"] = -int(m.group(2))
     elif m := re.search(r"信用点(增加|获得|\+)(\d+)", t):
         e["credit"] = int(m.group(2))
     elif m := re.search(r"信用点(减少|消耗|-)(\d+)", t):
@@ -249,6 +254,9 @@ def score_effects(effects, mode, state=None):
     can_remove = removed < REMOVE_LIMIT
     rm = effects.get("remove_card") or 0
     credit = effects.get("credit") or 0
+    if effects.get("credit_pct"):
+        # 按比例扣的按当前信用点折算；读不到当前信用点（0）时按 200 估，宁可高估损失
+        credit = min(-1, round((state.get("credit") or 200) * effects["credit_pct"] / 100))
     hp = effects.get("hp_pct") or 0
     stress = effects.get("stress") or 0
 
@@ -327,14 +335,16 @@ def score_effects(effects, mode, state=None):
                              ("desire_card", -8, "获得卡"), ("card_choice", -5, "选卡"), ("transform_card", -10, "转换卡")):
             if effects.get(k):
                 add(v, reason)
-        # 信用点按用途估值：有待冥想的卡（重闪闪错的目标卡）或还要删卡（商店付费删）时才值钱
-        useful = state.get("pending_meditation", 0) > 0 or state.get("need_remove", 0) > 0
+        # 信用点按用途估值：有待冥想的卡（重闪闪错的目标卡）或还要删卡（商店付费删）时才值钱；
+        # 刷刻印时信用点要留着在商店买带目标刻印的装备（一件 140～200），一直有用，花掉也扣得重
+        imprint = state.get("imprint")
+        useful = imprint or state.get("pending_meditation", 0) > 0 or state.get("need_remove", 0) > 0
         if credit >= 200:
             add(100 if useful else 45, "信用点≥200" + ("" if useful else "（暂无用处）"))
         elif credit > 0:
             add((20 + credit * 15 / 200) if useful else (15 + credit * 10 / 200), "信用点<200")
         elif credit:
-            add(max(-15, credit / 4), "信用点")
+            add(max(-150, credit / 2) if imprint else max(-15, credit / 4), "信用点")
         if effects.get("battle"):
             # 认知闪光满级后战斗中目标卡会自然闪光，战斗也是闪光来源（用户 2026-10-24 同意）
             add(55, "战斗")

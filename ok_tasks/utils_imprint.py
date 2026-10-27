@@ -429,6 +429,17 @@ def record_install(task, slot, new_eq):
                   f"目标刻印 {target_imprint_count(task)} 个")
 
 
+def event_target_equipment(task, names_by_slot):
+    """事件打分里当「目标装备」的名字：混沌之识一直算；其他目标装备只在槽位已有目标刻印时才算
+    （槽位没有目标刻印时 install_decision 不装，拿到也是提炼，不值得为它放弃别的选项）。"""
+    imprints, names = slot_imprints(task), _slot_names(task)
+    out = list(TOP_EQUIPMENT)
+    for slot, slot_names in enumerate(names_by_slot):
+        if imprints[slot] == TARGET and not is_top(names[slot]):
+            out += [n for n in slot_names if n not in out]
+    return out
+
+
 def pick_candidate(task, candidates):
     """选择装备（二选一）页：有带目标刻印、且对应槽位还没目标刻印的就选它（刻印优先于装备）。"""
     imprints, names = slot_imprints(task), _slot_names(task)

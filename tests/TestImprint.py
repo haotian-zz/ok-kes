@@ -215,6 +215,13 @@ class TestImprintDecision(unittest.TestCase):
         self.assertFalse(ui.install_decision(t, {"imprint": "", "rank": 0}, 1, True, "配置优先级更高")[0])
         self.assertFalse(ui.install_decision(t, {"imprint": ui.OTHER, "rank": 0}, 1, True, "配置优先级更高")[0])
 
+    def test_event_target_equipment(self):
+        names = [["欺骗暗影的匕首"], ["精灵王的金冠"], ["深绿桎梏", "深绿黑夜"]]
+        # 槽位没有目标刻印：事件里的目标装备拿了也是提炼，只有混沌之识算
+        self.assertEqual(["混沌之识"], ui.event_target_equipment(imprint_task(), names))
+        t = imprint_task(("", ui.TARGET, ""))
+        self.assertEqual(["混沌之识", "精灵王的金冠"], ui.event_target_equipment(t, names))
+
     def test_record_inherits(self):
         t = imprint_task((ui.TARGET, "", ""))
         ui.record_install(t, 0, {"imprint": ""})

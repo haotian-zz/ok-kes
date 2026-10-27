@@ -3876,7 +3876,13 @@ def _chaos_strategy_state(task: TriggerTask):
     plan = getattr(task, "chaos_plan", None) or {}
     removed = node_status.get("removed_card_count", 0)
     hp = _get_current_hp_percent(task)
+    import utils_imprint
+    imprint = utils_imprint.enabled(task)
+    targets = [n for slot in range(3) for n in _equipment_priority(task, slot)]
+    if imprint:
+        targets = utils_imprint.event_target_equipment(task, [_equipment_priority(task, slot) for slot in range(3)])
     return {
+        "imprint": imprint,
         "removed": removed,
         "credit": _get_current_credit(task),
         "hp_pct": hp if hp is not False else 100,
@@ -3888,7 +3894,7 @@ def _chaos_strategy_state(task: TriggerTask):
         "god_spark_wanted": len(_god_spark_wanted(task)),
         "need_neutral": len(plan.get("neutral", [])),
         "pending_meditation": sum(1 for v in _member_deck_state(task).get("冥想", {}).values() if v),
-        "target_equipment": [n for slot in range(3) for n in _equipment_priority(task, slot)],
+        "target_equipment": targets,
         "copy_count": node_status.get("copy_count", 0),
         "pt_room": (task.chaos_pt_cap - _pt_used(task)) if getattr(task, "chaos_pt_cap", None) else None,
     }
