@@ -2721,15 +2721,22 @@ def _find_target_member_index(
     region,
     feature_name="target_member_small",
 ):
-    """在指定区域匹配目标成员头像，并返回距离最近的等级文本索引。"""
-    if not lv_texts or not task.feature_exists(feature_name):
+    """在指定区域匹配目标成员头像，并返回距离最近的等级文本索引。
+    匹配上就记下序号（随局内状态落盘）；中途重启后头像特征还没重新取到时按记下的序号，
+    不然装备会被随机分给队友（2026-10-27 08:37 重启后第一个装备页实录）。"""
+    if not lv_texts:
         return None
+    ns = getattr(task, "node_status", None)
+    remembered = ns.get("save_member_index") if isinstance(ns, dict) else None
     target_member_box = task.find_one(
         feature_name=feature_name,
         box=task.box_of_screen(*region),
         threshold=0.4,
-    )
+    ) if task.feature_exists(feature_name) else None
     if not target_member_box:
+        if remembered is not None and remembered < len(lv_texts) == 3:
+            task.log_info(f"刷存档主战员头像没认出来，按本局记下的第{remembered + 1}号主战员")
+            return remembered
         return None
 
     target_center_x = target_member_box.x + target_member_box.width / 2
@@ -2745,6 +2752,8 @@ def _find_target_member_index(
         f"刷存档主战员头像匹配成功，相似度={target_member_box.confidence:.4f}，"
         f"绑定第{target_member_index + 1}号主战员"
     )
+    if isinstance(ns, dict) and len(lv_texts) == 3:
+        ns["save_member_index"] = target_member_index
     return target_member_index
 
 
@@ -5890,7 +5899,8 @@ def reset_layer_status(task: TriggerTask):
 
 
 RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok",
-                  "octopus_seen", "target_equip_got", "chaos_core_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger")
+                  "octopus_seen", "target_equip_got", "chaos_core_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger",
+                  "save_member_index")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")

@@ -1538,6 +1538,32 @@ class TestSaveTargetMemberBackoff(unittest.TestCase):
         self.assertEqual(4, len(clicks))
 
 
+class TestSaveMemberIndexRemembered(unittest.TestCase):
+    """实录 2026-10-27 08:37：重启后第一个装备页头像特征还没取到，装备被随机分给了队友。"""
+
+    def _task(self, has_feature, ns):
+        import types
+        lv = [types.SimpleNamespace(x=1200, y=y, width=40, height=20) for y in (340, 580, 820)]
+        hit = types.SimpleNamespace(x=1150, y=570, width=60, height=60, confidence=0.7)
+        t = types.SimpleNamespace(node_status=ns, log_info=lambda *a: None,
+                                  feature_exists=lambda name: has_feature,
+                                  find_one=lambda **k: hit if has_feature else None,
+                                  box_of_screen=lambda *a: None)
+        return t, lv
+
+    def test_match_remembers_and_fallback_uses_it(self):
+        import utils
+        ns = {}
+        t, lv = self._task(True, ns)
+        self.assertEqual(1, utils._find_target_member_index(t, lv, (0, 0, 1, 1)))
+        self.assertEqual(1, ns["save_member_index"])
+        self.assertIn("save_member_index", utils._PERSIST_KEYS)
+        t, lv = self._task(False, ns)                       # 重启后：特征没了，按记下的
+        self.assertEqual(1, utils._find_target_member_index(t, lv, (0, 0, 1, 1)))
+        t, lv = self._task(False, {})                       # 新一局还没记：照旧返回 None
+        self.assertIsNone(utils._find_target_member_index(t, lv, (0, 0, 1, 1)))
+
+
 class TestRestoreShopFlag(unittest.TestCase):
     """实录 2026-10-27 07:23：休息点（带商店）中途重启，新进程 shop=False，商店没进。"""
 
