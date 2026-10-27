@@ -7,6 +7,7 @@ import chaos_strategy
 import chaos_trace
 import game_restart
 import game_speed
+import utils_imprint
 import game_db
 import utils
 import utils_chaos
@@ -99,6 +100,8 @@ class ChaosMode(TriggerTask):
         self.default_config['章鱼哥速刷'] = False
         self.default_config['章鱼哥速刷只认混沌之识'] = False
         self.default_config[game_speed.SPEED_KEY] = True
+        for key, value in utils_imprint.DEFAULTS.items():
+            self.default_config[key] = value
         # 路线节点优先级 (列表), 越靠前优先级越高
         self.default_config['路线优先级'] = ["休息", "事件", "小怪", "精英"]
         self.default_config['几轮后停止(0为不停止)'] = 0
@@ -140,6 +143,8 @@ class ChaosMode(TriggerTask):
             },
             '第几层boss前自动暂停': {'type': 'drop_down', 'options': ['不暂停', '1', '2', '3']},
             '存储数据保存上限大于多少': {'min': 0, 'max': 170},
+            utils_imprint.SLOT_KEY: {'min': 1, 'max': 3},
+            utils_imprint.DIFF_KEY: {'min': 1, 'max': 15},
         }
         self.config_description['游戏语言'] = "国际服请设置为繁体中文"
         self.config_description['卡厄思玩法'] = (
@@ -188,6 +193,19 @@ class ChaosMode(TriggerTask):
         self.config_description['章鱼哥速刷只认混沌之识'] = (
             "配合「章鱼哥速刷」：开启后第一层打完首领时只要本局没拿到混沌之识就退出重进，别的目标装备（堕落之冠、过载动力机关等）不算；不管第几层，章鱼哥掉的不是混沌之识就在回到路线页时立即逃脱重开；关闭时拿到任意目标装备就打完"
         )
+        self.config_description[utils_imprint.IMPRINT_KEY] = (
+            "刷刻印（配合玩法「刷存档-目标卡组」）：不进赛季卡厄思，从零式系统法典进；法典要地图、难度、赛季特性对上，"
+            "稀有命运加成够、没有禁止词条、没有「无法获取存储数据」，不合格就刷新重新合成（先用卡厄思之珠，不够用金币）"
+        )
+        self.config_description[utils_imprint.SPEEDRUN_KEY] = (
+            "刷刻印速刷：第一层打完目标主战员两个不同装备位还没有目标刻印就逃脱重开（章鱼哥掉了混沌之识除外）；"
+            "第二层首领打完还没凑齐三个就逃脱重开。逃脱后法典还在，继续用同一个法典"
+        )
+        self.config_description[utils_imprint.SLOT_KEY] = "刷刻印用零式系统里第几号法典槽位"
+        self.config_description[utils_imprint.TARGET_IMPRINT_KEY] = (
+            "目标装备刻印：描述里这些关键词都有才算（默认对应「友军使用能力生成5张以上卡牌时，自身额外攻击伤害量+30%」）"
+        )
+        self.config_description[utils_imprint.MAX_SYNTH_KEY] = "一次任务里最多合成多少次法典，到了还没刷到合格的就停下"
         self.config_description[game_speed.SPEED_KEY] = (
             "国服自带变速：任务开始（和游戏重开后）按一次 F8 唤出「变速功能」浮窗，点 3.0x 再关掉。"
             "F8 只认真实按键，会把游戏切到前台一下再切回原来的窗口"
@@ -307,7 +325,10 @@ class ChaosMode(TriggerTask):
             return False
         self.zero_upgrades_checked = True
         want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode, octopus=self.config.get('章鱼哥速刷') is True) if self.config.get('调整零式升级') else ([], [])
-        if self.config.get('卡厄思地图', '活动卡厄思') == '活动卡厄思':
+        if utils_imprint.enabled(self):
+            # 刷刻印只走零式系统法典（裁决之沼 + 回荡在银河中的歌声），不进赛季卡厄思
+            ok = utils_chaos_prep.enter_zero_system(self, want_zero, want_max)
+        elif self.config.get('卡厄思地图', '活动卡厄思') == '活动卡厄思':
             if want_zero or want_max:
                 utils_chaos_prep.enter_zero_system(self, want_zero, want_max)
             difficulty = None if mode == chaos_strategy.MODE_EXPLORE else \

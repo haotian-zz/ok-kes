@@ -5557,6 +5557,14 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
     ):
         return False
 
+    import utils_imprint
+    reason = utils_imprint.rush_escape_reason(task)
+    if reason:
+        task.log_info(f"刷刻印速刷：{reason}，退出重开（法典保留）")
+        _move_and_click(task, 0.959, 0.051)
+        task.sleep(1)
+        return True
+
     if (
         _get_config_value(task, "首层刷特定闪光", False) is True
         and task.node_status.get("get_specific_flash", False) is False
