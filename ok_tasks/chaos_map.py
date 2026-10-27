@@ -339,15 +339,16 @@ def _settle(task, timeout=6.0):
     return prev
 
 
-def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
+def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None, is_route_page=None):
     """路线页：按 M 打开全屏地图 → 先拖到最左端 → 每次往左拖 drag 屏宽拍一帧直到拖不动 → 再按 M 关掉。
 
     地图会记住上次的滚动位置，所以每次都先拖回最左端。返回 map_info，失败返回 None。
+    is_route_page：判断当前帧是不是路线页（地图被关掉了）的回调，用来重开地图、以及失败时别再按 M 把地图打开。
     """
     task.send_key("m")
     task.sleep(1.5)
     frames, offsets, total = [_drag_to_left(task)], [0.0], 0.0
-    ok, retried = True, False
+    ok, retried, reopened, closed = True, False, False, False
     while len(frames) < max_frames:
         x0 = gap_x(frames[-1], 0.6)
         task.swipe_relative(x0, DRAG_Y, x0 - drag, DRAG_Y, duration=1.0)
@@ -359,6 +360,21 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
             retried = True
             frames = [_drag_to_left(task)]
             continue
+        if score < 0.6 and is_route_page is not None:
+            # 拖动偶尔被当成点击、全屏地图关回了路线页（2026-10-27 08:31 按下点在两列之间的连线上，不在节点上）。
+            # 刚关上时马上按 M 不响应（那次「关地图后」还是路线页）：等转场完再按，地图记得滚动位置，接着拍
+            task.sleep(1.5)
+            _grab(task)
+            closed = bool(is_route_page())
+            if closed and not reopened:
+                task.log_info(f"全屏地图拖动后回到了路线页（匹配分 {score:.2f}），按 M 重新打开接着扫")
+                reopened = True
+                task.send_key("m")
+                task.sleep(1.5)
+                cur = _settle(task)
+                dx, score = strip_shift(frames[-1], cur)
+                _grab(task)
+                closed = bool(is_route_page())
         if score < 0.6:
             task.log_info(f"全屏地图拖动后对不上上一帧（匹配分 {score:.2f}，平移可能超过半屏），放弃这次扫描")
             # 2026-10-27 06:33 起层开头频繁失败，原因还没看到：前后两帧存进流程追踪
@@ -376,7 +392,8 @@ def scan_layer(task, max_frames=10, drag=0.07, dump_dir=None):
         total += dx
         frames.append(cur)
         offsets.append(total)
-    task.send_key("m")
+    if not closed:
+        task.send_key("m")
     task.sleep(2)
     if not ok:
         import chaos_trace

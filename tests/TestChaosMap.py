@@ -161,6 +161,47 @@ class TestDragHeight(unittest.TestCase):
         self.assertFalse(any("放弃这次扫描" in m for m in calls["logs"]))
         self.assertEqual(4, calls["swipes"])                 # 拖到左端 1 + 对不上 1 + 重拖到左端 1 + 拖不动 1
 
+    def _closing_task(self, m_reopens):
+        """拍到第 2 帧后再拖，地图关回路线页；m_reopens=False 时按 M 也不响应。"""
+        import numpy as np
+        good = cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))
+        views = [good, np.roll(good, -200, axis=1)]
+        route = np.random.default_rng(1).integers(0, 255, good.shape, dtype=np.uint8)
+        st = {"open": True, "pos": 0, "swipes": 0, "keys": 0, "logs": []}
+
+        class T:
+            frame = None
+            def send_key(self, k):
+                st["keys"] += 1
+                if st["keys"] > 1 and m_reopens:
+                    st["open"] = True
+            def sleep(self, s): pass
+            def log_info(self, msg, *a, **k): st["logs"].append(msg)
+            def next_frame(self): self.frame = views[st["pos"]] if st["open"] else route
+            def swipe_relative(self, *a, **k):
+                st["swipes"] += 1               # 第 1 下拖到左端（已经在左端），第 2 下拍到第 2 帧，第 3 下关了地图
+                if st["swipes"] == 2:
+                    st["pos"] = 1
+                elif st["swipes"] == 3:
+                    st["open"] = False
+
+        t = T()
+        return t, st, (lambda: t.frame is route)
+
+    def test_scan_reopens_map_closed_by_drag(self):
+        # 2026-10-27 08:31：拖动被当成点击、地图关回路线页；按 M 重新打开接着扫，不放弃
+        t, st, is_route = self._closing_task(m_reopens=True)
+        cm.scan_layer(t, max_frames=3, is_route_page=is_route)
+        self.assertTrue(any("按 M 重新打开" in m for m in st["logs"]))
+        self.assertFalse(any("放弃这次扫描" in m for m in st["logs"]))
+        self.assertEqual(3, st["keys"])                      # 打开、重开、扫完关掉
+
+    def test_scan_gives_up_without_opening_map_on_route_page(self):
+        t, st, is_route = self._closing_task(m_reopens=False)
+        self.assertIsNone(cm.scan_layer(t, max_frames=3, is_route_page=is_route))
+        self.assertTrue(any("放弃这次扫描" in m for m in st["logs"]))
+        self.assertEqual(2, st["keys"])                      # 还在路线页：最后不再按 M（会把地图打开）
+
 
 if __name__ == "__main__":
     unittest.main()

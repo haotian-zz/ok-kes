@@ -4597,7 +4597,7 @@ def _click_route_node(task: TriggerTask, node):
 def _plan_full_map(task: TriggerTask, priority):
     """打开全屏地图扫描整层、按玩法权重求整条最佳路径，存成每一步的「类型 + 在后继里从上往下的名次」。"""
     import chaos_map
-    info = chaos_map.scan_layer(task)
+    info = chaos_map.scan_layer(task, is_route_page=lambda: is_route_selection_page(task))
     if not info:
         task.log_info("全屏地图扫描失败（没认出当前位置或节点），改用小地图规划")
         return None
