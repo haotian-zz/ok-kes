@@ -108,6 +108,9 @@ if __name__ == "__main__":
     config["onetime_tasks"] = list(config["onetime_tasks"]) + [["tools.dev_probe", "DevProbe"]]
     # 探针只连已经开着的游戏；找不到窗口时别让框架去拉起游戏/模拟器
     config["windows"] = {**config["windows"], "start_exe": False}
+    # 框架单实例检查：同目录已有 ok-kes 在跑时等 10 秒就把它结束（2026-10-27 08:56 截图把正在刷的 ChaosMode 顶掉了）。
+    # 探针只截图/偶尔点一下，和正在跑的任务并存
+    config["check_mutex"] = False
     try:
         run_task(config, task="DevProbe")
     finally:
