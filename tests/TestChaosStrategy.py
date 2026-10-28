@@ -31,6 +31,11 @@ class TestParseEffects(unittest.TestCase):
         self.assertTrue(results[0][2].startswith("库:"), results[0])
         self.assertIn("随机主战员闪光", " ".join(results[0][1]))
         self.assertNotIn("选中主战员闪光", " ".join(results[0][1]))
+        # 13:43 实录：库里选主战员，画面写「选择1张卡牌闪光」
+        descs = ["守望先知加40最大生命值增加20%，信用点增", "拯救先知增加40获得装备[符文纹样锤]，信用点",
+                 "回答先知选择1张卡牌闪光，信用点增加40"]
+        _, results = cs.pick_event_option(descs, cs.MODE_TARGET, {"need_spark": 1})
+        self.assertIn("选择卡牌闪光", " ".join(results[2][1]), results[2])
 
     def test_credit_percent(self):
         # norm 把 100% 换成 #%，以前「信用点减少100%」认不出来（2026-10-27 03:45 实录花光 358 信用点换提炼装备）

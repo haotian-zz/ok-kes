@@ -494,7 +494,8 @@ def pick_event_option(descs, mode, state=None, db=None, match=None):
                 effects["equipment"] = shown["equipment"]
             # 闪光对象也以画面为准：库里「使徒休憩处/一起祈愿」写选择主战员，国服画面是「随机主战员触发1次闪光」，
             # 实际也没出选主战员页（2026-10-28 13:27），按选中闪光打 150 高估了
-            if shown.get("spark_random") or shown.get("spark_random_card"):
+            # 13:43「动摇的信仰/回答先知」库里是选主战员，画面「选择1张卡牌闪光」
+            if any(shown.get(k) for k in ("spark_card", "spark_random_card", "spark_random", "spark_choose")):
                 for k in ("spark_card", "spark_random_card", "spark_random", "spark_choose"):
                     effects[k] = bool(shown.get(k))
             src = f"库:{event['name']}/{o.get('text')}"
