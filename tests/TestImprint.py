@@ -298,9 +298,11 @@ class TestImprintDecision(unittest.TestCase):
         dagger = {"name": "欺骗暗影的匕首", "imprint": "", "rank": 1}
         steps = [{"type": "小怪"}, {"type": "休息[商店]"}, {"type": "精英"}, {"type": "首领"}]
         t.node_status = {"pass_final_boss_count": 1, "full_route": {"layer": 1, "done": 1, "steps": steps}}
-        self.assertFalse(ui.install_decision(t, dagger, 0, True, "")[0])   # 商店还在后面
+        # 用户 2026-10-27 18:2x 新规则：第二层目标装备没刻印也先装，商店还在后面也装（原来这里是不装）
+        self.assertTrue(ui.install_decision(t, dagger, 0, True, "")[0])
         t.node_status["full_route"]["done"] = 2                            # 刚进最后一个商店
         self.assertTrue(ui.install_decision(t, dagger, 0, True, "")[0])
+        self.assertIn("后面没有商店", ui.install_decision(t, dagger, 0, False, "")[1])   # 最后商店规则不看 better，照旧
         # 槽位已有目标刻印：带别的刻印的目标装备会覆盖，仍不买
         self.assertFalse(ui.install_decision(t, {"name": "精灵王的金冠", "imprint": ui.OTHER, "rank": 0}, 1, True, "")[0])
         t.node_status["pass_final_boss_count"] = 0                          # 第一层不算
@@ -328,6 +330,10 @@ class TestImprintDecision(unittest.TestCase):
         t.node_status["pass_final_boss_count"] = 1
         self.assertIn("2/3", ui.deck_spend_reason(t))
         t.member_status["equipment"]["imprints"] = [ui.TARGET] * 3
+        # 用户 2026-10-27 18:2x：达成还要 2 个目标装备，凑满前信用点继续留着
+        self.assertIn("目标装备 0/2", ui.deck_spend_reason(t))
+        t.config["装备3号位优先级"] = ["深绿桎梏", "深绿黑夜"]
+        t.member_status["equipment"]["names"] = ["混沌之识", "", "深绿黑夜"]
         self.assertIsNone(ui.deck_spend_reason(t))
         t.config = {"刷刻印": True, "刷刻印速刷": False}               # 不速刷就不限制
         t.member_status["equipment"]["imprints"] = ["", "", ""]
@@ -383,6 +389,71 @@ class TestMaskSkip(unittest.TestCase):
                                 ocr_box(0.747, 0.928, "跳过")])
         self.assertTrue(utils_chaos.handle_chaos_mask_engraving(t))
         self.assertEqual(["跳过"], clicks)
+
+
+
+# 用户 2026-10-27 18:2x 规则用的目标装备配置（1 号位混沌之识 / 匕首，2 号位金冠，3 号位深绿桎梏 / 深绿黑夜）
+EQUIP_CONFIG = {"刷刻印": True, "刷刻印速刷": True, "记录流程追踪": False,
+                "装备1号位优先级": ["混沌之识", "欺骗暗影的匕首"], "装备2号位优先级": ["精灵王的金冠"],
+                "装备3号位优先级": ["深绿桎梏", "深绿黑夜"]}
+
+
+class TestImprintRules1027(unittest.TestCase):
+    """用户 2026-10-27 18:2x 新规则（第二层目标装备先装、达成条件）和不可逆守卫的纯函数部分。"""
+    def test_guard_reasons(self):
+        t = imprint_task()
+        self.assertIn("目标刻印", ui.refine_block_reason(t, {"name": "绯刃", "imprint": ui.TARGET}, True))
+        self.assertIn("混沌之识", ui.refine_block_reason(t, {"name": "混沌之识", "imprint": "", "rank": 0}, True))
+        self.assertIsNotNone(ui.refine_block_reason(t, {"name": "深绿黑夜", "imprint": "", "rank": 1}, False))
+        self.assertIsNone(ui.refine_block_reason(t, {"name": "深绿黑夜", "imprint": "", "rank": 1}, True))
+        self.assertIsNone(ui.refine_block_reason(t, {"name": "绯刃", "imprint": ui.OTHER, "rank": None}, False))
+
+    def test_layer2_rules(self):
+        t = imprint_task()
+        t.config = dict(EQUIP_CONFIG)
+        t.node_status = {"pass_final_boss_count": 1}
+        dagger = {"name": "欺骗暗影的匕首", "imprint": "", "rank": 1}
+        self.assertTrue(ui.install_decision(t, dagger, 0, True, "配置优先级更高")[0])
+        self.assertFalse(ui.install_decision(t, dagger, 0, False, "当前装备配置优先级更高")[0])
+        # 别的刻印也照装（槽位没有目标刻印可顶掉）
+        self.assertTrue(ui.install_decision(t, dict(dagger, imprint=ui.OTHER), 0, True, "")[0])
+        # 槽位已有目标刻印：仍按旧规则，自带别的刻印会顶掉目标刻印就不装；没刻印的换上继承
+        t.member_status["equipment"]["imprints"] = [ui.TARGET, "", ""]
+        self.assertFalse(ui.install_decision(t, dict(dagger, imprint=ui.OTHER), 0, True, "")[0])
+        self.assertTrue(ui.install_decision(t, dagger, 0, True, "")[0])
+        # 混沌之识不换
+        t.member_status["equipment"]["names"] = ["混沌之识", "", ""]
+        self.assertFalse(ui.install_decision(t, dagger, 0, True, "", "混沌之识")[0])
+        # 第一层维持原规则
+        t.node_status["pass_final_boss_count"] = 0
+        t.member_status["equipment"].update(names=["", "", ""], imprints=["", "", ""])
+        self.assertFalse(ui.install_decision(t, dagger, 0, True, "")[0])
+
+    def test_event_target_equipment_layer2(self):
+        names = [["欺骗暗影的匕首"], ["精灵王的金冠"], ["深绿桎梏", "深绿黑夜"]]
+        t = imprint_task()
+        t.member_status["equipment"]["names"] = ["混沌之识", "", ""]
+        t.node_status = {"pass_final_boss_count": 1}
+        self.assertEqual(["混沌之识", "精灵王的金冠", "深绿桎梏", "深绿黑夜"], ui.event_target_equipment(t, names))
+
+
+class TestGoalReached(unittest.TestCase):
+    def _task(self, names, imprints):
+        t = imprint_task(imprints)
+        t.config = dict(EQUIP_CONFIG)
+        t.member_status["equipment"]["names"] = list(names)
+        t.node_status = {}
+        return t
+
+    def test_goal(self):
+        """用户 2026-10-27 18:2x：达成＝至少 2 个目标装备（1 号位混沌之识算）+ 3 个目标刻印。"""
+        T = ui.TARGET
+        self.assertTrue(ui.goal_reached(self._task(["混沌之识", "怪异之壳", "深绿黑夜"], (T, T, T))))
+        self.assertTrue(ui.goal_reached(self._task(["欺骗暗影的匕首", "精灵王的金冠", "不朽鳞片"], (T, T, T))))
+        self.assertFalse(ui.goal_reached(self._task(["混沌之识", "怪异之壳", "不朽鳞片"], (T, T, T))))     # 1 个目标装备
+        self.assertFalse(ui.goal_reached(self._task(["混沌之识", "精灵王的金冠", "深绿黑夜"], (T, T, ""))))  # 2 个刻印
+        self.assertFalse(ui.goal_reached(self._task(["", "", ""], ("", "", ""))))
+        self.assertEqual(2, ui.target_equipment_count(self._task(["混沌之识", "", "深绿桎梏"], ("", "", ""))))
 
 
 if __name__ == "__main__":
