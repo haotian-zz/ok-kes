@@ -68,6 +68,20 @@ def enabled(task):
 
 # ------------------------- 解析 -------------------------
 
+# 法典词条（国服，2026-10-27 实录全部出现过的）。OCR 偶尔漏字（19:05 实录「暴君3」读成「君3」，禁止词条没认出来），
+# 读到的名字按这张表认回全名；认不回来的当「读不清」，按不合格处理（多花一次合成，好过放过带禁止词条的法典）
+CODEX_TRAITS = ("精英", "硬化", "暴君", "坏疽", "损失", "疾病", "不安", "愤怒", "疎忽", "疏忽", "复仇", "松懈")
+
+
+def canonical_trait(name):
+    """OCR 读到的词条名 → 全名；认不出返回 None。漏字时按「是唯一一个全名的一部分」认。"""
+    name = (name or "").strip()
+    if name in CODEX_TRAITS:
+        return name
+    hits = {t for t in CODEX_TRAITS if name and name in t}
+    return hits.pop() if len(hits) == 1 else None
+
+
 def parse_codex(lines):
     """法典面板/卡片的文字（从上到下）→ 地图、难度、赛季特性、PT、稀有命运、词条、能不能存档。"""
     text = "".join(lines)
@@ -82,7 +96,9 @@ def parse_codex(lines):
     m = re.search(r"稀有命运触发率增加\s*(\d+)\s*%", text)
     if m:
         info["rare"] = int(m.group(1))
-    info["mods"] = [(name, int(level)) for name, level in re.findall(r"[\[【(（]\s*([^\]】)）\d\s]{1,4})\s*(\d)\s*[\]】)）]", text)]
+    raw = [(name, int(level)) for name, level in re.findall(r"[\[【(（]\s*([^\]】)）\d\s]{1,4})\s*(\d)\s*[\]】)）]", text)]
+    info["mods"] = [(canonical_trait(n) or n, lv) for n, lv in raw]
+    info["unknown_mods"] = [f"{n}{lv}" for n, lv in raw if canonical_trait(n) is None]
     return info
 
 
@@ -101,6 +117,8 @@ def codex_problems(info, task=None, want=None):
     banned = [f"{n}{lv}" for n, lv in info["mods"] if any(b in n for b in want[BAN_KEY])]
     if banned:
         bad.append(f"有禁止词条 {'、'.join(banned)}")
+    if info.get("unknown_mods"):
+        bad.append(f"词条读不清 {'、'.join(info['unknown_mods'])}")
     if info["no_save"]:
         bad.append(NO_SAVE_TEXT)
     return bad

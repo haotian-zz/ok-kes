@@ -112,6 +112,24 @@ def pick_task(boxes):
     return t, clicks
 
 
+class TestCodexTraitOcr(unittest.TestCase):
+    """实录 2026-10-27 19:05：「暴君3」读成「君3」，禁止词条没认出来（那张碰巧稀有命运不够被拒）。"""
+
+    def test_missing_char_maps_back(self):
+        self.assertEqual("暴君", ui.canonical_trait("君"))
+        self.assertEqual("损失", ui.canonical_trait("失"))
+        self.assertIsNone(ui.canonical_trait("X"))
+        info = ui.parse_codex(["裁决之沼", "10 | 等级", "稀有命运触发率增加 50%", "[坏疽3][硬化2][君3]"])
+        self.assertEqual([("坏疽", 3), ("硬化", 2), ("暴君", 3)], info["mods"])
+        want = {ui.MAP_KEY: "裁决之沼", ui.DIFF_KEY: 10, ui.TRAIT_KEY: "", ui.RARE_KEY: 50, ui.BAN_KEY: ["损失", "暴君", "不安"]}
+        self.assertIn("有禁止词条 暴君3", ui.codex_problems(info, want=want))
+
+    def test_unreadable_trait_rejected(self):
+        info = ui.parse_codex(["裁决之沼", "10 | 等级", "稀有命运触发率增加 50%", "[坏疽3][X2]"])
+        want = {ui.MAP_KEY: "裁决之沼", ui.DIFF_KEY: 10, ui.TRAIT_KEY: "", ui.RARE_KEY: 50, ui.BAN_KEY: ["暴君"]}
+        self.assertIn("词条读不清 X2", ui.codex_problems(info, want=want))
+
+
 class TestCodexPick(unittest.TestCase):
     def test_free_pick_takes_best_and_confirms(self):
         """实录 2026-10-27 02:42：通关后免费三选一都不合格，以前去读珠/金币读成 None 就停了任务。"""
