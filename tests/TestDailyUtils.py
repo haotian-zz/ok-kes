@@ -116,6 +116,12 @@ class TestGoHome(unittest.TestCase):
         self.assertFalse(utils_daily.go_home(task, timeout=5))
         self.assertEqual([], task.actions)
 
+    def test_hidden_ui_wake_point_rotates(self):
+        # 2026-10-27 22:27：立绘盖住默认唤醒点，同一个点点 30 次都没唤醒；点不出来要换位置
+        task = FakeTask([([], 128), ([], 128), ([], 128), (HOME, 128)])
+        self.assertTrue(utils_daily.go_home(task, timeout=5))
+        self.assertEqual([("click",) + p for p in utils_daily.HOME_WAKE_POINTS], task.actions)
+
 
 class TestClaimAll(unittest.TestCase):
     def test_clicks_only_claim_all_in_region(self):

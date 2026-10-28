@@ -6495,6 +6495,14 @@ def handle_non_battle_page(task: TriggerTask):
     """非出击/卡厄思页面: 检测到故事/营救/方舟城市时自动停止当前模式，优先级最高。"""
     if handle_storage_full(task):
         return True
+    import utils_daily
+    if getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) != chaos_strategy.MODE_LEGACY and utils_daily.is_home(task):
+        # 主页右侧也有「故事」入口，会被下面当成故事页停任务。选了玩法时在主页就重新走「从主页进卡厄思」
+        # （2026-10-27 22:31 实录：启动时主页 UI 没唤醒、回主页超时，进卡厄思的机会用掉了，UI 出来后被当成故事页停了）
+        task.log_info("在主页，重新从主页进卡厄思")
+        task.entry_checked = False
+        task.start_window = True
+        return True
     box = find_box_at_point(task, 0.887, 0.160)
     if box and box.name == "故事":
         task.log_info("检测到故事页面，停止当前模式")

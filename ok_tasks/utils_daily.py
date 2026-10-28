@@ -21,6 +21,9 @@ TEMPLATE_BASE_WIDTH = 1280
 HOME_KEYWORDS = ("出击", "模拟", "卡厄思", "方舟城市", "主战员", "营救")
 # 主页闲置一段时间会隐藏 UI，此时点空白处唤醒（不会触发任何入口）
 HOME_WAKE_POINT = (0.45, 0.42)
+# 看板立绘会换，点到立绘身上只触发互动、不出 UI（2026-10-27 22:27 实录：立绘的腿盖住 (0.45, 0.42)，点 30 次都没唤醒），
+# UI 隐藏时几个位置轮流点；左侧两个点在立绘外的背景上
+HOME_WAKE_POINTS = (HOME_WAKE_POINT, (0.12, 0.45), (0.10, 0.20))
 HOME_ICON_REGION = (0.84, 0.0, 0.96, 0.13)
 BACK_ICON_REGION = (0.0, 0.0, 0.08, 0.12)
 PAY_POPUP_CLOSE = (0.937, 0.05)
@@ -173,6 +176,7 @@ def go_home(task: BaseTask, timeout=60.0):
     """从任意页面回到主页：关提示 → 点右上角主页按钮 → 返回键兜底；主页 UI 隐藏时点空白唤醒。"""
     end = time.time() + timeout
     esc_count = 0
+    wakes = 0
     while time.time() < end:
         refresh(task)
         if is_home(task):
@@ -210,8 +214,9 @@ def go_home(task: BaseTask, timeout=60.0):
             task.sleep(3)
             continue
         if len(task.all_texts or []) <= 2:
-            # 主页 UI 隐藏（只剩立绘）或加载中：点空白处唤醒
-            click_rel(task, *HOME_WAKE_POINT, after=1.5, reason="唤醒主页 UI")
+            # 主页 UI 隐藏（只剩立绘）或加载中：点空白处唤醒，点不出来就换个位置
+            click_rel(task, *HOME_WAKE_POINTS[wakes % len(HOME_WAKE_POINTS)], after=1.5, reason="唤醒主页 UI")
+            wakes += 1
             continue
         if esc_count >= 3:
             task.log_info("连续按 ESC 仍未回到主页，停止")

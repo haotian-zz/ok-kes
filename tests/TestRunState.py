@@ -318,6 +318,22 @@ class TestStartupBlankFrame(unittest.TestCase):
         self.assertTrue(ChaosMode._start_window_step(t))
         self.assertEqual(["故事"], entered)
 
+    def test_home_page_reenters_instead_of_story_stop(self):
+        """2026-10-27 22:31 实录：启动时回主页超时、进卡厄思的机会用掉了，主页 UI 出来后右上角「故事」入口被当成故事页停了任务。"""
+        home = [box(0.887, 0.160, "故事"), box(0.900, 0.352, "模拟"), box(0.892, 0.440, "卡厄思"),
+                box(0.883, 0.521, "方舟城市"), box(0.891, 0.615, "主战员")]
+        stopped = []
+        t = chaos_task(chaos_mode=cs.MODE_TARGET, entry_checked=True, start_window=False, all_texts=home,
+                       disable=lambda: stopped.append(True))
+        self.assertTrue(utils.handle_non_battle_page(t))
+        self.assertEqual([], stopped)
+        self.assertFalse(t.entry_checked)
+        self.assertTrue(t.start_window)
+        # 真正的故事页（不是主页）照旧停任务
+        t = chaos_task(chaos_mode=cs.MODE_TARGET, all_texts=[box(0.887, 0.160, "故事")], disable=lambda: stopped.append(True))
+        self.assertTrue(utils.handle_non_battle_page(t))
+        self.assertEqual([True], stopped)
+
 
 class TestImprintIgnoresCrossRunSeen(unittest.TestCase):
     """2c5d226：「拿过」（chaos_seen）是跨局图鉴记录，刷刻印每局都要重新拿目标装备，不能挡住本局目标装备来源事件加分
