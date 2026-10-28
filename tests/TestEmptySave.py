@@ -32,7 +32,7 @@ def card(name, x=0.3, y=0.5):
 
 
 def empty_task(target="希露德", texts=(), mode=cs.MODE_EMPTY, config=None):
-    logs, clicks = [], []
+    logs, clicks, scrolls = [], [], []
     cfg = {"目标主战员": target, utils.EMPTY_TARGETS: list(ORDER),
            # 刷空档配置里打开的三个设置（用户 2026-10-28：要能通过设置切换，不跟玩法绑）
            utils.NEUTRAL_SKIP: True, utils.EQUIP_TARGET_FIRST: True, utils.FLASH_EQUIP_NOT_TARGET: True}
@@ -41,7 +41,8 @@ def empty_task(target="希露德", texts=(), mode=cs.MODE_EMPTY, config=None):
                               width=1920, height=1080, all_texts=list(texts), frame=None, chaos_mode=mode,
                               log_info=lambda *a, **k: logs.append(a[0]), log_error=lambda *a, **k: logs.append(a[0]),
                               log_debug=lambda *a, **k: None,
-                              sleep=lambda s: None, move_relative=lambda x, y: None,
+                              sleep=lambda s: None, move_relative=lambda x, y: None, is_adb=lambda: False,
+                              scroll_relative=lambda x, y, n: scrolls.append(n),
                               click=lambda x, y, **k: clicks.append((round(x, 3), round(y, 3))),
                               click_box=lambda b, **k: clicks.append(b.name))
     t.setups = 0
@@ -52,7 +53,7 @@ def empty_task(target="希露德", texts=(), mode=cs.MODE_EMPTY, config=None):
     setup_strategy()
     t.setups = 0
     t.setup_strategy = setup_strategy
-    t.logs, t.clicks = logs, clicks
+    t.logs, t.clicks, t.scrolls = logs, clicks, scrolls
     return t
 
 
@@ -244,6 +245,26 @@ class TestRemovalLedger(unittest.TestCase):
         self.assertEqual(6, utils._read_empty_deck(t, "希露德", 2))
         self.assertEqual(["抽取&释放"], t.node_status["empty_flash_cards"])
         self.assertEqual((2, 4), utils.empty_removal_state(t))
+
+    def test_deck_target_section_below_scrolls(self):
+        # 10-28 04:20：「所有牌堆」第一栏是海德玛丽（两行 5 张），蒂菲拉那栏只露出第一行卡名，张数和名字在画面外
+        top = [box(0.116, 0.182, "05"), box(0.26, 0.465, "海德玛丽"), box(0.37, 0.14, "剑光"),
+               box(0.37, 0.958, "展开屏障"), box(0.53, 0.958, "量子晶种"), box(0.70, 0.958, "形态凝聚")]
+        # 往下滚：蒂菲拉那栏整栏露出来，第二行还有一张闪光卡
+        lower = [box(0.116, 0.40, "05"), box(0.26, 0.683, "蒂菲拉"), box(0.37, 0.36, "展开屏障"),
+                 box(0.53, 0.36, "量子晶种"), box(0.70, 0.36, "形态凝聚"), box(0.86, 0.36, "事件视界"),
+                 box(0.37, 0.78, "展开屏障")]
+        shots = [top, lower]
+        t = self.deck_task("蒂菲拉", [])
+        t.ocr = lambda *a, **k: shots.pop(0)
+        self.assertEqual(7, utils._read_empty_deck(t, "蒂菲拉", 2))
+        self.assertEqual([-5], t.scrolls)
+        self.assertEqual(["形态凝聚", "事件视界"], t.node_status["empty_flash_cards"])
+        # 目标那栏张数在第一屏就读到了：不滚
+        t2 = self.deck_task("蒂菲拉", [])
+        t2.ocr = lambda *a, **k: lower
+        self.assertEqual(7, utils._read_empty_deck(t2, "蒂菲拉", 2))
+        self.assertEqual([], t2.scrolls)
 
     def test_deck_not_open_not_recorded(self):
         t = self.deck_task("希露德", ["主战员", "攻击力", "模糊的记忆"])

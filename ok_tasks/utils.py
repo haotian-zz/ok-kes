@@ -3941,14 +3941,29 @@ def _read_empty_deck(task: TriggerTask, target, removed):
     task.sleep(1.5)
     task.next_frame()
     chaos_trace.step(task, "panel", "刷空档卡组", task.frame)
+    def own_cards(texts):
+        cards = []
+        for b in texts:
+            kind, real = empty_card_kind(b.name, target)
+            # 只认卡名那一行：描述里也会出现卡名（「生成3张追踪箭」），按长度排除
+            if kind in ("basic", "start", "flash") and len(chaos_strategy.base_card_name(b.name)) <= len(real) + 2:
+                cards.append((real, kind))
+        return cards
     texts = _simplify_texts(task.ocr())
-    found = []
-    for b in texts:
-        kind, real = empty_card_kind(b.name, target)
-        # 只认卡名那一行：描述里也会出现卡名（「生成3张追踪箭」），按长度排除
-        if kind in ("basic", "start", "flash") and len(chaos_strategy.base_card_name(b.name)) <= len(real) + 2:
-            found.append((real, kind))
+    found = own_cards(texts)
     shown = _empty_deck_count(task, texts, target)
+    if shown is None:
+        # 「所有牌堆」不按编队排：10-28 04:20 蒂菲拉那栏在海德玛丽两行卡下面，只露出第一行卡名，张数和名字在画面外。
+        # 往下滚一次再读；滚完的画面里卡名多就用它的（同一张卡两个画面都露出来，不能相加）
+        _scroll_card_page(task, 0.60, 0.60, -5, "刷空档卡组")
+        task.next_frame()
+        chaos_trace.step(task, "panel", "刷空档卡组-下滚", task.frame)
+        more = _simplify_texts(task.ocr())
+        shown = _empty_deck_count(task, more, target)
+        lower = own_cards(more)
+        note_empty_cards(task, [real for real, kind in lower if kind == "flash"], "卡组")
+        if len(lower) > len(found):
+            found = lower
     if shown is None and not found and removed < _empty_start_total(target):
         task.log_info(f"刷空档卡组：没数到{target}的卡（卡组没打开？），这次不记")
         return None
