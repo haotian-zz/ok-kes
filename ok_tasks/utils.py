@@ -211,6 +211,26 @@ def card_side(name, member):
     return "leader" if lead and owner["id"] == lead["id"] else "other"
 
 
+def empty_card_kind(name, member):
+    """member 自己的卡按卡库 id 分：basic（srt1～3 基础卡）、start（srt4 初始独特卡）、flash（uni1～4 闪光卡，
+    主战员闪光/天赋进场塞进卡组的新卡）、other（衍生卡等）。返回 (种类, 卡库卡名)；别人的卡、认不出返回 (None, None)。"""
+    try:
+        db = game_db.get_db()
+        card = db.find_card(chaos_strategy.base_card_name(name), owner=member)
+        owner = db.card_owner(card) if card else None
+        lead = db.combatant(member) if member else None
+    except Exception:  # noqa: BLE001
+        return None, None
+    if not (card and owner and lead and owner["id"] == lead["id"]):
+        return None, None
+    m = re.search(r"_(srt|uni)(\d)$", card.get("id") or "")
+    if not m:
+        return "other", card["name"]
+    if m.group(1) == "uni":
+        return "flash", card["name"]
+    return ("start" if m.group(2) == "4" else "basic"), card["name"]
+
+
 def sortie_card_side(task: TriggerTask, name):
     """卡牌归属（出击模式拿牌/删牌规则，用户 2026-10-28），按出战主战员算，见 card_side。"""
     return card_side(name, sortie_leader(task))
@@ -1481,10 +1501,12 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
         else []
     )
 
-    def record_pending_removal():
+    def record_pending_removal(card=None):
         if action == "移除":
             _ns = task.node_status
             _ns["pending_removed_card_count"] = _ns.get("pending_removed_card_count", 0) + 1
+            if card:
+                empty_pick_removal(task, card["name"])
 
     def filter_flash_priority_cards(cards):
         """闪光时排除已命中闪光优先级的卡牌，避免重复选择。"""
@@ -1532,7 +1554,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
             task.sleep(0.3)
             card["selected"] = True
             selected += 1
-            record_pending_removal()
+            record_pending_removal(card)
             clicked = True
         return clicked
 
@@ -1573,7 +1595,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
                 task.sleep(0.3)
                 card["selected"] = True
                 selected += 1
-                record_pending_removal()
+                record_pending_removal(card)
                 clicked = True
         return clicked
 
@@ -1610,9 +1632,20 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
             f"{page}: 刷空档找到目标主战员，相似度="
             f"{target_member.confidence:.4f}，中心Y={target_y:.4f}"
         )
+        row = [card for card in cards if abs(card["y"] - target_y) <= 0.25]
+        note_empty_cards(task, [card["name"] for card in row], "删卡页")
+        removed, _ = empty_removal_state(task)
+        room = EMPTY_SAVE_REMOVALS - removed - len(task.node_status.get("empty_remove_pending") or [])
+        if room <= 0:
+            task.log_info(f"{page}: 刷空档：{empty_target(task)}这个存档已经删了 {removed} 次（上限 {EMPTY_SAVE_REMOVALS}），不再删目标的卡")
+            return False
+        picked = row[:0]
+        for card in row:
+            if len(picked) < room and not card["selected"]:
+                picked.append(card)
         return click_cards(
             cards,
-            lambda card: abs(card["y"] - target_y) <= 0.25,
+            lambda card: any(card is c for c in picked),
             "刷空档优先移除目标主战员同排卡牌，点击",
         )
 
@@ -1782,6 +1815,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
             task.click_box(button)
             if action == "移除":
                 task.node_status["pending_removed_card_count"] = 0
+                task.node_status.pop("empty_remove_pending", None)
             return True
 
     cards = recognize_cards_in_deck(task, page=f"{page}-兜底")
@@ -3252,6 +3286,11 @@ def _decide_install(task, view, equipment, imprint_mode):
     if imprint_mode:
         # 刷刻印：刻印优先于装备，三件目标装备都是传说，不管「一个主战员只装一件传说」
         should, reason = utils_imprint.install_decision(task, eq, slot, should, reason, current_name)
+    elif empty_mode(task):
+        # 刷空档：装备优先直接给目标（用户 2026-10-28），只有目标这个位置装着品质更高的才不换；不管「一人只装一件传说」
+        if not should and _EQUIPMENT_QUALITY_RANKS.get(eq.get("quality") or "", 0) \
+                >= _EQUIPMENT_QUALITY_RANKS.get(equipment["qualities"][slot] or "", 0):
+            should, reason = True, f"刷空档装备优先给目标（{reason}）"
     elif eq["quality"] == "传说" and any(q == "传说" and s != slot for s, q in enumerate(view.live)):
         task.log_info("目标主战员已安装传说装备，新传说装备改由其他主战员安装")
         should, reason = False, "该主战员其他装备位已有传说装备"
@@ -3549,11 +3588,14 @@ def _avoid_god_spark(task: TriggerTask):
 
 
 # ---------------- 刷空档（用户 2026-10-28） ----------------
-# 一个存档最多移除 5 张＝目标主战员 3 张初始卡 + 2 张闪光卡，所以局内目标的卡最多闪 2 张；
-# 点了进场删一张的天赋时战斗里只能再闪 1 张（把「刷空档闪光几张就重开」改成 1）。
-# 过第一个航点（卡厄思奖励结算页）存档就存下了，到那就逃脱，没删完的局外改存档补；没到航点就闪够了张数，直接逃脱重开。
+# 空档＝目标卡组里的卡全删掉，一个存档最多记 5 次移除。开局 4 张初始卡（3 张基础卡 + 1 张初始独特卡）都要删，
+# 所以卡组里最多只能多 1 张闪光卡；多到第 2 张就做不成了（10-28 希露德删了 4 次还剩装载箭筒、等离子之雨，用户确认作废）。
+# 「闪光」只算往目标卡组里加了新卡的：主战员闪光、天赋进场送的、时间调节器这类装备给的，都是卡库里 uni1～4 的闪光卡；
+# 三选一的卡牌闪光只是把已有的卡变强、不加新卡，不算（用户 2026-10-28）。
+# 过第一个航点（卡厄思奖励结算页）存档就存下了，到那就逃脱，没删完的局外改存档补；没到航点闪光卡就到了张数，直接逃脱重开。
 EMPTY_FLASH_LIMIT = "刷空档闪光几张就重开"
 EMPTY_TARGETS = "刷空档目标顺序"
+EMPTY_SAVE_REMOVALS = 5      # 一个存档最多记 5 次移除（官方规则，超过的不记）
 
 
 def empty_mode(task: TriggerTask):
@@ -3588,33 +3630,47 @@ def empty_keep_members(task: TriggerTask):
     return {_canonical_member(n) for n in names if isinstance(n, str) and n}
 
 
-def record_empty_flash(task: TriggerTask, cards):
-    """刷空档：闪光三选一页是目标主战员的卡就记一次（同一页连着几帧只记一次）。返回是否记了。
-    三个变体同名，有一张认得出是目标的就算；三张都认不出归属也按目标的算（宁可多重开，不存坏档）。"""
-    if not empty_mode(task) or not cards:
-        return False
+def note_empty_cards(task: TriggerTask, names, where):
+    """刷空档：在目标卡组里看到的闪光卡（删卡页目标那一排、闪光页、单张闪光结果页）记进本局账，张数就是闪光次数。
+    同一张只记一次。返回这次新记的卡名。"""
+    if not empty_mode(task):
+        return []
     ns = task.node_status
     target = empty_target(task)
+    seen = list(ns.get("empty_flash_cards") or [])
+    new = []
+    for name in names:
+        kind, real = empty_card_kind(name, target)
+        if kind == "flash" and real not in seen and real not in new:
+            new.append(real)
+    for real in new:
+        seen.append(real)
+        task.log_info(f"刷空档：{target}的卡组里多了闪光卡「{real}」（{where}），本局第 {len(seen)} 张"
+                      f"（{_empty_flash_limit(task)} 张就逃脱重开）")
+    ns["empty_flash_cards"] = seen
+    ns["empty_flashes"] = len(seen)
+    return new
+
+
+def record_empty_flash(task: TriggerTask, cards):
+    """刷空档：闪光三选一页。三选一只把已有的卡变强、不加新卡，不算次数（用户 2026-10-28）；
+    但闪的要是目标的闪光卡，说明它已经被塞进卡组了，按闪光卡记（同一张只记一次）。返回是否新记了。"""
+    if not empty_mode(task) or not cards:
+        return False
+    if note_empty_cards(task, [c["name"] for c in cards], "闪光三选一页"):
+        return True
+    ns = task.node_status
     name = chaos_strategy.base_card_name(cards[0]["name"])
     key = [ns.get("node_count", 0), name]
-    last = ns.get("empty_flash_key") or [None, None, 0]
-    ns["empty_flash_key"] = key + [time.time()]
-    if last[:2] == key and time.time() - last[2] < 15:
-        return False
-    sides = [card_side(c["name"], target) for c in cards]
-    if "leader" not in sides and not all(side == "unknown" for side in sides):
-        task.log_info(f"刷空档：闪光的「{name}」不是{target}的卡（归属 {sides}），不计数")
-        return False
-    ns["empty_flashes"] = ns.get("empty_flashes", 0) + 1
-    why = "" if "leader" in sides else "（认不出归属，按目标的卡算）"
-    task.log_info(f"刷空档：{target}的卡「{name}」闪光{why}，本局第 {ns['empty_flashes']} 张"
-                  f"（{_empty_flash_limit(task)} 张就逃脱重开）")
-    return True
+    if ns.get("empty_flash_key") != key:
+        ns["empty_flash_key"] = key
+        task.log_info(f"刷空档：卡牌闪光「{name}」只是把已有的卡变强、不加新卡，不计数")
+    return False
 
 
 def record_empty_flash_popup(task: TriggerTask):
-    """刷空档：单张「卡牌闪光」结果页（没有三选一，游戏直接随机闪好，如装备「时间调节器」佩戴即闪光）也要计数。
-    10-28 02:27 实录：时间调节器装给希露德，直接闪了等离子之雨，三选一页没出现，没记上。"""
+    """刷空档：单张「卡牌闪光」结果页（没有三选一，游戏直接随机闪好，如装备「时间调节器」佩戴即闪光）。
+    10-28 02:27 实录：时间调节器装给希露德，弹的是「等离子之雨」——它是闪光卡，删卡时 0 PT，说明是新塞进卡组的。"""
     if not empty_mode(task):
         return False
     title = find_box_at_point(task, 0.500, 0.113)
@@ -3623,8 +3679,67 @@ def record_empty_flash_popup(task: TriggerTask):
     names = [b.name.strip() for b in task.all_texts or []
              if 0.38 <= (b.x + b.width / 2) / task.width <= 0.64 and 0.22 <= (b.y + b.height / 2) / task.height <= 0.30
              and re.search(r"[\u4e00-\u9fff]{2,}", b.name)]
-    name = max(names, key=len) if names else "?"
-    return record_empty_flash(task, [{"name": name}])
+    return bool(note_empty_cards(task, [max(names, key=len)] if names else [], "单张卡牌闪光页"))
+
+
+def empty_pick_removal(task: TriggerTask, name):
+    """刷空档：删卡页点中了一张卡，等「移除」点下去再记账（empty_commit_removals）。"""
+    if empty_mode(task):
+        task.node_status["empty_remove_pending"] = list(task.node_status.get("empty_remove_pending") or []) + [name]
+
+
+def empty_commit_removals(task: TriggerTask):
+    """刷空档：「移除」点下去了，点中的目标卡记进本局删卡账；跳过/没删成的调用方传 commit=False 清掉。"""
+    ns = task.node_status
+    picked = ns.pop("empty_remove_pending", None) or []
+    if not empty_mode(task) or not picked:
+        return
+    target = empty_target(task)
+    done = [list(x) for x in ns.get("empty_removed") or []]
+    for name in picked:
+        kind, real = empty_card_kind(name, target)
+        if kind:
+            done.append([real, kind])
+    ns["empty_removed"] = done
+    task.log_info(f"刷空档：{target}本局删了 {len(done)} 张：" + "、".join(n for n, _ in done))
+
+
+def _empty_start_total(member):
+    """目标开局的初始卡张数（卡库 start_deck 的 srt1～4，希露德是多重箭×2+弓箭护卫+装载箭筒）；查不到按 4 张。"""
+    try:
+        cards = game_db.get_db().cards_of(member)
+    except Exception:  # noqa: BLE001
+        cards = []
+    return sum(int(c.get("start_deck") or 0) for c in cards if re.search(r"_srt[1-4]$", c.get("id") or "")) or 4
+
+
+def empty_removal_state(task: TriggerTask):
+    """刷空档账：(目标这个存档删了几次, 还要删几张)。删了几次以主战员面板为准（游戏记的），面板没读到用脚本账；
+    还要删＝没删的初始卡（基础卡 + 初始独特卡）+ 卡组里还在的闪光卡。"""
+    ns = task.node_status
+    done = ns.get("empty_removed") or []
+    start_done = sum(1 for _, kind in done if kind in ("basic", "start"))
+    flash_done = {name for name, kind in done if kind == "flash"}
+    left = max(0, _empty_start_total(empty_target(task)) - start_done) \
+        + sum(1 for name in ns.get("empty_flash_cards") or [] if name not in flash_done)
+    try:
+        panel = int(ns.get("empty_panel_removed") or 0)
+    except (TypeError, ValueError):
+        panel = 0
+    removed = max(len(done), panel)
+    # 选路页读卡组记下的「一共要删几次」：删卡不改变它，只有新塞进来的闪光卡会让它变大，所以一直有效
+    need = max(removed + left, int(ns.get("empty_deck_need") or 0))
+    return removed, need - removed
+
+
+def empty_should_remove(task: TriggerTask):
+    """刷空档商店删卡：目标还有要删的卡、这个存档没删满 5 次才花信用点。返回不删的原因，要删返回 None。"""
+    removed, left = empty_removal_state(task)
+    if removed >= EMPTY_SAVE_REMOVALS:
+        return f"{empty_target(task)}这个存档已经删了 {removed} 次（上限 {EMPTY_SAVE_REMOVALS}）"
+    if left <= 0:
+        return f"{empty_target(task)}的卡已经删完了"
+    return None
 
 
 def empty_flash_equipment(task: TriggerTask, eq):
@@ -3658,13 +3773,18 @@ def _escape_via_menu(task: TriggerTask, stamp_key, reason):
 
 
 def handle_empty_flash_escape(task: TriggerTask):
-    """刷空档：还没到第一个航点，目标的卡就闪够了张数 → 逃脱重开（没过航点，什么都不存）。"""
+    """刷空档：还没到第一个航点，目标卡组里的闪光卡就到了张数（或删卡次数已经不够做成空档）→ 逃脱重开（没过航点，什么都不存）。"""
     ns = getattr(task, "node_status", None)
-    if not empty_mode(task) or not isinstance(ns, dict) or ns.get("is_escaped") \
-            or ns.get("empty_flashes", 0) < _empty_flash_limit(task):
+    if not empty_mode(task) or not isinstance(ns, dict) or ns.get("is_escaped"):
         return False
-    return _escape_via_menu(task, "empty_escape_at",
-                            f"刷空档：没到第一个航点，{empty_target(task)}的卡已经闪了 {ns['empty_flashes']} 张，逃脱重开")
+    removed, left = empty_removal_state(task)
+    if ns.get("empty_flashes", 0) >= _empty_flash_limit(task):
+        why = f"{empty_target(task)}的卡组里已经多了 {ns['empty_flashes']} 张闪光卡（{'、'.join(ns.get('empty_flash_cards') or [])}）"
+    elif removed + left > EMPTY_SAVE_REMOVALS:
+        why = f"{empty_target(task)}已删 {removed} 次、还要删 {left} 张，超过 {EMPTY_SAVE_REMOVALS} 次做不成空档"
+    else:
+        return False
+    return _escape_via_menu(task, "empty_escape_at", f"刷空档：没到第一个航点，{why}，逃脱重开")
 
 
 def empty_waypoint_escape(task: TriggerTask):
@@ -3677,15 +3797,17 @@ def empty_waypoint_escape(task: TriggerTask):
         task.sleep(1)
         return True
     if not ns.get("empty_escape_at"):
-        flashes = ns.get("empty_flashes", 0)
-        good = flashes < _empty_flash_limit(task)
+        # 存档能不能做成空档：已删次数 + 还要删的张数不超过 5（局外改存档补删）
+        removed, left = empty_removal_state(task)
+        good = removed + left <= EMPTY_SAVE_REMOVALS
         ns["empty_saved"] = good
         if good:
             ns["success_rounds"] = ns.get("success_rounds", 0) + 1
-        ns["escape_reason"] = "刷空档：到第一个航点" + ("" if good else "（闪光超了）")
-        task.log_info(f"刷空档：到第一个航点，存档已存下；本局移除 {ns.get('removed_card_count', 0)} 张、"
-                      f"{empty_target(task)}的卡闪光 {flashes} 张，逃脱"
-                      + ("" if good else "（闪光超了，这个存档不算，不换目标）"))
+        ns["escape_reason"] = "刷空档：到第一个航点" + ("" if good else "（删卡次数不够）")
+        cards = "、".join(ns.get("empty_flash_cards") or []) or "无"
+        task.log_info(f"刷空档：到第一个航点，存档已存下；{empty_target(task)}已删 {removed} 次，"
+                      f"卡组里多了闪光卡 {ns.get('empty_flashes', 0)} 张（{cards}），局外还要删 {left} 张，逃脱"
+                      + ("" if good else f"（{removed}+{left} 超过 {EMPTY_SAVE_REMOVALS} 次，做不成空档，不换目标）"))
     ns["empty_escape_at"] = time.time()
     _move_and_click(task, 0.959, 0.051)
     task.sleep(1)
@@ -3798,6 +3920,36 @@ def _probe_panel_equipment(task, cols, target):
     return True
 
 
+EMPTY_DECK_ICON = (0.041, 0.285)     # 主战员面板左边栏第三个图标（卡组），2026-10-28 面板截图量的
+
+
+def _read_empty_deck(task: TriggerTask, target, removed):
+    """刷空档：主战员面板左边栏点开卡组，按卡名逐张数目标还在卡组里的卡（基础卡、初始独特卡、闪光卡，天赋送的也在里面），
+    记下这个存档一共要删几次＝面板移除次数 + 还在的张数。战斗里主战员闪光塞进来的卡不用等删卡页也能数到（用户 2026-10-28）。
+    一张都没数到又还有初始卡没删，当成没打开卡组，不记。返回要删的总次数或 None。"""
+    import chaos_trace
+    _move_and_click(task, *EMPTY_DECK_ICON)
+    task.sleep(1.5)
+    task.next_frame()
+    chaos_trace.step(task, "panel", "刷空档卡组", task.frame)
+    found = []
+    for b in _simplify_texts(task.ocr()):
+        kind, real = empty_card_kind(b.name, target)
+        # 只认卡名那一行：描述里也会出现卡名（「生成3张追踪箭」），按长度排除
+        if kind in ("basic", "start", "flash") and len(chaos_strategy.base_card_name(b.name)) <= len(real) + 2:
+            found.append((real, kind))
+    if not found and removed < _empty_start_total(target):
+        task.log_info(f"刷空档卡组：没数到{target}的卡（卡组没打开？），这次不记")
+        return None
+    note_empty_cards(task, [real for real, kind in found if kind == "flash"], "卡组")
+    need = removed + len(found)
+    ns = task.node_status
+    ns["empty_deck_need"] = max(need, int(ns.get("empty_deck_need") or 0))
+    task.log_info(f"刷空档卡组：{target}还在卡组里 {len(found)} 张（{'、'.join(real for real, _ in found) or '无'}），"
+                  f"面板已删 {removed} 次，这个存档一共要删 {need} 次（上限 {EMPTY_SAVE_REMOVALS}）")
+    return need
+
+
 def read_member_panel(task: TriggerTask):
     """选路页点开主战员面板读刷存档主战员的 PT/复制/移除，读完关掉。读到就同步进 node_status。"""
     ns = getattr(task, "node_status", None)
@@ -3817,14 +3969,18 @@ def read_member_panel(task: TriggerTask):
         task._member_panel_traced = True
         import chaos_trace
         chaos_trace.step(task, "panel", "主战员面板", task.frame)
-    if _probe_panel_equipment(task, cols, target) and not any(
+    col = next((c for c in cols if c.get("name") and (target in c["name"] or c["name"] in target)), None)
+    if empty_mode(task) and col and isinstance(col.get("remove"), int):
+        ns["empty_panel_removed"] = col["remove"]
+        _read_empty_deck(task, target, col["remove"])
+        _move_and_click(task, 0.959, 0.050)      # 右上角 X 关面板（卡组页右上角也是这个 X）
+    elif _probe_panel_equipment(task, cols, target) and not any(
             "模糊的记忆" in b.name for b in _simplify_texts(task.ocr())):
         # 探路的 ESC 已经把面板也关了：别再点右上角——路线页那个位置是「逃脱」按钮
         task.log_info("主战员面板探路后面板已关，不再点右上角")
     else:
         _move_and_click(task, 0.959, 0.050)      # 右上角 X 关面板
     task.sleep(1)
-    col = next((c for c in cols if c.get("name") and (target in c["name"] or c["name"] in target)), None)
     if not col or "pt" not in col:
         task.log_info(f"主战员面板没找到「{target}」的模糊的记忆：{cols}")
         return None
@@ -4362,11 +4518,13 @@ def handle_remove(task: TriggerTask):
         if is_button_active(task, box):
             task.log_info("检测到移除操作，点击移除")
             task.click_box(box)
-            removed_count = max(
-                1,
-                task.node_status.get("pending_removed_card_count", 0),
-            )
-            _record_removed_cards(task, removed_count)
+            removed_count = task.node_status.get("pending_removed_card_count", 0)
+            if removed_count:
+                _record_removed_cards(task, removed_count)
+                empty_commit_removals(task)
+            else:
+                # 10-28 02:40 实录：事件选了「移除1张」后选卡页淡入时「移除」先亮，还没选卡就点了，记成多删一张（面板 3、脚本 4）
+                task.log_info("还没选卡就看到「移除」亮着（页面在切换），这次不记移除")
             task.node_status["pending_removed_card_count"] = 0
             task.sleep(1)
             return True
@@ -4399,6 +4557,7 @@ def handle_three_choice_card_remove(task: TriggerTask):
     task.click_box(remove_box)
     _record_removed_cards(task, 1)
     task.node_status["pending_removed_card_count"] = 0
+    task.node_status.pop("empty_remove_pending", None)
     return True
 
 def handle_flash(task: TriggerTask):
@@ -5799,6 +5958,8 @@ def handle_shop(task: TriggerTask):
                     task.log_info("德朗商店: 目标卡组要删的卡已经删够，不付费移除")
                 elif reason := utils_imprint.deck_spend_reason(task):
                     task.log_info(f"德朗商店: 刷刻印：{reason}，不付费移除")
+                elif empty_mode(task) and (reason := empty_should_remove(task)):
+                    task.log_info(f"德朗商店: 刷空档：{reason}，不付费移除")
                 elif cost <= current_credit and task.node_status['shop'] is True:
                     task.log_info(f"德朗商店: 移除卡牌需{cost}信用点，当前{current_credit}，足够，点击移除")
                     task.click_box(box)
@@ -6568,8 +6729,10 @@ RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "
                   "save_member_index", "imprint_peak", "escape_reason",
                   # 刷刻印对账（ledger_check）：对过账的节点、哪一层不逃脱、层结束/首领前对过没有
                   "ledger_checks", "escape_veto", "ledger_layer_end", "ledger_boss",
-                  # 刷空档：目标的卡闪了几张、到航点存好了没有、逃脱菜单点过没有
-                  "empty_flashes", "empty_flash_key", "empty_saved", "empty_escape_at")
+                  # 刷空档：卡组里多了哪些闪光卡、删了哪些目标卡（含点中待确认的）、面板上的移除次数、卡组读出的一共要删几次、
+                  # 到航点存好了没有、逃脱菜单点过没有
+                  "empty_flashes", "empty_flash_cards", "empty_flash_key", "empty_removed", "empty_remove_pending",
+                  "empty_panel_removed", "empty_deck_need", "empty_saved", "empty_escape_at")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = dev_out("chaos_run_state.json")

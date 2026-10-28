@@ -1,5 +1,5 @@
-# 刷存档-空存（刷空档）的单测：目标的卡闪光计数、闪够了逃脱重开、第一个航点逃脱、按顺序换目标、
-# 事件闪光选项一律不选、商店只删卡（用户 2026-10-28）。
+# 刷存档-空存（刷空档）的单测：目标卡组里多出的闪光卡计数（三选一卡牌闪光不算）、删卡账和卡组读数、
+# 删卡次数不够就逃脱重开、第一个航点逃脱、按顺序换目标、事件闪光选项一律不选、商店只删卡、装备优先给目标（用户 2026-10-28）。
 # 跑法：python -m unittest tests.TestEmptySave
 import os
 import sys
@@ -59,41 +59,60 @@ class TestFlashCount(unittest.TestCase):
         self.assertEqual("leader", utils.card_side("追踪箭", "希露德"))
         self.assertEqual("other", utils.card_side("水之源", "希露德"))
 
-    def test_target_flash_counted_once_per_page(self):
+    def test_card_kind(self):
+        # 卡库 id：srt1～3 基础卡、srt4 初始独特卡、uni1～4 闪光卡
+        self.assertEqual(("basic", "多重箭"), utils.empty_card_kind("多重箭", "希露德"))
+        self.assertEqual(("start", "装载箭筒"), utils.empty_card_kind("装载箭筒", "希露德"))
+        self.assertEqual(("flash", "等离子之雨"), utils.empty_card_kind("等离子之雨", "希露德"))
+        self.assertEqual(("other", "追踪箭"), utils.empty_card_kind("追踪箭", "希露德"))
+        self.assertEqual(("start", "意志冲锋"), utils.empty_card_kind("意志冲锋", "玛丽贝尔"))
+        self.assertEqual(("flash", "狼之穹铠"), utils.empty_card_kind("狼之穹铠", "玛丽贝儿"))
+        self.assertEqual((None, None), utils.empty_card_kind("剑光", "玛丽贝儿"))
+        self.assertEqual(4, utils._empty_start_total("希露德"))     # 多重箭×2 + 弓箭护卫 + 装载箭筒
+
+    def test_card_flash_on_existing_card_not_counted(self):
+        # 用户 2026-10-28：三选一卡牌闪光只是把已有的卡变强、不加新卡，不算
         t = empty_task()
-        cards = [card("追踪箭", 0.25), card("追踪箭", 0.5), card("追踪箭", 0.75)]
+        self.assertFalse(utils.record_empty_flash(t, [card("装载箭筒")] * 3))
+        self.assertFalse(utils.record_empty_flash(t, [card("多重箭")] * 3))
+        self.assertEqual(0, t.node_status.get("empty_flashes", 0))
+
+    def test_flash_card_seen_counted_once(self):
+        # 闪的是目标的闪光卡（10-28 玛丽贝儿的狼之穹铠）：说明它已经被塞进卡组，按闪光卡记一次
+        t = empty_task("玛丽贝儿")
+        cards = [card("狼之穹铠", 0.25), card("狼之穹铠", 0.5), card("狼之穹铠", 0.75)]
         self.assertTrue(utils.record_empty_flash(t, cards))
-        self.assertFalse(utils.record_empty_flash(t, cards))        # 同一页下一帧（选中/确认）不再记
-        self.assertEqual(1, t.node_status["empty_flashes"])
+        self.assertFalse(utils.record_empty_flash(t, cards))
         t.node_status["node_count"] += 1
-        self.assertTrue(utils.record_empty_flash(t, cards))         # 下一个节点又闪了同一张，记第二次
-        self.assertEqual(2, t.node_status["empty_flashes"])
+        self.assertFalse(utils.record_empty_flash(t, cards))        # 同一张卡下一个节点再闪也还是这一张
+        self.assertEqual(["狼之穹铠"], t.node_status["empty_flash_cards"])
+        self.assertEqual(1, t.node_status["empty_flashes"])
 
     def test_teammate_flash_not_counted(self):
         t = empty_task()
         self.assertFalse(utils.record_empty_flash(t, [card("水之源"), card("水之源"), card("水之源")]))
         self.assertEqual(0, t.node_status.get("empty_flashes", 0))
 
-    def test_unknown_owner_counted(self):
-        # 三张都认不出归属：宁可多重开，不存坏档
+    def test_unknown_owner_not_counted(self):
         t = empty_task()
-        self.assertTrue(utils.record_empty_flash(t, [card("嗷嗷嗷"), card("呜呜呜"), card("啦啦啦")]))
-        self.assertEqual(1, t.node_status["empty_flashes"])
+        self.assertFalse(utils.record_empty_flash(t, [card("嗷嗷嗷"), card("呜呜呜"), card("啦啦啦")]))
+        self.assertEqual(0, t.node_status.get("empty_flashes", 0))
 
     def test_single_flash_popup_counted(self):
-        # 10-28 02:27：装备「时间调节器」佩戴即闪光，游戏直接闪了等离子之雨，只弹单张「卡牌闪光」结果页
+        # 10-28 02:27：装备「时间调节器」佩戴即闪光，弹单张「卡牌闪光」结果页，等离子之雨是新塞进卡组的闪光卡
         t = empty_task(texts=[box(0.500, 0.113, "卡牌闪光"), box(0.500, 0.258, "等离子之雨"), box(0.500, 0.937, "点击屏幕可关闭")])
         self.assertTrue(utils.handle_close_page(t))
         self.assertEqual(1, t.node_status["empty_flashes"])
         self.assertTrue(utils.handle_close_page(t))                  # 同一页下一帧不再记
         self.assertEqual(1, t.node_status["empty_flashes"])
-        # 队友的卡不算
-        t2 = empty_task(texts=[box(0.500, 0.113, "卡牌闪光"), box(0.500, 0.258, "水之源"), box(0.500, 0.937, "点击屏幕可关闭")])
-        utils.handle_close_page(t2)
-        self.assertEqual(0, t2.node_status.get("empty_flashes", 0))
+        # 队友的卡、目标已有的初始卡都不算
+        for name in ("水之源", "装载箭筒"):
+            t2 = empty_task(texts=[box(0.500, 0.113, "卡牌闪光"), box(0.500, 0.258, name), box(0.500, 0.937, "点击屏幕可关闭")])
+            utils.handle_close_page(t2)
+            self.assertEqual(0, t2.node_status.get("empty_flashes", 0))
         # 三选一选完再弹结果页：同一张只记一次
-        t3 = empty_task(texts=[box(0.500, 0.113, "卡牌闪光"), box(0.500, 0.258, "追踪箭"), box(0.500, 0.937, "点击屏幕可关闭")])
-        utils.record_empty_flash(t3, [card("追踪箭")] * 3)
+        t3 = empty_task(texts=[box(0.500, 0.113, "卡牌闪光"), box(0.500, 0.258, "抽取&释放"), box(0.500, 0.937, "点击屏幕可关闭")])
+        utils.record_empty_flash(t3, [card("抽取&释放")] * 3)
         utils.handle_close_page(t3)
         self.assertEqual(1, t3.node_status["empty_flashes"])
         # 别的「点击屏幕可关闭」页不算
@@ -110,6 +129,113 @@ class TestFlashCount(unittest.TestCase):
     def test_other_modes_ignored(self):
         t = empty_task(mode=cs.MODE_TARGET)
         self.assertFalse(utils.record_empty_flash(t, [card("追踪箭")] * 3))
+
+
+def removed(t, *names):
+    for name in names:
+        utils.empty_pick_removal(t, name)
+    utils.empty_commit_removals(t)
+
+
+class TestRemovalLedger(unittest.TestCase):
+    def test_hilde_1028_cannot_be_emptied(self):
+        # 10-28 希露德：删了多重箭×2、弓箭护卫、抽取&释放，还剩装载箭筒、等离子之雨 → 一共要删 6 次，做不成（用户确认）
+        t = empty_task()
+        utils.note_empty_cards(t, ["抽取&释放", "等离子之雨"], "测试")
+        removed(t, "多重箭", "多重箭", "弓箭护卫", "抽取&释放")
+        self.assertEqual((4, 2), utils.empty_removal_state(t))
+
+    def test_maribel_1028_ok(self):
+        # 10-28 玛丽贝儿：删了 3 张基础卡 + 意志冲锋，卡组里多了狼之穹铠 → 4 + 1 = 5，局外删掉狼之穹铠就是空档
+        t = empty_task("玛丽贝儿")
+        utils.note_empty_cards(t, ["狼之穹铠"], "测试")
+        removed(t, "庇护飞踢", "庇护防御", "庇护坚守", "意志冲锋")
+        self.assertEqual((4, 1), utils.empty_removal_state(t))
+
+    def test_panel_count_wins(self):
+        # 面板上的移除次数是游戏记的，比脚本账大就用面板的
+        t = empty_task()
+        removed(t, "多重箭")
+        t.node_status["empty_panel_removed"] = 2
+        self.assertEqual(2, utils.empty_removal_state(t)[0])
+
+    def test_skip_drops_pending(self):
+        t = empty_task()
+        utils.empty_pick_removal(t, "多重箭")
+        t.node_status.pop("empty_remove_pending")       # 点了跳过
+        utils.empty_commit_removals(t)
+        self.assertEqual([], t.node_status.get("empty_removed", []))
+
+    def test_phantom_remove_click_not_counted(self):
+        # 10-28 02:40：选卡页淡入时「移除」先亮，还没选卡就点了，记成多删一张
+        t = empty_task(texts=[box(0.945, 0.918, "移除")])
+        orig = utils.is_button_active
+        utils.is_button_active = lambda task, b: True
+        try:
+            self.assertTrue(utils.handle_remove(t))
+            self.assertEqual(0, t.node_status.get("removed_card_count", 0))
+            utils.empty_pick_removal(t, "多重箭")
+            t.node_status["pending_removed_card_count"] = 1
+            self.assertTrue(utils.handle_remove(t))
+        finally:
+            utils.is_button_active = orig
+        self.assertEqual(1, t.node_status["removed_card_count"])
+        self.assertEqual([["多重箭", "basic"]], t.node_status["empty_removed"])
+
+    def deck_task(self, target, names):
+        t = empty_task(target)
+        t.ocr = lambda *a, **k: [box(0.2 + 0.1 * i, 0.3, n) for i, n in enumerate(names)]
+        t.next_frame = lambda: None
+        return t
+
+    def test_deck_read_counts_every_target_card(self):
+        # 蒂菲拉点了天赋：开局卡组里就多一张闪光卡，4 张初始卡 + 1 = 5，局内再多一张就做不成（用户 2026-10-28）
+        t = self.deck_task("蒂菲拉", ["物质分解", "展开屏障", "展开屏障", "量子晶种", "事件视界", "剑光",
+                                     "在抽牌堆中生成1张事件视界并抽取1张卡牌"])
+        self.assertEqual(5, utils._read_empty_deck(t, "蒂菲拉", 0))
+        self.assertEqual(["事件视界"], t.node_status["empty_flash_cards"])
+        self.assertEqual((0, 5), utils.empty_removal_state(t))
+        # 删了两张基础卡之后总数不变
+        removed(t, "物质分解", "展开屏障")
+        self.assertEqual((2, 3), utils.empty_removal_state(t))
+        # 战斗里又被塞了一张闪光卡：下个选路页读卡组，一共要删 6 次
+        t.ocr = lambda *a, **k: [box(0.3, 0.3, "展开屏障"), box(0.4, 0.3, "量子晶种"), box(0.5, 0.3, "事件视界"),
+                                 box(0.6, 0.3, "双重造物")]
+        self.assertEqual(6, utils._read_empty_deck(t, "蒂菲拉", 2))
+        self.assertEqual((2, 4), utils.empty_removal_state(t))
+
+    def test_deck_not_open_not_recorded(self):
+        t = self.deck_task("希露德", ["主战员", "攻击力", "模糊的记忆"])
+        self.assertIsNone(utils._read_empty_deck(t, "希露德", 1))
+        self.assertNotIn("empty_deck_need", t.node_status)
+
+    def test_shop_spend_only_when_target_has_cards(self):
+        t = empty_task()
+        self.assertIsNone(utils.empty_should_remove(t))
+        removed(t, "多重箭", "多重箭", "弓箭护卫", "装载箭筒")
+        self.assertIn("删完", utils.empty_should_remove(t))
+        utils.note_empty_cards(t, ["等离子之雨"], "测试")
+        self.assertIsNone(utils.empty_should_remove(t))
+        t.node_status["empty_panel_removed"] = 5
+        self.assertIn("上限", utils.empty_should_remove(t))
+
+
+class TestEquipmentToTarget(unittest.TestCase):
+    def decide(self, mode, new_quality, cur_quality, live=(None, None, None)):
+        t = empty_task(mode=mode)
+        eq = {"slot": 0, "quality": new_quality, "priority": [], "rank": None, "name": "新装备", "description": ""}
+        view = types.SimpleNamespace(eq=eq, preferred=0, live=list(live))
+        equipment = {"names": ["旧装备" if cur_quality else "", "", ""], "qualities": [cur_quality, "", ""],
+                     "descriptions": ["", "", ""]}
+        return utils._decide_install(t, view, equipment, False)[0]
+
+    def test_empty_mode_gives_target_first(self):
+        # 用户 2026-10-28：刷空档装备优先直接给目标，同品质也换；品质更低不换
+        self.assertTrue(self.decide(cs.MODE_EMPTY, "史诗", "史诗"))
+        self.assertFalse(self.decide(cs.MODE_TARGET, "史诗", "史诗"))
+        self.assertFalse(self.decide(cs.MODE_EMPTY, "普通", "史诗"))
+        # 不管「一人只装一件传说」
+        self.assertTrue(self.decide(cs.MODE_EMPTY, "传说", "", live=(None, "传说", None)))
 
 
 class TestFlashEscape(unittest.TestCase):
@@ -130,7 +256,7 @@ class TestFlashEscape(unittest.TestCase):
         t.node_status["empty_flashes"] = 2
         self.assertTrue(utils.handle_empty_flash_escape(t))
         self.assertEqual([(0.959, 0.051)], t.clicks)
-        self.assertIn("闪了 2 张", t.node_status["escape_reason"])
+        self.assertIn("多了 2 张闪光卡", t.node_status["escape_reason"])
         self.assertTrue(utils.handle_empty_flash_escape(t))         # 3 秒内不重复点
         self.assertEqual(1, len(t.clicks))
         t.all_texts = [box(0.952, 0.928, "逃脱")]
@@ -143,6 +269,16 @@ class TestFlashEscape(unittest.TestCase):
         t = empty_task(config={utils.EMPTY_FLASH_LIMIT: 1})
         t.node_status["empty_flashes"] = 1
         self.assertTrue(utils.handle_empty_flash_escape(t))
+
+    def test_removal_math_escapes(self):
+        # 卡组读出一共要删 6 次：没到航点就重开
+        t = empty_task("蒂菲拉")
+        t.node_status["empty_deck_need"] = 6
+        self.assertTrue(utils.handle_empty_flash_escape(t))
+        self.assertIn("超过 5 次", t.node_status["escape_reason"])
+        t2 = empty_task("蒂菲拉")
+        t2.node_status["empty_deck_need"] = 5
+        self.assertFalse(utils.handle_empty_flash_escape(t2))
 
     def test_not_during_battle(self):
         t = empty_task(texts=[box(0.512, 0.969, "5/10")])
@@ -170,12 +306,22 @@ class TestWaypointEscape(unittest.TestCase):
         self.assertEqual(2, len(t.clicks))
         self.assertEqual(1, t.node_status["success_rounds"])
 
-    def test_flash_over_limit_not_counted_as_save(self):
+    def test_too_many_removals_not_counted_as_save(self):
+        # 10-28 希露德：删了 4 次还剩 2 张，存档不算、不换目标
         t = empty_task()
-        t.node_status["empty_flashes"] = 2
+        utils.note_empty_cards(t, ["抽取&释放", "等离子之雨"], "测试")
+        removed(t, "多重箭", "多重箭", "弓箭护卫", "抽取&释放")
         self.assertTrue(self.settlement(t))
         self.assertFalse(t.node_status["empty_saved"])
         self.assertEqual(0, t.node_status["success_rounds"])
+        self.assertFalse(utils.empty_rotate_target(t))
+
+    def test_exactly_five_is_a_save(self):
+        t = empty_task("玛丽贝儿")
+        utils.note_empty_cards(t, ["狼之穹铠"], "测试")
+        removed(t, "庇护飞踢", "庇护防御", "庇护坚守", "意志冲锋")
+        self.assertTrue(self.settlement(t))
+        self.assertTrue(t.node_status["empty_saved"])
 
     def test_other_modes_do_not_escape_at_waypoint(self):
         t = empty_task(mode=cs.MODE_TARGET)
