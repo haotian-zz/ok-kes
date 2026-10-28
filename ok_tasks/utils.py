@@ -2912,6 +2912,13 @@ def handle_equipment(task: TriggerTask):
         )
 
         slot = new_equipment["slot"]
+        pending = getattr(task, "_pending_install", None)
+        if (not is_purchase_page and pending and pending[0] == new_equipment.get("ocr_name")
+                and time.time() - pending[1] < 8):
+            # 刚点了主战员要装这件，确认按钮还没认出来时同一页又进了这里：账上已经记成装好了，再判断会得出
+            # 「不比当前好」把它提炼掉（2026-10-27 18:02 深绿黑夜就这样没了）。交给确认按钮处理
+            task.log_info(f"刚选了主战员安装「{new_equipment['name']}」，等确认按钮，不重新判断")
+            return False
         current_name, _ = _current_equipment_for_slot(task, equipment, slot)
         current_quality = equipment["qualities"][slot]
         should_install_first = False
@@ -2991,6 +2998,7 @@ def handle_equipment(task: TriggerTask):
                 f"安装给{member_label}"
             )
             _move_and_click(task, 0.756, (chosen.y + chosen.height / 2) / task.height)
+            task._pending_install = (new_equipment.get("ocr_name"), time.time())
             task.sleep(1)
             if is_purchase_page:
                 task.log_info(
@@ -3046,6 +3054,7 @@ def handle_equipment(task: TriggerTask):
                     "随机安装给其他主战员"
                 )
             _move_and_click(task, 0.756, (chosen.y + chosen.height / 2) / task.height)
+            task._pending_install = (new_equipment.get("ocr_name"), time.time())
             task.sleep(1)
             if is_purchase_page:
                 task.log_info(
