@@ -3631,10 +3631,11 @@ def _canonical_member(name):
 
 
 def empty_keep_members(task: TriggerTask):
-    """存档清理要保留的角色：当前目标 + 刷空档目标顺序里的（换了目标后前面存好的空档不能被分解）。"""
+    """存档清理要保留的角色：当前目标 + 刷空档目标顺序里的（换了目标后前面存好的空档不能被分解）。
+    不管当前是什么玩法都保留：2026-10-28 12:14 刷空档完换到章鱼哥速刷后存储满了，清理只护着罗丝薇瑟，
+    早上存好的四个空档差点被分解（定名单阶段就停了）。"""
     names = [_get_config_value(task, "目标主战员", "")]
-    if empty_mode(task):
-        names += list(_get_config_value(task, EMPTY_TARGETS, []) or [])
+    names += list(_get_config_value(task, EMPTY_TARGETS, []) or [])
     return {_canonical_member(n) for n in names if isinstance(n, str) and n}
 
 

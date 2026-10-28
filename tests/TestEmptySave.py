@@ -501,8 +501,9 @@ class TestRotateTarget(unittest.TestCase):
         self.assertEqual({"希露德", "玛丽贝儿", "凛", "蒂菲拉"}, keep)
         self.assertIn("希露德", sc.keep_reason(30000, 40, {"希露德", "米卡"}, keep))
         self.assertIsNone(sc.keep_reason(30000, 40, {"米卡", "海德玛丽"}, keep))
-        # 别的玩法只保留当前目标
-        self.assertEqual({"罗丝薇瑟"}, utils.empty_keep_members(empty_task("罗丝薇瑟", mode=cs.MODE_TARGET)))
+        # 换到别的玩法也照样保留刷空档的几个目标（2026-10-28 12:14 章鱼哥速刷清理存储时差点分解早上的空档）
+        self.assertEqual({"罗丝薇瑟", "希露德", "玛丽贝儿", "凛", "蒂菲拉"},
+                         utils.empty_keep_members(empty_task("罗丝薇瑟", mode=cs.MODE_TARGET)))
 
 
 class TestNoFlash(unittest.TestCase):
