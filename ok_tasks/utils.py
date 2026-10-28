@@ -14,6 +14,7 @@ from opencc import OpenCC
 
 import chaos_strategy
 import chaos_trace
+from dev_paths import dev_out
 import game_db
 
 _jp2t = OpenCC('jp2t')  # 日文新字体转繁体
@@ -1302,13 +1303,13 @@ def _scroll_card_page(task: TriggerTask, x, y, amount, page, distance=0.25):
         task.sleep(0.5)
 
 
-CARD_PAGE_DUMP_DIR = os.path.join("dev_out", "card_pages")
+CARD_PAGE_DUMP_DIR = dev_out("card_pages")
 
 
 def _dump_card_page(task: TriggerTask, tag):
     """开发样本：选卡页/闪光三选一页存一张截图（dev_out/card_pages，最多 40 张），用来做游戏「推荐图钉」的识别。"""
     try:
-        if not os.path.isdir("dev_out"):
+        if not os.path.isdir(os.path.dirname(CARD_PAGE_DUMP_DIR)):
             return
         os.makedirs(CARD_PAGE_DUMP_DIR, exist_ok=True)
         if len(os.listdir(CARD_PAGE_DUMP_DIR)) >= 40 or task.frame is None:
@@ -4691,7 +4692,7 @@ def _chaos_route_weights(task: TriggerTask):
     return chaos_strategy.route_weights(mode, layer, hp, bonus, octopus=octopus, imprint=utils_imprint.enabled(task))
 
 
-BOSS_PAUSE_FILE = os.path.join("dev_out", "paused_before_boss")
+BOSS_PAUSE_FILE = dev_out("paused_before_boss")
 
 
 def _wait_before_boss(task: TriggerTask, layer):
@@ -4700,7 +4701,7 @@ def _wait_before_boss(task: TriggerTask, layer):
     if task.node_status.get("boss_paused") == key:
         return
     task.node_status["boss_paused"] = key
-    os.makedirs("dev_out", exist_ok=True)
+    os.makedirs(os.path.dirname(BOSS_PAUSE_FILE), exist_ok=True)
     with open(BOSS_PAUSE_FILE, "w", encoding="utf-8") as f:
         f.write(f"第{layer}层首领前暂停，删除本文件继续\n")
     task.log_info(f"第{layer}层首领前暂停：删除 {BOSS_PAUSE_FILE} 后继续")
@@ -5735,7 +5736,7 @@ def handle_escape(task: TriggerTask):
 # 用户 2026-10-26：最后一层首领持续打不过的话，拿到混沌之识就停下交给用户手动打。
 # 「持续」= 刷存档局打到第 3 层（已过 2 个首领）后失败，连续 LAST_BOSS_FAIL_HANDOVER 次；通关一次就清零。跨重启记在文件里。
 LAST_BOSS_FAIL_HANDOVER = 2
-LAST_BOSS_FAIL_FILE = os.path.join("dev_out", "chaos_last_boss_fails.json")
+LAST_BOSS_FAIL_FILE = dev_out("chaos_last_boss_fails.json")
 
 
 def _last_boss_fails():
@@ -6040,7 +6041,7 @@ RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "
                   "save_member_index", "imprint_peak")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
-RUN_STATE_FILE = os.path.join("dev_out", "chaos_run_state.json")
+RUN_STATE_FILE = dev_out("chaos_run_state.json")
 RUN_STATE_MAX_AGE = 3 * 3600
 # reach_final_boss 也要落盘：首领战中途重启后结算不 +1 层，速刷把第二层当第一层（2026-10-25 21:06）
 _PERSIST_KEYS = RUN_LEVEL_KEYS + ("removed_card_count", "neutral_card_count", "pass_final_boss_count",

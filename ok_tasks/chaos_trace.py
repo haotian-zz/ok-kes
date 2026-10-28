@@ -8,7 +8,9 @@ import time
 import cv2
 import numpy as np
 
-TRACE_ROOT = os.path.join("dev_out", "chaos_trace")
+from dev_paths import dev_out
+
+TRACE_ROOT = dev_out("chaos_trace")      # 单测时在临时目录（tests/__init__.py）
 KEEP_RUNS = 10
 IMG_WIDTH = 1280
 PAGE_REPEAT_SECONDS = 4     # 同一个页面处理函数连续命中时，这么久内不重复截图
