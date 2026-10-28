@@ -8,7 +8,7 @@ from utils import (
     log_credit, log_node_status, handle_battle_crash, handle_close_page, handle_refine_equipment_credit,
     handle_center_confirm, handle_settlement, handle_skip,
     handle_destiny_choice, handle_main_member_flash,
-    handle_card_reward, handle_equipment,
+    handle_card_reward, handle_equipment, settle_equipment_pending,
     handle_select_card, handle_copy_card_choice, handle_copy_member,
     handle_convert_card,
     handle_negotiation, handle_continue, handle_confirm, handle_enter,
@@ -1466,6 +1466,7 @@ def _at_chaos_initial_page(task: TriggerTask):
 # 卡厄思模式 PAGE_HANDLERS
 PAGE_HANDLERS = [
     handle_chaos_auto_stop,
+    settle_equipment_pending, #装备页点了安装/购买后离开那一页才写装备账（要先于逃脱判断，不拦截）
     handle_chaos_disconnected, #重开游戏后「卡厄思连接意外断开。是否继续?」：点继续，不点逃脱
     handle_title_start, #标题页「点击开始」
     handle_storage_full, #存档存储满了：去分解页自动清理或停止（要先于通用确认，2026-10-25 在进入/确认间循环）

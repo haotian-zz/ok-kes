@@ -412,6 +412,41 @@ def goal_imprints(task):
     return 3 - sum(1 for i in range(3) if is_top(names[i]) and imprints[i] != TARGET)
 
 
+GOAL_EQUIPMENT = 2      # 用户 2026-10-27 18:2x：刷刻印达成＝至少 2 个目标装备（1 号位混沌之识也算）+ 3 个目标刻印
+GOAL_IMPRINTS = 3
+
+
+def target_equipment_count(task):
+    """目标主战员身上的目标装备件数：按槽位配置的「装备N号位优先级」认名字，混沌之识也算。"""
+    import utils
+    n = 0
+    for slot, name in enumerate(_slot_names(task)):
+        if not name:
+            continue
+        if is_top(name) or utils._match_equipment_name(name, utils._equipment_priority(task, slot))[1] is not None:
+            n += 1
+    return n
+
+
+def goal_reached(task):
+    """刷刻印「达成」：至少 2 个目标装备（1 号位混沌之识算目标装备）+ 3 个目标刻印。纯判断，不改状态以外的东西
+    （目标刻印个数用只增不减的 target_imprint_count，会顺手更新 imprint_peak）。"""
+    return target_equipment_count(task) >= GOAL_EQUIPMENT and target_imprint_count(task) >= GOAL_IMPRINTS
+
+
+def goal_shortfall(task):
+    """离「达成」还差什么（给信用点留存用）：目标刻印按 goal_imprints（装着没刻印的混沌之识的槽位拿不到刻印了，不算），
+    目标装备要 2 件。都够了返回 None。"""
+    missing = []
+    n, goal = target_imprint_count(task), goal_imprints(task)
+    if n < goal:
+        missing.append(f"目标刻印 {n}/{goal}")
+    m = target_equipment_count(task)
+    if m < GOAL_EQUIPMENT:
+        missing.append(f"目标装备 {m}/{GOAL_EQUIPMENT}")
+    return "、".join(missing) or None
+
+
 def no_more_shops(task):
     """最后一层（裁决之沼两层，第二层）按整层路线计划，剩下的步里没有商店了。没有计划时不确定，当作还有。"""
     ns = getattr(task, "node_status", None)
@@ -421,6 +456,12 @@ def no_more_shops(task):
     if not plan or plan.get("layer") != ns.get("pass_final_boss_count", 0):
         return False
     return not any("商店" in str(st.get("type", "")) for st in plan.get("steps", [])[plan.get("done", 0):])
+
+
+def _layer(task):
+    """已打完几层首领（0＝第一层，1＝第二层）。"""
+    ns = getattr(task, "node_status", None)
+    return ns.get("pass_final_boss_count", 0) if isinstance(ns, dict) else 0
 
 
 def install_decision(task, new_eq, slot, better, why, current_name=""):
@@ -450,11 +491,31 @@ def install_decision(task, new_eq, slot, better, why, current_name=""):
     if target_eq and no_more_shops(task):
         # 用户 2026-10-27 17:5x：最后一个商店了，后面买不到刻印装备，只要不覆盖已有的目标刻印（这里槽位没有），目标装备也拿
         return True, f"目标装备，后面没有商店了，槽位没有目标刻印可覆盖（{why}）"
+    if target_eq and _layer(task) >= 1:
+        # 用户 2026-10-27 18:2x：第二层目标装备来了没刻印也先装上（达成要 2 个目标装备）；槽位没有目标刻印，不会顶掉什么。
+        # 不比当前好（比如已经装着更靠前的目标装备）就不换
+        if better:
+            return True, f"第二层目标装备先装上，槽位没有目标刻印可覆盖（{why}）"
+        return False, f"第二层目标装备，但不比当前好（{why}）"
     if target_eq:
         # 槽位还没有目标刻印时，之后带目标刻印的装备换上来会把目标装备顶掉（新装备的刻印覆盖、装备本身也没了），
         # 正确顺序是先刻印、再用目标装备继承（实录 2026-10-27 03:37 商店白花 340 信用点）
         return False, f"目标装备但槽位还没有目标刻印，装了也会被之后的刻印装备顶掉（{why}）"
     return False, "不是目标刻印也不是目标装备"
+
+
+def refine_block_reason(task, new_eq, rule_allows_target=False):
+    """不可逆守卫：提炼（或分给队友＝目标主战员放弃这件）之前统一过这里，返回拒绝的理由，None＝可以。
+    带目标刻印的装备、混沌之识永远不提炼；目标装备只有决策规则明确说不要时（rule_allows_target）才提炼。
+    实录 2026-10-27 17:03 带目标刻印的怪异之壳差点被提炼、18:02 目标装备深绿黑夜被提炼。"""
+    name = new_eq.get("name") or new_eq.get("ocr_name") or ""
+    if new_eq.get("imprint") == TARGET:
+        return f"「{name}」带目标刻印"
+    if is_top(name):
+        return f"「{name}」是混沌之识"
+    if new_eq.get("rank") is not None and not rule_allows_target:
+        return f"「{name}」是目标装备，规则没有明确允许提炼"
+    return None
 
 
 def record_install(task, slot, new_eq):
@@ -466,12 +527,13 @@ def record_install(task, slot, new_eq):
 
 
 def event_target_equipment(task, names_by_slot):
-    """事件打分里当「目标装备」的名字：混沌之识一直算；其他目标装备只在槽位已有目标刻印时才算
-    （槽位没有目标刻印时 install_decision 不装，拿到也是提炼，不值得为它放弃别的选项）。"""
+    """事件打分里当「目标装备」的名字：混沌之识一直算；其他目标装备只在槽位已有目标刻印、或已到第二层时才算
+    （第一层槽位没有目标刻印时 install_decision 不装，拿到也是提炼，不值得为它放弃别的选项）。"""
     imprints, names = slot_imprints(task), _slot_names(task)
     out = list(TOP_EQUIPMENT)
+    layer2 = _layer(task) >= 1      # 用户 2026-10-27 18:2x：第二层目标装备没刻印也装，事件里拿到也有用
     for slot, slot_names in enumerate(names_by_slot):
-        if imprints[slot] == TARGET and not is_top(names[slot]):
+        if (imprints[slot] == TARGET or layer2) and not is_top(names[slot]):
             out += [n for n in slot_names if n not in out]
     return out
 
@@ -563,11 +625,13 @@ def deck_spend_reason(task):
         if n >= 2 or ns.get("chaos_core_got"):
             return None
         return f"第一层目标刻印 {n}/2，不够这局会逃脱，信用点留着买刻印装备"
-    goal, need = goal_imprints(task), required_imprints(task)
-    if n >= goal:
+    need = required_imprints(task)
+    short = goal_shortfall(task)
+    if short is None:
         return None
     if n >= need:
-        return f"第二层目标刻印 {n}/{goal}，够打首领了，信用点还是留着买刻印装备凑满"
+        # 用户 2026-10-27 18:2x：达成要 2 个目标装备 + 3 个目标刻印，凑满前信用点留着买刻印装备 / 目标装备
+        return f"第二层{short}，够打首领了，信用点还是留着买刻印装备/目标装备凑满"
     return f"第二层目标刻印 {n}/{need}，不够首领前会逃脱，信用点留着买刻印装备"
 
 
