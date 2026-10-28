@@ -211,14 +211,14 @@ class TestRemovalLedger(unittest.TestCase):
         t = empty_task()
         removed(t, "多重箭", "多重箭")
         panel = [box(0.27, 0.367, "希露德"), box(0.20, 0.58, "模糊的记忆"), box(0.36, 0.58, "60/140"),
-                 box(0.18, 0.675, "移除"), box(0.37, 0.675, "2l5")]
+                 box(0.18, 0.675, "移除"), box(0.37, 0.675, "2/")]
         deck = [box(0.3, 0.3, "弓箭护卫"), box(0.4, 0.3, "装载箭筒")]
         shots = [panel, deck, deck]
         t.ocr = lambda *a, **k: shots.pop(0) if shots else []
         t.next_frame = lambda: None
         utils.read_member_panel(t)
         self.assertEqual(4, t.node_status["empty_deck_need"])
-        self.assertTrue(any("没读出来" in m and "2l5" in m for m in t.logs))
+        self.assertTrue(any("没读出来" in m and "2/" in m for m in t.logs))
 
     def test_deck_section_count_includes_neutral_cards(self):
         # 10-28 03:06「所有牌堆」：希露德那一栏左上角「03」＝弓箭护卫、装载箭筒、中立卡「觉悟」，中立卡也要删

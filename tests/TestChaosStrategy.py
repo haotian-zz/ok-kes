@@ -1139,6 +1139,16 @@ class TestMemberPanel(unittest.TestCase):
         self.assertEqual(cols[1]["name"], "凛")
         self.assertEqual(cols[2]["pt"], 20)
 
+    def test_slash_read_as_one(self):
+        # 2026-10-28 03:39：希露德移除行「2/5」读成「215」，面板移除次数没读出来
+        import utils
+        rows = [(0.182, 0.365, "希露德"), (0.172, 0.671, "国移除"), (0.365, 0.674, "215"),
+                (0.173, 0.626, "复制"), (0.365, 0.629, "013"), (0.194, 0.578, "模糊的记忆"), (0.358, 0.578, "401140")]
+        boxes = [SimpleNamespace(x=x * 1920, y=y * 1080, width=0, height=0, name=n) for x, y, n in rows]
+        col = utils.parse_member_panel(boxes, 1920, 1080)[0]
+        self.assertEqual((col.get("remove"), col.get("copy")), (2, 0))
+        self.assertNotIn("pt", col)     # PT 没有固定上限，不猜
+
     def test_pt_used_prefers_game(self):
         import utils
         task = SimpleNamespace(node_status={"removed_card_count": 3, "copy_count": 2})

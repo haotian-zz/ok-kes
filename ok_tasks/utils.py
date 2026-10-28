@@ -3871,6 +3871,7 @@ def _pt_used(task: TriggerTask):
 # 局内左上角头像点开的「主战员」面板（2026-10-25 实机）：每人一列，模糊的记忆 a/b、复制 a/3、移除 a/5、压力、装备
 MEMBER_PANEL_COLUMNS = ((0.14, 0.40), (0.41, 0.67), (0.68, 0.95))
 MEMBER_PANEL_ROWS = {"pt": "模糊的记忆", "copy": "复制", "remove": "移除"}
+MEMBER_PANEL_CAPS = {"copy": 3, "remove": 5}
 
 
 def parse_member_panel(boxes, width, height):
@@ -3890,6 +3891,9 @@ def parse_member_panel(boxes, width, height):
                 continue
             for b, _, y in inside:
                 m = re.fullmatch(r"\s*(\d+)\s*/\s*(\d+)\s*", b.name)
+                if not m and key in MEMBER_PANEL_CAPS:
+                    # 「2/5」的斜杠偶尔认成 1（2026-10-28 03:39 希露德移除行读成「215」）
+                    m = re.fullmatch(rf"\s*(\d)[1lI|]({MEMBER_PANEL_CAPS[key]})\s*", b.name)
                 if m and abs(y - ys[0]) <= 0.02:
                     col[key] = int(m.group(1))
                     if key == "pt":
