@@ -911,13 +911,14 @@ class TestDiceReroll(unittest.TestCase):
         box = lambda x, y, n: types.SimpleNamespace(name=n, x=x * 1920 - 40, y=y * 1080 - 15, width=80, height=30,
                                                     area=lambda: 2400)
         clicks = []
-        t = types.SimpleNamespace(width=1920, height=1080, node_status={"node_count": node},
+        # 事件稀有度原来挂在 task._event_rarity，现在随局内状态记在 node_status（落盘，重启后骰子页也认得）
+        t = types.SimpleNamespace(width=1920, height=1080,
+                                  node_status={"node_count": node, "event_rarity": [node, rarity, "生命循环"]},
                                   all_texts=[box(0.5, 0.678, "失败"), box(0.266, 0.9, "再次滚动"),
                                              box(0.466, 0.9, "2"), box(0.666, 0.9, "下一步"),
                                              box(0.916, 0.104, points)],
                                   log_info=lambda *a, **k: None, sleep=lambda *a: None,
-                                  move_relative=lambda *a: None, click=lambda x, y, **k: clicks.append((x, y)),
-                                  _event_rarity=(node, rarity, "生命循环"))
+                                  move_relative=lambda *a: None, click=lambda x, y, **k: clicks.append((x, y)))
         return t, clicks
 
     def test_reroll_until_limit_then_next(self):
@@ -930,7 +931,7 @@ class TestDiceReroll(unittest.TestCase):
         self.assertEqual(utils.DICE_REROLL_MAX, sum(1 for x, _ in clicks if x < 0.4))
         self.assertEqual((0.665, 0.899), clicks[-1])
         t.node_status["node_count"] = 6                      # 下一个节点的骰子重新计数
-        t._event_rarity = (6, "稀有", "生命循环")
+        t.node_status["event_rarity"] = [6, "稀有", "生命循环"]
         utils.handle_negotiation(t)
         self.assertLess(clicks[-1][0], 0.4)
 
@@ -939,7 +940,7 @@ class TestDiceReroll(unittest.TestCase):
         import utils
         for rarity, node in (("普通", 5), (None, 5), ("稀有", 4)):
             t, clicks = self._task(rarity=rarity)
-            t._event_rarity = (node, rarity, "生命循环" if rarity else None)
+            t.node_status["event_rarity"] = [node, rarity, "生命循环" if rarity else None]
             self.assertTrue(utils.handle_negotiation(t))
             self.assertEqual([(0.665, 0.899)], clicks, (rarity, node))
 

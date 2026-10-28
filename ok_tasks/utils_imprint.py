@@ -203,9 +203,10 @@ def handle_codex_select(task):
                   f"稀有命运+{info['rare']}% 词条 {mods}" + (f"（不合格：{'；'.join(bad)}）" if bad else "（合格）"))
     if not bad:
         if find_text(task, r"^进入$"):
-            # 进法典就是新的一局：清掉内存里上一局的装备/刻印/混沌之识记录（2026-10-27 15:54 上一局的状态被读回带进了新局）
-            import utils
-            utils.reset_mission_status(task)
+            # 进法典就是新的一局：清掉内存里上一局的装备/刻印/混沌之识记录（2026-10-27 15:54 上一局的状态被读回带进了新局），
+            # 新建 RunState 并马上落盘覆盖上一局的文件（不然这一局读到 PT 上限前重启，又会读回上一局）
+            import run_state
+            run_state.begin(task, "法典")
             click_rel(task, *ENTER_POS, after=3, reason="刷刻印：进入法典")
             task._codex_enter_at = time.time()
         return True
@@ -591,6 +592,8 @@ def audit_escape(task, reason):
     if not isinstance(ns, dict) or ns.get("escape_audit_layer") == ns.get("pass_final_boss_count", 0):
         return
     ns["escape_audit_layer"] = ns.get("pass_final_boss_count", 0)
+    import run_state
+    run_state.note_escape(task, reason)
     eq = (getattr(task, "member_status", None) or {}).get("equipment") or {}
     task.log_info(f"刷刻印速刷逃脱留底：{reason}；装备 {eq.get('names')}，刻印 {eq.get('imprints')}，"
                   f"刻印最高 {ns.get('imprint_peak', 0)}，混沌之识 {ns.get('chaos_core_got') or '无'}")

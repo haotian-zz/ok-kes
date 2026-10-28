@@ -1382,9 +1382,8 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
 
     def record_pending_removal():
         if action == "移除":
-            task._pending_removed_card_count = (
-                getattr(task, "_pending_removed_card_count", 0) + 1
-            )
+            _ns = task.node_status
+            _ns["pending_removed_card_count"] = _ns.get("pending_removed_card_count", 0) + 1
 
     def filter_flash_priority_cards(cards):
         """闪光时排除已命中闪光优先级的卡牌，避免重复选择。"""
@@ -1665,7 +1664,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
             task.log_info(f"{page}: 未找到足够卡牌，点击「{button_name}」")
             task.click_box(button)
             if action == "移除":
-                task._pending_removed_card_count = 0
+                task.node_status["pending_removed_card_count"] = 0
             return True
 
     cards = recognize_cards_in_deck(task, page=f"{page}-兜底")
@@ -3355,7 +3354,7 @@ def read_member_panel(task: TriggerTask):
     ns["pt_game"], ns["pt_game_ledger"] = col["pt"], raw
     if col.get("pt_cap"):
         task.chaos_pt_cap = col["pt_cap"]
-    # 复制/移除次数只记日志不改：移除要等确认后才 +1（_pending_removed_card_count），面板已经算上了，
+    # 复制/移除次数只记日志不改：移除要等确认后才 +1（node_status 的 pending_removed_card_count），面板已经算上了，
     # 这时改计数会让之后补的那次再记一遍（2026-10-25 实录面板 40、脚本 60）。多算的增量到下个选路页重读就纠正
     for key, ns_key in (("copy", "copy_count"), ("remove", "removed_card_count")):
         if key in col and col[key] != ns.get(ns_key, 0):
@@ -3727,7 +3726,7 @@ def _dice_reroll(task: TriggerTask):
     资源用光后要过一阵才补满（实录 09:15 用光、11:24 又是 30），重投只用于稀有事件）。返回 (是否重投, 说明)。不点资源旁边的「+」。"""
     ns = getattr(task, "node_status", None) or {}
     node = ns.get("node_count", 0)
-    event_node, rarity, event_name = getattr(task, "_event_rarity", (None, None, None))
+    event_node, rarity, event_name = ns.get("event_rarity") or (None, None, None)
     if event_node != node or not event_name:
         return False, "没认出是哪个事件，重投只用于稀有事件"
     if rarity != "稀有":
@@ -3746,11 +3745,11 @@ def _dice_reroll(task: TriggerTask):
         return False, "右上角骰子资源没读到"
     if int(points.group(1)) < cost:
         return False, f"骰子资源 {points.group(1)} 不够花 {cost}"
-    done = getattr(task, "_dice_rerolls", (None, 0))
+    done = ns.get("dice_rerolls") or (None, 0)
     used = done[1] if done[0] == node else 0
     if used >= DICE_REROLL_MAX:
         return False, f"这个骰子已经重投 {used} 次"
-    task._dice_rerolls = (node, used + 1)
+    ns["dice_rerolls"] = [node, used + 1]
     return True, f"稀有事件「{event_name}」第 {used + 1} 次重投，花 {cost}（剩 {points.group(1)}）"
 
 
@@ -3883,10 +3882,10 @@ def handle_remove(task: TriggerTask):
             task.click_box(box)
             removed_count = max(
                 1,
-                getattr(task, "_pending_removed_card_count", 0),
+                task.node_status.get("pending_removed_card_count", 0),
             )
             _record_removed_cards(task, removed_count)
-            task._pending_removed_card_count = 0
+            task.node_status["pending_removed_card_count"] = 0
             task.sleep(1)
             return True
         else:
@@ -3917,7 +3916,7 @@ def handle_three_choice_card_remove(task: TriggerTask):
     task.log_info("检测到三选一卡牌移除页面，点击移除")
     task.click_box(remove_box)
     _record_removed_cards(task, 1)
-    task._pending_removed_card_count = 0
+    task.node_status["pending_removed_card_count"] = 0
     return True
 
 def handle_flash(task: TriggerTask):
@@ -4010,7 +4009,8 @@ def handle_enter(task: TriggerTask):
     if box:
         task.log_info("检测到进入按钮，点击进入")
         task.click_box(box)
-        reset_mission_status(task)
+        import run_state
+        run_state.begin(task, "进入")
         task.sleep(1)
         return True
     return False
@@ -4071,7 +4071,8 @@ def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
     match = chaos_strategy.match_event_options(descs)
     # 记下这个节点的事件是不是稀有版（同名事件分普通/稀有，选项不同），骰子失败只给稀有事件重投
     node = (getattr(task, "node_status", None) or {}).get("node_count", 0)
-    task._event_rarity = (node, (match[0] or {}).get("rarity"), (match[0] or {}).get("name"))
+    if isinstance(getattr(task, "node_status", None), dict):
+        task.node_status["event_rarity"] = [node, (match[0] or {}).get("rarity"), (match[0] or {}).get("name")]
     mode = getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY)
     if mode == chaos_strategy.MODE_LEGACY:
         return False
@@ -5826,7 +5827,10 @@ def handle_expedition_result(task: TriggerTask):
         task.log_info("卡厄思模式探险结果: 失败")
     task.log_info(f"探险完成，成功次数/总次数={task.node_status['success_rounds']}/{task.node_status['total_rounds']}")
     if hasattr(task, 'node_status'):
-        _record_last_boss_result(task, task.node_status['success_rounds'] > success_before)
+        success = task.node_status['success_rounds'] > success_before
+        _record_last_boss_result(task, success)
+        import run_state
+        run_state.finish(task, "通关" if success else ("逃脱" if task.node_status.get('is_escaped') else "失败"))
         reset_mission_status(task)
     return False
 
@@ -5924,6 +5928,7 @@ def handle_octopus_miss_escape(task: TriggerTask):
     ns['octopus_escape_at'] = time.time()
     why = "章鱼哥没掉混沌之识" if ns.get('octopus_seen') else "第一层打完还没拿到混沌之识"
     task.log_info(f"章鱼哥速刷：{why}，回到路线页立即逃脱重开")
+    ns["escape_reason"] = f"章鱼哥速刷：{why}"
     _move_and_click(task, 0.959, 0.051)
     task.sleep(1)
     return True
@@ -5952,6 +5957,7 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
     ):
         task.node_status['success_rounds'] += 1
         task.log_info("未刷到指定闪光且已通关第一层，退出重刷")
+        task.node_status["escape_reason"] = "未刷到指定闪光"
         _move_and_click(task, 0.959, 0.051)
         task.sleep(1)
         return True
@@ -5970,6 +5976,7 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
             miss = "混沌之识" if core_only else "目标装备"
             why = f"遇到了章鱼哥但没掉{miss}" if task.node_status.get('octopus_seen') else "第一层整层没遇到章鱼哥"
             task.log_info(f"章鱼哥速刷：{why}，退出重进")
+            task.node_status["escape_reason"] = f"章鱼哥速刷：{why}"
             _move_and_click(task, 0.959, 0.051)
             task.sleep(1)
             return True
@@ -5977,6 +5984,7 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
     if _get_config_value(task, '只打第一层', False):
         task.node_status['success_rounds'] += 1
         task.log_info(f"只打第一层任务已完成，success_rounds + 1 (当前: {task.node_status['success_rounds']}), 退出结算页面")
+        task.node_status["escape_reason"] = "只打第一层"
         _move_and_click(task, 0.959, 0.051)
         task.sleep(1)
         return True
@@ -5989,7 +5997,7 @@ def reset_all_status(task: TriggerTask):
         task.node_status = _initial_node_status()
     task.member_status = _initial_member_status()
     _reset_meditation_state(task)
-    task._pending_removed_card_count = 0
+    task.run_state = None       # 任务重新开启：本局交给落盘恢复（restore_run_state）或下一次开局
 
 
 def reset_mission_status(task: TriggerTask):
@@ -6006,7 +6014,6 @@ def reset_mission_status(task: TriggerTask):
         task.node_status['save_target_member'] = keep['save_target_member']
     task.member_status = _initial_member_status()
     _reset_meditation_state(task)
-    task._pending_removed_card_count = 0
 
 
 def reset_layer_status(task: TriggerTask):
@@ -6038,25 +6045,33 @@ def reset_layer_status(task: TriggerTask):
 
 RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok",
                   "octopus_seen", "target_equip_got", "chaos_core_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger",
-                  "save_member_index", "imprint_peak")
+                  "save_member_index", "imprint_peak", "escape_reason")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = dev_out("chaos_run_state.json")
 RUN_STATE_MAX_AGE = 3 * 3600
 # reach_final_boss 也要落盘：首领战中途重启后结算不 +1 层，速刷把第二层当第一层（2026-10-25 21:06）
+# 刷刻印商店看过的商品（imprint_shop）也落盘：2d5ed0f 只把装备/刻印加进了落盘，商店记录漏了，重启后同一商店会重新点开看一遍。
+# 原来挂在 task._xxx 上的本局状态收进 node_status 一起落盘：待确认的移除次数（PT 账）、骰子重投次数、当前事件的稀有度。
 _PERSIST_KEYS = RUN_LEVEL_KEYS + ("removed_card_count", "neutral_card_count", "pass_final_boss_count",
-                                  "reach_final_boss")
+                                  "reach_final_boss", "node_count", "is_escaped", "imprint_shop",
+                                  "pending_removed_card_count", "dice_rerolls", "event_rarity")
 
 
 def save_run_state(task: TriggerTask):
+    """局内状态落盘（同内容不重复写）。有 RunState（开局/进法典时建）就落盘，带 run_id；
+    没有 RunState 时照旧要先知道 PT 上限。已经结算的局不再落盘（结算时文件已删，别又写回来）。"""
+    import run_state
     cap = getattr(task, "chaos_pt_cap", None)
     ns = getattr(task, "node_status", None)
-    if not cap or ns is None:
+    rs = run_state.current(task)
+    if ns is None or (rs is None and not cap) or (rs is not None and rs.finished):
         return
     try:
         # 装备（含刷刻印的装备位刻印）也落盘：重启后忘了已拿到的目标刻印，速刷会误判逃脱（2026-10-27）
         body = json.dumps({"cap": cap, "ns": {k: ns[k] for k in _PERSIST_KEYS if k in ns},
-                           "deck": _member_deck_state(task), "equipment": _equipment_state(task)},
+                           "deck": _member_deck_state(task), "equipment": _equipment_state(task),
+                           "run": rs.to_dict() if rs else None},
                           ensure_ascii=False, default=list, sort_keys=True)
         if body == getattr(task, "_run_state_saved", None):
             return
@@ -6079,6 +6094,7 @@ def clear_run_state(task: TriggerTask):
 
 def restore_run_state(task: TriggerTask):
     """启动时停在局内：读回落盘的 PT 账和局内进度。3 小时以上的旧文件不认。"""
+    import run_state
     try:
         if time.time() - os.path.getmtime(RUN_STATE_FILE) > RUN_STATE_MAX_AGE:
             return False
@@ -6086,6 +6102,16 @@ def restore_run_state(task: TriggerTask):
             data = json.load(f)
     except (OSError, ValueError):
         return False
+    saved_run = data.get("run") if isinstance(data.get("run"), dict) else {}
+    rs = run_state.current(task)
+    if rs is not None and saved_run.get("run_id") != rs.run_id:
+        # 内存里已经是新的一局：别把别的局的落盘读进来（2026-10-27 15:54 上一局的状态被带进了新局）
+        task.log_info(f"局内落盘是另一局（{saved_run.get('run_id')}），当前是 {rs.run_id}，不读")
+        return False
+    if saved_run.get("finished"):
+        return False
+    task.run_state = run_state.RunState.from_dict(saved_run) if saved_run.get("run_id") \
+        else run_state.RunState(source="重启恢复（落盘没有 run_id）")
     task.chaos_pt_cap = data.get("cap")
     task.node_status.update(data.get("ns", {}))
     if isinstance(data.get("deck"), dict):
@@ -6096,7 +6122,8 @@ def restore_run_state(task: TriggerTask):
     # 「进入商店」标记只在路线页置 True：节点中途重启后休息点带的商店会被跳过（2026-10-27 07:23 实录）
     if _get_config_value(task, '进入商店', False):
         task.node_status['shop'] = True
-    task.log_info(f"启动时在局内，读回落盘的局内状态：PT 上限 {task.chaos_pt_cap}，{data.get('ns')}")
+    task.log_info(f"启动时在局内，读回落盘的局内状态（run_id={task.run_state.run_id}）："
+                  f"PT 上限 {task.chaos_pt_cap}，{data.get('ns')}")
     return True
 
 
