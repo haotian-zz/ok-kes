@@ -65,6 +65,12 @@ def route_weights(mode, layer=0, hp=None, event_bonus=0, octopus=False, imprint=
     if hp is not None and hp is not False and hp < LOW_HP_ROUTE:
         t["精英"] = min(t["精英"], t["小怪"])
         t["休息"] += 2
+    if mode == MODE_EMPTY:
+        # 刷空档不拿装备，目标装备来源事件不加分（10-28 实录刷刻印留下的深绿桎梏让事件 +3、和商店打平）；
+        # 第一层到第一个航点（结算）就逃脱，只算到那，后面的商店/事件走不到
+        event_bonus = 0
+        if layer == 0:
+            w["stop_at"] = "结算"
     t["事件"] += event_bonus
     if octopus and layer == 0:
         # 用户 2026-10-25：速刷第一层所有战斗（普通战、精英）都高于问号事件和其他节点，普通战最高；
@@ -685,6 +691,7 @@ def config_overrides(mode, member=None, plan=None, db=None):
             "路线优先级": ["事件", "休息", "精英", "小怪"],
             "进入商店": True,
             "保留大于多少TB的存档": 0,
+            "刷存档开梦境模式": False,      # 梦境（噩梦）会提高闪光几率（用户 2026-10-28）
         }
     if mode == MODE_TARGET:
         plan = plan or {}

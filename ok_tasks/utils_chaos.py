@@ -207,8 +207,11 @@ def handle_chaos_team_setup(task: TriggerTask):
         else:
             ok = utils_chaos_prep.setup_team(task, members)
             task.log_info(f"自动编队{'完成' if ok else '失败，按现有编队继续'}：{members}")
-    if mode in (chaos_strategy.MODE_EMPTY, chaos_strategy.MODE_TARGET) and _get_config_value(task, "刷存档开梦境模式", True):
-        utils_chaos_prep.ensure_dream_mode(task, True)
+    if mode in (chaos_strategy.MODE_EMPTY, chaos_strategy.MODE_TARGET):
+        # 空存的覆盖项把梦境固定成关：梦境（噩梦）会提高闪光几率（用户 2026-10-28），开着就关掉
+        want = _get_config_value(task, "刷存档开梦境模式", True) is True
+        if want or mode == chaos_strategy.MODE_EMPTY:
+            utils_chaos_prep.ensure_dream_mode(task, want)
     task.all_texts = _simplify_texts(task.ocr())
     return True
 

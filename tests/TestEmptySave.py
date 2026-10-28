@@ -229,6 +229,53 @@ class TestNoFlash(unittest.TestCase):
         r = find_best_map_route_by_priority(info, ["事件", "休息", "精英", "小怪"], cs.ROUTE_WEIGHTS[cs.MODE_EMPTY])
         self.assertEqual([0, 2, 3], r["route"])
 
+    def test_route_only_counts_up_to_first_waypoint(self):
+        # 10-28 02:23 实录：航点在第 9 步，整层路线为了航点后的两个商店选了航点前只有 1 个商店的路
+        from utils import find_best_map_route_by_priority
+        shop = [{"feature_name": "shop_in_map", "priority": 1}]
+        info = {
+            "nodes": [
+                {"id": 0, "type": "当前位置", "row": 1, "special_features": []},
+                {"id": 1, "type": "休息", "row": 0, "special_features": shop},
+                {"id": 2, "type": "小怪", "row": 2, "special_features": []},
+                {"id": 3, "type": "结算", "row": 0, "special_features": []},
+                {"id": 4, "type": "结算", "row": 2, "special_features": []},
+                {"id": 5, "type": "首领", "row": 1, "special_features": []},
+                {"id": 6, "type": "休息", "row": 2, "special_features": shop},
+                {"id": 7, "type": "休息", "row": 2, "special_features": shop},
+            ],
+            "adjacency": {0: [1, 2], 1: [3], 2: [4], 3: [5], 4: [6], 6: [7], 7: [5]},
+        }
+        prio = ["事件", "休息", "精英", "小怪"]
+        w = cs.route_weights(cs.MODE_EMPTY, 0, event_bonus=3)
+        self.assertEqual("结算", w["stop_at"])
+        self.assertEqual(5, w["types"]["事件"])                      # 目标装备来源事件不加分
+        self.assertEqual([0, 1, 3], find_best_map_route_by_priority(info, prio, w)["route"])
+        # 不截断时会为了航点后的商店走小怪那条
+        self.assertEqual(2, find_best_map_route_by_priority(info, prio, cs.ROUTE_WEIGHTS[cs.MODE_EMPTY])["route"][1])
+        self.assertNotIn("stop_at", cs.route_weights(cs.MODE_EMPTY, 1))
+        self.assertNotIn("stop_at", cs.route_weights(cs.MODE_TARGET, 0))
+
+    def test_dream_mode_off(self):
+        # 用户 2026-10-28：空存不能开梦境（噩梦），会提高闪光几率；开着就关掉
+        self.assertFalse(cs.config_overrides(cs.MODE_EMPTY, "希露德")["刷存档开梦境模式"])
+        calls = []
+        orig = (utils_chaos.utils_chaos_prep.ensure_dream_mode, utils_chaos.utils_chaos_prep.setup_team)
+        utils_chaos.utils_chaos_prep.ensure_dream_mode = lambda task, want: calls.append(want) or True
+        utils_chaos.utils_chaos_prep.setup_team = lambda task, members: True
+        try:
+            for mode, cfg, want in ((cs.MODE_EMPTY, {}, [False]), (cs.MODE_TARGET, {"刷存档开梦境模式": True}, [True]),
+                                    (cs.MODE_TARGET, {"刷存档开梦境模式": False}, [])):
+                calls.clear()
+                t = empty_task(mode=mode, config=dict(cfg, 队友=["米卡", "海德玛丽"]),
+                               texts=[box(0.121, 0.043, "配置队伍"), box(0.947, 0.912, "进入")])
+                t.team_checked = False
+                t.ocr = lambda: []
+                self.assertTrue(utils_chaos.handle_chaos_team_setup(t))
+                self.assertEqual(want, calls, mode)
+        finally:
+            utils_chaos.utils_chaos_prep.ensure_dream_mode, utils_chaos.utils_chaos_prep.setup_team = orig
+
     def test_golden_card_not_clicked(self):
         t = empty_task()
         orig = utils._find_golden_card

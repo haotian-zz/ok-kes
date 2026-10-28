@@ -1088,6 +1088,7 @@ def find_best_map_route_by_priority(map_info, node_type_priority, weights=None):
     highest_priority_weight = max(priority_weights.values(), default=1)
     shop_bonus = weights.get("shop", highest_priority_weight * 2)
     special_weights = weights.get("special", {})
+    stop_at = weights.get("stop_at")     # 走到这种节点就不再往后算（刷空档第一个航点就逃脱）
 
     def best_route_from(node_id):
         if node_id in route_cache:
@@ -1111,7 +1112,7 @@ def find_best_map_route_by_priority(map_info, node_type_priority, weights=None):
             + own_shop_count * shop_bonus
             + own_special_score
         )
-        next_node_ids = adjacency.get(node_id, [])
+        next_node_ids = [] if stop_at and node["type"] == stop_at else adjacency.get(node_id, [])
         if not next_node_ids:
             result = (
                 own_weighted_score,
@@ -5144,7 +5145,7 @@ def _chaos_route_weights(task: TriggerTask):
             owned += [n for n in targets if chaos_strategy.equipment_key(n) in seen]
         sources = chaos_strategy.equipment_event_sources(targets)
         bonus = chaos_strategy.event_source_bonus(sources, layer, owned)
-        if bonus:
+        if bonus and mode != chaos_strategy.MODE_EMPTY:     # 刷空档不拿装备，route_weights 不加这个分
             task.log_info(f"本层有目标装备的来源事件（{[s['equipment'] + '←' + s['event'] for s in sources]}），事件节点 +{bonus}")
     except Exception as e:  # noqa: BLE001
         task.log_info(f"目标装备来源事件加权失败: {e}")
