@@ -79,6 +79,9 @@ def canonical_trait(name):
     if name in CODEX_TRAITS:
         return name
     hits = {t for t in CODEX_TRAITS if name and name in t}
+    if not hits and len(name) == 2:
+        # 错一个字（19:07 实录「坏疽」读成「坏痛」）：同长度只差一个字、且只对得上一个全名
+        hits = {t for t in CODEX_TRAITS if len(t) == 2 and sum(a != b for a, b in zip(name, t)) == 1}
     return hits.pop() if len(hits) == 1 else None
 
 

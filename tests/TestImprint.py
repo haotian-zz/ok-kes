@@ -119,6 +119,8 @@ class TestCodexTraitOcr(unittest.TestCase):
         self.assertEqual("暴君", ui.canonical_trait("君"))
         self.assertEqual("损失", ui.canonical_trait("失"))
         self.assertIsNone(ui.canonical_trait("X"))
+        self.assertEqual("坏疽", ui.canonical_trait("坏痛"))          # 19:07 实录错一个字
+        self.assertIsNone(ui.canonical_trait("不忽"))                 # 对得上两个（不安/疎忽…）就不认
         info = ui.parse_codex(["裁决之沼", "10 | 等级", "稀有命运触发率增加 50%", "[坏疽3][硬化2][君3]"])
         self.assertEqual([("坏疽", 3), ("硬化", 2), ("暴君", 3)], info["mods"])
         want = {ui.MAP_KEY: "裁决之沼", ui.DIFF_KEY: 10, ui.TRAIT_KEY: "", ui.RARE_KEY: 50, ui.BAN_KEY: ["损失", "暴君", "不安"]}
