@@ -216,6 +216,8 @@ class TestAutoPlayFast(unittest.TestCase):
     def _task(self, left, right):
         frame = np.zeros((1080, 1920, 3), np.uint8)
         cx, cy = 1688, 86                       # 「Ctrl」中心
+        frame[cy - 40:cy - 20, cx - 14:cx - 12] = 220     # 灰箭头也有零星亮点（实机一档右边灰箭头 35）
+        frame[cy - 40:cy - 20, cx + 2:cx + 4] = 220
         if left:
             frame[cy - 40:cy - 20, cx - 14:cx - 4] = 220
         if right:
@@ -248,6 +250,14 @@ class TestAutoPlayFast(unittest.TestCase):
         t._auto_play_clicks = [c - 2 for c in t._auto_play_clicks]
         self.assertFalse(utils._ensure_auto_play_fast(t))       # 认错状态也不会一直转圈
         self.assertEqual(len(t.clicks), utils.AUTO_PLAY_MAX_CLICKS)
+
+    def test_dark_frame_not_judged(self):
+        # 实录 00:45:48：淡入淡出时两边都是 0，当成关着点了一下
+        t = self._task(True, True)
+        t.frame[:] = 0
+        self.assertIsNone(utils._auto_play_level(t)[0])
+        self.assertFalse(utils._ensure_auto_play_fast(t))
+        self.assertEqual(t.clicks, [])
 
     def test_no_ctrl_label_falls_back(self):
         t = self._task(True, True)

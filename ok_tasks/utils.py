@@ -2146,8 +2146,13 @@ def _auto_play_level(task: TriggerTask):
     if not left.size or not right.size:
         return None
     lb, rb = int((left.max(axis=2) > 150).sum()), int((right.max(axis=2) > 150).sum())
+    pos = (cx / task.width, (cy - 30 * k) / task.height)
+    if lb + rb < 10 * k * k:
+        # 两边一个亮点都没有：画面在淡入淡出（关着时灰箭头也有几十个亮点，一档时右边灰箭头 35），这帧不判断
+        # （2026-10-28 00:45:48 读成 0/0 当成关着点了一下）
+        return None, lb, rb, pos
     level = 0 if lb < 60 * k * k else (2 if rb >= 0.6 * lb else 1)
-    return level, lb, rb, (cx / task.width, (cy - 30 * k) / task.height)
+    return level, lb, rb, pos
 
 
 def _ensure_auto_play_fast(task: TriggerTask, context=""):
@@ -2158,6 +2163,8 @@ def _ensure_auto_play_fast(task: TriggerTask, context=""):
         return None
     level, lb, rb, (x, y) = found
     now = time.time()
+    if level is None:
+        return False            # 认出了按钮但这帧太暗，不点，也不走旧的模板逻辑
     if level == 2:
         if now - getattr(task, "_auto_play_ok_logged", 0) > 120:
             task._auto_play_ok_logged = now
