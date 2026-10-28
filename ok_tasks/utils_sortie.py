@@ -447,9 +447,16 @@ def handle_boss_selection(task: TriggerTask):
 
 
 def handle_speedrun_exit(task: TriggerTask):
-    """出击速刷：第二层首领选完、回到路线页就点右上角退出，交给 handle_escape 点「逃脱」。退出时记一次成功。"""
+    """出击速刷：第二层首领选完就退出：不等回路线页，局内任何页面右上角菜单（Q）在就点开菜单，交给 handle_escape 点「逃脱」。
+    退出时记一次成功。（用户 2026-10-28：选了首领就可以退，进对话也能退；01:34 第二层开头事件「询问物主的意图」
+    选完又回到同一组选项，原来只在路线页退，转了一分多钟）"""
     ns = task.node_status
-    if not ns.get("speedrun_exit") or ns.get("is_escaped") or not is_route_selection_page(task):
+    if not ns.get("speedrun_exit") or ns.get("is_escaped"):
+        return False
+    if handle_escape(task):
+        return True
+    menu = find_box_at_point(task, 0.959, 0.080)
+    if not (menu and menu.name.strip() == "Q") and not is_route_selection_page(task):
         return False
     if time.time() - ns.get("speedrun_exit_clicked_at", 0) < 3:
         task.sleep(1)       # 刚点过退出，菜单还没出来

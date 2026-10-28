@@ -157,6 +157,28 @@ class TestSortieSpeedrun(unittest.TestCase):
         finally:
             us.is_route_selection_page = orig
 
+    def test_exit_from_event_page_via_menu(self):
+        # 用户 2026-10-28：选完首领就退，不用等路线页；事件/对白页右上角有 Q 菜单就点
+        t = sortie_task({"速刷模式": True}, [box(0.959, 0.080, "Q", w=20), box(0.310, 0.938, "询问物主的意图")])
+        t.node_status["speedrun_exit"] = True
+        orig = us.is_route_selection_page
+        us.is_route_selection_page = lambda task: False
+        try:
+            self.assertTrue(us.handle_speedrun_exit(t))
+            self.assertEqual(t.clicks, [(0.959, 0.051)])
+            # 菜单开了：逃脱按钮在，点逃脱，不再点菜单
+            t.all_texts = [box(0.952, 0.928, "逃脱")]
+            t.node_status["speedrun_exit_clicked_at"] -= 5
+            self.assertTrue(us.handle_speedrun_exit(t))
+            self.assertEqual(t.clicks[-1], "逃脱")
+            self.assertTrue(t.node_status["is_escaped"])
+            # 没有 Q 菜单的页面（加载、过场）不点
+            t2 = sortie_task({"速刷模式": True}, [box(0.5, 0.5, "加载中")])
+            t2.node_status["speedrun_exit"] = True
+            self.assertFalse(us.handle_speedrun_exit(t2))
+        finally:
+            us.is_route_selection_page = orig
+
     def test_no_exit_without_speedrun(self):
         t = sortie_task({}, self._boss_page())
         t.node_status["pass_final_boss_count"] = 1
