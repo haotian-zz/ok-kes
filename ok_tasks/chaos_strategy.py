@@ -176,12 +176,14 @@ def parse_effects(text):
         e["credit"] = -int(m.group(2))
     # OCR 多行乱序会把「神之闪光」拆成「神之滚动骰子10闪光」（2026-10-24 实机），所以「神之」+「闪光」也算
     # 带神名的闪光也是神闪：「赋予1张所选卡牌迪亚洛斯闪光」（2026-10-24 实机当成普通闪光选了，神闪落到剑鸣九霄上，存档报废）
-    if "神之闪光" in t or "神闪" in t or ("神之" in t and "闪光" in t) or \
-            (re.search(GOD_NAMES, t) and "闪光" in t):
+    # 方括号里是装备/卡牌名，「获得装备[闪光弹]」不是闪光（闪光弹是给敌人上弱化的装备，2026-10-28 03:43 实录被当成闪光 -500）
+    bare = norm(re.sub(r"[\[［【][^\]］】]*[\]］】]", "", text or ""))
+    if "神之闪光" in bare or "神闪" in bare or ("神之" in t and "闪光" in bare) or \
+            (re.search(GOD_NAMES, t) and "闪光" in bare):
         e["god_spark"] = True
         if "所选" in t or "选择" in t:
             e["god_spark_pick"] = True
-    elif "闪光" in t:
+    elif "闪光" in bare:
         e["spark"] = True
     if "复制" in t:
         e["copy_card"] = 1

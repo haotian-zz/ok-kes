@@ -468,6 +468,15 @@ class TestNoFlash(unittest.TestCase):
         s, _ = cs.score_effects({"spark": True, "credit": 200}, cs.MODE_EMPTY)
         self.assertLess(s, -400)
 
+    def test_flashbang_equipment_not_spark(self):
+        # 2026-10-28 03:43：「获得装备[闪光弹]」被当成闪光 -500；闪光弹是给敌人上弱化的装备
+        e = cs.parse_effects("把伊欧娜拉下来获得装备[闪光弹]")
+        self.assertNotIn("spark", e)
+        self.assertEqual(["闪光弹"], e["equipment"])
+        self.assertTrue(cs.parse_effects("听完布道随机主战员触发1次闪光").get("spark"))
+        # OCR 漏了右括号，闪光还在括号外：照样算
+        self.assertTrue(cs.parse_effects("甘受玷污强制获得咒术卡牌[赞美的试炼,选中主战员闪光1次").get("spark"))
+
     def test_remove_still_first(self):
         best, res = cs.pick_event_option(["信用点增加100", "移除2张卡牌"], cs.MODE_EMPTY, {"removed": 0})
         self.assertEqual(1, best, res)
