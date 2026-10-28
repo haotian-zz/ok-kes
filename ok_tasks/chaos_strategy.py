@@ -195,8 +195,12 @@ def parse_effects(text):
         e["curse_card"] = 1
     if "转换" in t:
         e["transform_card"] = 1
-    # 「普通战斗3次期间…」是之后战斗的 buff，不是这个选项要打一场
-    if re.search(r"攻击|战斗(?!\d*次期间)", re.sub(r"(普通|精英)?战斗\d*次期间", "", t)):
+    # 「普通战斗3次期间…」是之后战斗的 buff，不是这个选项要打一场。OCR 换行乱序时「期间」会跑到前面、
+    # 「普通战斗3次」落在末尾（2026-10-28 14:36「洗清罪孽期间异形生命值变为1移除1张所选卡牌普通战斗3次」被当成战斗 +55）
+    no_buff = re.sub(r"(普通|精英)?战斗\d*次期间", "", t)
+    if "期间" in no_buff:
+        no_buff = re.sub(r"(普通|精英)战斗\d+次", "", no_buff)
+    if re.search(r"攻击|战斗(?!\d*次期间)", no_buff):
         e["battle"] = True
     if m := re.search(r"压力(增加|上升)(\d+)?", t):
         e["stress"] = int(m.group(2) or 1)

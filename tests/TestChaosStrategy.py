@@ -47,6 +47,14 @@ class TestParseEffects(unittest.TestCase):
         best, results = cs.pick_event_option(descs, cs.MODE_TARGET, {"need_spark": 1})
         self.assertNotIn("选中主战员闪光", " ".join(results[0][1]), results[0])
 
+    def test_battle_buff_scrambled(self):
+        # 2026-10-28 14:36 实录：OCR 乱序把「普通战斗3次」放到末尾，被当成要打一场 +55
+        for d in ("洗清罪孽期间异形生命值变为1移除1张所选卡牌，普通战斗3次",
+                  "献上赞美期间异形生命值变为1信用点增加100，普通战斗3次",
+                  "洗清罪孽移除1张所选卡牌，普通战斗3次期间异形生命值变为1"):
+            self.assertNotIn("battle", cs.parse_effects(d), d)
+        self.assertTrue(cs.parse_effects("站在士兵一方发生战斗，信用点增加80")["battle"])
+
     def test_credit_percent(self):
         # norm 把 100% 换成 #%，以前「信用点减少100%」认不出来（2026-10-27 03:45 实录花光 358 信用点换提炼装备）
         self.assertEqual(-100, cs.parse_effects("奉献信念信用点减少100%，获得装备[云端漫游者]")["credit_pct"])
