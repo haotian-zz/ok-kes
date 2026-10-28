@@ -2322,9 +2322,32 @@ def _dialogue_line(task: TriggerTask):
     return None
 
 
+STUCK_SPACE_SECONDS = 30
+_BUTTON_TEXT = re.compile(r"确认|取消|继续|下一步|选择|进入|离开|跳过|领取|获得|关闭|结算|逃脱")
+
+
+def _stuck_dialogue_guess(task: TriggerTask):
+    """画面 30 秒没动、前面的页面处理都没认出来、顶栏以外只有几段中文且没有按钮：多半是没见过的对白样式，按一次空格
+    （2026-10-28 01:18～01:31 气泡、石碑、两行气泡三种对白各卡了 2 分钟）。15 秒最多一次。"""
+    now = time.time()
+    if now - getattr(task, "_last_stuck_check", 0) > 15 or now - getattr(task, "_last_change_time", now) < STUCK_SPACE_SECONDS:
+        return None
+    if now - getattr(task, "_stuck_space_at", 0) < 15:
+        return None
+    texts = [b for b in (getattr(task, "all_texts", None) or [])
+             if (b.y + b.height / 2) / task.height > 0.12 and re.search(r"[\u4e00-\u9fff]", b.name)]
+    if not texts or len(texts) > 4 or any(_BUTTON_TEXT.fullmatch(b.name.strip()) for b in texts):
+        return None
+    task._stuck_space_at = now
+    line = max(texts, key=lambda b: len(b.name))
+    task.log_info(f"画面 {int(now - task._last_change_time)} 秒没动、没认出是什么页面，只有「"
+                  + "".join(b.name for b in texts) + "」，当对白按一次空格")
+    return line
+
+
 def handle_dialogue(task: TriggerTask):
     """出击/卡厄思中的剧情对白: 先尝试开启一次自动对话，之后用对话键（空格）推进，避免反复点击开关。"""
-    line = _dialogue_line(task)
+    line = _dialogue_line(task) or _stuck_dialogue_guess(task)
     if not line:
         return False
     now = time.time()

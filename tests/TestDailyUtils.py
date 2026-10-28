@@ -246,6 +246,22 @@ class TestDialogueLine(unittest.TestCase):
         line = _dialogue_line(SimpleNamespace(width=W, height=H, all_texts=texts))
         self.assertEqual("石碑中传来了使者的意志。", line.name)
 
+    def test_stuck_screen_presses_space_once(self):
+        import time as _time
+        import utils
+        now = _time.time()
+        logs = []
+        task = SimpleNamespace(width=W, height=H, all_texts=[box("1291/1291", 0.212, 0.038), box("奇怪的文字", 0.2, 0.3)],
+                               _last_change_time=now - 40, _last_stuck_check=now, log_info=lambda m, **k: logs.append(m))
+        self.assertEqual("奇怪的文字", utils._stuck_dialogue_guess(task).name)
+        self.assertIsNone(utils._stuck_dialogue_guess(task))          # 15 秒内不再按
+        task._stuck_space_at = now - 20
+        task.all_texts = task.all_texts + [box("确认", 0.6, 0.9)]
+        self.assertIsNone(utils._stuck_dialogue_guess(task))          # 有按钮不按
+        task.all_texts = task.all_texts[:2]
+        task._last_change_time = now - 10
+        self.assertIsNone(utils._stuck_dialogue_guess(task))          # 没卡够 30 秒
+
     def test_confirm_page_is_not_dialogue(self):
         task = SimpleNamespace(width=W, height=H, all_texts=[box("请确认是否可投入主战员。", 0.5, 0.82), box("确认", 0.6, 0.9)])
         self.assertIsNone(_dialogue_line(task))
