@@ -456,5 +456,265 @@ class TestGoalReached(unittest.TestCase):
         self.assertEqual(2, ui.target_equipment_count(self._task(["混沌之识", "", "深绿桎梏"], ("", "", ""))))
 
 
+# ------------------------- 装备页回归（handle_equipment 整页驱动） -------------------------
+# 假 task：OCR 框 all_texts + 假画面（只画用得到的像素：待装备品质点、刻印图标、目标主战员三个装备位颜色）+ 假特征（三个 leveltag、
+# 刷存档主战员头像在第 1 个）。断言真实动作（点了哪里）和装备账。2026-10-27 装备页每个 bug 一个用例。
+LV_X, LV_Y = 0.63, (0.35, 0.55, 0.75)              # 三个主战员 leveltag 中心
+SLOT_OFFSETS = ((0.130, -0.044), (0.201, -0.044), (0.270, -0.044))
+LEGEND, NORMAL, EPIC = (135, 82, 164), (61, 76, 138), (160, 88, 69)
+MEMBER = [("member", 0.756, y) for y in LV_Y]     # 点第 i 个主战员
+
+
+def equip_frame(quality=None, slots=(None, None, None), icon=False):
+    """quality：待装备品质色（None＝淡入时的黑）；slots：目标主战员三个装备位颜色（None＝黑，读成空槽）；icon：光之刻印图标。"""
+    frame = np.zeros((1080, 1920, 3), dtype=np.uint8)
+
+    def px(x, y, rgb):
+        frame[round(y * 1080), round(x * 1920)] = rgb[::-1]
+    if quality:
+        px(0.117, 0.409, quality)
+    for (dx, dy), rgb in zip(SLOT_OFFSETS, slots):
+        if rgb:
+            px(LV_X + dx, LV_Y[0] + dy, rgb)
+    if icon:                                        # 黄色太阳：铺满描述区左边一条的上半段
+        x1, y1, x2, _ = ui.DESC_ICON_STRIP
+        frame[round(y1 * 1080):round(y1 * 1080) + 40, round(x1 * 1920):round(x2 * 1920)] = (0, 200, 255)
+    return frame
+
+
+def equip_texts(name, type_text, desc, refine=True, confirm=True, purchase=False, price="96", credit="300"):
+    boxes = [ocr_box(0.499, 0.126, "装备"), ocr_box(0.921, 0.135, "请选择主战员", w=0.12)]
+    if name:
+        boxes.append(ocr_box(0.30, 0.41, name, w=0.15))
+    if type_text:
+        boxes.append(ocr_box(0.25, 0.466, type_text, w=0.08))
+    if desc:
+        boxes.append(ocr_box(0.35, 0.55, desc, w=0.30))
+    if purchase:
+        boxes += [ocr_box(0.60, 0.93, "取消"), ocr_box(0.80, 0.93, price, w=0.03), ocr_box(0.92, 0.93, "购买"),
+                  ocr_box(0.794, 0.054, credit, w=0.04)]
+    else:
+        if refine:
+            boxes.append(ocr_box(0.75, 0.93, "提炼"))
+        if confirm:
+            boxes.append(ocr_box(0.92, 0.93, "确认"))
+    return boxes
+
+
+class EquipPageCase(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from unittest import mock
+        import chaos_trace
+        import utils
+        self.utils = utils
+        tmp = tempfile.mkdtemp()
+        # 测试不写真实 dev_out：流程追踪、局内状态落盘都指到临时目录
+        for target, attr, value in ((chaos_trace, "TRACE_ROOT", os.path.join(tmp, "trace")),
+                                    (utils, "RUN_STATE_FILE", os.path.join(tmp, "run_state.json")),
+                                    (utils, "is_button_active", lambda task, b: getattr(task, "confirm_active", False))):
+            p = mock.patch.object(target, attr, value)
+            p.start()
+            self.addCleanup(p.stop)
+        self.tmp = tmp
+
+    def make_task(self, names=("", "", ""), imprints=("", "", ""), qualities=("", "", ""), layer=0, **config):
+        acts, logs = [], []
+        cfg = dict(EQUIP_CONFIG)
+        cfg.update(config)
+        lv = [Box(x=LV_X * 1920 - 10, y=y * 1080 - 10, width=20, height=20, confidence=0.9, name="") for y in LV_Y]
+        avatar = Box(x=lv[0].x + 40, y=lv[0].y - 20, width=40, height=40, confidence=0.8, name="")
+        t = SimpleNamespace(
+            width=1920, height=1080, all_texts=[], frame=None, config=cfg, default_config={"刷存档主战员": "海德玛丽"},
+            member_status={"equipment": {"names": list(names), "descriptions": ["", "", ""], "qualities": list(qualities),
+                                         "imprints": list(imprints)}},
+            node_status={"pass_final_boss_count": layer}, chaos_seen=None, confirm_active=False, disabled=False,
+            log_info=lambda m, *a, **k: logs.append(m), log_error=lambda m, *a, **k: logs.append(m),
+            sleep=lambda *a: None, move_relative=lambda *a: None,
+            click=lambda x, y, **k: acts.append(("member", round(x, 3), round(y, 3))),
+            click_box=lambda b, **k: acts.append(b.name),
+            find_feature=lambda feature_name=None, box=None, threshold=0: list(lv) if feature_name == "leveltag" else [],
+            find_one=lambda feature_name=None, box=None, threshold=0: avatar,
+            feature_exists=lambda name: True, box_of_screen=lambda *a, **k: None)
+        t.disable = lambda: setattr(t, "disabled", True)
+        t.acts, t.logs = acts, logs
+        return t
+
+    def frame(self, t, texts, frame, confirm_active=False):
+        """跑一帧：页面处理表里装备相关的两个（settle 在最前面，不拦截）。"""
+        t.all_texts, t.frame, t.confirm_active = texts, frame, confirm_active
+        settle = getattr(self.utils, "settle_equipment_pending", None)
+        if settle:
+            settle(t)
+        return self.utils.handle_equipment(t)
+
+    def eq(self, t):
+        return t.member_status["equipment"]
+
+
+class TestEquipPageRegression(EquipPageCase):
+    def test_fade_in_empty_slots_keep_ledger(self):
+        """703c6c7 实录 2026-10-27 15:48：装备页淡入时装备位读成空，清掉了账里的混沌之识/目标刻印，后面被逃脱。"""
+        names = ["混沌之识", "怪异之壳", "深绿桎梏"]
+        t = self.make_task(names, (ui.TARGET, ui.TARGET, ""), ("传说", "传说", "传说"), layer=1)
+        item = ("不朽鳞片", "防御力+80", "受到伤害时获得护盾")
+        fade = (equip_texts(*item, refine=False, confirm=False), equip_frame(LEGEND))     # 底部按钮没出来、装备位全黑
+        for _ in range(2):
+            self.frame(t, *fade)
+        self.assertEqual(names, self.eq(t)["names"])
+        self.assertEqual([ui.TARGET, ui.TARGET, ""], self.eq(t)["imprints"])
+        self.assertEqual([], t.acts)
+        ready = (equip_texts(*item), equip_frame(LEGEND, (LEGEND, LEGEND, LEGEND)))
+        for _ in range(2):
+            self.frame(t, *ready)
+        self.assertEqual(["提炼"], t.acts)        # 槽位已有目标刻印、不是目标装备：提炼
+        self.assertEqual(names, self.eq(t)["names"])
+        self.assertEqual(2, ui.target_imprint_count(t))
+
+    def test_fade_in_unknown_quality_not_refined(self):
+        """35670f4 实录 2026-10-27 17:03：淡入时品质「未知」、刻印「无」连读 3 帧，带目标刻印的怪异之壳差点被提炼。"""
+        t = self.make_task()
+        for _ in range(3):
+            self.frame(t, equip_texts("怪异之壳", "防御力+80", "受到伤害时获得护盾"), equip_frame(None))
+        self.assertEqual([], t.acts)
+        good = (equip_texts("怪异之壳", "防御力+80", "受到伤害时获得护盾" + TARGET_DESC), equip_frame(LEGEND, icon=True))
+        for _ in range(2):
+            self.frame(t, *good)
+        self.assertEqual([MEMBER[0]], t.acts)
+        self.frame(t, *good, confirm_active=True)
+        self.assertEqual([MEMBER[0], "确认"], t.acts)
+        self.assertEqual("怪异之壳", self.eq(t)["names"][1])
+        self.assertEqual(ui.TARGET, self.eq(t)["imprints"][1])
+
+    def test_no_redecide_after_member_click(self):
+        """fee1447 实录 2026-10-27 18:02：点了主战员安装后，下一帧同一页又被当新页面判断；账已提前写成深绿黑夜 →
+        「不比当前好」→ 目标装备深绿黑夜被提炼。现在：点完锁住、确认后才写账。"""
+        t = self.make_task(("", "", "怪异之壳"), ("", "", ui.TARGET), ("", "", "传说"), layer=1)
+        page = (equip_texts("深绿黑夜", "生命值+300", "回合开始时恢复生命"), equip_frame(LEGEND, (None, None, LEGEND)))
+        for _ in range(2):
+            self.frame(t, *page)
+        self.assertEqual([MEMBER[0]], t.acts)
+        for _ in range(3):                           # 确认按钮还没亮：等，不重新判断
+            self.frame(t, *page)
+        self.assertEqual([MEMBER[0]], t.acts)
+        self.assertEqual("怪异之壳", self.eq(t)["names"][2])        # 还没确认，不写账
+        self.frame(t, *page, confirm_active=True)
+        self.assertEqual([MEMBER[0], "确认"], t.acts)
+        self.assertEqual("深绿黑夜", self.eq(t)["names"][2])
+        self.assertEqual(ui.TARGET, self.eq(t)["imprints"][2])     # 没刻印的目标装备继承槽位的目标刻印
+        for _ in range(3):                           # 确认后页面淡出还露几帧：同一件不再判断
+            self.frame(t, *page)
+        self.assertEqual([MEMBER[0], "确认"], t.acts)
+
+    def test_refine_with_trace_does_not_crash(self):
+        """f76f1f5 实录 2026-10-27 17:22：提炼留底 chaos_trace.step(..., kind=...) 撞参数名，任务崩溃（提炼路径没测过）。"""
+        import json
+        import chaos_trace
+        t = self.make_task(**{"记录流程追踪": True})
+        page = (equip_texts("命令：108号", "攻击力+120", "攻击卡牌的伤害总量提升40%"), equip_frame(LEGEND, icon=True))
+        for _ in range(2):
+            self.frame(t, *page)
+        self.assertEqual(["提炼"], t.acts)
+        with open(os.path.join(t._chaos_trace["dir"], "trace.jsonl"), encoding="utf-8") as f:
+            recs = [json.loads(line) for line in f]
+        self.assertTrue(chaos_trace.TRACE_ROOT.startswith(self.tmp))
+        self.assertEqual("refine", recs[-1]["kind"])
+        self.assertEqual((ui.OTHER, ui.LIGHT), (recs[-1]["data"]["imprint"], recs[-1]["data"]["icon"]))
+
+    def test_wait_for_refine_button_before_teammate(self):
+        """291f68e 实录 2026-10-27 07:11：装备页淡入时还没认出提炼按钮，就按老规则分给了队友。"""
+        t = self.make_task()
+        item = ("命令：108号", "攻击力+120", "攻击卡牌的伤害总量提升40%")
+        for _ in range(3):
+            self.frame(t, equip_texts(*item, refine=False), equip_frame(LEGEND))
+        self.assertEqual([], t.acts)
+        for _ in range(2):
+            self.frame(t, equip_texts(*item), equip_frame(LEGEND))
+        self.assertEqual(["提炼"], t.acts)
+        # 提炼按钮一直不出来：等够了再按老规则分给队友（不会卡死）
+        t = self.make_task()
+        for _ in range(self.utils.EQUIP_STABLE_MAX_WAIT + 1):
+            self.frame(t, equip_texts(*item, refine=False), equip_frame(LEGEND))
+        self.assertEqual(1, len(t.acts))
+        self.assertIn(t.acts[0], MEMBER[1:])
+
+    def test_install_saved_to_run_state(self):
+        """2d5ed0f：装备和装备位刻印随局内状态落盘（中途重启后目标刻印还在）。确认安装后就落盘。"""
+        import json
+        t = self.make_task()
+        t.chaos_pt_cap = 150
+        page = (equip_texts("怪异之壳", "防御力+80", "受到伤害时获得护盾" + TARGET_DESC), equip_frame(LEGEND, icon=True))
+        for _ in range(2):
+            self.frame(t, *page)
+        self.assertFalse(os.path.exists(self.utils.RUN_STATE_FILE))    # 只点了主战员，还没确认
+        self.frame(t, *page, confirm_active=True)
+        with open(self.utils.RUN_STATE_FILE, encoding="utf-8") as f:
+            data = json.load(f)
+        self.assertEqual(["", "怪异之壳", ""], data["equipment"]["names"])
+        self.assertEqual(["", ui.TARGET, ""], data["equipment"]["imprints"])
+        fresh = SimpleNamespace(node_status={}, member_status={}, config={}, log_info=lambda *a, **k: None)
+        self.assertTrue(self.utils.restore_run_state(fresh))
+        self.assertEqual(1, ui.target_imprint_count(fresh))
+
+    def test_dark_grey_empty_slot_not_legendary(self):
+        """2ff63c9 实录 2026-10-27 03:04：暗灰色空槽 (24,42,46)、转场 (57,61,70) 被当成传说，新传说装备就不装给目标主战员。"""
+        t = self.make_task(**{"刷刻印": False})
+        page = (equip_texts("绯刃", "攻击力+120", "暴击伤害+12%"), equip_frame(LEGEND, (None, (24, 42, 46), (57, 61, 70))))
+        for _ in range(2):
+            self.frame(t, *page)
+        self.assertEqual([MEMBER[0]], t.acts)
+        self.frame(t, *page, confirm_active=True)
+        self.assertEqual(["绯刃", "", ""], self.eq(t)["names"])
+        self.assertEqual(["传说", "", ""], self.eq(t)["qualities"])
+
+
+class TestEquipPageGuard(EquipPageCase):
+    def test_never_refine_target_imprint(self):
+        """不可逆守卫：装着混沌之识时来了带目标刻印的武器，规则说不换，但带目标刻印的永远不提炼（分给队友，留底）。"""
+        t = self.make_task(("混沌之识", "", ""), ("", "", ""), ("传说", "", ""), **{"记录流程追踪": True})
+        page = (equip_texts("绯刃", "攻击力+120", "暴击" + TARGET_DESC), equip_frame(LEGEND, (LEGEND, None, None), icon=True))
+        for _ in range(2):
+            self.frame(t, *page)
+        self.assertNotIn("提炼", t.acts)
+        self.assertEqual(1, len(t.acts))
+        self.assertIn(t.acts[0], MEMBER[1:])
+        self.assertEqual("混沌之识", self.eq(t)["names"][0])
+        import json
+        with open(os.path.join(t._chaos_trace["dir"], "trace.jsonl"), encoding="utf-8") as f:
+            self.assertIn("refine_blocked", [json.loads(line)["kind"] for line in f])
+
+    def test_only_refine_button_refuses_target_imprint(self):
+        """只有提炼按钮可点时，带目标刻印的装备也不提炼：停下通知。"""
+        t = self.make_task()
+        page = (equip_texts("怪异之壳", "防御力+80", "护盾" + TARGET_DESC, confirm=False), equip_frame(LEGEND, icon=True))
+        for _ in range(2):
+            self.frame(t, *page)
+        self.assertEqual([], t.acts)
+        self.assertTrue(t.disabled)
+
+
+class TestEquipPageLayer2(EquipPageCase):
+    def test_layer2_buys_target_equipment_commits_on_leave(self):
+        """用户 2026-10-27 18:2x：第二层目标装备没刻印也先装上。购买页：点主战员 + 购买，离开购买页后才写账。"""
+        t = self.make_task(layer=1)
+        page = (equip_texts("欺骗暗影的匕首", "攻击力+120", "暴击伤害+12%", purchase=True), equip_frame(LEGEND))
+        for _ in range(2):
+            self.frame(t, *page)
+        self.assertEqual([MEMBER[0], "购买"], t.acts)
+        self.frame(t, *page)                          # 购买页还没走：不重新判断、不写账
+        self.assertEqual([MEMBER[0], "购买"], t.acts)
+        self.assertEqual("", self.eq(t)["names"][0])
+        self.frame(t, [ocr_box(0.5, 0.1, "德朗商店")], equip_frame())    # 回到商店
+        self.assertEqual("欺骗暗影的匕首", self.eq(t)["names"][0])
+        self.assertEqual("", self.eq(t)["imprints"][0])
+
+    def test_layer1_still_refines_target_equipment(self):
+        t = self.make_task(layer=0)
+        page = (equip_texts("欺骗暗影的匕首", "攻击力+120", "暴击伤害+12%"), equip_frame(LEGEND))
+        for _ in range(2):
+            self.frame(t, *page)
+        self.assertEqual(["提炼"], t.acts)
+
+
 if __name__ == "__main__":
     unittest.main()

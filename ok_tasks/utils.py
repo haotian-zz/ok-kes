@@ -2789,6 +2789,362 @@ def _mark_equipment_obtained(task: TriggerTask, name):
         task.log_info(f"记下拿过的装备「{name}」")
 
 
+# ------------------------- 装备页（安装 / 购买） -------------------------
+# 2026-10-27 一天里装备页上丢了一局混沌之识 + 2 个目标刻印（15:48）、差点提炼带目标刻印的怪异之壳（17:03）、
+# 提炼了目标装备深绿黑夜（18:02），都是「画面没稳定就决策」「点完下一帧又当新页面判断」「账本先于事实写」。现在分成：
+#   读画面 _read_install_view → 动作锁 _equip_lock → 稳定帧门槛 _install_view_stable → 决策 _decide_install
+#   → 不可逆守卫 _refine_allowed → 执行。目标主战员的装备账只在确认安装后（点了确认 / 离开这一页）才写（_commit_equipment_pending）。
+EQUIP_STABLE_MAX_WAIT = 6     # 同一件装备页一直不稳定时最多等几帧，之后按最后一帧决定（不可逆守卫照样生效）
+EQUIP_ACTION_LOCK = 8         # 点了安装/提炼/购买/取消后，同一件这么多秒内不再决策，等页面变化
+EQUIP_COMMITTED_HOLD = 20     # 已确认安装的那一件页面还没走时，这么多秒内也不再决策
+_INSTALL_NAME_REGION = (0.217, 0.379, 0.469, 0.436)
+_INSTALL_TYPE_REGION = (0.188, 0.444, 0.323, 0.489)
+_INSTALL_DESC_REGION = (0.179, 0.492, 0.542, 0.668)
+_INSTALL_CONFIRM_REGION = (0.267, 0.867, 0.991, 0.979)
+
+
+def _boxes_in(task, x1, y1, x2, y2):
+    return [b for b in task.all_texts
+            if x1 <= (b.x + b.width / 2) / task.width <= x2
+            and y1 <= (b.y + b.height / 2) / task.height <= y2
+            and b.name.strip()]
+
+
+def _is_install_page(task):
+    """安装/购买装备页：标题「装备」+ 右上「请选择主战员」。"""
+    title = find_box_at_point(task, 0.499, 0.126)
+    if not (title and title.name == "装备"):
+        return False
+    hint = find_box_at_point(task, 0.921, 0.135)
+    return bool(hint and _get_game_text(task, '请选择主战员') in hint.name)
+
+
+def _install_page_item(task):
+    """当前安装装备页上的装备名；不在安装装备页返回 None，在但名字没读出（淡入淡出）返回 ""。"""
+    if not _is_install_page(task):
+        return None
+    return _get_region_text(task, _INSTALL_NAME_REGION).strip()
+
+
+def _install_page_buttons(task):
+    purchase_bottom = _boxes_in(task, 0.013, 0.881, 0.992, 0.994)
+    bottom = _boxes_in(task, 0.563, 0.881, 0.998, 0.997)
+    return SimpleNamespace(
+        cancel=next((b for b in purchase_bottom if "取消" in b.name), None),
+        purchase=next((b for b in purchase_bottom if "购买" in b.name), None),
+        price=next((b for b in purchase_bottom if re.fullmatch(r"\d+", b.name.strip())), None),
+        bottom=bottom,
+        refine=[b for b in bottom if "提炼" in b.name],
+        confirm=next((b for b in _boxes_in(task, *_INSTALL_CONFIRM_REGION) if _clean_match(b.name, "确认")), None),
+    )
+
+
+def _read_install_view(task, imprint_mode):
+    """读一帧安装/购买装备页：按钮、待装备（名字/槽位/品质/刻印）、主战员和目标主战员三个装备位的品质。只读不改账。"""
+    import utils_imprint
+    btn = _install_page_buttons(task)
+    eq = _equipment_info(task, _INSTALL_NAME_REGION, _INSTALL_TYPE_REGION, _INSTALL_DESC_REGION)
+    if eq and imprint_mode:
+        eq["imprint"], eq["imprint_icon"] = utils_imprint.equipment_imprint(task, eq["description"])
+    lv_texts = _find_member_level_tags(task, (0.609, 0.290, 0.652, 0.789), page="安装装备页面")
+    target_index = _find_target_member_index(task, lv_texts, (0.607, 0.192, 0.739, 0.856),
+                                             feature_name="target_member_tiny")
+    tracks = "刷存档主战员" in getattr(task, "default_config", {})
+    preferred = target_index if tracks else (0 if lv_texts else None)
+    live = _member_equipment_qualities(task, lv_texts[preferred]) if preferred is not None else None
+    return SimpleNamespace(btn=btn, is_purchase=bool(btn.cancel and btn.purchase), eq=eq, lv_texts=lv_texts,
+                           target_index=target_index, tracks=tracks, preferred=preferred, live=live)
+
+
+def _install_view_problem(view, imprint_mode):
+    """关键元素没出来的原因；None＝都出来了。"""
+    if not view.eq:
+        return "装备名称/类型还没读出"
+    if not (view.is_purchase or view.btn.refine):
+        # 实录 2026-10-27 07:11 淡入时还没认出提炼按钮就分给了队友（291f68e）
+        return "底部按钮（提炼 / 取消+购买）还没出来"
+    if imprint_mode and not view.eq.get("quality"):
+        # 实录 2026-10-27 17:03 淡入时品质「未知」、刻印「无」连读 3 帧（35670f4）
+        return "待装备品质颜色还读不出"
+    return None
+
+
+def _install_view_stable(task, view, imprint_mode):
+    """稳定帧门槛：关键元素都出来、且名字/品质/刻印/目标主战员装备位品质和上一帧一样才决策。淡入中不决策、不改账。
+    同一件一直不稳定超过 EQUIP_STABLE_MAX_WAIT 帧就按这一帧决定（防卡死；提炼前的不可逆守卫照样拦）。"""
+    eq = view.eq
+    name = eq["ocr_name"] if eq else None
+    sig = None if not eq else (eq["ocr_name"], eq.get("quality"), eq.get("imprint"), view.is_purchase,
+                               tuple(view.live) if view.live is not None else None)
+    problem = _install_view_problem(view, imprint_mode)
+    state = getattr(task, "_equip_view", None) or {}
+    waits = state.get("waits", 0) + 1 if state.get("name") == name else 1
+    task._equip_view = {"name": name, "sig": None if problem else sig, "waits": waits}
+    if not problem and state.get("sig") == sig:
+        return True
+    if waits > EQUIP_STABLE_MAX_WAIT:
+        task.log_info(f"装备页「{name}」等了 {waits - 1} 帧还不稳定（{problem or '读数和上一帧不一样'}），按这一帧决定")
+        return True
+    task.log_info(f"装备页还没稳定（{problem or '读数和上一帧不一样'}），等一下再看（第 {waits} 帧）")
+    task.sleep(0.5)
+    return False
+
+
+def _set_equipment_pending(task, view, action, target=False):
+    """记下刚点的动作（动作锁）。target＝装给了目标主战员，确认后才写账。"""
+    eq = view.eq
+    task._equip_pending = {"ocr_name": eq["ocr_name"], "purchase": view.is_purchase, "action": action,
+                           "slot": eq["slot"], "target": target, "committed": False, "at": time.time(),
+                           "eq": {k: eq.get(k) for k in ("name", "description", "quality", "imprint", "rank")}}
+    task._equip_view = None
+
+
+def _commit_equipment_pending(task, pending, why):
+    """确认安装后才把装备记进目标主战员的账（含刷刻印的装备位刻印），并落盘。
+    以前点主战员时就提前写账，下一帧同一页又被当新页面判断，「不比当前好」把目标装备深绿黑夜提炼了（实录 2026-10-27 18:02）。"""
+    import utils_imprint
+    if pending.get("committed"):
+        return
+    pending["committed"] = True
+    eq, slot = pending["eq"], pending["slot"]
+    equipment = _equipment_state(task)
+    equipment["names"][slot] = eq["name"]
+    equipment["descriptions"][slot] = eq.get("description") or ""
+    equipment["qualities"][slot] = eq.get("quality") or ""
+    task.log_info(f"{slot + 1}号位装备「{eq['name']}」已确认安装（{why}），记账")
+    if utils_imprint.enabled(task):
+        utils_imprint.record_install(task, slot, eq)
+    save_run_state(task)
+
+
+def settle_equipment_pending(task: TriggerTask):
+    """页面处理表最前面跑（不拦截）：点了安装/购买后离开了那一页，就当装上了，写账。
+    要在逃脱判断（handle_rush_escape）之前，不然装备页之后直接回路线页时按旧账判断。"""
+    pending = getattr(task, "_equip_pending", None)
+    if not pending:
+        return False
+    item = _install_page_item(task)
+    if item == "" or item == pending["ocr_name"]:
+        return False
+    if pending["target"] and pending["action"] in ("install", "buy"):
+        _commit_equipment_pending(task, pending, "已离开安装页")
+    task._equip_pending = None
+    return False
+
+
+def _equip_lock(task, view):
+    """动作锁：刚对这一件点过动作、页面还没变（同名同类页面）且没超时，返回那个动作。"""
+    pending = getattr(task, "_equip_pending", None)
+    if not pending or not view.eq or view.eq["ocr_name"] != pending["ocr_name"] \
+            or view.is_purchase != pending["purchase"]:
+        return None
+    hold = EQUIP_COMMITTED_HOLD if pending.get("committed") else EQUIP_ACTION_LOCK
+    return pending if time.time() - pending["at"] < hold else None
+
+
+def _while_locked(task, view, pending):
+    """动作锁期间：装给主战员的等确认按钮亮了点确认（看到确认被点才写账），其他动作等页面变化。"""
+    if pending["action"] == "install" and not pending.get("committed") and view.btn.confirm \
+            and is_button_active(task, view.btn.confirm):
+        task.log_info(f"已选主战员安装「{pending['eq']['name']}」，点确认")
+        task.click_box(view.btn.confirm)
+        task.sleep(1)
+        if pending["target"]:
+            _commit_equipment_pending(task, pending, "点了确认")
+        else:
+            pending["committed"] = True
+        return True
+    task.log_info(f"刚对「{pending['eq']['name']}」点了{pending['action']}，等页面变化，不重新判断")
+    task.sleep(0.5)
+    return True
+
+
+def _refine_allowed(task, view, reason, rule_allows_target):
+    """不可逆守卫：提炼前统一检查；拒绝时记日志 + 流程追踪留底。带刻印或目标装备的提炼也留底（事后核对刻印有没有认错）。"""
+    import utils_imprint
+    eq = view.eq
+    title = f"{eq['slot'] + 1}号位提炼「{eq['name']}」"
+    block = utils_imprint.refine_block_reason(task, eq, rule_allows_target)
+    # 留底参数别叫 kind：和 chaos_trace.step 的 kind 撞名，任务异常停止（实录 2026-10-27 17:22，f76f1f5）
+    detail = dict(imprint=eq.get("imprint"), icon=eq.get("imprint_icon"), reason=reason, desc=eq.get("description"))
+    if block:
+        task.log_info(f"不可逆守卫：不提炼，{block}（决策：{reason}）")
+        chaos_trace.step(task, "refine_blocked", title, task.frame, block=block, **detail)
+        return False
+    if eq.get("imprint_icon") or eq.get("rank") is not None:
+        chaos_trace.step(task, "refine", title, task.frame, **detail)
+    return True
+
+
+def _update_slots_from_live(task, view, equipment, imprint_mode):
+    """稳定帧上按目标主战员装备位颜色修正账：空槽清掉记录。混沌之识、带目标刻印的槽位只会被我们自己换掉，读成空当误读不清
+    （实录 2026-10-27 15:48 淡入读成空，混沌之识和两个目标刻印被清掉，第二层首领前逃脱）。"""
+    import utils_imprint
+    for slot, live_quality in enumerate(view.live):
+        if live_quality is None:
+            continue
+        if not live_quality and imprint_mode and (
+                utils_imprint.is_top(equipment["names"][slot])
+                or utils_imprint.slot_imprints(task)[slot] == utils_imprint.TARGET):
+            task.log_info(f"第{slot + 1}号装备位读成空，但记录是「{equipment['names'][slot]}」"
+                          f"（{utils_imprint.slot_imprints(task)[slot] or '无刻印'}），当误读不清")
+            continue
+        equipment["qualities"][slot] = live_quality
+        if not live_quality:
+            if equipment["names"][slot]:
+                task.log_info(f"第{slot + 1}号装备位实际为空，清除记录装备「{equipment['names'][slot]}」")
+            equipment["names"][slot] = ""
+            equipment["descriptions"][slot] = ""
+            if imprint_mode:
+                utils_imprint.slot_imprints(task)[slot] = ""
+
+
+def _decide_install(task, view, equipment, imprint_mode):
+    """装不装给目标（或第一）主战员：(装, 理由, 当前装备名)。先按配置优先级/品质比，刷刻印再按刻印规则（utils_imprint.install_decision）。"""
+    import utils_imprint
+    eq = view.eq
+    slot = eq["slot"]
+    current_name, _ = _current_equipment_for_slot(task, equipment, slot)
+    if view.preferred is None:
+        return False, "未找到目标主战员", current_name
+    _update_slots_from_live(task, view, equipment, imprint_mode)
+    current_name, _ = _current_equipment_for_slot(task, equipment, slot)
+    should, reason = _should_install_equipment(task, current_name, equipment["qualities"][slot], eq)
+    if imprint_mode:
+        # 刷刻印：刻印优先于装备，三件目标装备都是传说，不管「一个主战员只装一件传说」
+        should, reason = utils_imprint.install_decision(task, eq, slot, should, reason, current_name)
+    elif eq["quality"] == "传说" and any(q == "传说" and s != slot for s, q in enumerate(view.live)):
+        task.log_info("目标主战员已安装传说装备，新传说装备改由其他主战员安装")
+        should, reason = False, "该主战员其他装备位已有传说装备"
+    return should, reason, current_name
+
+
+def _click_member(task, view, index, action, target):
+    chosen = view.lv_texts[index]
+    _move_and_click(task, 0.756, (chosen.y + chosen.height / 2) / task.height)
+    _set_equipment_pending(task, view, action, target)
+    task.sleep(1)
+    if view.is_purchase:
+        task.click_box(view.btn.purchase)
+        task.sleep(1)
+
+
+def _handle_install_page(task: TriggerTask):
+    """安装/购买装备页：读稳定画面 → 决策 → 守卫 → 执行 → 等页面变化。"""
+    import utils_imprint
+    task.log_info("检测到安装装备界面")
+    imprint_mode = utils_imprint.enabled(task)
+    equipment = _equipment_state(task)
+    view = _read_install_view(task, imprint_mode)
+    pending = _equip_lock(task, view)
+    if pending:
+        return _while_locked(task, view, pending)
+    if not _install_view_stable(task, view, imprint_mode):
+        return True
+    btn, eq = view.btn, view.eq
+    equipment_price = current_credit = None
+    if view.is_purchase:
+        equipment_price = _parse_discounted_price(btn.price.name) if btn.price else None
+        current_credit = _get_current_credit(task)
+        task.log_info(f"购买装备页面: 当前信用点={current_credit}，OCR价格=「{btn.price.name if btn.price else ''}」，"
+                      f"实际价格={equipment_price}")
+        if equipment_price is None:
+            task.log_info("购买装备页面未识别到价格，按价格低于当前信用点继续购买")
+        elif equipment_price > current_credit:
+            task.log_info(f"装备价格{equipment_price}大于当前信用点{current_credit}，点击「取消」")
+            task.click_box(btn.cancel)
+            task.sleep(1)
+            return True
+    if not eq:
+        task.log_info("未能识别待安装装备的名称或类型")
+        if view.is_purchase:
+            task.log_info("购买装备无法识别装备信息，点击「取消」")
+            task.click_box(btn.cancel)
+            task.sleep(1)
+            return True
+        return False
+    slot = eq["slot"]
+    task.log_info(f"待安装装备「{eq['name']}」{slot + 1}号位，品质={eq.get('quality') or '未知'}，描述: 「{eq['description']}」"
+                  + (f"，刻印={eq.get('imprint') or '无'}（图标颜色 {eq.get('imprint_icon') or '无'}）" if imprint_mode else ""))
+
+    if btn.refine and len(btn.refine) == len(btn.bottom):
+        # 只有提炼可点，没别的选择：目标装备也只能提炼；带目标刻印、混沌之识守卫拒绝，停下交给用户
+        if _refine_allowed(task, view, "安装装备界面只有提炼按钮", rule_allows_target=True):
+            task.log_info("安装装备界面只有提炼按钮，点击提炼")
+            task.click_box(btn.refine[0])
+            _set_equipment_pending(task, view, "refine")
+            task.sleep(1)
+            return True
+        task.log_error(f"安装装备界面只有提炼按钮，但「{eq['name']}」不能提炼，停下交给你", notify=True)
+        task.disable()
+        return True
+
+    if not view.is_purchase:
+        _mark_equipment_obtained(task, eq.get("name"))
+        if eq.get("rank") is not None and isinstance(getattr(task, "node_status", None), dict):
+            if not task.node_status.get("target_equip_got"):
+                task.log_info(f"本局拿到目标装备「{eq.get('name')}」")
+            task.node_status["target_equip_got"] = eq.get("name")
+            _hand_over_on_chaos_core(task, eq.get("name"))
+
+    should, reason, current_name = _decide_install(task, view, equipment, imprint_mode)
+    buy = "buy" if view.is_purchase else "install"
+    if should and view.preferred is not None:
+        target = not view.tracks or view.target_index is not None
+        member_label = "刷存档主战员" if view.target_index is not None else "第一主战员"
+        task.log_info(f"{slot + 1}号位装备「{eq['name']}」优于当前装备「{current_name}」，原因={reason}，安装给{member_label}"
+                      + (f"；价格={equipment_price}，当前信用点={current_credit}，点击「购买」" if view.is_purchase else ""))
+        _click_member(task, view, view.preferred, buy, target)
+        return True
+
+    refine_box = btn.refine[0] if btn.refine else None
+    if imprint_mode and (view.preferred is not None or view.is_purchase):
+        # 用户 2026-10-27：用不上的装备不分给队友，购买页取消、奖励提炼换信用点（商店刷新要钱）
+        if view.is_purchase:
+            task.log_info(f"刷刻印：{slot + 1}号位不买「{eq['name']}」（{reason}），点「取消」")
+            task.click_box(btn.cancel)
+            _set_equipment_pending(task, view, "cancel")
+            task.sleep(1)
+            return True
+        if refine_box and _refine_allowed(task, view, reason, rule_allows_target=True):
+            task.log_info(f"刷刻印：{slot + 1}号位不装「{eq['name']}」（{reason}），提炼换信用点")
+            task.click_box(refine_box)
+            _set_equipment_pending(task, view, "refine")
+            task.sleep(1)
+            return True
+        task.log_info("刷刻印：不提炼（没有提炼按钮或守卫拒绝），按原来的规则分给其他主战员")
+
+    others = [i for i in range(len(view.lv_texts)) if i != view.preferred]
+    if others:
+        if view.tracks and view.target_index is None:
+            task.log_info("未识别到刷存档主战员，随机安装给其他主战员")
+        else:
+            task.log_info(f"{slot + 1}号位无需替换当前装备「{current_name}」，原因={reason}，随机安装给其他主战员"
+                          + (f"；价格={equipment_price}，当前信用点={current_credit}，点击「购买」" if view.is_purchase else ""))
+        _click_member(task, view, random.choice(others), buy, False)
+        return True
+
+    if view.is_purchase:
+        task.log_info("购买装备无法分配给任何主战员，点击「取消」")
+        task.click_box(btn.cancel)
+        _set_equipment_pending(task, view, "cancel")
+        task.sleep(1)
+        return True
+    refine_box = next((b for b in _boxes_in(task, 0.522, 0.879, 0.999, 0.996) if "提炼" in b.name), None)
+    if refine_box:
+        if not _refine_allowed(task, view, f"{slot + 1}号位无需替换且没有其他主战员可选", rule_allows_target=True):
+            task.log_error(f"「{eq['name']}」没有主战员可装、又不能提炼，停下交给你", notify=True)
+            task.disable()
+            return True
+        task.log_info(f"{slot + 1}号位无需替换且没有其他主战员可选，点击提炼")
+        task.click_box(refine_box)
+        _set_equipment_pending(task, view, "refine")
+        task.sleep(1)
+        return True
+    task.log_info("未找到可选择的主战员或提炼按钮")
+    return False
+
+
 def handle_equipment(task: TriggerTask):
     """装备选择/安装界面: 按装备位优先级选择，并维护目标主战员的装备状态。"""
     title = find_box_at_point(task, 0.499, 0.126)
@@ -2796,297 +3152,10 @@ def handle_equipment(task: TriggerTask):
         return False
 
     task.log_info("检测到装备页面")
+    settle_equipment_pending(task)
+    if _is_install_page(task):
+        return _handle_install_page(task)
     equipment = _equipment_state(task)
-    equip_hint = find_box_at_point(task, 0.921, 0.135)
-
-    if equip_hint and _get_game_text(task, '请选择主战员') in equip_hint.name:
-        task.log_info("检测到安装装备界面")
-        purchase_bottom_boxes = [
-            box for box in task.all_texts
-            if 0.013 <= (box.x + box.width / 2) / task.width <= 0.992
-            and 0.881 <= (box.y + box.height / 2) / task.height <= 0.994
-            and box.name.strip()
-        ]
-        cancel_box = next(
-            (box for box in purchase_bottom_boxes if "取消" in box.name), None
-        )
-        purchase_box = next(
-            (box for box in purchase_bottom_boxes if "购买" in box.name), None
-        )
-        price_box = next(
-            (box for box in purchase_bottom_boxes
-             if re.fullmatch(r"\d+", box.name.strip())),
-            None,
-        )
-        is_purchase_page = bool(cancel_box and purchase_box)
-        equipment_price = None
-        current_credit = None
-        if is_purchase_page:
-            task.log_info("检测到购买装备页面")
-            equipment_price = (
-                _parse_discounted_price(price_box.name) if price_box else None
-            )
-            current_credit = _get_current_credit(task)
-            task.log_info(
-                f"购买装备页面: 当前信用点={current_credit}，"
-                f"OCR价格=「{price_box.name if price_box else ''}」，"
-                f"实际价格={equipment_price}"
-            )
-            if equipment_price is None:
-                task.log_info("购买装备页面未识别到价格，按价格低于当前信用点继续购买")
-            elif equipment_price > current_credit:
-                task.log_info(
-                    f"装备价格{equipment_price}大于当前信用点{current_credit}，点击「取消」"
-                )
-                task.click_box(cancel_box)
-                task.sleep(1)
-                return True
-
-        bottom_buttons = [
-            box for box in task.all_texts
-            if 0.563 <= (box.x + box.width / 2) / task.width <= 0.998
-            and 0.881 <= (box.y + box.height / 2) / task.height <= 0.997
-            and box.name.strip()
-        ]
-        refine_boxes = [box for box in bottom_buttons if "提炼" in box.name]
-        if refine_boxes and len(refine_boxes) == len(bottom_buttons):
-            task.log_info("安装装备界面只有提炼按钮，直接点击提炼")
-            task.click_box(refine_boxes[0])
-            return True
-
-        new_equipment = _equipment_info(
-            task,
-            (0.217, 0.379, 0.469, 0.436),
-            (0.188, 0.444, 0.323, 0.489),
-            (0.179, 0.492, 0.542, 0.668),
-        )
-        if not new_equipment:
-            task.log_info("未能识别待安装装备的名称或类型")
-            if is_purchase_page:
-                task.log_info("购买装备无法识别装备信息，点击「取消」")
-                task.click_box(cancel_box)
-                task.sleep(1)
-                return True
-            return False
-        equipment_desc = new_equipment["description"]
-        task.log_info(f"待安装装备描述: 「{equipment_desc}」")
-        import utils_imprint
-        imprint_mode = utils_imprint.enabled(task)
-        if imprint_mode:
-            new_equipment["imprint"], imprint_kind = utils_imprint.equipment_imprint(task, equipment_desc)
-            task.log_info(f"刷刻印：待安装装备刻印={new_equipment['imprint'] or '无'}（图标颜色 {imprint_kind or '无'}）")
-            # 装备页淡入时品质色和刻印图标都还暗：读成「未知/无刻印」，带目标刻印的也会被当成没刻印提炼掉
-            # （2026-10-27 17:03 实录：怪异之壳前三帧 品质未知+刻印无，第四帧才是 传说+光之刻印，前三次点提炼都没生效）。
-            # 品质读不出就等下一帧，同一件最多等 4 次（防真读不出品质时卡死）
-            if not new_equipment.get("quality"):
-                waits = getattr(task, "_equip_fade_wait", {})
-                key = new_equipment.get("ocr_name")
-                waits = {key: waits.get(key, 0) + 1}
-                task._equip_fade_wait = waits
-                if waits[key] <= 4:
-                    task.log_info(f"刷刻印：待安装装备品质还读不出（页面淡入中），等一下再看（第 {waits[key]} 次）")
-                    task.sleep(1)
-                    return True
-        if not is_purchase_page:
-            _mark_equipment_obtained(task, new_equipment.get("name"))
-            if new_equipment.get("rank") is not None and isinstance(getattr(task, "node_status", None), dict):
-                if not task.node_status.get("target_equip_got"):
-                    task.log_info(f"本局拿到目标装备「{new_equipment.get('name')}」")
-                task.node_status["target_equip_got"] = new_equipment.get("name")
-                _hand_over_on_chaos_core(task, new_equipment.get("name"))
-
-        lv_texts = _find_member_level_tags(
-            task,
-            (0.609, 0.290, 0.652, 0.789),
-            page="安装装备页面",
-        )
-        target_member_index = _find_target_member_index(
-            task,
-            lv_texts,
-            (0.607, 0.192, 0.739, 0.856),
-            feature_name="target_member_tiny",
-        )
-        tracks_target_member = "刷存档主战员" in getattr(task, "default_config", {})
-        preferred_member_index = (
-            target_member_index if tracks_target_member else (0 if lv_texts else None)
-        )
-
-        slot = new_equipment["slot"]
-        pending = getattr(task, "_pending_install", None)
-        if (not is_purchase_page and pending and pending[0] == new_equipment.get("ocr_name")
-                and time.time() - pending[1] < 8):
-            # 刚点了主战员要装这件，确认按钮还没认出来时同一页又进了这里：账上已经记成装好了，再判断会得出
-            # 「不比当前好」把它提炼掉（2026-10-27 18:02 深绿黑夜就这样没了）。交给确认按钮处理
-            task.log_info(f"刚选了主战员安装「{new_equipment['name']}」，等确认按钮，不重新判断")
-            return False
-        current_name, _ = _current_equipment_for_slot(task, equipment, slot)
-        current_quality = equipment["qualities"][slot]
-        should_install_first = False
-        install_reason = "未找到目标主战员"
-        if preferred_member_index is not None:
-            live_qualities = _member_equipment_qualities(
-                task, lv_texts[preferred_member_index]
-            )
-            # 装备页淡入时槽位颜色偏暗会读成「未安装」，清掉已记的装备和刻印（2026-10-27 15:48 实录：混沌之识和带目标刻印的
-            # 兜帽被清掉，第二层 2 个目标刻印变 0 个；2 秒后同一页读出传说/普通）。底部按钮出来了才信空槽
-            page_ready = bool(bottom_buttons)
-            for equipment_slot, live_quality in enumerate(live_qualities):
-                if live_quality is None or (not live_quality and not page_ready):
-                    continue
-                if not live_quality and imprint_mode and (
-                        utils_imprint.is_top(equipment["names"][equipment_slot])
-                        or utils_imprint.slot_imprints(task)[equipment_slot] == utils_imprint.TARGET):
-                    # 混沌之识、带目标刻印的槽位只会被我们自己换掉（换的时候就记了），读成空一定是误读，清了会把混沌之识当空位
-                    # 装别的顶掉、或者按 0 个刻印逃脱（2026-10-27 15:48 实录）
-                    task.log_info(f"第{equipment_slot + 1}号装备位读成空，但记录是「{equipment['names'][equipment_slot]}」"
-                                  f"（{utils_imprint.slot_imprints(task)[equipment_slot] or '无刻印'}），当误读不清")
-                    continue
-                equipment["qualities"][equipment_slot] = live_quality
-                if not live_quality:
-                    if equipment["names"][equipment_slot]:
-                        task.log_info(
-                            f"第{equipment_slot + 1}号装备位实际为空，清除记录装备"
-                            f"「{equipment['names'][equipment_slot]}」"
-                        )
-                    equipment["names"][equipment_slot] = ""
-                    equipment["descriptions"][equipment_slot] = ""
-                    if imprint_mode:
-                        utils_imprint.slot_imprints(task)[equipment_slot] = ""
-            current_name, _ = _current_equipment_for_slot(task, equipment, slot)
-            current_quality = equipment["qualities"][slot]
-            should_install_first, install_reason = _should_install_equipment(
-                task,
-                current_name,
-                current_quality,
-                new_equipment,
-            )
-            has_legendary_in_other_slot = any(
-                quality == "传说" and equipment_slot != slot
-                for equipment_slot, quality in enumerate(live_qualities)
-            )
-            if imprint_mode:
-                # 刷刻印：刻印优先于装备，三件目标装备都是传说，不管「一个主战员只装一件传说」
-                should_install_first, install_reason = utils_imprint.install_decision(
-                    task, new_equipment, slot, should_install_first, install_reason, current_name
-                )
-            elif (
-                new_equipment["quality"] == "传说"
-                and has_legendary_in_other_slot
-            ):
-                should_install_first = False
-                install_reason = "该主战员其他装备位已有传说装备"
-                task.log_info(
-                    "目标主战员已安装传说装备，新传说装备改由其他主战员安装"
-                )
-
-        if should_install_first and preferred_member_index is not None:
-            chosen = lv_texts[preferred_member_index]
-            if not tracks_target_member or target_member_index is not None:
-                equipment["names"][slot] = new_equipment["name"]
-                equipment["descriptions"][slot] = equipment_desc
-                equipment["qualities"][slot] = new_equipment["quality"] or ""
-                if imprint_mode:
-                    utils_imprint.record_install(task, slot, new_equipment)
-            member_label = (
-                "刷存档主战员"
-                if target_member_index is not None
-                else "第一主战员"
-            )
-            task.log_info(
-                f"{slot + 1}号位装备「{new_equipment['name']}」优于当前装备「{current_name}」，"
-                f"原因={install_reason}，"
-                f"安装给{member_label}"
-            )
-            _move_and_click(task, 0.756, (chosen.y + chosen.height / 2) / task.height)
-            task._pending_install = (new_equipment.get("ocr_name"), time.time())
-            task.sleep(1)
-            if is_purchase_page:
-                task.log_info(
-                    f"购买装备分配完成，价格={equipment_price}，"
-                    f"当前信用点={current_credit}，点击「购买」"
-                )
-                task.click_box(purchase_box)
-                task.sleep(1)
-                return True
-            return False
-
-        if imprint_mode and (preferred_member_index is not None or is_purchase_page):
-            # 用户 2026-10-27：用不上的装备不分给队友，购买页取消、奖励提炼换信用点（商店刷新要钱）
-            if is_purchase_page:
-                task.log_info(f"刷刻印：{slot + 1}号位不买「{new_equipment['name']}」（{install_reason}），点「取消」")
-                task.click_box(cancel_box)
-                task.sleep(1)
-                return True
-            refine_box = next((b for b in bottom_buttons if "提炼" in b.name), None)
-            if refine_box:
-                task._refine_waits = 0
-                task.log_info(f"刷刻印：{slot + 1}号位不装「{new_equipment['name']}」（{install_reason}），提炼换信用点")
-                if imprint_kind or new_equipment.get("rank") is not None:
-                    # 带刻印或目标装备提炼掉不可撤回：留当时画面，事后核对刻印有没有认错
-                    import chaos_trace
-                    chaos_trace.step(task, "refine", f"{slot + 1}号位提炼「{new_equipment['name']}」", task.frame,
-                                     imprint=new_equipment.get("imprint"), icon=imprint_kind,
-                                     reason=install_reason, desc=new_equipment.get("description"))
-                task.click_box(refine_box)
-                task.sleep(1)
-                return True
-            # 装备页还在淡入时底部按钮没出来（2026-10-27 07:11 实录，描述也是乱序的），先等几帧再按老规则分给队友
-            if getattr(task, "_refine_waits", 0) < 3:
-                task._refine_waits = getattr(task, "_refine_waits", 0) + 1
-                task.log_info("刷刻印：提炼按钮还没出来，等一下再看")
-                task.sleep(1)
-                return True
-            task._refine_waits = 0
-            task.log_info("刷刻印：没找到提炼按钮，按原来的规则分给其他主战员")
-
-        other_members = [
-            level_box for index, level_box in enumerate(lv_texts)
-            if index != preferred_member_index
-        ]
-        if other_members:
-            chosen = random.choice(other_members)
-            if tracks_target_member and target_member_index is None:
-                task.log_info("未识别到刷存档主战员，随机安装给其他主战员")
-            else:
-                task.log_info(
-                    f"{slot + 1}号位无需替换当前装备「{current_name}」，"
-                    f"原因={install_reason}，"
-                    "随机安装给其他主战员"
-                )
-            _move_and_click(task, 0.756, (chosen.y + chosen.height / 2) / task.height)
-            task._pending_install = (new_equipment.get("ocr_name"), time.time())
-            task.sleep(1)
-            if is_purchase_page:
-                task.log_info(
-                    f"购买装备分配给其他主战员，价格={equipment_price}，"
-                    f"当前信用点={current_credit}，点击「购买」"
-                )
-                task.click_box(purchase_box)
-                task.sleep(1)
-                return True
-            return False
-
-        if is_purchase_page:
-            task.log_info("购买装备无法分配给任何主战员，点击「取消」")
-            task.click_box(cancel_box)
-            task.sleep(1)
-            return True
-
-        refine_box = next(
-            (b for b in task.all_texts
-             if 0.522 <= (b.x + b.width / 2) / task.width <= 0.999
-             and 0.879 <= (b.y + b.height / 2) / task.height <= 0.996
-             and "提炼" in b.name),
-            None
-        )
-        if refine_box:
-            task.log_info(f"{slot + 1}号位无需替换且没有其他主战员可选，点击提炼")
-            task.click_box(refine_box)
-            task.sleep(1)
-            return True
-
-        task.log_info("未找到可选择的主战员或提炼按钮")
-        return False
 
     candidates = []
     candidate_specs = [

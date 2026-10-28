@@ -8,7 +8,7 @@ from utils import (
     log_credit, log_node_status, handle_battle_crash, handle_close_page, handle_refine_equipment_credit,
     handle_center_confirm, handle_settlement, handle_skip,
     handle_destiny_choice, handle_main_member_flash,
-    handle_card_reward, handle_equipment,
+    handle_card_reward, handle_equipment, settle_equipment_pending,
     handle_select_card, handle_copy_member,
     handle_convert_card,
     handle_negotiation, handle_continue, handle_confirm, handle_enter,
@@ -976,6 +976,7 @@ def handle_rest_sortie(task: TriggerTask):
 # 出击模式 PAGE_HANDLERS
 PAGE_HANDLERS = [
     handle_auto_stop,
+    settle_equipment_pending, #装备页点了安装/购买后离开那一页才写装备账（要先于逃脱判断，不拦截）
     handle_route_selection,
     # handle_stage_clear,
     log_credit,
