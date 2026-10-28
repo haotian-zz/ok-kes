@@ -39,36 +39,34 @@ class TestEquipmentReplay(unittest.TestCase):
         self.assertEqual(3, len(tags))
         self.assertEqual(1, utils._find_target_member_index(t, tags, (0.607, 0.192, 0.739, 0.856), "target_member_tiny"))
 
+    def _equip_steps(self, n, interval=0.5):
+        t = equip_task(load_frames("equip_1802.json", order=[0] * n))
+        t.frame_interval = interval
+        steps = replay([utils.handle_equipment, utils.handle_card_assign, utils.handle_confirm], t)
+        return t, [[(a.kind, a.target) if a.kind == "click_box" else (a.kind, round(a.x, 3), round(a.y, 3))
+                    for a in s.actions if a.kind != "move"] for s in steps]
+
     def test_no_refine_after_picking_member(self):
         # fee1447：18:02:14 点 2 号主战员安装深绿黑夜，18:02:16 同一页又进 handle_equipment，账上已记成装好，
-        # 判成「品质史诗不高于史诗」提炼掉了。修复后 8 秒内同一件不重判，交给确认按钮
-        # 18:02:14 那帧没存图，两次都用 18:02:16 那帧（同一帧喂两次）
-        t = equip_task(load_frames("equip_1802.json", order=[0, 0]))
-        first, second = replay(utils.handle_equipment, t)
-        self.assertEqual([MEMBER2], [(round(a.x, 3), round(a.y, 3)) for a in first.actions if a.kind == "click"])
+        # 判成「品质史诗不高于史诗」提炼掉了。18:02:14 那帧没存图，同一帧（18:02:16）喂多次。
+        # 装备页重构（c5c8d9d）后：第 1 帧等画面稳定 → 第 2 帧点主战员 → 第 3 帧装备页自己点确认、这时才记账 → 之后不再动
+        t, acts = self._equip_steps(4)
+        self.assertEqual([[], [("click", *MEMBER2)], [("click_box", "确认")], []], acts)
         self.assertEqual("深绿黑夜", t.member_status["equipment"]["names"][2])
-        self.assertFalse(second.ret)
-        self.assertEqual([], second.actions)
-        self.assertTrue(any("等确认按钮" in m for m in second.logs))
         self.assertFalse(any(a.target == "提炼" for a in t.actions))
 
-    def test_pick_member_then_confirm(self):
-        # 复盘 4.6 的验收：按 ChaosMode.run 的顺序跑装备页附近的处理函数，动作是「点主战员 → 点确认」，不能出现「提炼」
-        t = equip_task(load_frames("equip_1802.json", order=[0, 0]))
-        steps = replay([utils.handle_equipment, utils.handle_card_assign, utils.handle_confirm], t)
-        self.assertEqual(["handle_confirm", "handle_confirm"], [s.ret for s in steps])
-        self.assertEqual([("click", ""), ("click_box", "确认"), ("click_box", "确认")],
-                         [(a.kind, a.target) for a in t.actions if a.kind != "move"])
-        self.assertEqual(MEMBER2, t.clicks()[0])
+    def test_no_ledger_before_confirm(self):
+        # 只点了主战员、还没确认时账不变（旧代码点主战员就把账写成新装备，下一帧据此判「不比当前好」）
+        t, acts = self._equip_steps(2)
+        self.assertEqual([("click", *MEMBER2)], acts[1])
+        self.assertEqual("女神之泪", t.member_status["equipment"]["names"][2])
 
-    def test_rejudge_after_pending_expires(self):
-        # 8 秒后还停在这页（确认按钮一直没处理）才重新判断，这时账上已是深绿黑夜，按规则提炼
-        t = equip_task(load_frames("equip_1802.json", order=[0, 0]))
-        t.frame_interval = 9
-        first, second = replay(utils.handle_equipment, t)
-        self.assertIn(MEMBER2, t.clicks())
-        self.assertTrue(second.ret)
-        self.assertEqual(["提炼"], [a.target for a in second.actions if a.kind == "click_box"])
+    def test_lock_expired_never_refines(self):
+        # 动作锁 8 秒过期（确认一直没点上）时重新判断：账没写成深绿黑夜，还是「换上继承刻印」，重新点主战员，绝不提炼
+        t, acts = self._equip_steps(4, interval=9)
+        self.assertEqual(2, sum(a == ("click", *MEMBER2) for step in acts for a in step))
+        self.assertFalse(any(a.target == "提炼" for a in t.actions))
+        self.assertEqual("女神之泪", t.member_status["equipment"]["names"][2])
 
 
 GOD_PAGE = [(0.890, 0.051, "查看原件"), (0.50, 0.80, "闪光：维托尔")]
