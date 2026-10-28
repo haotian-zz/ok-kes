@@ -174,11 +174,18 @@ class TestRemovalLedger(unittest.TestCase):
         orig = utils.is_button_active
         utils.is_button_active = lambda task, b: True
         try:
+            # 还没选卡：先不点，交给选卡处理（10-28 03:50：重启前选了一半，新进程直接点移除少删一张）
+            self.assertFalse(utils.handle_remove(t))
+            self.assertFalse(utils.handle_remove(t))
+            self.assertEqual([], t.clicks)
+            # 两次都没补选上（比如重启前已经选满）：照样点，不记账
             self.assertTrue(utils.handle_remove(t))
+            self.assertEqual(["移除"], t.clicks)
             self.assertEqual(0, t.node_status.get("removed_card_count", 0))
             utils.empty_pick_removal(t, "多重箭")
             t.node_status["pending_removed_card_count"] = 1
             self.assertTrue(utils.handle_remove(t))
+            self.assertEqual(["移除", "移除"], t.clicks)
         finally:
             utils.is_button_active = orig
         self.assertEqual(1, t.node_status["removed_card_count"])

@@ -1508,6 +1508,7 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
         if action == "移除":
             _ns = task.node_status
             _ns["pending_removed_card_count"] = _ns.get("pending_removed_card_count", 0) + 1
+            _ns.pop("remove_unpicked_tries", None)
             if card:
                 empty_pick_removal(task, card["name"])
 
@@ -4555,16 +4556,24 @@ def handle_remove(task: TriggerTask):
     box = find_box_at_point(task, 0.945, 0.918)
     if box and _clean_match(box.name, "移除"):
         if is_button_active(task, box):
+            ns = task.node_status
+            removed_count = ns.get("pending_removed_card_count", 0)
+            # 脚本还没选卡「移除」就亮着：选卡页淡入（10-28 02:40 实录点了记成多删一张），或者重启前选了一半
+            # （10-28 03:50 实录：「移除2张」只选了 1 张就重启，新进程直接点了移除，白白少删一张）。
+            # 先让选卡处理补选，两次还没选上再点（不记账，面板读数会对上）
+            if not removed_count and ns.get("remove_unpicked_tries", 0) < 2:
+                ns["remove_unpicked_tries"] = ns.get("remove_unpicked_tries", 0) + 1
+                task.log_info("「移除」亮着但脚本还没选卡，先交给选卡处理补选")
+                return False
+            ns.pop("remove_unpicked_tries", None)
             task.log_info("检测到移除操作，点击移除")
             task.click_box(box)
-            removed_count = task.node_status.get("pending_removed_card_count", 0)
             if removed_count:
                 _record_removed_cards(task, removed_count)
                 empty_commit_removals(task)
             else:
-                # 10-28 02:40 实录：事件选了「移除1张」后选卡页淡入时「移除」先亮，还没选卡就点了，记成多删一张（面板 3、脚本 4）
-                task.log_info("还没选卡就看到「移除」亮着（页面在切换），这次不记移除")
-            task.node_status["pending_removed_card_count"] = 0
+                task.log_info("脚本没选卡就点了「移除」，这次不记移除（局内面板读数会对账）")
+            ns["pending_removed_card_count"] = 0
             task.sleep(1)
             return True
         else:
