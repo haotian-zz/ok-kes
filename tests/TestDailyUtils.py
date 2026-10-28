@@ -221,6 +221,18 @@ class TestDialogueLine(unittest.TestCase):
         # 没有 Space 提示就不认
         self.assertIsNone(_dialogue_line(SimpleNamespace(width=W, height=H, all_texts=texts[:-1])))
 
+    def test_mid_screen_bubble_without_space(self):
+        # 实录 2026-10-28 01:18：画面中间气泡「除掉……不适格者……」，Space 提示太小没认出，卡了 2 分多钟
+        top = [box("1081/1081", 0.211, 0.038), box("230", 0.734, 0.050), box("Ctrl", 0.879, 0.079),
+               box("D", 0.878, 0.049), box("Q", 0.959, 0.079)]
+        texts = top + [box("除掉…", 0.447, 0.545), box("·不适格者", 0.515, 0.546)]
+        line = _dialogue_line(SimpleNamespace(width=W, height=H, all_texts=texts))
+        self.assertEqual("·不适格者", line.name)
+        # 只有一两个字、或者分散在不同高度的不算
+        self.assertIsNone(_dialogue_line(SimpleNamespace(width=W, height=H, all_texts=top + [box("加载", 0.5, 0.5)])))
+        spread = top + [box("剩余回合", 0.3, 0.3), box("敌人行动中", 0.6, 0.6)]
+        self.assertIsNone(_dialogue_line(SimpleNamespace(width=W, height=H, all_texts=spread)))
+
     def test_confirm_page_is_not_dialogue(self):
         task = SimpleNamespace(width=W, height=H, all_texts=[box("请确认是否可投入主战员。", 0.5, 0.82), box("确认", 0.6, 0.9)])
         self.assertIsNone(_dialogue_line(task))

@@ -20,7 +20,7 @@ class _Box(types.SimpleNamespace):
 
 
 def box(x, y, name, w=80, h=30):
-    return _Box(x=x * 1920 - w / 2, y=y * 1080 - h / 2, width=w, height=h, name=name)
+    return _Box(x=x * 1920 - w / 2, y=y * 1080 - h / 2, width=w, height=h, name=name, confidence=1.0)
 
 
 def sortie_task(config=None, texts=()):
@@ -294,6 +294,30 @@ class TestLeaderCards(unittest.TestCase):
     def test_remove_rule_off_uses_remove_list(self):
         t = self._remove({}, ["剑幕", "剑光", "极寒风暴", "剑雨"])
         self.assertEqual(t.clicks, [(0.15, 0.4)])
+
+
+class TestRaisedCardName(unittest.TestCase):
+    """鼠标悬停的卡放大上移，卡名落进类型区域（10-28 01:16 实录：水之源；00:51 漏了海德玛丽的万众英雄）。"""
+
+    def test_name_taken_from_type_region(self):
+        feats = {"attack": (0.4609, 0.3472, 0.917), "enhance": (0.6646, 0.3093, 0.784)}
+        texts = [box(0.4974, 0.3106, "协调：毁灭"), box(0.4786, 0.3463, "攻击"), box(0.50, 0.60, "伤害432%"),
+                 box(0.7094, 0.3162, "日", w=20), box(0.7516, 0.3088, "水之源"), box(0.71, 0.55, "回复体力")]
+        t = sortie_task(texts=texts)
+        t.box_of_screen = lambda *a, **k: None
+        t.find_feature = lambda feature_name, box=None, threshold=0: (
+            [types.SimpleNamespace(x=feats[feature_name][0] * 1920 - 10, y=feats[feature_name][1] * 1080 - 10,
+                                   width=20, height=20, confidence=feats[feature_name][2])]
+            if feature_name in feats else [])
+        cards = utils.recognize_cards(t, page="获得卡牌页面")
+        self.assertEqual([c["name"] for c in cards], ["协调：毁灭", "水之源"])
+        self.assertEqual(cards[1]["type"], "强化")
+        self.assertAlmostEqual(cards[1]["x"], 0.7516, places=3)      # 点卡名本身，不点推算的空区域
+        self.assertAlmostEqual(cards[1]["y"], 0.3088, places=3)
+
+    def test_type_words_not_names(self):
+        t = sortie_task(texts=[box(0.5, 0.3, "④技能"), box(0.55, 0.3, "基础攻击"), box(0.6, 0.3, "日", w=20)])
+        self.assertIsNone(utils._raised_card_name_box(t, (0.4, 0.2, 0.7, 0.4)))
 
 
 class TestBattleMemberSelect(unittest.TestCase):

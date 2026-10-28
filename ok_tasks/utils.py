@@ -423,6 +423,7 @@ def _recognize_cards_by_features(
             min(1.0, center_y + description_offsets[3]),
         )
         card_name = _get_region_text(task, name_region).strip()
+        name_box = None if card_name else _raised_card_name_box(task, type_region)
         task.log_info(
             f"{log_prefix}卡牌识别调试: 特征={feature_name}，"
             f"特征中心=({center_x:.4f},{center_y:.4f})，"
@@ -433,10 +434,16 @@ def _recognize_cards_by_features(
             f"类型OCR={_region_text_debug_info(task, type_region)}，"
             f"描述区域={tuple(round(value, 4) for value in desc_region)}"
         )
+        if name_box:
+            card_name = name_box.name.strip()
+            task.log_info(f"{log_prefix}卡牌识别调试: 名称区域为空，类型区域里的「{card_name}」不是类型字样，"
+                          "当成卡名（鼠标悬停的卡会放大上移）")
         if not card_name:
             task.log_info(f"{log_prefix}卡牌识别调试: 因名称为空排除该特征")
             continue
         card_type = _get_region_text(task, type_region).strip()
+        if name_box:
+            card_type = feature_type.split("/")[0]
         description = _get_region_text(task, desc_region)
         name_only_threshold = (name_only_feature_thresholds or {}).get(
             feature_name
@@ -465,8 +472,8 @@ def _recognize_cards_by_features(
             "feature_type": feature_type,
             "confidence": feature_box.confidence,
             "feature_box": feature_box,
-            "x": (name_region[0] + name_region[2]) / 2,
-            "y": (name_region[1] + name_region[3]) / 2,
+            "x": (name_box.x + name_box.width / 2) / task.width if name_box else (name_region[0] + name_region[2]) / 2,
+            "y": (name_box.y + name_box.height / 2) / task.height if name_box else (name_region[1] + name_region[3]) / 2,
             "name_region": name_region,
             "type_region": type_region,
             "description_region": desc_region,
@@ -482,6 +489,22 @@ def _recognize_cards_by_features(
                 f"特征={card['feature_name']}，置信度={card['confidence']:.4f}"
             )
     return cards
+
+
+_CARD_TYPE_TEXT = re.compile(r"^[\W\d①-⑳_]*(基础)?(攻击|技能|强化|咒术|状态异常)?$")
+
+
+def _raised_card_name_box(task: TriggerTask, type_region):
+    """鼠标悬停的卡会放大上移：类型图标往上挪了、卡名还在原处，按图标推算的名称区域是空的，卡名落进类型区域
+    （2026-10-28 实录：00:51 漏了海德玛丽的「万众英雄」、01:16 漏了「水之源」）。类型区域里不是类型字样的最长文本当卡名。"""
+    x1, y1, x2, y2 = type_region
+    boxes = [
+        b for b in task.all_texts
+        if x1 <= (b.x + b.width / 2) / task.width <= x2
+        and y1 <= (b.y + b.height / 2) / task.height <= y2
+        and len(b.name.strip()) >= 2 and not _CARD_TYPE_TEXT.match(b.name.strip())
+    ]
+    return max(boxes, key=lambda b: len(b.name.strip()), default=None)
 
 
 def recognize_cards(
@@ -2285,6 +2308,15 @@ def _dialogue_line(task: TriggerTask):
                 and re.search(r"[\u4e00-\u9fff]", b.name)]
         if sum(len(b.name) for b in near) >= 4:
             return max(near, key=lambda b: len(b.name))
+    # 画面中间的单行气泡对白，Space 提示太小 OCR 认不出（2026-10-28 01:18 实录「除掉……不适格者……」
+    # 被拆成「除掉…」「·不适格者」两段，卡了 2 分多钟）：顶栏以外只有同一行的一到三段中文，带对白标点或够长
+    if 1 <= len(texts) <= 3:
+        ys = [center(b)[1] for b in texts]
+        joined = "".join(b.name.strip() for b in sorted(texts, key=lambda b: b.x))
+        cjk = len(re.findall(r"[\u4e00-\u9fff]", joined))
+        if (max(ys) - min(ys) <= 0.03 and 0.2 <= min(ys) and max(ys) <= 0.92
+                and cjk >= 4 and (cjk >= 6 or re.search(r"[…，。！？、·!?]|\.\.", joined))):
+            return max(texts, key=lambda b: len(b.name))
     return None
 
 
