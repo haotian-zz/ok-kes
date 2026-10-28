@@ -2291,7 +2291,8 @@ def _dialogue_line(task: TriggerTask):
         if (b.y + b.height / 2) / task.height > 0.12
         and not re.fullmatch(r"Space|Ctrl|[A-Z]|回", b.name.strip())
     ]
-    if len(texts) > 6:
+    # 只数带中文的：石碑花纹之类会被 OCR 成一堆乱码字母（2026-10-28 01:24 实录 8 段「hUNY」「TSSYKI」，对白没认出来卡住）
+    if sum(1 for b in texts if re.search(r"[\u4e00-\u9fff]", b.name)) > 6:
         return None
     # 带操作按钮的页面（如「请确认是否可投入主战员。」+ 确认）不是对白
     if any(re.fullmatch(r"确认|取消|继续|下一步|选择|进入|离开|跳过", b.name.strip()) for b in texts):

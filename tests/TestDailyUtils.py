@@ -233,6 +233,16 @@ class TestDialogueLine(unittest.TestCase):
         spread = top + [box("剩余回合", 0.3, 0.3), box("敌人行动中", 0.6, 0.6)]
         self.assertIsNone(_dialogue_line(SimpleNamespace(width=W, height=H, all_texts=spread)))
 
+    def test_dialogue_with_ocr_noise(self):
+        # 实录 2026-10-28 01:24：石碑花纹 OCR 成 8 段乱码字母，原来按文字太多不认对白，卡住
+        noise = [box(n, x, y) for n, x, y in [("hUNY", 0.872, 0.431), ("↑SFYKI", 0.556, 0.480), ("TSRYYI", 0.871, 0.466),
+                                              ("TSSYKI", 0.761, 0.493), ("Y12", 0.871, 0.519), ("NhUN", 0.761, 0.574),
+                                              ("CSSYK", 0.872, 0.572), ("TSSYKI", 0.557, 0.599)]]
+        texts = [box("1291/1291", 0.212, 0.038), box("Ctrl", 0.880, 0.079), box("Q", 0.959, 0.079)] + noise + [
+            box("石碑中传来了使者的意志。", 0.489, 0.835), box("Space", 0.935, 0.913)]
+        line = _dialogue_line(SimpleNamespace(width=W, height=H, all_texts=texts))
+        self.assertEqual("石碑中传来了使者的意志。", line.name)
+
     def test_confirm_page_is_not_dialogue(self):
         task = SimpleNamespace(width=W, height=H, all_texts=[box("请确认是否可投入主战员。", 0.5, 0.82), box("确认", 0.6, 0.9)])
         self.assertIsNone(_dialogue_line(task))
