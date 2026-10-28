@@ -223,7 +223,8 @@ class TestPriorities(unittest.TestCase):
         self.assertIsNone(NOT_EVENT_OPTION.search("献上赞美信用点增加100"))
         from utils import not_event_option
         for d in ("-", "X", "•", "京四", "日92", "1684暴击", "弱点", "T9",
-                  "1海潮的庇护技能剑幕攻击基础技能", "22漩涡攻击"):     # 2026-10-28 战斗中手牌被 event9 误中
+                  "1海潮的庇护技能剑幕攻击基础技能", "22漩涡攻击", "8基础技剑华：攻击暗",
+                  "水之箭基础攻司剑华：明攻击"):     # 2026-10-28 战斗中手牌被 event9 误中
             self.assertTrue(not_event_option(d), d)
         for d in ("拿走树枝", "就此离开事件结束", "献上赞美信用点增加100",
                   "3打破平静所有主战员压力增加20，选中主战员闪光1次", "站在士兵一方发生战斗，信用点增加80"):
