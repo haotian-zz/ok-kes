@@ -4483,6 +4483,7 @@ def handle_route_selection(task: TriggerTask):
         if reason:
             # 刷刻印：首领前目标刻印不够就不打（没有整层路线计划时走这里，有计划时 handle_rush_escape 先处理了）
             task.log_info(f"刷刻印速刷：{reason}，不打首领，逃脱重开（法典保留）")
+            utils_imprint.audit_escape(task, reason)
             _move_and_click(task, 0.959, 0.051)
             task.sleep(1)
             return True
@@ -5897,6 +5898,7 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
     reason = utils_imprint.rush_escape_reason(task)
     if reason:
         task.log_info(f"刷刻印速刷：{reason}，退出重开（法典保留）")
+        utils_imprint.audit_escape(task, reason)
         _move_and_click(task, 0.959, 0.051)
         task.sleep(1)
         return True
