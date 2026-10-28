@@ -343,6 +343,14 @@ class ChaosMode(TriggerTask):
         # 跨过每日刷新回到主页时先弹「死灵之书每日礼物 / 点击以领取补给」（2026-10-27 12:19 实录），go_home 会点掉
         if utils_daily.has_text(task, r"^点击以领取"):
             return "每日礼物弹窗"
+        # 卡厄思大厅（卡厄思具象 / 零式系统两个入口）、零式系统首页：上一轮从主页进卡厄思走到一半被停（2026-10-28 03:12 实录），
+        # 重启后「零式系统」被当成事件选项点了，接着走法典合成开错了图
+        texts = [b.name for b in getattr(task, "all_texts", None) or []]
+        if any("零式系统" in t for t in texts):
+            if any("卡厄思具象" in t for t in texts):
+                return "卡厄思大厅页"
+            if "法典记录" in texts:
+                return "零式系统首页"
         return None
 
     def _start_window_step(self):

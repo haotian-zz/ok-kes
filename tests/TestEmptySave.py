@@ -581,3 +581,33 @@ class TestOpeningRerollMenu(unittest.TestCase):
         self.assertEqual([], t.clicks)
         self.assertTrue(utils.handle_escape(t))
         self.assertEqual(["逃脱"], t.clicks)
+
+
+class TestZeroCodexInEventChaos(unittest.TestCase):
+    # 2026-10-28 03:12 实录：活动卡厄思刷空档误进零式系统，法典 → 合成 → 卡厄思合成花了 120 个材料、开了裁决之沼难度 10
+    def craft_page(self, mode, config=None):
+        t = empty_task(texts=[box(0.124, 0.045, "合成法典"), box(0.774, 0.925, "卡厄思合成"), box(0.935, 0.923, "120")],
+                       mode=mode, config=config)
+        t.start_window, t.entry_checked = False, True
+        return t
+
+    def test_event_chaos_goes_home_instead(self):
+        homes = []
+        old = utils_chaos.utils_daily.go_home
+        utils_chaos.utils_daily.go_home = lambda task: homes.append(1) or True
+        try:
+            t = self.craft_page(cs.MODE_EMPTY, {"卡厄思地图": "活动卡厄思"})
+            self.assertTrue(utils_chaos.handle_chaos_craft(t))
+            self.assertEqual([], t.clicks)
+            self.assertEqual([1], homes)
+            self.assertTrue(t.start_window)
+            self.assertFalse(t.entry_checked)
+            # 原有逻辑、刷刻印、常驻刷存档照旧合成
+            for mode, cfg in ((cs.MODE_LEGACY, {}), (cs.MODE_EMPTY, {"刷刻印": True}),
+                              (cs.MODE_EMPTY, {"卡厄思地图": "常驻（探索度→卡厄思具象，刷存档→零式系统）"})):
+                t = self.craft_page(mode, cfg)
+                self.assertTrue(utils_chaos.handle_chaos_craft(t))
+                self.assertEqual(["卡厄思合成"], t.clicks, (mode, cfg))
+        finally:
+            utils_chaos.utils_daily.go_home = old
+        self.assertEqual([1], homes)

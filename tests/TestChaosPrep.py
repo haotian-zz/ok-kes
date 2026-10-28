@@ -150,6 +150,13 @@ class TestAtLobby(unittest.TestCase):
         self.assertEqual("卡厄思赛季页", ChaosMode._out_of_run_page(page(
             "银河系灾害", "银河徽章", "挑战任务", "卡厄思", "每周进展", "8000/8000", "补给商店", "环境变量", "赛季信息")))
         self.assertIsNone(ChaosMode._out_of_run_page(page("事件", "收起有用的东西", "点击屏幕可关闭")))
+        # 2026-10-28 03:12：从主页进卡厄思走到一半被停，重启后大厅的「零式系统」被当成事件点了，走法典合成开错了图
+        self.assertEqual("卡厄思大厅页", ChaosMode._out_of_run_page(page("卡厄思", "卡厄思具象", "零式系统")))
+        self.assertEqual("零式系统首页", ChaosMode._out_of_run_page(page(
+            "零式系统", "0/4", "已达成最高难度", "10", "玩法介绍", "法典", "环境变量", "备份协议", "升级", "图鉴", "法典记录",
+            "卡厄思矩阵", "每周进展", "8000/8000")))
+        # 法典合成好后的零式系统初始页（有「进入」）要交给页面流程，不算局外
+        self.assertIsNone(ChaosMode._out_of_run_page(page("零式系统", "裁决之沼", "进入")))
 
 
 class TestCardNameOneCharOff(unittest.TestCase):

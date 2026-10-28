@@ -672,11 +672,34 @@ def handle_discovery_select(task: TriggerTask): #忘了按个页面要用
     return True
 
 
+def zero_codex_allowed(task):
+    """要不要走零式系统法典（法典 → 合成 → 卡厄思合成开一局）：原有逻辑、刷刻印、常驻刷存档要走；
+    活动卡厄思（刷存档、刷空档、探索度）不走——卡厄思合成要花材料，开出来的也不是活动图。"""
+    if getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) == chaos_strategy.MODE_LEGACY or utils_imprint.enabled(task):
+        return True
+    return _get_config_value(task, "卡厄思地图", "活动卡厄思") != "活动卡厄思"
+
+
+def _leave_zero_codex(task, page):
+    """活动卡厄思误进零式系统法典流程：回主页，下一帧按配置重新进卡厄思。
+    2026-10-28 03:12 实录：在卡厄思大厅页（卡厄思具象 / 零式系统）重启，事件处理把「零式系统」当选项点了，
+    接着法典 → 合成 → 卡厄思合成花了 120 个材料、开了一局裁决之沼难度 10，刷空档在那一局里原地重开。"""
+    if zero_codex_allowed(task):
+        return False
+    task.log_info(f"{page}：活动卡厄思不走零式系统法典（卡厄思合成要花材料），回主页按配置重新进")
+    utils_daily.go_home(task)
+    task.start_window = True
+    task.entry_checked = False
+    return True
+
+
 def handle_zero_system_home(task: TriggerTask):
     """零式系统首页: 点击法典。"""
     title = find_box_at_point(task, 0.120, 0.046)
     codex = find_box_at_point(task, 0.812, 0.469)
     if title and _get_game_text(task, '零式系统') in title.name and codex and codex.name == "法典":
+        if _leave_zero_codex(task, "零式系统首页"):
+            return True
         task.log_info("检测到零式系统首页，点击法典")
         task.click_box(codex)
         task.sleep(2)
@@ -689,6 +712,8 @@ def handle_codex_search(task: TriggerTask):
     title = find_box_at_point(task, 0.5, 0.438)
     if not (title and title.name == "法典"):
         return False
+    if _leave_zero_codex(task, "法典搜索页"):
+        return True
     task.log_info("检测到法典搜索页面，点击搜索新坐标")
     _move_and_click(task, 0.5, 0.760)
     task.sleep(2)
@@ -721,12 +746,16 @@ def handle_chaos_craft(task: TriggerTask):
     """卡厄思合成页面: 检测"卡厄思合成"(0.774,0.925)或"免费合成"(0.563,0.922)按钮，点击并等待。"""
     box = find_box_at_point(task, 0.774, 0.925)
     if box and "卡厄思合成" in box.name:
+        if _leave_zero_codex(task, "卡厄思合成页"):
+            return True
         task.log_info(f"检测到卡厄思合成页面，点击「{box.name}」")
         task.click_box(box)
         task.sleep(2)
         return True
     box = find_box_at_point(task, 0.563, 0.922)
     if box and "免费合成" in box.name:
+        if _leave_zero_codex(task, "卡厄思合成页"):
+            return True
         task.log_info(f"检测到卡厄思合成页面，点击「{box.name}」")
         task.click_box(box)
         task.sleep(2)
