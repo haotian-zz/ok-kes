@@ -2875,6 +2875,18 @@ def handle_equipment(task: TriggerTask):
         if imprint_mode:
             new_equipment["imprint"], imprint_kind = utils_imprint.equipment_imprint(task, equipment_desc)
             task.log_info(f"刷刻印：待安装装备刻印={new_equipment['imprint'] or '无'}（图标颜色 {imprint_kind or '无'}）")
+            # 装备页淡入时品质色和刻印图标都还暗：读成「未知/无刻印」，带目标刻印的也会被当成没刻印提炼掉
+            # （2026-10-27 17:03 实录：怪异之壳前三帧 品质未知+刻印无，第四帧才是 传说+光之刻印，前三次点提炼都没生效）。
+            # 品质读不出就等下一帧，同一件最多等 4 次（防真读不出品质时卡死）
+            if not new_equipment.get("quality"):
+                waits = getattr(task, "_equip_fade_wait", {})
+                key = new_equipment.get("ocr_name")
+                waits = {key: waits.get(key, 0) + 1}
+                task._equip_fade_wait = waits
+                if waits[key] <= 4:
+                    task.log_info(f"刷刻印：待安装装备品质还读不出（页面淡入中），等一下再看（第 {waits[key]} 次）")
+                    task.sleep(1)
+                    return True
         if not is_purchase_page:
             _mark_equipment_obtained(task, new_equipment.get("name"))
             if new_equipment.get("rank") is not None and isinstance(getattr(task, "node_status", None), dict):
