@@ -255,6 +255,50 @@ class TestAutoPlayFast(unittest.TestCase):
         self.assertIsNone(utils._ensure_auto_play_fast(t))
 
 
+class TestHardcore(unittest.TestCase):
+    """主战员配置页顶部硬核开关（2026-10-28 实机：开=白色旋钮在右）。"""
+
+    def _task(self, on, want):
+        frame = np.zeros((1080, 1920, 3), np.uint8)
+        if on:
+            x, y = int(0.684 * 1920), int(0.049 * 1080)
+            frame[y - 8:y + 8, x - 8:x + 8] = 240
+        t = sortie_task({us.HARDCORE: want}, [box(0.130, 0.043, "主战员配置")])
+        t.frame = frame
+        return t
+
+    def test_detects_state(self):
+        self.assertTrue(us._hardcore_on(self._task(True, True)))
+        self.assertFalse(us._hardcore_on(self._task(False, True)))
+
+    def test_turns_on_when_wanted(self):
+        t = self._task(False, True)
+        self.assertTrue(us.handle_battle_member_config(t))
+        self.assertEqual(t.clicks, [us.HARDCORE_TOGGLE])
+
+    def test_turns_off_when_not_wanted(self):
+        t = self._task(True, False)
+        self.assertTrue(us._ensure_hardcore(t))
+        self.assertEqual(t.clicks, [us.HARDCORE_TOGGLE])
+
+    def test_matching_state_no_click(self):
+        t = self._task(True, True)
+        self.assertFalse(us._ensure_hardcore(t))
+        self.assertEqual(t.clicks, [])
+
+    def test_gives_up_after_three(self):
+        t = self._task(False, True)
+        for _ in range(3):
+            self.assertTrue(us._ensure_hardcore(t))
+        self.assertFalse(us._ensure_hardcore(t))
+        self.assertEqual(len(t.clicks), 3)
+
+    def test_stop_when_ether_short(self):
+        t = sortie_task({}, [box(0.502, 0.139, "以太补充")])
+        self.assertTrue(us.handle_ether_supply(t))
+        self.assertFalse(t.enabled)
+
+
 class TestSortieSanity(unittest.TestCase):
 
     def _supply(self, cfg, active):

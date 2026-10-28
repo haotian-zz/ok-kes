@@ -35,6 +35,7 @@ class SortieMode(TriggerTask):
         self.default_config[utils_sortie.SANITY_REFILL] = False
         self.default_config[utils_sortie.SORTIE_LEVEL] = 0
         self.default_config["速刷模式"] = False
+        self.default_config[utils_sortie.HARDCORE] = False
         self.default_config["出牌优先级"] = ["剑雨", "水之源", "一缕光芒", "万众英雄","极光剑", "展开极光","解放极光"]
         self.default_config["获得卡牌优先级"] = ["展开极光", "剑雨", "一缕光芒","缕光芒","凝聚极光"]
         self.default_config["移除卡牌列表"] = ["剑幕"]
@@ -93,6 +94,7 @@ class SortieMode(TriggerTask):
         self.config_description[utils_sortie.SORTIE_LEVEL] = (
             "出击入口页按左右箭头调到这个等级再进入（例如 80 = V 档）；目标不是整档时停在低一档，0 为不调整"
         )
+        self.config_description[utils_sortie.HARDCORE] = "主战员配置页顶部的硬核模式开关（火焰眼睛），进入前按这里开或关；战利品更多、更难"
         self.config_description["速刷模式"] = (
             "选路尽量避开战斗（休息 > 事件 > 普通战 > 精英）；第一层首领打完进第二层，选完第二层首领就退出，算一次成功"
         )
@@ -115,6 +117,7 @@ class SortieMode(TriggerTask):
         reset_all_status(self)
         self._level_adjust = None       # 重新开启：再按配置调一次难度
         self._sanity_exhausted = False
+        self._hardcore_tries = 0
         _migrate_route_boss_to_elite(self)
         super().enable()
 

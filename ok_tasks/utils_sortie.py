@@ -36,6 +36,9 @@ import time
 import cv2
 
 SORTIE_LEVEL = "出击难度(LV，0为不调整)"
+HARDCORE = "硬核模式"
+HARDCORE_TOGGLE = (0.660, 0.047)    # 主战员配置页顶部火焰眼睛开关；开着时白色旋钮在右边 (0.684, 0.049)
+HARDCORE_KNOB_ON = (0.684, 0.049)
 USE_SANITY = "使用理智领取奖励"
 SANITY_REFILL = "理智不足时用体力补充"
 LEVEL_DOWN, LEVEL_UP = (0.318, 0.500), (0.686, 0.500)   # 出击入口页中间难度圈左右的箭头（2026-10-27 实机：V=LV.80 最高档，IV=LV.65）
@@ -743,11 +746,45 @@ def handle_sortie_reward_claim(task: TriggerTask):
     return True
 
 
+def _hardcore_on(task: TriggerTask):
+    """主战员配置页顶部硬核开关：右边旋钮位置是白色就是开着（2026-10-28 实机：开=白色旋钮在右、关=暗色旋钮在左）。"""
+    frame = getattr(task, "frame", None)
+    if frame is None:
+        return None
+    x, y = int(HARDCORE_KNOB_ON[0] * task.width), int(HARDCORE_KNOB_ON[1] * task.height)
+    r = max(2, int(5 * task.height / 1080))
+    patch = frame[max(0, y - r):y + r, max(0, x - r):x + r, :3]
+    if not patch.size:
+        return None
+    return float(patch.mean()) > 150
+
+
+def _ensure_hardcore(task: TriggerTask):
+    """按「硬核模式」配置开/关主战员配置页顶部的开关；点了返回 True（下一帧再看），点 3 次还不对就不管了。"""
+    want = _get_config_value(task, HARDCORE, False) is True
+    on = _hardcore_on(task)
+    if on is None or on == want:
+        return False
+    tries = getattr(task, "_hardcore_tries", 0)
+    if tries >= 3:
+        if tries == 3:
+            task._hardcore_tries = 4
+            task.log_info(f"硬核模式开关点了 3 次还是{'关' if want else '开'}着，不再点")
+        return False
+    task._hardcore_tries = tries + 1
+    task.log_info(f"硬核模式现在{'开' if on else '关'}着，配置要{'开' if want else '关'}，点开关")
+    _move_and_click(task, *HARDCORE_TOGGLE)
+    task.sleep(1.5)
+    return True
+
+
 def handle_battle_member_config(task: TriggerTask):
-    """主战员配置页面: 区分出战主战员入口和确认进入入口。"""
+    """主战员配置页面: 先按配置对齐硬核模式开关，再区分出战主战员入口和确认进入入口。"""
     title = find_box_at_point(task, 0.130, 0.043)
     if not (title and _get_game_text(task, '主战员配置') in title.name):
         return False
+    if _ensure_hardcore(task):
+        return True
     battle_member_hint = find_box_at_point(task, 0.188, 0.799)
     if not (battle_member_hint and battle_member_hint.name.strip()):
         task.log_info("检测到主战员配置页面: 当前处于出战主战员，点击出战主战员入口")
@@ -850,9 +887,11 @@ def handle_ether_supply(task: TriggerTask):
     """以太补充页面: 提示用户手动补充以太。"""
     box = find_box_at_point(task, 0.502, 0.139)
     if box and box.name == _get_game_text(task, '以太补充'):
-        task.log_info("检测到以太补充页面，请手动补充以太后再启动功能")
+        # 每次进入出击花 10 以太；不够时原来点掉弹窗又回入口页点进入，一直转圈。现在关掉弹窗就停任务
+        task.log_info("以太（体力）不够进入出击，关掉以太补充弹窗并停止出击", notify=True)
         _move_and_click(task, 0.347, 0.803)
         task.sleep(0.5)
+        task.disable()
         return True
     return False
 
