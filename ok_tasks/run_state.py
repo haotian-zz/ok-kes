@@ -113,7 +113,7 @@ def finish(task, result, reason=""):
         task.run_state = rs
     rs.finished = True
     utils.clear_run_state(task)
-    task.log_info(f"本局结束（{result}{'：' + rec['reason'] if rec['reason'] else ''}），第 {rec['layers']} 层，"
+    task.log_info(f"本局结束（{result}{'：' + rec['reason'] if rec['reason'] else ''}），打过 {rec['layers']} 个首领，"
                   f"装备 {rec['equipment']}，刻印 {rec['imprints']}，混沌之识 {rec['chaos_core'] or '无'}，记入 {RUNS_FILE}")
     return rec
 
