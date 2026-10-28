@@ -37,6 +37,16 @@ class TestParseEffects(unittest.TestCase):
         _, results = cs.pick_event_option(descs, cs.MODE_TARGET, {"need_spark": 1})
         self.assertIn("选择卡牌闪光", " ".join(results[2][1]), results[2])
 
+    def test_db_spark_target_list(self):
+        # 2026-10-28 14:29 实录：库里 spark_target 是列表，以前全落成选中主战员 +150，后续前瞻也错
+        e = cs._effects_of({"effects": {"spark": 1, "spark_target": ["随机主战员"]}})
+        self.assertTrue(e["spark_random"])
+        self.assertFalse(e["spark_choose"])
+        self.assertTrue(cs._effects_of({"effects": {"spark": 1, "spark_target": ["选择卡牌"]}})["spark_card"])
+        descs = ["走进里面触发事件[基地遇袭]", "拿走物资随机获得稀有~传说装备"]
+        best, results = cs.pick_event_option(descs, cs.MODE_TARGET, {"need_spark": 1})
+        self.assertNotIn("选中主战员闪光", " ".join(results[0][1]), results[0])
+
     def test_credit_percent(self):
         # norm 把 100% 换成 #%，以前「信用点减少100%」认不出来（2026-10-27 03:45 实录花光 358 信用点换提炼装备）
         self.assertEqual(-100, cs.parse_effects("奉献信念信用点减少100%，获得装备[云端漫游者]")["credit_pct"])

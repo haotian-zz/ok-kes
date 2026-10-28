@@ -445,12 +445,15 @@ def _effects_of(option):
         e["requires_credit"] = int(m.group(1))
     if e.get("copy_card") and e.get("copy_mode"):
         e["copy_random"] = e["copy_mode"] != "选择任意卡"
+    # 库里 spark_target 是列表（['随机主战员']），以前按字符串比全不相等，所有库里的闪光都落成「选中主战员 +150」
+    # （2026-10-28 14:29「暗星帮盗猎基地/与恶灵心灵感应」库里写随机，后续前瞻还是按 150 算，选了「走进里面」）
     target = e.get("spark_target") or ""
-    if e.get("spark") and target:
-        e["spark_card"] = target == "选择卡牌"
-        e["spark_random_card"] = target == "随机卡牌"
-        e["spark_random"] = target == "随机主战员"
-        e["spark_choose"] = target == "选择主战员"
+    targets = [target] if isinstance(target, str) else list(target)
+    if e.get("spark") and targets:
+        e["spark_card"] = "选择卡牌" in targets
+        e["spark_random_card"] = "随机卡牌" in targets
+        e["spark_random"] = "随机主战员" in targets
+        e["spark_choose"] = "选择主战员" in targets
     return e
 
 
