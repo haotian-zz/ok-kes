@@ -314,6 +314,14 @@ class ChaosMode(TriggerTask):
             return "每日礼物弹窗"
         return None
 
+    def _start_window_step(self):
+        """启动那一刻的局外准备；返回 True 表示本帧动过画面、下一帧还要再判断。
+        停在标题页时先点「点击开始」，不能把只做一次的「从主页进卡厄思」判断用在标题页上
+        （2026-10-27 22:21 实录：刚开游戏就启动任务，标题页占掉了判断，进主页后被当成故事页，任务自己停了）。"""
+        if utils.handle_title_start(self):
+            return True
+        return self._prepare_target_deck() or self._enter_chaos_from_home()
+
     def _enter_chaos_from_home(self):
         """选了玩法且停在主页时自己进卡厄思：探索度 → 卡厄思具象探索度最低的区域；刷存档 → 零式系统。失败两次就停下。"""
         mode = getattr(self, 'chaos_mode', chaos_strategy.MODE_LEGACY)
@@ -425,7 +433,7 @@ class ChaosMode(TriggerTask):
         # 读预设、从主页进卡厄思只在启动那一刻做：之后的无文字帧（战斗开场、加载）不能当成主页
         # （2026-10-24 局内重启后首领战开场被当成主页，点了画面中心、按了 6 次 ESC）
         if getattr(self, 'start_window', True):
-            if self._prepare_target_deck() or self._enter_chaos_from_home():
+            if self._start_window_step():
                 return
             self.start_window = False
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环

@@ -302,6 +302,22 @@ class TestStartupBlankFrame(unittest.TestCase):
         self.assertEqual(["restore"], calls)
         self.assertNotIn(("key", "esc"), t.clicks)
 
+    def test_title_page_keeps_entry_check(self):
+        """2026-10-27 22:21 实录：刚开游戏就启动任务，标题页占掉了只做一次的进卡厄思判断，进主页后被当成故事页停了任务。"""
+        from ChaosMode import ChaosMode
+        t = chaos_task(chaos_mode=cs.MODE_TARGET, entry_checked=False)
+        t.all_texts = [box(0.5, 0.8, "点击开始")]
+        entered = []
+        t._prepare_target_deck = lambda: False
+        t._enter_chaos_from_home = lambda: entered.append(t.all_texts[0].name) or True
+        self.assertTrue(ChaosMode._start_window_step(t))
+        self.assertEqual([("box", "点击开始")], t.clicks)
+        self.assertEqual([], entered)               # 标题页上不做进卡厄思判断
+        self.assertFalse(t.entry_checked)
+        t.all_texts = [box(0.887, 0.160, "故事")]     # 下一帧到了主页才判断
+        self.assertTrue(ChaosMode._start_window_step(t))
+        self.assertEqual(["故事"], entered)
+
 
 class TestImprintIgnoresCrossRunSeen(unittest.TestCase):
     """2c5d226：「拿过」（chaos_seen）是跨局图鉴记录，刷刻印每局都要重新拿目标装备，不能挡住本局目标装备来源事件加分
