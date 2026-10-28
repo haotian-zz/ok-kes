@@ -24,6 +24,14 @@ class TestParseEffects(unittest.TestCase):
         self.assertTrue(cs.parse_effects("赋予神之闪光")["god_spark"])
         self.assertNotIn("god_spark", cs.parse_effects("随机卡牌闪光"))
 
+    def test_screen_random_spark_beats_db(self):
+        # 2026-10-28 13:27 实录：库里「使徒休憩处/一起祈愿」是选择主战员闪光，国服画面写随机主战员，也没出选人页
+        descs = ["一起祈愿随机主战员触发1次闪光", "询问计划获得装备[标准型防毒面具]", "指出救赎加80生命值恢复10%，信用点增"]
+        _, results = cs.pick_event_option(descs, cs.MODE_TARGET, {"need_spark": 1})
+        self.assertTrue(results[0][2].startswith("库:"), results[0])
+        self.assertIn("随机主战员闪光", " ".join(results[0][1]))
+        self.assertNotIn("选中主战员闪光", " ".join(results[0][1]))
+
     def test_credit_percent(self):
         # norm 把 100% 换成 #%，以前「信用点减少100%」认不出来（2026-10-27 03:45 实录花光 358 信用点换提炼装备）
         self.assertEqual(-100, cs.parse_effects("奉献信念信用点减少100%，获得装备[云端漫游者]")["credit_pct"])

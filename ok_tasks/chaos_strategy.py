@@ -492,6 +492,11 @@ def pick_event_option(descs, mode, state=None, db=None, match=None):
             # 库里写随机装备池（「随机装备（稀有度：稀有）」），画面上已经显示了这次抽到的具体装备，以画面为准
             if any(is_specific_equipment(n) for n in shown.get("equipment") or []):
                 effects["equipment"] = shown["equipment"]
+            # 闪光对象也以画面为准：库里「使徒休憩处/一起祈愿」写选择主战员，国服画面是「随机主战员触发1次闪光」，
+            # 实际也没出选主战员页（2026-10-28 13:27），按选中闪光打 150 高估了
+            if shown.get("spark_random") or shown.get("spark_random_card"):
+                for k in ("spark_card", "spark_random_card", "spark_random", "spark_choose"):
+                    effects[k] = bool(shown.get(k))
             src = f"库:{event['name']}/{o.get('text')}"
             # 库的模糊匹配同一选项可能对到不同事件（2026-10-24 实录「拒绝触碰」先对到暗约、后对到银色遗骸瀑布），
             # 所以选过的选项同时按文字记，两个都没有才算没选过
