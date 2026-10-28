@@ -572,6 +572,25 @@ def _boss_next(ns):
 
 
 def rush_escape_reason(task, boss_next=False):
+    """见 _rush_escape_reason。要逃脱时（不可撤回）每层留一次底：当时的画面 + 整份装备/刻印账，进流程追踪，事后能核对。"""
+    reason = _rush_escape_reason(task, boss_next)
+    ns = getattr(task, "node_status", None)
+    if reason and isinstance(ns, dict) and ns.get("escape_audit_layer") != ns.get("pass_final_boss_count", 0):
+        ns["escape_audit_layer"] = ns.get("pass_final_boss_count", 0)
+        eq = (getattr(task, "member_status", None) or {}).get("equipment") or {}
+        task.log_info(f"刷刻印速刷要逃脱，留底：{reason}；装备 {eq.get('names')}，刻印 {eq.get('imprints')}，"
+                      f"刻印最高 {ns.get('imprint_peak', 0)}，混沌之识 {ns.get('chaos_core_got') or '无'}")
+        try:
+            import chaos_trace
+            chaos_trace.step(task, "escape", reason, getattr(task, "frame", None), names=eq.get("names"),
+                             imprints=eq.get("imprints"), peak=ns.get("imprint_peak", 0),
+                             chaos_core=ns.get("chaos_core_got"))
+        except Exception as e:  # noqa: BLE001
+            task.log_info(f"逃脱留底失败：{e}")
+    return reason
+
+
+def _rush_escape_reason(task, boss_next=False):
     """刷刻印速刷要不要逃脱重开：第一层打完不到 2 个目标刻印（拿到混沌之识除外）；
     第二层首领前不到 2 个（用户 2026-10-27 16:1x 从 3 降到 2，最终目标还是 3 个；拿到混沌之识就不逃，打完存档）。"""
     if not enabled(task) or cfg(task, SPEEDRUN_KEY) is not True:

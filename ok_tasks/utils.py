@@ -3013,6 +3013,12 @@ def handle_equipment(task: TriggerTask):
             if refine_box:
                 task._refine_waits = 0
                 task.log_info(f"刷刻印：{slot + 1}号位不装「{new_equipment['name']}」（{install_reason}），提炼换信用点")
+                if imprint_kind or new_equipment.get("rank") is not None:
+                    # 带刻印或目标装备提炼掉不可撤回：留当时画面，事后核对刻印有没有认错
+                    import chaos_trace
+                    chaos_trace.step(task, "refine", f"{slot + 1}号位提炼「{new_equipment['name']}」", task.frame,
+                                     imprint=new_equipment.get("imprint"), kind=imprint_kind,
+                                     reason=install_reason, desc=new_equipment.get("description"))
                 task.click_box(refine_box)
                 task.sleep(1)
                 return True
@@ -3289,6 +3295,11 @@ def read_member_panel(task: TriggerTask):
         task.log_info("主战员面板没打开，这次不读游戏里的 PT")
         return None
     cols = parse_member_panel(texts, task.width, task.height)
+    if not getattr(task, "_member_panel_traced", False):
+        # 每次启动留一张主战员面板，看能不能在这里读到已装备的刻印（逃脱前用游戏画面核对装备账）
+        task._member_panel_traced = True
+        import chaos_trace
+        chaos_trace.step(task, "panel", "主战员面板", task.frame)
     _move_and_click(task, 0.959, 0.050)      # 右上角 X 关面板
     task.sleep(1)
     col = next((c for c in cols if c.get("name") and (target in c["name"] or c["name"] in target)), None)
