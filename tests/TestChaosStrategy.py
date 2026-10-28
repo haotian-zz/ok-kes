@@ -204,6 +204,7 @@ class TestPriorities(unittest.TestCase):
         self.assertTrue(NOT_EVENT_PAGE.search("请决定闪光效果。"))   # 闪光变体页被当成事件点了第 1 张（2026-10-25）
         self.assertTrue(NOT_EVENT_PAGE.search("收藏自定义"))   # 存档库页被当成事件连点（2026-10-27 12:02）
         self.assertTrue(NOT_EVENT_PAGE.search("批量分解"))
+        self.assertTrue(NOT_EVENT_PAGE.search("每周进展"))   # 赛季页补给商店被当成事件连点（2026-10-28 02:12）
         from utils import at_save_library
         page = lambda *names: SimpleNamespace(all_texts=[SimpleNamespace(name=n) for n in names])
         self.assertTrue(at_save_library(page("存储数据", "批量分解", "收藏自定义", "装备")))

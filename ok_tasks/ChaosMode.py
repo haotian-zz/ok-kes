@@ -320,6 +320,9 @@ class ChaosMode(TriggerTask):
         # 用户看完存档停在「存储数据」页就启动了脚本，这页被当成局内事件页连点（2026-10-27 12:02 实录）
         if utils.at_save_library(task):
             return "存储数据页"
+        # 冻结时没生效的「进入」被记成了新的一局，重启后当成局内、把赛季页的补给商店当事件连点（2026-10-28 02:12 实录）
+        if utils.at_season_hub(task):
+            return "卡厄思赛季页"
         # 跨过每日刷新回到主页时先弹「死灵之书每日礼物 / 点击以领取补给」（2026-10-27 12:19 实录），go_home 会点掉
         if utils_daily.has_text(task, r"^点击以领取"):
             return "每日礼物弹窗"
@@ -357,7 +360,7 @@ class ChaosMode(TriggerTask):
             return False
         if out_page:
             self.log_info(f"停在{out_page}（局外），先回主页再按玩法准备")
-        if at_lobby or out_page == "存储数据页":
+        if at_lobby or out_page in ("存储数据页", "卡厄思赛季页"):
             # 难度页 → ESC → 活动页 → ESC → 主页；切页有动画，每次 ESC 后等够再判断，免得在主页多按一次 ESC
             if at_lobby:
                 self.log_info("停在卡厄思难度选择页（局外），按 ESC 回主页再按玩法准备")

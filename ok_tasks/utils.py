@@ -573,7 +573,15 @@ def recognize_cards_in_deck(
 # 会被事件图标特征误命中（2026-10-24 实录）
 # 局外「存储数据」存档库（批量分解 / 收藏自定义 / 编辑存储数据）：收藏自定义左边的图标被当成事件，连点了 3 分钟，
 # 旁边就是「批量分解」（2026-10-27 12:02 实录，用户看完存档停在这页时启动了脚本）
-NOT_EVENT_PAGE = re.compile(r"保存战斗数据|存储数据收集|决定闪光效果|长按卡牌以查看信息|批量分解|收藏自定义|编辑存储数据")
+# 局外卡厄思赛季页（银河系灾害/挑战任务/补给商店/每周进展）：补给商店图标被当成事件连点（2026-10-28 02:12 实录）
+NOT_EVENT_PAGE = re.compile(r"保存战斗数据|存储数据收集|决定闪光效果|长按卡牌以查看信息|批量分解|收藏自定义|编辑存储数据|每周进展")
+
+
+def at_season_hub(task):
+    """局外活动卡厄思赛季页（难度页 ESC 退一层）：有「每周进展」「补给商店」，再加「挑战任务」或「赛季信息」。"""
+    texts = [b.name for b in getattr(task, "all_texts", None) or []]
+    return (any("每周进展" in t for t in texts) and any("补给商店" in t for t in texts)
+            and any("挑战任务" in t or "赛季信息" in t for t in texts))
 
 
 def at_save_library(task):

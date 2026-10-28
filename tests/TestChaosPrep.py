@@ -146,6 +146,9 @@ class TestAtLobby(unittest.TestCase):
         page = lambda *names: SimpleNamespace(all_texts=[SimpleNamespace(name=n) for n in names])
         self.assertEqual("存储数据页", ChaosMode._out_of_run_page(page("存储数据", "编辑存储数据", "批量分解", "收藏自定义", "装备")))
         self.assertEqual("每日礼物弹窗", ChaosMode._out_of_run_page(page("死灵之书每日礼物", "剩余天数：25天", "点击以领取补给")))
+        # 2026-10-28 02:12：赛季页的补给商店被当成事件连点
+        self.assertEqual("卡厄思赛季页", ChaosMode._out_of_run_page(page(
+            "银河系灾害", "银河徽章", "挑战任务", "卡厄思", "每周进展", "8000/8000", "补给商店", "环境变量", "赛季信息")))
         self.assertIsNone(ChaosMode._out_of_run_page(page("事件", "收起有用的东西", "点击屏幕可关闭")))
 
 
