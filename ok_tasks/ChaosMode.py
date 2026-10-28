@@ -397,6 +397,11 @@ class ChaosMode(TriggerTask):
                 utils_daily.refresh(self)
         if not utils_daily.go_home(self):
             return False
+        # 启动那帧停在难度页等局外页时 _prepare_target_deck 不在主页跳过了；回到主页后先读预设再进
+        # （2026-10-28 11:02 实录：停在难度页启动，回主页直接进了卡厄思，删卡/闪光列表全空）
+        if self._prepare_target_deck():
+            self.entry_checked = False
+            return True
         self.zero_upgrades_checked = True
         want_zero, want_max = chaos_strategy.zero_upgrade_wants(mode, octopus=self.config.get('章鱼哥速刷') is True) if self.config.get('调整零式升级') else ([], [])
         if utils_imprint.enabled(self):

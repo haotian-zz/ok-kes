@@ -158,6 +158,26 @@ class TestAtLobby(unittest.TestCase):
         # 法典合成好后的零式系统初始页（有「进入」）要交给页面流程，不算局外
         self.assertIsNone(ChaosMode._out_of_run_page(page("零式系统", "裁决之沼", "进入")))
 
+    def test_lobby_start_reads_preset_before_entering(self):
+        # 2026-10-28 11:02：停在难度页启动，回主页后没读预设就进了卡厄思，删卡/闪光列表全空
+        from unittest import mock
+        from ChaosMode import ChaosMode
+        import chaos_strategy
+        import utils_daily
+        calls = []
+        task = SimpleNamespace(chaos_mode=chaos_strategy.MODE_TARGET, entry_checked=False, chaos_plan=None,
+                               all_texts=[SimpleNamespace(name=n) for n in ("每周进展", "8000/8000", "进入")],
+                               config={}, log_info=lambda *a: None, send_key=lambda *a: None, sleep=lambda *a: None)
+        task._at_lobby = lambda: True
+        task._out_of_run_page = ChaosMode._out_of_run_page
+        task._prepare_target_deck = lambda: calls.append("preset") or True
+        with mock.patch.object(utils_daily, "is_home", return_value=True), \
+                mock.patch.object(utils_daily, "go_home", return_value=True), \
+                mock.patch.object(utils_daily, "refresh", lambda t: None):
+            self.assertTrue(ChaosMode._enter_chaos_from_home(task))
+        self.assertEqual(["preset"], calls)
+        self.assertFalse(task.entry_checked)     # 读完预设下一帧再按玩法进卡厄思
+
 
 class TestCardNameOneCharOff(unittest.TestCase):
     def test_one_char_ocr_error(self):
