@@ -41,6 +41,9 @@ OCTOPUS_FIRST_LAYER_NORMAL = 7    # 章鱼哥速刷第一层：普通战权重�
 # 刷刻印：带刻印的装备主要在商店（每次刷新 2～3 件带刻印）。2026-10-27 夜里 4 个目标刻印 3 个来自商店、1 个来自奖励；
 # 原来商店只 +1（商店节点 4 分 < 精英 5），04:05 那局整层只排了 1 个商店
 IMPRINT_SHOP_BONUS = 5
+# 刷刻印：问号事件高于战斗（用户 2026-10-27 18:0x：深绿黑夜/深绿桎梏只能靠事件「森林在提问」拿；
+# 原来事件 4 < 精英 5，二层 18:04 事件和普通战二选一选了普通战，因为后面接精英，整条路径分更高）
+IMPRINT_EVENT_OVER_FIGHT = 1
 
 
 def route_weights(mode, layer=0, hp=None, event_bonus=0, octopus=False, imprint=False):
@@ -51,9 +54,10 @@ def route_weights(mode, layer=0, hp=None, event_bonus=0, octopus=False, imprint=
     if not base:
         return base
     w = {**base, "types": dict(base["types"])}
+    t = w["types"]
     if imprint:
         w["shop"] = max(w.get("shop", 0), IMPRINT_SHOP_BONUS)
-    t = w["types"]
+        t["事件"] = max(t["事件"], t["精英"] + IMPRINT_EVENT_OVER_FIGHT, t["小怪"] + IMPRINT_EVENT_OVER_FIGHT)
     if octopus and layer == 0:
         t["小怪"] = OCTOPUS_FIRST_LAYER_NORMAL
         t["精英"] = min(t["精英"], 2)
@@ -81,9 +85,10 @@ def equipment_event_sources(names, db=None):
         m = re.search(r"事件\s*[-－:：]\s*([^；;，,]+)", obtain)
         if not m:
             continue
-        event_name = norm(m.group(1))
+        # 装备库写的是繁中名加版本号（「事件-森林疑问1」＝森林在提问普通版），事件名和 name_intl 都认
+        event_name = norm(re.sub(r"\d+$", "", m.group(1).strip()))
         for e in db.iter_events():
-            if norm(e.get("name", "")) != event_name:
+            if event_name not in {norm(e.get(k) or "") for k in ("name", "name_intl")}:
                 continue
             for o in e.get("options", []):
                 names = {norm(eq.get(k)) for k in ("name", "name_intl", "name_gamekee") if eq.get(k)}

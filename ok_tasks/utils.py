@@ -4670,12 +4670,15 @@ def _chaos_route_weights(task: TriggerTask):
         hp = _get_current_hp_percent(task)
     except Exception:  # noqa: BLE001
         hp = None
+    import utils_imprint
     bonus = 0
     try:
         targets = [n for slot in range(3) for n in _equipment_priority(task, slot)]
         owned = [n for n in _equipment_state(task).get("names", []) if n]
-        seen = getattr(task, "chaos_seen", None) or set()
-        owned += [n for n in targets if chaos_strategy.equipment_key(n) in seen]
+        if not utils_imprint.enabled(task):
+            # 「拿过」是跨局记录（收集图鉴用）；刷刻印每局都要重新拿目标装备，只看这局装着的
+            seen = getattr(task, "chaos_seen", None) or set()
+            owned += [n for n in targets if chaos_strategy.equipment_key(n) in seen]
         sources = chaos_strategy.equipment_event_sources(targets)
         bonus = chaos_strategy.event_source_bonus(sources, layer, owned)
         if bonus:
@@ -4685,7 +4688,6 @@ def _chaos_route_weights(task: TriggerTask):
     octopus = _get_config_value(task, OCTOPUS_RUSH, False) is True
     if octopus and layer == 0:
         task.log_info("章鱼哥速刷：第一层普通战优先")
-    import utils_imprint
     return chaos_strategy.route_weights(mode, layer, hp, bonus, octopus=octopus, imprint=utils_imprint.enabled(task))
 
 

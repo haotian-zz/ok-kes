@@ -433,6 +433,23 @@ class TestTrace(unittest.TestCase):
         self.assertGreater(w["types"]["休息"] + w["shop"], w["types"]["精英"])
         self.assertEqual(cs.ROUTE_WEIGHTS[cs.MODE_TARGET]["shop"], cs.route_weights(cs.MODE_TARGET, 0, 80)["shop"])
 
+    def test_imprint_route_prefers_event(self):
+        # 用户 2026-10-27：刷刻印问号事件优先。18:04 二层「事件→小怪」和「小怪→精英」二选一，旧权重选了后者
+        t = cs.route_weights(cs.MODE_TARGET, 1, 80, imprint=True)["types"]
+        self.assertGreater(t["事件"], t["精英"])
+        self.assertGreater(t["事件"] + t["小怪"], t["小怪"] + t["精英"])
+        # 章鱼哥速刷第一层照旧战斗优先
+        o = cs.route_weights(cs.MODE_TARGET, 0, 80, octopus=True, imprint=True)["types"]
+        self.assertGreater(o["小怪"], o["事件"])
+
+    def test_event_source_tw_name_with_version(self):
+        # 装备库写「事件-森林疑问1」（繁中名 + 版本号），事件库叫「森林在提问」、name_intl 森林疑问
+        src = cs.equipment_event_sources(["深绿黑夜", "深绿桎梏", "精灵王的金冠"])
+        self.assertEqual({("深绿黑夜", "回答为了死亡"), ("深绿桎梏", "索求永生")},
+                         {(s["equipment"], s["option"]) for s in src})
+        self.assertEqual(cs.EVENT_SOURCE_BONUS, cs.event_source_bonus(src, 1))
+        self.assertEqual(0, cs.event_source_bonus(src, 1, ["深绿黑夜", "深绿桎梏"]))
+
     def test_equipment_event_source_bonus(self):
         # 凝结的光辉残片只能在第 1 层（外围）「前往更深之处」选「劈向地脉」拿：第 1 层事件加分，拿到后不加
         src = cs.equipment_event_sources(["混沌指控", "凝结的光辉残片", "坠落的王冠"])
