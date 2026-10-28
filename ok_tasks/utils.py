@@ -178,6 +178,54 @@ def _sortie_speedrun(task: TriggerTask):
     return getattr(task, "name", "") == "自动出击模式" and _get_config_value(task, SORTIE_SPEEDRUN, False) is True
 
 
+SORTIE_LEADER_CARDS_ONLY = "只拿出战主战员的卡牌"
+SORTIE_REMOVE_OTHERS_FIRST = "删卡优先删其他角色的卡牌"
+
+
+def _sortie_flag(task: TriggerTask, key):
+    return getattr(task, "name", "") == "自动出击模式" and _get_config_value(task, key, False) is True
+
+
+def sortie_leader(task: TriggerTask):
+    """这一局的出战主战员：选人时记在 task._sortie_leader；中途重启没记到就用出战主战员优先级第一个。"""
+    name = getattr(task, "_sortie_leader", None)
+    if name:
+        return name
+    priority = _get_config_value(task, "出战主战员优先级", [])
+    return priority[0] if isinstance(priority, (list, tuple)) and priority else None
+
+
+def sortie_card_side(task: TriggerTask, name):
+    """卡牌归属（出击模式拿牌/删牌规则，用户 2026-10-28）：
+    leader=出战主战员的，other=别的角色的，neutral=中立卡，unknown=卡库对不上（OCR 错太多）。"""
+    leader = sortie_leader(task)
+    try:
+        db = game_db.get_db()
+        card = db.find_card(chaos_strategy.base_card_name(name), owner=leader)
+        if not card:
+            return "unknown"
+        owner = db.card_owner(card)
+        if owner is None:
+            return "neutral"
+        lead = db.combatant(leader) if leader else None
+    except Exception:  # noqa: BLE001
+        return "unknown"
+    return "leader" if lead and owner["id"] == lead["id"] else "other"
+
+
+def sortie_pick_leader_card(task: TriggerTask, cards, priority, page):
+    """只拿出战主战员的卡：按优先级先挑，再挑任意一张主战员的卡；别人的卡和中立卡都不拿。返回 card 或 None。"""
+    sides = {id(card): sortie_card_side(task, card["name"]) for card in cards}
+    task.log_info(f"{page}: 只拿{sortie_leader(task)}的卡，归属="
+                  + "，".join(f"{card['name']}:{sides[id(card)]}" for card in cards))
+    mine = [card for card in cards if sides[id(card)] == "leader"]
+    for name in priority:
+        hit = next((card for card in mine if name and name in card["name"]), None)
+        if hit:
+            return hit
+    return mine[0] if mine else None
+
+
 def _get_route_priority(task: TriggerTask):
     """读取路线节点优先级配置，返回列表；解析失败使用默认顺序。"""
     if _sortie_speedrun(task):
@@ -1386,6 +1434,8 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
         action == "移除"
         and _get_config_value(task, "刷空档", False) is True
     )
+    # 出击模式（用户 2026-10-28）：先把别的角色的卡删光，整副翻完都没有了才按移除列表/基础牌删
+    remove_others_first = action == "移除" and _sortie_flag(task, SORTIE_REMOVE_OTHERS_FIRST)
     base_card_type = _get_game_text(task, "基础")
     target_member_box = task.box_of_screen(0.079, 0.092, 0.209, 0.675)
     flash_priority = (
@@ -1490,6 +1540,12 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
                 clicked = True
         return clicked
 
+    def click_other_member_cards(cards):
+        if not remove_others_first or selected >= count:
+            return False
+        return click_cards(cards, lambda card: sortie_card_side(task, card["name"]) == "other",
+                           f"优先移除不是{sortie_leader(task)}的角色卡，点击")
+
     def click_target_member_row_cards(cards):
         """刷空档时优先移除目标主战员同一排的卡牌。"""
         if not prefer_target_member_row or selected >= count:
@@ -1562,7 +1618,9 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
         if selected >= count:
             task.log_info(f"{page}: 已选中{selected}/{count}张卡牌")
             return True
-        click_priority_cards(cards)
+        click_other_member_cards(cards)
+        if not remove_others_first:
+            click_priority_cards(cards)
         if selected >= count:
             task.log_info(f"{page}: 已选中{selected}/{count}张卡牌")
             return True
@@ -2082,6 +2140,7 @@ def handle_settlement(task: TriggerTask):
             passed = task.node_status['pass_final_boss_count']
             task.log_info(f"检测到boss结算页面且 reach_final_boss=True，通关层数+1 (当前: {passed})")
             reset_layer_status(task)
+            task.node_status['layer_settled'] = True     # 出击模式随后的战利品结算页别再记一次
         task.sleep(1)
         return True
     return False
@@ -2450,7 +2509,13 @@ def handle_card_reward(task: TriggerTask):
         return True
 
     chosen_card = None
-    for pri_name in priority:
+    leader_only = _sortie_flag(task, SORTIE_LEADER_CARDS_ONLY)
+    if leader_only:
+        # 用户 2026-10-28：只拿出战主战员的卡，中立卡和别的角色的卡都不拿；没有就刷新/跳过
+        chosen_card = sortie_pick_leader_card(task, cards, _get_card_list(task, "获得卡牌优先级"), "卡牌奖励页面")
+        if chosen_card:
+            task.log_info(f"卡牌奖励页面: 选出战主战员的卡「{chosen_card['name']}」")
+    for pri_name in [] if leader_only else priority:
         chosen_card = next(
             (
                 card for card in cards
@@ -5554,6 +5619,9 @@ def handle_shop(task: TriggerTask):
                         f"本局已获得{neutral_card_count}张中立牌，"
                         f"达到固定上限{neutral_card_limit}张，跳过商店卡牌"
                     )
+                    continue
+                if _sortie_flag(task, SORTIE_LEADER_CARDS_ONLY) and sortie_card_side(task, item_name) != "leader":
+                    task.log_info(f"德朗商店: 卡牌「{item_name}」不是出战主战员的卡，不买")
                     continue
                 matched_name = next(
                 (name for name in card_priority

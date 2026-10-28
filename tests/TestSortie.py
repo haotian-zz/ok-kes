@@ -127,10 +127,12 @@ class TestSortieSpeedrun(unittest.TestCase):
     def _boss_page(self):
         return [box(0.484, 0.928, "请选择要遇见的首领"), box(0.358, 0.706, "首领甲"), box(0.641, 0.706, "首领乙")]
 
-    def test_first_layer_boss_choice_does_not_exit(self):
+    def test_boss_choice_means_layer_one_done(self):
+        # 出击模式第一层不选首领；首领节点不是脚本点进去时结算页没记层数，选首领页兜底记上（2026-10-28 00:50 实录速刷没退）
         t = sortie_task({"速刷模式": True}, self._boss_page())
         self.assertTrue(us.handle_boss_selection(t))
-        self.assertFalse(t.node_status.get("speedrun_exit"))
+        self.assertEqual(t.node_status["pass_final_boss_count"], 1)
+        self.assertTrue(t.node_status.get("speedrun_exit"))
 
     def test_exit_after_layer_two_boss_chosen(self):
         t = sortie_task({"速刷模式": True}, self._boss_page())
@@ -160,6 +162,138 @@ class TestSortieSpeedrun(unittest.TestCase):
         t.node_status["pass_final_boss_count"] = 1
         self.assertTrue(us.handle_boss_selection(t))
         self.assertFalse(us.handle_speedrun_exit(t))
+
+
+class TestSortieLayerCount(unittest.TestCase):
+    """卡厄思战利品结算页只在层首领打完后出现：reach_final_boss 没置上（首领节点不是脚本点的）时补记层数，只记一次。"""
+
+    def test_counts_once_when_settlement_missed(self):
+        t = sortie_task()
+        us._count_sortie_layer(t)
+        us._count_sortie_layer(t)            # 领完战利品回到结算页
+        self.assertEqual(t.node_status["pass_final_boss_count"], 1)
+
+    def test_not_double_counted_after_settlement_button(self):
+        t = sortie_task(texts=[box(0.941, 0.917, "结算")])
+        t.node_status["reach_final_boss"] = True
+        self.assertTrue(utils.handle_settlement(t))
+        self.assertEqual(t.node_status["pass_final_boss_count"], 1)
+        us._count_sortie_layer(t)
+        self.assertEqual(t.node_status["pass_final_boss_count"], 1)
+
+    def test_next_layer_counts_again(self):
+        t = sortie_task(texts=[box(0.484, 0.928, "请选择要遇见的首领"), box(0.358, 0.706, "首领甲")])
+        us._count_sortie_layer(t)
+        self.assertTrue(us.handle_boss_selection(t))
+        us._count_sortie_layer(t)
+        self.assertEqual(t.node_status["pass_final_boss_count"], 2)
+
+
+def card(name, x=0.5, y=0.4):
+    return {"name": name, "x": x, "y": y, "type": "", "description": "", "selected": False, "feature_name": "attack_in_deck"}
+
+
+class TestLeaderCards(unittest.TestCase):
+    """用户 2026-10-28：只拿出战主战员（海德玛丽）的卡，中立卡和别人的卡不拿；删卡先删别人的卡。"""
+
+    RULES = {utils.SORTIE_LEADER_CARDS_ONLY: True, utils.SORTIE_REMOVE_OTHERS_FIRST: True,
+             "出战主战员优先级": ["海德玛丽", "九", "力", "绯"], "获得卡牌优先级": ["展开极光", "剑雨"]}
+
+    def test_card_side(self):
+        t = sortie_task(self.RULES)
+        side = lambda n: utils.sortie_card_side(t, n)  # noqa: E731
+        self.assertEqual(side("剑雨"), "leader")
+        self.assertEqual(side("缕光芒"), "leader")            # OCR 丢了「一」
+        self.assertEqual(side("万众英雄"), "leader")
+        self.assertEqual(side("极寒风暴"), "other")           # 麦格纳的
+        self.assertEqual(side("水之源"), "other")             # 米卡的
+        self.assertEqual(side("绽放：保持耐心"), "neutral")
+        self.assertEqual(side("未知：变异体样本"), "neutral")
+        self.assertEqual(side("剑甫"), "unknown")
+
+    def test_leader_from_member_selection(self):
+        t = sortie_task(self.RULES)
+        t._sortie_leader = "麦格纳"
+        self.assertEqual(utils.sortie_card_side(t, "极寒风暴"), "leader")
+        self.assertEqual(utils.sortie_card_side(t, "剑雨"), "other")
+
+    def _get_card(self, config, names):
+        t = sortie_task(config, [box(0.502, 0.128, "获得卡牌"), box(0.883, 0.131, "请选择要获得的卡牌")])
+        cards = [card(n, 0.2 + 0.28 * i) for i, n in enumerate(names)]
+        orig = us.recognize_cards
+        us.recognize_cards = lambda task, page="": cards
+        try:
+            self.assertTrue(us.handle_get_card(t))
+        finally:
+            us.recognize_cards = orig
+        return t
+
+    def test_get_card_takes_any_leader_card(self):
+        t = self._get_card(self.RULES, ["极寒风暴", "万众英雄", "绽放：保持耐心"])
+        self.assertEqual(t.clicks, [(0.48, 0.4), (0.912, 0.931)])
+
+    def test_get_card_priority_among_leader_cards(self):
+        t = self._get_card(self.RULES, ["万众英雄", "剑雨", "展开极光"])
+        self.assertEqual(t.clicks, [(0.76, 0.4), (0.912, 0.931)])
+
+    def test_get_card_skips_others_and_neutral(self):
+        t = self._get_card(self.RULES, ["极寒风暴", "冰寒之息", "绽放：酸性气体"])
+        self.assertEqual(t.clicks, [(0.749, 0.931)])
+
+    def test_get_card_rule_off_keeps_priority_only(self):
+        t = self._get_card({"获得卡牌优先级": ["剑雨"]}, ["万众英雄", "极寒风暴"])
+        self.assertEqual(t.clicks, [(0.749, 0.931)])
+
+    def test_card_reward_takes_leader_card(self):
+        t = sortie_task(self.RULES, [box(0.49, 0.07, "卡牌奖励")])
+        cards = [card("水之源", 0.2), card("凝聚极光", 0.5), card("绽放：保持耐心", 0.8)]
+        orig = utils.recognize_cards, utils.find_target_card
+        utils.recognize_cards = lambda task, page="": cards
+        utils.find_target_card = lambda task: ([], [])
+        try:
+            self.assertTrue(utils.handle_card_reward(t))
+        finally:
+            utils.recognize_cards, utils.find_target_card = orig
+        self.assertEqual(t.clicks, [(0.5, 0.4)])
+
+    def test_card_reward_skips_without_leader_card(self):
+        t = sortie_task(self.RULES, [box(0.49, 0.07, "卡牌奖励"), box(0.80, 0.93, "跳过")])
+        cards = [card("水之源", 0.2), card("梦之边境", 0.5)]
+        orig = utils.recognize_cards, utils.find_target_card
+        utils.recognize_cards = lambda task, page="": cards
+        utils.find_target_card = lambda task: ([], [])
+        try:
+            self.assertTrue(utils.handle_card_reward(t))
+        finally:
+            utils.recognize_cards, utils.find_target_card = orig
+        self.assertEqual(t.clicks, ["跳过"])
+
+    def _remove(self, config, names):
+        t = sortie_task(config)
+        t.ocr = lambda: []
+        t.box_of_screen = lambda *a, **k: None
+        cards = [card(n, 0.15 + 0.12 * i) for i, n in enumerate(names)]
+        patches = {"recognize_cards_in_deck": lambda task, page="": [dict(c) for c in cards],
+                   "_dump_card_page": lambda task, tag: None,
+                   "region_white_ratio": lambda task, region: 0.0,
+                   "_trace_card_click": lambda *a, **k: None}
+        orig = {k: getattr(utils, k) for k in patches}
+        for k, v in patches.items():
+            setattr(utils, k, v)
+        try:
+            self.assertTrue(utils.select_card(t, ["剑幕"], count=1, action="移除"))
+        finally:
+            for k, v in orig.items():
+                setattr(utils, k, v)
+        return t
+
+    def test_remove_other_member_card_first(self):
+        t = self._remove(self.RULES, ["剑幕", "剑光", "极寒风暴", "剑雨"])
+        self.assertEqual(t.clicks, [(0.39, 0.4)])
+
+    def test_remove_rule_off_uses_remove_list(self):
+        t = self._remove({}, ["剑幕", "剑光", "极寒风暴", "剑雨"])
+        self.assertEqual(t.clicks, [(0.15, 0.4)])
 
 
 class TestBattleMemberSelect(unittest.TestCase):
@@ -194,6 +328,7 @@ class TestBattleMemberSelect(unittest.TestCase):
         t = self._list_task(pages, ["海德玛丽", "九", "力", "绯"])
         self._run(t)
         self.assertEqual(t.clicks, ["海德玛丽"])
+        self.assertEqual(t._sortie_leader, "海德玛丽")      # 拿牌/删牌按这位算
 
     def test_fallback_scrolls_back_to_lower_priority(self):
         pages = [["凛", "罗丝薇瑟", "绯"], ["黛安娜", "雨果"], ["蒂菲拉", "米卡"]]

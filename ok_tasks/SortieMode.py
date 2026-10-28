@@ -11,6 +11,8 @@ from config_io import (
 )
 from config_sync import check_upload_if_needed, show_hot_configs_dialog
 from utils import (
+    SORTIE_LEADER_CARDS_ONLY,
+    SORTIE_REMOVE_OTHERS_FIRST,
     reset_all_status,
     _migrate_route_boss_to_elite,
     _simplify_texts,
@@ -36,6 +38,8 @@ class SortieMode(TriggerTask):
         self.default_config[utils_sortie.SORTIE_LEVEL] = 0
         self.default_config["速刷模式"] = False
         self.default_config[utils_sortie.HARDCORE] = False
+        self.default_config[SORTIE_LEADER_CARDS_ONLY] = False
+        self.default_config[SORTIE_REMOVE_OTHERS_FIRST] = False
         self.default_config["出牌优先级"] = ["剑雨", "水之源", "一缕光芒", "万众英雄","极光剑", "展开极光","解放极光"]
         self.default_config["获得卡牌优先级"] = ["展开极光", "剑雨", "一缕光芒","缕光芒","凝聚极光"]
         self.default_config["移除卡牌列表"] = ["剑幕"]
@@ -97,6 +101,12 @@ class SortieMode(TriggerTask):
         self.config_description[utils_sortie.HARDCORE] = "主战员配置页顶部的硬核模式开关（火焰眼睛），进入前按这里开或关；战利品更多、更难"
         self.config_description["速刷模式"] = (
             "选路尽量避开战斗（休息 > 事件 > 普通战 > 精英）；第一层首领打完进第二层，选完第二层首领就退出，算一次成功"
+        )
+        self.config_description[SORTIE_LEADER_CARDS_ONLY] = (
+            "获得卡牌、卡牌奖励、商店买卡时只拿这局出战主战员（选人时选中的那位）的卡；别的角色的卡和中立卡都不拿，没有就刷新或跳过"
+        )
+        self.config_description[SORTIE_REMOVE_OTHERS_FIRST] = (
+            "移除卡牌（商店、事件）时先删不是出战主战员的角色卡，整副都没有了才按「移除卡牌列表」和基础牌删"
         )
         self.config_description['商店刷新信用点阈值'] = (
             "德朗商店免费刷新次数用完后，仅当信用点大于该值且足够支付刷新价格时才付费刷新。"

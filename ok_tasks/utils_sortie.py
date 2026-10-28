@@ -27,6 +27,7 @@ from utils import (
     _finish_only_first_layer,
     handle_auto_stop,
     _sortie_speedrun, is_route_selection_page,
+    _sortie_flag, SORTIE_LEADER_CARDS_ONLY, sortie_pick_leader_card, reset_layer_status,
 )
 from utils_chaos import handle_archive_target_member
 
@@ -373,6 +374,7 @@ def _select_battle_member(task: TriggerTask, max_scrolls=5):
             rank, name, member = found
             if rank == 0:
                 task.log_info(f"出战主战员优先级匹配成功: 「{name}」（第{scroll_index + 1}屏）")
+                task._sortie_leader = name
                 task.click_box(member)
                 task.sleep(0.5)
                 return _confirm_battle_member_selection(task)
@@ -394,6 +396,7 @@ def _select_battle_member(task: TriggerTask, max_scrolls=5):
             found = _find_battle_member(task, _battle_member_boxes(task), [name])
             if found:
                 task.log_info(f"出战主战员优先级匹配成功: 「{name}」（优先级第{rank + 1}）")
+                task._sortie_leader = name
                 task.click_box(found[2])
                 task.sleep(0.5)
                 return _confirm_battle_member_selection(task)
@@ -406,6 +409,7 @@ def _select_battle_member(task: TriggerTask, max_scrolls=5):
         return False
     member = random.choice(boxes)
     task.log_info(f"未找到配置中的出战主战员，随机选择「{member.name}」")
+    task._sortie_leader = member.name.strip()
     task.click_box(member)
     task.sleep(0.5)
     return _confirm_battle_member_selection(task)
@@ -428,6 +432,12 @@ def handle_boss_selection(task: TriggerTask):
     boss = random.choice(bosses)
     task.log_info(f"首领选择: 随机选择「{boss['name']}」")
     _move_and_click(task, boss["x"], boss["y"])
+    ns = task.node_status
+    ns.pop("layer_settled", None)
+    if ns.get("pass_final_boss_count", 0) == 0:
+        # 出击模式第一层不选首领，这一页只在打完一层首领后出现（2026-10-28 两局实录）；结算页漏记时这里兜底
+        ns["pass_final_boss_count"] = 1
+        task.log_info("首领选择页出现但还没记到通关层数，按已通关第一层处理")
     if _sortie_speedrun(task) and task.node_status.get("pass_final_boss_count", 0) >= 1:
         task.node_status["speedrun_exit"] = True
         task.log_info("出击速刷：第二层首领已选，回到路线页就退出")
@@ -659,6 +669,16 @@ def handle_get_card(task: TriggerTask):
 
     priority = _get_config_value(task, "获得卡牌优先级", [])
     task.log_info(f"获得卡牌: 当前优先级配置: {priority}")
+    if _sortie_flag(task, SORTIE_LEADER_CARDS_ONLY):
+        # 用户 2026-10-28：出战主战员的卡就拿（优先级里的先拿），别的角色的卡和中立卡都不拿
+        chosen = sortie_pick_leader_card(task, cards, priority, "获得卡牌")
+        if chosen:
+            task.log_info(f"获得卡牌: 选出战主战员的卡「{chosen['name']}」")
+            _move_and_click(task, chosen["x"], chosen["y"])
+            task.sleep(0.5)
+            _move_and_click(task, 0.912, 0.931)
+            return True
+        priority = []
     for name in priority:
         task.log_info(f"获得卡牌: 检查优先级「{name}」是否在卡牌列表中")
         chosen = next((card for card in cards if name in card["name"]), None)
@@ -716,11 +736,24 @@ def handle_discard_hand_card(task: TriggerTask):
     return False
 
 
+def _count_sortie_layer(task: TriggerTask):
+    """卡厄思战利品结算页只在层首领打完后出现。首领节点不是脚本自己点进去时 reach_final_boss 没置上，
+    handle_settlement 不记层数（2026-10-28 00:50 实录：第一层首领打完还是 0 层，速刷不退出），这里补记一次。"""
+    ns = task.node_status
+    if ns.get("layer_settled"):
+        return
+    ns["pass_final_boss_count"] = ns.get("pass_final_boss_count", 0) + 1
+    task.log_info(f"出击模式战利品结算页：首领已打完，补记通关层数 (当前: {ns['pass_final_boss_count']})")
+    reset_layer_status(task)
+    task.node_status["layer_settled"] = True
+
+
 def handle_sortie_reward_settlement(task: TriggerTask):
     """出击模式奖励结算页面: 按配置领取奖励或关闭页面。"""
     title = find_box_at_point(task, 0.550, 0.068)
     if not (title and title.name == "结算"):
         return False
+    _count_sortie_layer(task)
     reward_box = find_box_at_point(task, 0.848, 0.389)
     if reward_box and reward_box.name == "获得" and _use_sanity(task):
         task.log_info("检测到出击模式奖励结算页面，领取奖励")
