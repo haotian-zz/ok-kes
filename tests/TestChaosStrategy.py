@@ -55,6 +55,14 @@ class TestParseEffects(unittest.TestCase):
             self.assertNotIn("battle", cs.parse_effects(d), d)
         self.assertTrue(cs.parse_effects("站在士兵一方发生战斗，信用点增加80")["battle"])
 
+    def test_sub_event_name_must_match(self):
+        # 2026-10-28 14:39 实录：「进入门内触发事件[宝库内部]」对到使徒休憩处「进入」（触发事件[使徒的召唤仪式]），前瞻 +150
+        _, matched = cs.match_event_options(["进入门内触发事件[宝库内部]"])
+        self.assertTrue(matched[0] is None or "使徒的召唤仪式" not in str(matched[0].get("raw")), matched[0])
+        # 名字对得上的照常匹配
+        _, matched = cs.match_event_options(["进入触发事件[使徒的召唤仪式]"])
+        self.assertIsNotNone(matched[0])
+
     def test_credit_percent(self):
         # norm 把 100% 换成 #%，以前「信用点减少100%」认不出来（2026-10-27 03:45 实录花光 358 信用点换提炼装备）
         self.assertEqual(-100, cs.parse_effects("奉献信念信用点减少100%，获得装备[云端漫游者]")["credit_pct"])

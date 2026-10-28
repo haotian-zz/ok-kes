@@ -250,7 +250,23 @@ def _iter_options(event):
         stack.extend(o.get("next", []))
 
 
+_SUB_EVENT = re.compile(r"事件\s*[\[［【]([^\]］】]+)[\]］】]")
+
+
+def _sub_event_mismatch(o, desc):
+    """画面写「触发事件[X]」、库选项写「触发事件[Y]」，X、Y 不像就不是同一个选项。
+    2026-10-28 14:39「进入门内触发事件[宝库内部]」库里没有，模糊对到蓝罐使徒休憩处的「进入」（触发事件[使徒的召唤仪式]），
+    前瞻按（直接攻击）闪光 +150 算，实际进去只给一件装备。"""
+    shown = _SUB_EVENT.search(desc or "")
+    raw = o.get("raw")
+    texts = raw if isinstance(raw, list) else [t for v in (raw or {}).values() for t in v] if isinstance(raw, dict) else []
+    lib = next((m for t in texts if (m := _SUB_EVENT.search(t))), None)
+    return bool(shown and lib and similarity(norm(shown.group(1)), norm(lib.group(1))) < 0.5)
+
+
 def _option_score(o, desc):
+    if _sub_event_mismatch(o, desc):
+        return 0.0
     names, raw = _option_texts(o)
     best = 0.0
     for n in names:
