@@ -292,6 +292,21 @@ class TestImprintDecision(unittest.TestCase):
         t.node_status["pass_final_boss_count"] = 0                   # 第一层首领前不管（第一层打完再看）
         self.assertIsNone(ui.rush_escape_reason(t, boss_next=True))
 
+    def test_last_shop_buys_target_equipment(self):
+        """用户 2026-10-27 17:5x：最后一个商店了，只要不覆盖已有的目标刻印，目标装备也买。"""
+        t = imprint_task(("", ui.TARGET, ui.TARGET))
+        dagger = {"name": "欺骗暗影的匕首", "imprint": "", "rank": 1}
+        steps = [{"type": "小怪"}, {"type": "休息[商店]"}, {"type": "精英"}, {"type": "首领"}]
+        t.node_status = {"pass_final_boss_count": 1, "full_route": {"layer": 1, "done": 1, "steps": steps}}
+        self.assertFalse(ui.install_decision(t, dagger, 0, True, "")[0])   # 商店还在后面
+        t.node_status["full_route"]["done"] = 2                            # 刚进最后一个商店
+        self.assertTrue(ui.install_decision(t, dagger, 0, True, "")[0])
+        # 槽位已有目标刻印：带别的刻印的目标装备会覆盖，仍不买
+        self.assertFalse(ui.install_decision(t, {"name": "精灵王的金冠", "imprint": ui.OTHER, "rank": 0}, 1, True, "")[0])
+        t.node_status["pass_final_boss_count"] = 0                          # 第一层不算
+        t.node_status["full_route"]["layer"] = 0
+        self.assertFalse(ui.install_decision(t, dagger, 0, True, "")[0])
+
     def test_imprint_count_never_drops(self):
         """2026-10-27 15:48：装备页淡入读成空槽，记录里 2 个目标刻印被清成 0 个，第二层首领前把混沌之识那局逃脱了。"""
         t = imprint_task((ui.TARGET, ui.TARGET, ""))

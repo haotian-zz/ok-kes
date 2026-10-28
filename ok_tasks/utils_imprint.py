@@ -412,6 +412,17 @@ def goal_imprints(task):
     return 3 - sum(1 for i in range(3) if is_top(names[i]) and imprints[i] != TARGET)
 
 
+def no_more_shops(task):
+    """最后一层（裁决之沼两层，第二层）按整层路线计划，剩下的步里没有商店了。没有计划时不确定，当作还有。"""
+    ns = getattr(task, "node_status", None)
+    if not isinstance(ns, dict) or ns.get("pass_final_boss_count", 0) < 1:
+        return False
+    plan = ns.get("full_route")
+    if not plan or plan.get("layer") != ns.get("pass_final_boss_count", 0):
+        return False
+    return not any("商店" in str(st.get("type", "")) for st in plan.get("steps", [])[plan.get("done", 0):])
+
+
 def install_decision(task, new_eq, slot, better, why, current_name=""):
     """刷刻印模式下这件装不装给目标主战员。better/why 是原来按配置优先级、品质比较的结果。
     混沌之识 > 刻印 > 装备：混沌之识装上就不换、来了就装；带目标刻印的先装（槽位没有目标刻印时）；
@@ -436,6 +447,9 @@ def install_decision(task, new_eq, slot, better, why, current_name=""):
         if target_eq:
             return False, f"槽位已有目标刻印，这件目标装备不比当前好（{why}）"
         return False, "槽位已有目标刻印，这件不是目标装备"
+    if target_eq and no_more_shops(task):
+        # 用户 2026-10-27 17:5x：最后一个商店了，后面买不到刻印装备，只要不覆盖已有的目标刻印（这里槽位没有），目标装备也拿
+        return True, f"目标装备，后面没有商店了，槽位没有目标刻印可覆盖（{why}）"
     if target_eq:
         # 槽位还没有目标刻印时，之后带目标刻印的装备换上来会把目标装备顶掉（新装备的刻印覆盖、装备本身也没了），
         # 正确顺序是先刻印、再用目标装备继承（实录 2026-10-27 03:37 商店白花 340 信用点）
