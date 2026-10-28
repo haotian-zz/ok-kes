@@ -266,6 +266,22 @@ class TestRemovalLedger(unittest.TestCase):
         self.assertEqual(7, utils._read_empty_deck(t2, "蒂菲拉", 2))
         self.assertEqual([], t2.scrolls)
 
+    def test_deck_count_name_one_char_off_and_small_digits(self):
+        # 10-28 04:29 下滚后：名字读成「带菲拉」，整屏 OCR 漏了栏上「03」，单独认那一小块认得出
+        full = [box(0.377, 0.637, "展开屏障"), box(0.545, 0.639, "量子晶种"), box(0.707, 0.638, "形态凝聚"),
+                box(0.170, 0.806, "00"), box(0.170, 0.943, "50"), box(0.245, 0.955, "带菲拉")]
+        regions = []
+        t = self.deck_task("蒂菲拉", [])
+        t.ocr = lambda *a, **k: (regions.append(a) or [box(0.116, 0.674, "03")]) if a else full
+        self.assertEqual(3, utils._empty_deck_count(t, full, "蒂菲拉"))
+        self.assertEqual(1, len(regions))
+        x0, y0, x1, y1 = regions[0]
+        self.assertTrue(x0 <= 0.116 <= x1 and y0 <= 0.674 <= y1, regions[0])
+        # 两个字的名字不放宽；错两个字不算
+        self.assertFalse(utils._member_name_like("米手", "米卡"))
+        self.assertFalse(utils._member_name_like("带非拉", "蒂菲拉"))
+        self.assertTrue(utils._member_name_like("蒂菲拉", "蒂菲拉"))
+
     def test_deck_not_open_not_recorded(self):
         t = self.deck_task("希露德", ["主战员", "攻击力", "模糊的记忆"])
         self.assertIsNone(utils._read_empty_deck(t, "希露德", 1))

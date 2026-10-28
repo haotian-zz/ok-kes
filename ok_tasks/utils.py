@@ -3985,17 +3985,35 @@ def _empty_deck_count(task: TriggerTask, texts, target):
     10-28 03:06 截图量的：希露德名字 y 0.465、张数 y 0.182；海德玛丽 0.886 / 0.603。读不到返回 None。"""
     def center(b):
         return (b.x + b.width / 2) / task.width, (b.y + b.height / 2) / task.height
+
+    def numbers(boxes, y):
+        return [(abs(cy - (y - 0.283)), int(nb.name.strip())) for nb in boxes or []
+                for cx, cy in [center(nb)]
+                if 0.09 <= cx <= 0.14 and y - 0.35 <= cy <= y - 0.15 and re.fullmatch(r"\s*\d{1,2}\s*", nb.name)]
     name = _canonical_member(target)
     for b in texts:
         x, y = center(b)
-        if not (0.15 <= x <= 0.30 and (target in b.name or name in b.name)):
+        if not (0.15 <= x <= 0.30 and _member_name_like(b.name, target, name)):
             continue
-        nums = [(abs(cy - (y - 0.283)), int(nb.name.strip())) for nb in texts
-                for cx, cy in [center(nb)]
-                if 0.09 <= cx <= 0.14 and y - 0.35 <= cy <= y - 0.15 and re.fullmatch(r"\s*\d{1,2}\s*", nb.name)]
+        nums = numbers(texts, y)
+        if not nums and callable(getattr(task, "ocr", None)):
+            # 整屏 OCR 会漏掉这两位小数字（10-28 04:29 蒂菲拉那栏的「03」），单独认那一小块就认得出
+            cy = y - 0.283
+            nums = numbers(task.ocr(0.09, max(0.0, cy - 0.055), 0.145, min(1.0, cy + 0.055)), y)
         if nums:
             return min(nums)[1]
     return None
+
+
+def _member_name_like(text, target, canonical=""):
+    """头像下方的主战员名字：包含目标名，或者三个字以上的名字只认错一个字（10-28 04:29「蒂菲拉」读成「带菲拉」）。"""
+    text = re.sub(r"\s", "", text or "")
+    for n in {target, canonical} - {""}:
+        if n in text:
+            return True
+        if len(n) >= 3 and len(text) == len(n) and sum(a != b for a, b in zip(text, n)) <= 1:
+            return True
+    return False
 
 
 def read_member_panel(task: TriggerTask):
