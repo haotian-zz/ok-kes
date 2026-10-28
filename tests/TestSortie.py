@@ -8,6 +8,8 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "ok_tasks"))
 
+import numpy as np  # noqa: E402
+
 import utils  # noqa: E402
 import utils_sortie as us  # noqa: E402
 
@@ -206,6 +208,51 @@ class TestBattleMemberSelect(unittest.TestCase):
         self._run(t)
         self.assertEqual(t.clicks, ["海德玛丽"])
         self.assertEqual(t.pos, 0)
+
+
+class TestAutoPlayFast(unittest.TestCase):
+    """局内剧情右上角自动播放按钮要两档（用户 2026-10-28：只加速了一次）。实机一档：左箭头亮 166、右 35。"""
+
+    def _task(self, left, right):
+        frame = np.zeros((1080, 1920, 3), np.uint8)
+        cx, cy = 1688, 86                       # 「Ctrl」中心
+        if left:
+            frame[cy - 40:cy - 20, cx - 14:cx - 4] = 220
+        if right:
+            frame[cy - 40:cy - 20, cx + 2:cx + 12] = 220
+        t = sortie_task(texts=[box(cx / 1920, cy / 1080, "Ctrl", w=40, h=20)])
+        t.frame = frame
+        return t
+
+    def test_levels(self):
+        self.assertEqual(utils._auto_play_level(self._task(False, False))[0], 0)
+        self.assertEqual(utils._auto_play_level(self._task(True, False))[0], 1)
+        self.assertEqual(utils._auto_play_level(self._task(True, True))[0], 2)
+
+    def test_clicks_until_two_then_stops(self):
+        t = self._task(True, False)
+        self.assertTrue(utils._ensure_auto_play_fast(t))
+        self.assertEqual(len(t.clicks), 1)
+        x, y = t.clicks[0]
+        self.assertAlmostEqual(x, 0.879, places=2)
+        self.assertLess(y, 0.06)
+        t2 = self._task(True, True)
+        self.assertFalse(utils._ensure_auto_play_fast(t2))
+        self.assertEqual(t2.clicks, [])
+
+    def test_click_limit(self):
+        t = self._task(False, False)
+        for _ in range(utils.AUTO_PLAY_MAX_CLICKS):
+            t._auto_play_clicks = [c - 2 for c in getattr(t, "_auto_play_clicks", [])]
+            self.assertTrue(utils._ensure_auto_play_fast(t))
+        t._auto_play_clicks = [c - 2 for c in t._auto_play_clicks]
+        self.assertFalse(utils._ensure_auto_play_fast(t))       # 认错状态也不会一直转圈
+        self.assertEqual(len(t.clicks), utils.AUTO_PLAY_MAX_CLICKS)
+
+    def test_no_ctrl_label_falls_back(self):
+        t = self._task(True, True)
+        t.all_texts = []
+        self.assertIsNone(utils._ensure_auto_play_fast(t))
 
 
 class TestSortieSanity(unittest.TestCase):

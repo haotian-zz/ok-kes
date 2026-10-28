@@ -2124,6 +2124,53 @@ def _ensure_auto_chat(task: TriggerTask, context=""):
     return True
 
 
+AUTO_PLAY_MAX_CLICKS = 3      # 60 秒内最多点几次，状态认错时不至于一直转圈
+
+
+def _auto_play_level(task: TriggerTask):
+    """局内剧情右上角的自动播放按钮（圆圈里两个箭头，下面「Ctrl」）：都暗=没开，左箭头亮=一档，两个都亮=两档。
+    用「Ctrl」定位、数两个箭头里的亮像素（2026-10-28 实机一档：左 166 / 右 35）。读不到返回 None，交给模板匹配。"""
+    frame = getattr(task, "frame", None)
+    if frame is None:
+        return None
+    ctrl = next((b for b in getattr(task, "all_texts", None) or []
+                 if b.name.strip() == "Ctrl" and 0.84 <= (b.x + b.width / 2) / task.width <= 0.92
+                 and (b.y + b.height / 2) / task.height <= 0.12), None)
+    if not ctrl:
+        return None
+    k = task.height / 1080
+    cx, cy = ctrl.x + ctrl.width / 2, ctrl.y + ctrl.height / 2
+    y1, y2 = int(cy - 42 * k), int(cy - 18 * k)
+    left = frame[max(0, y1):y2, int(cx - 16 * k):int(cx), :3]
+    right = frame[max(0, y1):y2, int(cx):int(cx + 18 * k), :3]
+    if not left.size or not right.size:
+        return None
+    lb, rb = int((left.max(axis=2) > 150).sum()), int((right.max(axis=2) > 150).sum())
+    level = 0 if lb < 60 * k * k else (2 if rb >= 0.6 * lb else 1)
+    return level, lb, rb, (cx / task.width, (cy - 30 * k) / task.height)
+
+
+def _ensure_auto_play_fast(task: TriggerTask, context=""):
+    """自动播放加到两档（用户 2026-10-28：右上角可以加速两次，要两次）。返回 None 表示没认出这种按钮；
+    True 表示点了一下（下一帧再看）；False 表示已经两档或 60 秒内点够次数。"""
+    found = _auto_play_level(task)
+    if not found:
+        return None
+    level, lb, rb, (x, y) = found
+    if level == 2:
+        return False
+    now = time.time()
+    clicks = [t for t in getattr(task, "_auto_play_clicks", []) if now - t < 60]
+    if len(clicks) >= AUTO_PLAY_MAX_CLICKS or (clicks and now - clicks[-1] < 1.5):
+        task._auto_play_clicks = clicks
+        return False
+    task.log_info(f"{context}自动播放在{'一档' if level else '关闭'}（左箭头亮 {lb}、右箭头亮 {rb}），点一下往两档加")
+    _move_and_click(task, x, y)
+    task._auto_play_clicks = clicks + [now]
+    task.sleep(0.8)
+    return True
+
+
 def handle_auto_chat(task: TriggerTask):
     """自动对话检查: 匹配任一自动对话特征，置信度低于阈值时点击开启（点错会自己纠正）。"""
     return _ensure_auto_chat(task)
@@ -2166,8 +2213,11 @@ def handle_dialogue(task: TriggerTask):
     if not line:
         return False
     now = time.time()
+    fast = _ensure_auto_play_fast(task, f"剧情对白「{line.name}」：")
+    if fast:
+        return True
     last_toggle = getattr(task, "_auto_chat_toggle_time", 0)
-    if now - last_toggle > 60:
+    if fast is None and now - last_toggle > 60:
         if _ensure_auto_chat(task, f"剧情对白「{line.name}」："):
             task._auto_chat_toggle_time = now
             return True
