@@ -70,5 +70,23 @@ class TestNeutralVariant(unittest.TestCase):
         self.assertEqual((only, []), utils._drop_neutral_variants(task(), only))
 
 
+class TestForcedGodVariant(unittest.TestCase):
+    """实录 2026-10-28 11:47：战斗后剑刃破晓的神闪页没有「跳过」，描述没到 0.9，落到普通闪光随机选了。"""
+    GOD = [{"name": "剑刃破晓", "desc": "伤害491% 本回合凝聚卡牌叠加时，基础伤害量+50%（最大500%） 此卡伤害总量提升30%",
+            "god_spark": "add_r_spark_circen_01"}]
+
+    def test_picks_closest_to_preset(self):
+        cards = [{"name": "剑刃破晓", "x": 0.27, "y": 0.4, "description": "丢弃最多1张手牌，伤害252% 抽取1张卡牌"},
+                 {"name": "剑刃破晓", "x": 0.52, "y": 0.4, "description": "伤害凝聚卡牌叠加基础伤害+50%此卡伤害总量提 升30%"},
+                 {"name": "剑刃破晓", "x": 0.77, "y": 0.4, "description": "费用减少1 伤害189%"}]
+        self.assertIsNone(chaos_strategy.pick_flash_variant("剑刃破晓", cards, self.GOD, min_sim=0.9))
+        self.assertEqual(1, utils.forced_god_variant(cards, self.GOD))
+
+    def test_card_without_preset_god_spark(self):
+        cards = [{"name": "明灭剑", "x": 0.27, "y": 0.4, "description": "伤害500%"}]
+        self.assertIsNone(utils.forced_god_variant(cards, self.GOD))
+        self.assertIsNone(utils.forced_god_variant([], self.GOD))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -6283,6 +6283,14 @@ def handle_shop(task: TriggerTask):
     return False
 
 
+def forced_god_variant(cards, god_cards):
+    """战斗后的神闪三选一没有「跳过」、描述又没到 0.9 时：这张卡预设里有神闪，就选和预设神闪最像的那个，
+    不再落到普通闪光随机选（2026-10-28 11:47 实录剑刃破晓的神闪页随机选了）。卡不在预设神闪里返回 None。"""
+    if not cards:
+        return None
+    return chaos_strategy.pick_flash_variant(cards[0]["name"], cards, god_cards, min_sim=0.01)
+
+
 def _god_spark_pick(task: TriggerTask, x, y):
     """选定神闪：一页只记一次 PT，记下位置供确认那下重点。"""
     task.node_status["god_spark_count"] = task.node_status.get("god_spark_count", 0) + 1
@@ -6345,6 +6353,12 @@ def handle_view_original(task: TriggerTask):
             task.node_status["god_skip_waits"] = waits + 1
             task.log_info(f"神闪变体页：不选，等「跳过」出来（第 {waits + 1} 次）")
             task.sleep(0.8)
+            return True
+        forced = forced_god_variant(cards, god_cards)
+        if forced is not None:
+            pick = cards[forced]
+            task.log_info(f"神闪变体页：等不到「跳过」只能三选一，按预设神闪选最像的「{pick['name']}」（{pick['description']}）")
+            _god_spark_pick(task, pick["x"], pick["y"])
             return True
         task.log_info("神闪变体页：等不到「跳过」，按普通闪光处理")
     cards = recognize_cards(task, page="卡牌闪光页面")
