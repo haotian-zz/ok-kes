@@ -3281,19 +3281,19 @@ def parse_member_panel(boxes, width, height):
     return cols
 
 
-def _probe_panel_equipment(task, texts, target):
+def _probe_panel_equipment(task, cols, target):
     """探路（每次启动一次）：主战员面板下方「装备」行点开刷存档主战员第一个已装备的格子，截图看详情里能不能读到刻印，
-    为逃脱前用游戏画面核对装备账做准备。面板列宽 350/1280，装备格中心在名字左边 +42/+146/+250、y≈0.90。"""
+    为逃脱前用游戏画面核对装备账做准备。装备格中心 x = 列左边 + 0.047 + 0.0805×槽位、y≈0.90（2026-10-27 面板截图量的）。"""
     if getattr(task, "_panel_equip_probed", False):
         return False
     names = ((getattr(task, "member_status", None) or {}).get("equipment") or {}).get("names") or []
     slot = next((i for i, n in enumerate(names[:3]) if n), None)
-    name_box = next((b for b in texts if target and target in b.name and b.y / task.height > 0.3), None)
-    if slot is None or name_box is None:
+    col = next((i for i, c in enumerate(cols) if c.get("name") and (target in c["name"] or c["name"] in target)), None)
+    if slot is None or col is None:
         return False
     task._panel_equip_probed = True
     import chaos_trace
-    x = name_box.x / task.width + (42 + 104 * slot) / 1280
+    x = MEMBER_PANEL_COLUMNS[col][0] + 0.047 + 0.0805 * slot
     task.log_info(f"主战员面板探路：点{target} {slot + 1} 号装备格 ({x:.3f}, 0.900) 看详情")
     _move_and_click(task, x, 0.900)
     task.sleep(1.5)
@@ -3326,7 +3326,7 @@ def read_member_panel(task: TriggerTask):
         task._member_panel_traced = True
         import chaos_trace
         chaos_trace.step(task, "panel", "主战员面板", task.frame)
-    if _probe_panel_equipment(task, texts, target) and not any(
+    if _probe_panel_equipment(task, cols, target) and not any(
             "模糊的记忆" in b.name for b in _simplify_texts(task.ocr())):
         # 探路的 ESC 已经把面板也关了：别再点右上角——路线页那个位置是「逃脱」按钮
         task.log_info("主战员面板探路后面板已关，不再点右上角")

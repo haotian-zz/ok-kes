@@ -1663,3 +1663,26 @@ class TestRestoreShopFlag(unittest.TestCase):
                 self.assertTrue(t.node_status["shop"])
             finally:
                 utils.RUN_STATE_FILE = orig
+
+
+class TestPanelEquipmentProbe(unittest.TestCase):
+    """2026-10-27 17:4x：面板探路按名字框找位置没找到；改按面板列定位。只点一次、截图走 chaos_trace。"""
+
+    def test_probe_clicks_target_column_slot(self):
+        import types
+        import utils
+        clicks, keys, logs = [], [], []
+        t = types.SimpleNamespace(
+            member_status={"equipment": {"names": ["", "改良战斗强化服", "女神之泪"]}},
+            config={"记录流程追踪": False}, log_info=logs.append, sleep=lambda s: None, next_frame=lambda: None,
+            ocr=lambda *a, **k: [], frame=None, send_key=keys.append, width=1920, height=1080)
+        orig = utils._move_and_click
+        utils._move_and_click = lambda task, x, y: clicks.append((round(x, 3), y))
+        try:
+            cols = [{"name": "罗丝薇瑟"}, {"name": "海德玛丽"}, {"name": "米卡"}]
+            self.assertTrue(utils._probe_panel_equipment(t, cols, "海德玛丽"))
+            self.assertAlmostEqual(689 / 1280, clicks[0][0], delta=0.005)   # 截图量的海德玛丽 2 号格 689/1280
+            self.assertEqual(["esc"], keys)
+            self.assertFalse(utils._probe_panel_equipment(t, cols, "海德玛丽"))   # 每次启动只探一次
+        finally:
+            utils._move_and_click = orig
