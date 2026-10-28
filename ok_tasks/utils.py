@@ -2227,9 +2227,18 @@ def _ensure_auto_play_fast(task: TriggerTask, context=""):
     if level is None:
         return False            # 认出了按钮但这帧太暗，不点，也不走旧的模板逻辑
     if level == 2:
+        task._auto_play_pending = None
         if now - getattr(task, "_auto_play_ok_logged", 0) > 120:
             task._auto_play_ok_logged = now
             task.log_info(f"{context}自动播放已在两档（左箭头亮 {lb}、右箭头亮 {rb}）")
+        return False
+    # 连续两帧（隔 0.5 秒以上、5 秒以内）读到同一档才点：单帧会读错（2026-10-28 01:08:24 实录，
+    # 上一秒还是两档 246/236，这一帧左箭头 368、右 192 读成一档，点了一下）
+    pending = getattr(task, "_auto_play_pending", None)
+    if not pending or pending[0] != level or now - pending[1] > 5:
+        task._auto_play_pending = (level, now)
+        return False
+    if now - pending[1] < 0.5:
         return False
     clicks = [t for t in getattr(task, "_auto_play_clicks", []) if now - t < 60]
     if len(clicks) >= AUTO_PLAY_MAX_CLICKS or (clicks and now - clicks[-1] < 1.5):
@@ -2238,6 +2247,7 @@ def _ensure_auto_play_fast(task: TriggerTask, context=""):
     task.log_info(f"{context}自动播放在{'一档' if level else '关闭'}（左箭头亮 {lb}、右箭头亮 {rb}），点一下往两档加")
     _move_and_click(task, x, y)
     task._auto_play_clicks = clicks + [now]
+    task._auto_play_pending = None
     task.sleep(0.8)
     return True
 

@@ -366,8 +366,14 @@ class TestAutoPlayFast(unittest.TestCase):
         self.assertEqual(utils._auto_play_level(self._task(True, False))[0], 1)
         self.assertEqual(utils._auto_play_level(self._task(True, True))[0], 2)
 
+    def _confirm(self, t):
+        """第一帧只记下来；假装 1 秒后又读到同一档。"""
+        self.assertFalse(utils._ensure_auto_play_fast(t))
+        t._auto_play_pending = (t._auto_play_pending[0], t._auto_play_pending[1] - 1)
+
     def test_clicks_until_two_then_stops(self):
         t = self._task(True, False)
+        self._confirm(t)
         self.assertTrue(utils._ensure_auto_play_fast(t))
         self.assertEqual(len(t.clicks), 1)
         x, y = t.clicks[0]
@@ -381,8 +387,10 @@ class TestAutoPlayFast(unittest.TestCase):
         t = self._task(False, False)
         for _ in range(utils.AUTO_PLAY_MAX_CLICKS):
             t._auto_play_clicks = [c - 2 for c in getattr(t, "_auto_play_clicks", [])]
+            self._confirm(t)
             self.assertTrue(utils._ensure_auto_play_fast(t))
         t._auto_play_clicks = [c - 2 for c in t._auto_play_clicks]
+        self._confirm(t)
         self.assertFalse(utils._ensure_auto_play_fast(t))       # 认错状态也不会一直转圈
         self.assertEqual(len(t.clicks), utils.AUTO_PLAY_MAX_CLICKS)
 
@@ -400,6 +408,19 @@ class TestAutoPlayFast(unittest.TestCase):
         self.assertFalse(utils._ensure_auto_play_fast(t))
         t.all_texts = []
         self.assertFalse(utils._ensure_auto_play_fast(t))
+
+    def test_single_odd_frame_not_clicked(self):
+        # 实录 01:08:24：两档读得好好的，一帧读成一档就点了；要连续两帧同一档才点
+        t = self._task(True, True)
+        self.assertFalse(utils._ensure_auto_play_fast(t))
+        t1 = self._task(True, False)
+        t1.__dict__.update({k: v for k, v in t.__dict__.items() if k.startswith("_auto_play")})
+        self.assertFalse(utils._ensure_auto_play_fast(t1))       # 第一帧一档：先不点
+        t2 = self._task(True, True)
+        t2.__dict__.update({k: v for k, v in t1.__dict__.items() if k.startswith("_auto_play")})
+        self.assertFalse(utils._ensure_auto_play_fast(t2))       # 下一帧又是两档：不点，清掉
+        self.assertIsNone(t2._auto_play_pending)
+        self.assertEqual(t1.clicks + t2.clicks, [])
 
     def test_no_ctrl_label_falls_back(self):
         t = self._task(True, True)
