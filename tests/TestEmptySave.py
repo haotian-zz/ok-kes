@@ -80,6 +80,33 @@ class TestFlashCount(unittest.TestCase):
         self.assertTrue(utils.record_empty_flash(t, [card("嗷嗷嗷"), card("呜呜呜"), card("啦啦啦")]))
         self.assertEqual(1, t.node_status["empty_flashes"])
 
+    def test_single_flash_popup_counted(self):
+        # 10-28 02:27：装备「时间调节器」佩戴即闪光，游戏直接闪了等离子之雨，只弹单张「卡牌闪光」结果页
+        t = empty_task(texts=[box(0.500, 0.113, "卡牌闪光"), box(0.500, 0.258, "等离子之雨"), box(0.500, 0.937, "点击屏幕可关闭")])
+        self.assertTrue(utils.handle_close_page(t))
+        self.assertEqual(1, t.node_status["empty_flashes"])
+        self.assertTrue(utils.handle_close_page(t))                  # 同一页下一帧不再记
+        self.assertEqual(1, t.node_status["empty_flashes"])
+        # 队友的卡不算
+        t2 = empty_task(texts=[box(0.500, 0.113, "卡牌闪光"), box(0.500, 0.258, "水之源"), box(0.500, 0.937, "点击屏幕可关闭")])
+        utils.handle_close_page(t2)
+        self.assertEqual(0, t2.node_status.get("empty_flashes", 0))
+        # 三选一选完再弹结果页：同一张只记一次
+        t3 = empty_task(texts=[box(0.500, 0.113, "卡牌闪光"), box(0.500, 0.258, "追踪箭"), box(0.500, 0.937, "点击屏幕可关闭")])
+        utils.record_empty_flash(t3, [card("追踪箭")] * 3)
+        utils.handle_close_page(t3)
+        self.assertEqual(1, t3.node_status["empty_flashes"])
+        # 别的「点击屏幕可关闭」页不算
+        t4 = empty_task(texts=[box(0.500, 0.113, "获得装备"), box(0.500, 0.937, "点击屏幕可关闭")])
+        utils.handle_close_page(t4)
+        self.assertEqual(0, t4.node_status.get("empty_flashes", 0))
+
+    def test_flash_equipment_not_for_target(self):
+        eq = {"name": "时间调节器", "description": "佩戴的主战员触发闪光"}
+        self.assertIn("闪光", utils.empty_flash_equipment(empty_task(), eq))
+        self.assertIsNone(utils.empty_flash_equipment(empty_task(), {"name": "截骨机", "description": "攻击力增加"}))
+        self.assertIsNone(utils.empty_flash_equipment(empty_task(mode=cs.MODE_TARGET), eq))
+
     def test_other_modes_ignored(self):
         t = empty_task(mode=cs.MODE_TARGET)
         self.assertFalse(utils.record_empty_flash(t, [card("追踪箭")] * 3))

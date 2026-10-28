@@ -2126,6 +2126,7 @@ def handle_close_page(task: TriggerTask):
     """提示"点击屏幕事件": 点击屏幕。"""
     box = find_text(task, _get_game_text(task, '点击屏幕'))
     if box:
+        record_empty_flash_popup(task)
         task.log_info("点击屏幕事件，点击屏幕")
         task.click_box(box)
         return True
@@ -3326,6 +3327,8 @@ def _handle_install_page(task: TriggerTask):
             _hand_over_on_chaos_core(task, eq.get("name"))
 
     should, reason, current_name = _decide_install(task, view, equipment, imprint_mode)
+    if should and (why := empty_flash_equipment(task, eq)):
+        should, reason = False, why
     buy = "buy" if view.is_purchase else "install"
     if should and view.preferred is not None:
         target = not view.tracks or view.target_index is not None
@@ -3607,6 +3610,28 @@ def record_empty_flash(task: TriggerTask, cards):
     task.log_info(f"刷空档：{target}的卡「{name}」闪光{why}，本局第 {ns['empty_flashes']} 张"
                   f"（{_empty_flash_limit(task)} 张就逃脱重开）")
     return True
+
+
+def record_empty_flash_popup(task: TriggerTask):
+    """刷空档：单张「卡牌闪光」结果页（没有三选一，游戏直接随机闪好，如装备「时间调节器」佩戴即闪光）也要计数。
+    10-28 02:27 实录：时间调节器装给希露德，直接闪了等离子之雨，三选一页没出现，没记上。"""
+    if not empty_mode(task):
+        return False
+    title = find_box_at_point(task, 0.500, 0.113)
+    if not (title and "卡牌闪光" in title.name):
+        return False
+    names = [b.name.strip() for b in task.all_texts or []
+             if 0.38 <= (b.x + b.width / 2) / task.width <= 0.64 and 0.22 <= (b.y + b.height / 2) / task.height <= 0.30
+             and re.search(r"[\u4e00-\u9fff]{2,}", b.name)]
+    name = max(names, key=len) if names else "?"
+    return record_empty_flash(task, [{"name": name}])
+
+
+def empty_flash_equipment(task: TriggerTask, eq):
+    """刷空档：描述带「闪光」的装备（时间调节器「佩戴的主战员触发闪光」）不给目标戴，返回原因；别的返回 None。"""
+    if empty_mode(task) and "闪光" in ((eq or {}).get("description") or ""):
+        return "刷空档：这件装备会让佩戴的主战员闪光，不给目标"
+    return None
 
 
 def _escape_via_menu(task: TriggerTask, stamp_key, reason):
