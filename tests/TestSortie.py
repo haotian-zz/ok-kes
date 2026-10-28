@@ -258,12 +258,14 @@ class TestAutoPlayFast(unittest.TestCase):
 class TestHardcore(unittest.TestCase):
     """主战员配置页顶部硬核开关（2026-10-28 实机：开=白色旋钮在右）。"""
 
-    def _task(self, on, want):
+    def _task(self, on, want, extra=()):
         frame = np.zeros((1080, 1920, 3), np.uint8)
         if on:
             x, y = int(0.684 * 1920), int(0.049 * 1080)
             frame[y - 8:y + 8, x - 8:x + 8] = 240
-        t = sortie_task({us.HARDCORE: want}, [box(0.130, 0.043, "主战员配置")])
+        texts = [box(0.130, 0.043, "主战员配置"), box(0.188, 0.799, "海德玛丽"), box(0.708, 0.189, "LV.65"),
+                 box(0.719, 0.912, "进入")] + list(extra)
+        t = sortie_task({us.HARDCORE: want}, texts)
         t.frame = frame
         return t
 
@@ -275,6 +277,17 @@ class TestHardcore(unittest.TestCase):
         t = self._task(False, True)
         self.assertTrue(us.handle_battle_member_config(t))
         self.assertEqual(t.clicks, [us.HARDCORE_TOGGLE])
+
+    def test_enters_when_matching(self):
+        t = self._task(True, True)
+        self.assertTrue(us.handle_battle_member_config(t))
+        self.assertEqual(t.clicks, [(0.719, 0.914)])
+
+    def test_popup_dimmed_page_not_toggled(self):
+        # 实录 00:44：点完进入弹出确认框，画面压暗，不能当成「关着」去点开关
+        t = self._task(False, True, [box(0.936, 0.916, "确认")])
+        self.assertTrue(us.handle_battle_member_config(t))
+        self.assertNotIn(us.HARDCORE_TOGGLE, t.clicks)
 
     def test_turns_off_when_not_wanted(self):
         t = self._task(True, False)

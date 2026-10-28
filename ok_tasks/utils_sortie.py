@@ -779,17 +779,20 @@ def _ensure_hardcore(task: TriggerTask):
 
 
 def handle_battle_member_config(task: TriggerTask):
-    """主战员配置页面: 先按配置对齐硬核模式开关，再区分出战主战员入口和确认进入入口。"""
+    """主战员配置页面: 区分出战主战员入口和确认进入入口；点进入前按配置对齐硬核模式开关。"""
     title = find_box_at_point(task, 0.130, 0.043)
     if not (title and _get_game_text(task, '主战员配置') in title.name):
         return False
-    if _ensure_hardcore(task):
-        return True
     battle_member_hint = find_box_at_point(task, 0.188, 0.799)
     if not (battle_member_hint and battle_member_hint.name.strip()):
         task.log_info("检测到主战员配置页面: 当前处于出战主战员，点击出战主战员入口")
         _move_and_click(task, 0.315, 0.475)
         task.sleep(2)
+        return True
+    # 只在干净的页面看开关：右边「LV.xx」在、没有确认弹窗（2026-10-28 00:44 点完进入弹出确认框，画面压暗被当成「关着」又点了开关）
+    level = find_box_at_point(task, 0.708, 0.189)
+    popup = any(_clean_match(b.name, "确认") for b in task.all_texts)
+    if level and re.search(r"LV", level.name, re.I) and not popup and _ensure_hardcore(task):
         return True
     task.log_info("检测到主战员配置页面: 点击进入")
     _move_and_click(task, 0.719, 0.914)
