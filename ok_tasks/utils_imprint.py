@@ -298,7 +298,7 @@ DESC_ICON_STRIP = (0.184, 0.49, 0.204, 0.67)    # 安装/购买装备页：描�
 SHOP_ICON_OFFSET = (-0.008, -0.081)             # 商店：刻印图标中心相对信用点图标中心
 SHOP_ICON_HALF = (0.013, 0.022)
 SHOP_RESERVE = 96                               # 商店刷新后至少还要够买一件稀有装备（96），不然刷出来也买不起
-TOP_EQUIPMENT = ("混沌之识",)                    # 用户 2026-10-27：混沌之识优先级高于刻印，装上了就不被带目标刻印的武器替换
+TOP_EQUIPMENT = ("混沌之识",)                    # 优先级：目标刻印 > 混沌之识 > 目标装备（用户 2026-10-27 19:xx 改，原来混沌之识最高）
 
 
 def is_top(name):
@@ -406,10 +406,9 @@ def required_imprints(task):
 
 
 def goal_imprints(task):
-    """最终目标几个目标刻印（不够也不逃，但信用点留着买刻印装备）：3 个；装着混沌之识且没继承到目标刻印的槽位
-    不算（混沌之识不会被换掉，这个槽位拿不到刻印了）。用户 2026-10-27 16:1x：最终目标还是三个刻印。"""
-    imprints, names = slot_imprints(task), _slot_names(task)
-    return 3 - sum(1 for i in range(3) if is_top(names[i]) and imprints[i] != TARGET)
+    """最终目标几个目标刻印（不够也不逃，但信用点留着买刻印装备）：3 个。用户 2026-10-27 16:1x：最终目标还是三个刻印；
+    19:xx 目标刻印优先级高于混沌之识，装着没刻印的混沌之识的槽位也能被带目标刻印的装备换掉，不再少算。"""
+    return 3
 
 
 GOAL_EQUIPMENT = 2      # 用户 2026-10-27 18:2x：刷刻印达成＝至少 2 个目标装备（1 号位混沌之识也算）+ 3 个目标刻印
@@ -435,8 +434,7 @@ def goal_reached(task):
 
 
 def goal_shortfall(task):
-    """离「达成」还差什么（给信用点留存用）：目标刻印按 goal_imprints（装着没刻印的混沌之识的槽位拿不到刻印了，不算），
-    目标装备要 2 件。都够了返回 None。"""
+    """离「达成」还差什么（给信用点留存用）：目标刻印 goal_imprints 个、目标装备 2 件。都够了返回 None。"""
     missing = []
     n, goal = target_imprint_count(task), goal_imprints(task)
     if n < goal:
@@ -466,17 +464,24 @@ def _layer(task):
 
 def install_decision(task, new_eq, slot, better, why, current_name=""):
     """刷刻印模式下这件装不装给目标主战员。better/why 是原来按配置优先级、品质比较的结果。
-    混沌之识 > 刻印 > 装备：混沌之识装上就不换、来了就装；带目标刻印的先装（槽位没有目标刻印时）；
+    目标刻印 > 混沌之识 > 目标装备（用户 2026-10-27 19:xx，原来混沌之识最高）：
+    槽位没有目标刻印时，带目标刻印的装备来了就装，装着混沌之识也换；混沌之识来了就装（没刻印就继承槽位的刻印），
+    只有它带别的刻印、会顶掉槽位的目标刻印时不装；装着混沌之识时别的装备（不带目标刻印）不换。
     槽位已有目标刻印时，只换没刻印、且更好（配置优先级更高）的目标装备（继承刻印）。
     用户 2026-10-27 11:5x：其余一律提炼换信用点——不是目标装备的不管稀有度多高都不装；
     目标装备在槽位还没有目标刻印时也提炼（之后的刻印装备换上来会把它顶掉）。"""
     cur_top, new_top = is_top(current_name), is_top(new_eq.get("name"))
-    if cur_top and not new_top:
-        return False, f"当前是「{current_name}」，优先级高于刻印，不换"
-    if new_top and not cur_top:
-        return True, f"「{new_eq.get('name')}」优先级高于刻印"
     have = slot_imprints(task)[slot]
     new = new_eq.get("imprint", "")
+    if new_top and not cur_top:
+        if new == OTHER and have == TARGET:
+            return False, f"「{new_eq.get('name')}」带别的刻印，换上去会把槽位的目标刻印顶掉（目标刻印优先于混沌之识）"
+        return True, (f"「{new_eq.get('name')}」优先级高于目标装备"
+                      + ("，换上去继承槽位的目标刻印" if have == TARGET and new != TARGET else ""))
+    if cur_top and not new_top:
+        if new == TARGET and have != TARGET:
+            return True, f"带目标刻印，目标刻印优先于「{current_name}」"
+        return False, f"当前是「{current_name}」，这件不带目标刻印，不换"
     target_eq = new_eq.get("rank") is not None
     if new == TARGET and have != TARGET:
         return True, "带目标刻印（刻印优先于装备）"
@@ -539,17 +544,16 @@ def event_target_equipment(task, names_by_slot):
 
 
 def pick_candidate(task, candidates):
-    """选择装备（二选一）页：有带目标刻印、且对应槽位还没目标刻印的就选它（刻印优先于装备）。"""
+    """选择装备（二选一）页：目标刻印 > 混沌之识 > 目标装备（用户 2026-10-27 19:xx）。
+    先选带目标刻印、且对应槽位还没目标刻印的（槽位装着混沌之识也算）；再选混沌之识。"""
     imprints, names = slot_imprints(task), _slot_names(task)
     for i, c in enumerate(candidates):
-        if is_top(c.get("name")) and not is_top(names[c["slot"]]):
-            task.log_info(f"刷刻印：候选装备「{c['ocr_name']}」优先级最高，选它")
+        if is_target_imprint(task, c.get("description", "")) and imprints[c["slot"]] != TARGET:
+            task.log_info(f"刷刻印：候选装备「{c['ocr_name']}」带目标刻印，选它（目标刻印优先级最高）")
             return i
     for i, c in enumerate(candidates):
-        if is_top(names[c["slot"]]):
-            continue
-        if is_target_imprint(task, c.get("description", "")) and imprints[c["slot"]] != TARGET:
-            task.log_info(f"刷刻印：候选装备「{c['ocr_name']}」带目标刻印，选它（刻印优先于装备）")
+        if is_top(c.get("name")) and not is_top(names[c["slot"]]):
+            task.log_info(f"刷刻印：候选装备「{c['ocr_name']}」是混沌之识，选它")
             return i
     return None
 
@@ -621,14 +625,15 @@ def deck_spend_reason(task):
     if not isinstance(ns, dict):
         return None
     n = target_imprint_count(task)
-    if ns.get("pass_final_boss_count", 0) == 0:
-        if n >= 2 or ns.get("chaos_core_got"):
-            return None
-        return f"第一层目标刻印 {n}/2，不够这局会逃脱，信用点留着买刻印装备"
-    need = required_imprints(task)
     short = goal_shortfall(task)
     if short is None:
         return None
+    if ns.get("pass_final_boss_count", 0) == 0:
+        # 用户 2026-10-27 19:xx：第一层也一样，凑满目标前信用点都留着（原来第一层够 2 个刻印就可以花）
+        if n >= 2 or ns.get("chaos_core_got"):
+            return f"第一层{short}，信用点留着买刻印装备/目标装备凑满"
+        return f"第一层目标刻印 {n}/2，不够这局会逃脱，信用点留着买刻印装备"
+    need = required_imprints(task)
     if n >= need:
         # 用户 2026-10-27 18:2x：达成要 2 个目标装备 + 3 个目标刻印，凑满前信用点留着买刻印装备 / 目标装备
         return f"第二层{short}，够打首领了，信用点还是留着买刻印装备/目标装备凑满"

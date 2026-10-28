@@ -241,23 +241,33 @@ class TestImprintDecision(unittest.TestCase):
         t = imprint_task((ui.TARGET, "", ""))
         self.assertIsNone(ui.pick_candidate(t, cands))
 
-    def test_chaos_core_outranks_imprint(self):
+    def test_imprint_outranks_chaos_core(self):
+        # 用户 2026-10-27 19:xx：目标刻印 > 混沌之识 > 目标装备（原来混沌之识最高，装着就不换）
+        blade = {"name": "绯刃", "imprint": ui.TARGET, "rank": None}
         t = imprint_task()
         t.member_status["equipment"]["names"] = ["混沌之识", "", ""]
-        # 用户 2026-10-27：装着混沌之识，来了带目标刻印的武器也不换
-        self.assertFalse(ui.install_decision(t, {"name": "绯刃", "imprint": ui.TARGET, "rank": None}, 0, False, "",
-                                             "混沌之识")[0])
-        # 混沌之识来了，就算当前武器带目标刻印也换（没刻印的混沌之识会继承）
+        self.assertTrue(ui.install_decision(t, blade, 0, False, "", "混沌之识")[0])      # 没刻印的混沌之识被换掉
+        t = imprint_task((ui.TARGET, "", ""))
+        t.member_status["equipment"]["names"] = ["混沌之识", "", ""]
+        self.assertFalse(ui.install_decision(t, blade, 0, False, "", "混沌之识")[0])     # 混沌之识已继承目标刻印：不换
+        self.assertFalse(ui.install_decision(t, {"name": "匕首", "imprint": "", "rank": 1}, 0, True, "", "混沌之识")[0])
+        # 混沌之识来了，当前武器带目标刻印也换（没刻印的混沌之识会继承）；它自带别的刻印会顶掉目标刻印就不装
         t = imprint_task((ui.TARGET, "", ""))
         self.assertTrue(ui.install_decision(t, {"name": "混沌之识", "imprint": "", "rank": 0}, 0, True, "",
                                             "命令：108号")[0])
+        self.assertFalse(ui.install_decision(t, {"name": "混沌之识", "imprint": ui.OTHER, "rank": 0}, 0, True, "",
+                                             "命令：108号")[0])
+        t = imprint_task()
+        self.assertTrue(ui.install_decision(t, {"name": "混沌之识", "imprint": ui.OTHER, "rank": 0}, 0, True, "",
+                                            "")[0])
 
     def test_required_with_chaos_core(self):
         t = imprint_task(("", "", ui.TARGET))
         t.member_status["equipment"]["names"] = ["混沌之识", "精灵王的金冠", "非典型立方体"]
-        # 用户 2026-10-27 16:0x：拿到混沌之识不管几个目标刻印都打完存档；最终目标里混沌之识没刻印的槽位不算
+        # 用户 2026-10-27 16:0x：拿到混沌之识不管几个目标刻印都打完存档；19:xx 目标刻印优先于混沌之识，
+        # 混沌之识没刻印的槽位也能换成带刻印的，最终目标一直是 3 个
         self.assertEqual(0, ui.required_imprints(t))
-        self.assertEqual(2, ui.goal_imprints(t))
+        self.assertEqual(3, ui.goal_imprints(t))
         # 混沌之识继承到了目标刻印（2026-10-27 15:54 第 14 局按 3 个算，逃脱了）
         t.member_status["equipment"]["imprints"] = [ui.TARGET, ui.TARGET, ""]
         self.assertEqual(0, ui.required_imprints(t))
@@ -326,7 +336,14 @@ class TestImprintDecision(unittest.TestCase):
         t.node_status = {"pass_final_boss_count": 0}
         self.assertIn("0/2", ui.deck_spend_reason(t))
         t.member_status["equipment"]["imprints"] = [ui.TARGET, ui.TARGET, ""]
-        self.assertIsNone(ui.deck_spend_reason(t))                  # 第一层够 2 个了，这局能继续
+        # 用户 2026-10-27 19:xx：第一层够 2 个了也继续留信用点，凑满目标（3 刻印 + 2 目标装备）前都不花
+        self.assertIn("第一层目标刻印 2/3", ui.deck_spend_reason(t))
+        t.config["装备3号位优先级"] = ["深绿桎梏", "深绿黑夜"]
+        t.member_status["equipment"].update(names=["混沌之识", "", "深绿黑夜"], imprints=[ui.TARGET] * 3)
+        self.assertIsNone(ui.deck_spend_reason(t))                  # 第一层就凑满了：可以花
+        t.config = {"刷刻印": True, "刷刻印速刷": True}
+        t.node_status = {"pass_final_boss_count": 0}                 # 刻印最高值只增不减，换一局重新算
+        t.member_status["equipment"].update(names=["", "", ""], imprints=[ui.TARGET, ui.TARGET, ""])
         t.node_status["pass_final_boss_count"] = 1
         self.assertIn("2/3", ui.deck_spend_reason(t))
         t.member_status["equipment"]["imprints"] = [ui.TARGET] * 3
@@ -339,12 +356,17 @@ class TestImprintDecision(unittest.TestCase):
         t.member_status["equipment"]["imprints"] = ["", "", ""]
         self.assertIsNone(ui.deck_spend_reason(t))
 
-    def test_pick_candidate_chaos_core_first(self):
+    def test_pick_candidate_imprint_first(self):
+        # 用户 2026-10-27 19:xx：目标刻印 > 混沌之识
         t = imprint_task()
         t.member_status["equipment"]["names"] = ["", "", ""]
         cands = [{"ocr_name": "绯刃", "name": "绯刃", "slot": 0, "description": "暴击" + TARGET_DESC},
                  {"ocr_name": "混沌之识", "name": "混沌之识", "slot": 0, "description": "……"}]
-        self.assertEqual(1, ui.pick_candidate(t, cands))
+        self.assertEqual(0, ui.pick_candidate(t, cands))
+        self.assertEqual(0, ui.pick_candidate(t, cands[1:]))               # 没有刻印候选时选混沌之识
+        t.member_status["equipment"]["names"] = ["混沌之识", "", ""]
+        self.assertEqual(0, ui.pick_candidate(t, cands[:1]))               # 装着没刻印的混沌之识，带刻印的照选
+        t = imprint_task((ui.TARGET, "", ""))
         t.member_status["equipment"]["names"] = ["混沌之识", "", ""]
         self.assertIsNone(ui.pick_candidate(t, cands[:1]))
 
@@ -670,8 +692,8 @@ class TestEquipPageRegression(EquipPageCase):
 
 class TestEquipPageGuard(EquipPageCase):
     def test_never_refine_target_imprint(self):
-        """不可逆守卫：装着混沌之识时来了带目标刻印的武器，规则说不换，但带目标刻印的永远不提炼（分给队友，留底）。"""
-        t = self.make_task(("混沌之识", "", ""), ("", "", ""), ("传说", "", ""), **{"记录流程追踪": True})
+        """不可逆守卫：1 号位混沌之识已继承目标刻印，又来带目标刻印的武器，规则说不换，但带目标刻印的永远不提炼（分给队友，留底）。"""
+        t = self.make_task(("混沌之识", "", ""), ("目标", "", ""), ("传说", "", ""), **{"记录流程追踪": True})
         page = (equip_texts("绯刃", "攻击力+120", "暴击" + TARGET_DESC), equip_frame(LEGEND, (LEGEND, None, None), icon=True))
         for _ in range(2):
             self.frame(t, *page)
