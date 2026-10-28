@@ -1,0 +1,76 @@
+{
+ "member": "罗丝薇瑟",
+ "preset": 1,
+ "cards": [
+  {
+   "name": "明灭剑",
+   "raw_name": "明灭剑 (闪击)",
+   "desc": "伤害982%\n分裂成剑华：明\n分裂时，\n（闪击）\n、剑华：暗（闪\n击\n此卡伤害总量提\n升30%",
+   "n": 4,
+   "god_spark": "add_r_spark_circen_01"
+  },
+  {
+   "name": "剑鸣九霄",
+   "raw_name": "剑鸣九霄",
+   "desc": "生成3张剑穗加入手牌\n抽取1张自身卡牌\n此卡费用减少1",
+   "n": 2,
+   "god_spark": "add_r_spark_circen_03"
+  },
+  {
+   "name": "剑鸣九霄",
+   "raw_name": "剑鸣九霄",
+   "desc": "【已复制】\n生成3张剑穗加入手牌\n抽取1张自身卡牌\n5此卡费用减少1",
+   "n": 2,
+   "god_spark": "add_r_spark_circen_03"
+  },
+  {
+   "name": "剑鸣九霄",
+   "raw_name": "剑鸣九霄",
+   "desc": "[唯一/已复制]\n赋豫手牌中所有明、暗卡\n牌回收",
+   "n": 3,
+   "god_spark": null
+  },
+  {
+   "name": "剑鸣九霄",
+   "raw_name": "剑鸣九霄",
+   "desc": "【已复制]\n生成3张剑穗加入手牌\n抽取1张自身卡牌",
+   "n": 0,
+   "god_spark": "add_r_spark_vitor_13"
+  },
+  {
+   "name": "剑刃破晓",
+   "raw_name": "剑刀破晓",
+   "desc": "伤害491%\n本回合凝聚卡牌叠加时，\n基础伤害量+50%（最\n大500%）\n此卡伤害总量提\n升30%",
+   "n": 4,
+   "god_spark": "add_r_spark_circen_01"
+  },
+  {
+   "name": "循环之刃",
+   "raw_name": "环之刃",
+   "desc": "伤害378%\n手牌中每有1张正义卡\n牌，\n即可获得循环烙印1\n纯粹：费用减少1",
+   "n": 4,
+   "god_spark": null
+  },
+  {
+   "name": "基尔肯的神眷者",
+   "raw_name": "基尔肯的神眷者",
+   "desc": "唯\n开战]\n抽取2\n行动点1\n基尔肯的庇佑1",
+   "n": 0,
+   "god_spark": null
+  }
+ ],
+ "counts": {
+  "pt": [
+   180,
+   180
+  ],
+  "copy": [
+   3,
+   3
+  ],
+  "remove": [
+   3,
+   5
+  ]
+ }
+}
