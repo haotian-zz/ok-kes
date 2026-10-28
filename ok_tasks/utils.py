@@ -3715,21 +3715,17 @@ def _empty_start_total(member):
 
 def empty_removal_state(task: TriggerTask):
     """刷空档账：(目标这个存档删了几次, 还要删几张)。删了几次以主战员面板为准（游戏记的），面板没读到用脚本账；
-    还要删＝没删的初始卡（基础卡 + 初始独特卡）+ 卡组里还在的闪光卡。"""
+    一共要删＝4 张初始卡 + 见过的闪光卡，和选路页读卡组记下的总数（含分给目标的中立卡）取大。"""
     ns = task.node_status
-    done = ns.get("empty_removed") or []
-    start_done = sum(1 for _, kind in done if kind in ("basic", "start"))
-    flash_done = {name for name, kind in done if kind == "flash"}
-    left = max(0, _empty_start_total(empty_target(task)) - start_done) \
-        + sum(1 for name in ns.get("empty_flash_cards") or [] if name not in flash_done)
     try:
         panel = int(ns.get("empty_panel_removed") or 0)
     except (TypeError, ValueError):
         panel = 0
-    removed = max(len(done), panel)
-    # 选路页读卡组记下的「一共要删几次」：删卡不改变它，只有新塞进来的闪光卡会让它变大，所以一直有效
-    need = max(removed + left, int(ns.get("empty_deck_need") or 0))
-    return removed, need - removed
+    removed = max(len(ns.get("empty_removed") or []), panel)
+    # 卡组读出的总数：删卡不改变它，只有新塞进来的卡会让它变大，所以一直有效
+    need = max(_empty_start_total(empty_target(task)) + len(ns.get("empty_flash_cards") or []),
+               int(ns.get("empty_deck_need") or 0))
+    return removed, max(0, need - removed)
 
 
 def empty_should_remove(task: TriggerTask):
@@ -3932,22 +3928,46 @@ def _read_empty_deck(task: TriggerTask, target, removed):
     task.sleep(1.5)
     task.next_frame()
     chaos_trace.step(task, "panel", "刷空档卡组", task.frame)
+    texts = _simplify_texts(task.ocr())
     found = []
-    for b in _simplify_texts(task.ocr()):
+    for b in texts:
         kind, real = empty_card_kind(b.name, target)
         # 只认卡名那一行：描述里也会出现卡名（「生成3张追踪箭」），按长度排除
         if kind in ("basic", "start", "flash") and len(chaos_strategy.base_card_name(b.name)) <= len(real) + 2:
             found.append((real, kind))
-    if not found and removed < _empty_start_total(target):
+    shown = _empty_deck_count(task, texts, target)
+    if shown is None and not found and removed < _empty_start_total(target):
         task.log_info(f"刷空档卡组：没数到{target}的卡（卡组没打开？），这次不记")
         return None
     note_empty_cards(task, [real for real, kind in found if kind == "flash"], "卡组")
-    need = removed + len(found)
+    # 「所有牌堆」每个主战员一栏，头像左上角是这一栏的张数：中立卡、怪物卡分给目标也在里面，也要删（10-28 希露德的「觉悟」）
+    count = shown if shown is not None else len(found)
+    need = removed + count
     ns = task.node_status
     ns["empty_deck_need"] = max(need, int(ns.get("empty_deck_need") or 0))
-    task.log_info(f"刷空档卡组：{target}还在卡组里 {len(found)} 张（{'、'.join(real for real, _ in found) or '无'}），"
-                  f"面板已删 {removed} 次，这个存档一共要删 {need} 次（上限 {EMPTY_SAVE_REMOVALS}）")
+    task.log_info(f"刷空档卡组：{target}还在卡组里 {count} 张（"
+                  + (f"栏上张数 {shown}" if shown is not None else "栏上张数没读到，按卡名数") + "；认出的自己的卡："
+                  + f"{'、'.join(real for real, _ in found) or '无'}），已删 {removed} 次，"
+                  f"这个存档一共要删 {need} 次（上限 {EMPTY_SAVE_REMOVALS}）")
     return need
+
+
+def _empty_deck_count(task: TriggerTask, texts, target):
+    """「所有牌堆」里目标那一栏的张数：头像下方名字（x 0.15～0.30）往上约 0.28 的左边栏（x≈0.116）是两位数张数「03」。
+    10-28 03:06 截图量的：希露德名字 y 0.465、张数 y 0.182；海德玛丽 0.886 / 0.603。读不到返回 None。"""
+    def center(b):
+        return (b.x + b.width / 2) / task.width, (b.y + b.height / 2) / task.height
+    name = _canonical_member(target)
+    for b in texts:
+        x, y = center(b)
+        if not (0.15 <= x <= 0.30 and (target in b.name or name in b.name)):
+            continue
+        nums = [(abs(cy - (y - 0.283)), int(nb.name.strip())) for nb in texts
+                for cx, cy in [center(nb)]
+                if 0.09 <= cx <= 0.14 and y - 0.35 <= cy <= y - 0.15 and re.fullmatch(r"\s*\d{1,2}\s*", nb.name)]
+        if nums:
+            return min(nums)[1]
+    return None
 
 
 def read_member_panel(task: TriggerTask):
@@ -3970,9 +3990,16 @@ def read_member_panel(task: TriggerTask):
         import chaos_trace
         chaos_trace.step(task, "panel", "主战员面板", task.frame)
     col = next((c for c in cols if c.get("name") and (target in c["name"] or c["name"] in target)), None)
-    if empty_mode(task) and col and isinstance(col.get("remove"), int):
-        ns["empty_panel_removed"] = col["remove"]
-        _read_empty_deck(task, target, col["remove"])
+    if empty_mode(task) and col:
+        if isinstance(col.get("remove"), int):
+            ns["empty_panel_removed"] = col["remove"]
+        else:
+            # 10-28 03:04 实录：面板上明明是「2/5」，希露德那列读成 None；读不出就用脚本的删卡账
+            i = cols.index(col)
+            raw = [b.name for b in texts if MEMBER_PANEL_COLUMNS[i][0] <= (b.x + b.width / 2) / task.width
+                   <= MEMBER_PANEL_COLUMNS[i][1] and 0.64 <= (b.y + b.height / 2) / task.height <= 0.71]
+            task.log_info(f"主战员面板：{target}的移除次数没读出来（这一行 OCR {raw}），按脚本删卡账算")
+        _read_empty_deck(task, target, empty_removal_state(task)[0])
         _move_and_click(task, 0.959, 0.050)      # 右上角 X 关面板（卡组页右上角也是这个 X）
     elif _probe_panel_equipment(task, cols, target) and not any(
             "模糊的记忆" in b.name for b in _simplify_texts(task.ocr())):
@@ -6924,8 +6951,14 @@ def handle_card_assign(task: TriggerTask):
          and (config_name in card_name or card_name in config_name)),
         None,
     )
+    give_teammate = False
     if matched_card_name:
         task.log_info(f"卡牌「{card_name}」命中奖励优先级「{matched_card_name}」")
+    elif empty_mode(task) and not is_purchase_page:
+        # 刷空档：这页点「确认」游戏就默认给第一个主战员（目标），存档里多一张中立卡要多删一次
+        # （10-28 03:04 实录开局「觉悟」进了希露德卡组，PT 60＝删 2 张 40 + 中立卡 20）→ 明确发给队友
+        give_teammate = True
+        task.log_info(f"刷空档：卡牌「{card_name}」不给{empty_target(task)}，发给队友")
     else:
         task.log_info(f"卡牌「{card_name}」未命中奖励优先级")
         if (not is_purchase_page and getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) in SAVE_MODES
@@ -7004,7 +7037,17 @@ def handle_card_assign(task: TriggerTask):
         (member for member in available_members if member[0] == target_member_index),
         None,
     )
-    chosen_idx, chosen_lv = target_available or available_members[0]
+    if give_teammate:
+        # 认不出目标时按编队顺序（刷空档自动编队目标在第一个）排除第一个
+        skip = target_member_index if target_member_index is not None else 0
+        mates = [member for member in available_members if member[0] != skip]
+        if not mates:
+            task.log_info("刷空档：只有目标能拿这张卡，交给后面的页面跳过")
+            return False
+        chosen_idx, chosen_lv = mates[-1]
+        target_available = None
+    else:
+        chosen_idx, chosen_lv = target_available or available_members[0]
     if target_available:
         task.log_info(f"优先选择刷存档主战员（第{chosen_idx + 1}号）接受卡牌")
     else:

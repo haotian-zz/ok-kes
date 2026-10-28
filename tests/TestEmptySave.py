@@ -204,6 +204,38 @@ class TestRemovalLedger(unittest.TestCase):
         self.assertEqual(6, utils._read_empty_deck(t, "蒂菲拉", 2))
         self.assertEqual((2, 4), utils.empty_removal_state(t))
 
+    def test_panel_remove_unreadable_uses_ledger(self):
+        # 10-28 03:04 实录：面板上是「2/5」，希露德那列移除读成 None；用脚本删卡账照样读卡组
+        t = empty_task()
+        removed(t, "多重箭", "多重箭")
+        panel = [box(0.27, 0.367, "希露德"), box(0.20, 0.58, "模糊的记忆"), box(0.36, 0.58, "60/140"),
+                 box(0.18, 0.675, "移除"), box(0.37, 0.675, "2l5")]
+        deck = [box(0.3, 0.3, "弓箭护卫"), box(0.4, 0.3, "装载箭筒")]
+        shots = [panel, deck, deck]
+        t.ocr = lambda *a, **k: shots.pop(0) if shots else []
+        t.next_frame = lambda: None
+        utils.read_member_panel(t)
+        self.assertEqual(4, t.node_status["empty_deck_need"])
+        self.assertTrue(any("没读出来" in m and "2l5" in m for m in t.logs))
+
+    def test_deck_section_count_includes_neutral_cards(self):
+        # 10-28 03:06「所有牌堆」：希露德那一栏左上角「03」＝弓箭护卫、装载箭筒、中立卡「觉悟」，中立卡也要删
+        texts = [box(0.116, 0.182, "03"), box(0.247, 0.465, "希露德"), box(0.37, 0.14, "弓箭护卫"),
+                 box(0.53, 0.14, "装载箭筒"), box(0.70, 0.14, "觉悟"),
+                 box(0.116, 0.603, "06"), box(0.247, 0.886, "海德玛丽"), box(0.37, 0.56, "剑光")]
+        t = self.deck_task("希露德", [])
+        t.ocr = lambda *a, **k: texts
+        t.node_status["empty_panel_removed"] = 2
+        self.assertEqual(3, utils._empty_deck_count(t, texts, "希露德"))
+        self.assertEqual(6, utils._empty_deck_count(t, texts, "海德玛丽"))
+        self.assertEqual(5, utils._read_empty_deck(t, "希露德", 2))
+        # 03:08 又被塞了闪光卡「抽取&释放」：栏上 04，删 2 次 + 4 张 = 6，做不成
+        texts[0] = box(0.116, 0.182, "04")
+        texts.append(box(0.86, 0.14, "抽取&释放"))
+        self.assertEqual(6, utils._read_empty_deck(t, "希露德", 2))
+        self.assertEqual(["抽取&释放"], t.node_status["empty_flash_cards"])
+        self.assertEqual((2, 4), utils.empty_removal_state(t))
+
     def test_deck_not_open_not_recorded(self):
         t = self.deck_task("希露德", ["主战员", "攻击力", "模糊的记忆"])
         self.assertIsNone(utils._read_empty_deck(t, "希露德", 1))
@@ -218,6 +250,33 @@ class TestRemovalLedger(unittest.TestCase):
         self.assertIsNone(utils.empty_should_remove(t))
         t.node_status["empty_panel_removed"] = 5
         self.assertIn("上限", utils.empty_should_remove(t))
+
+
+class TestCardAssign(unittest.TestCase):
+    def assign(self, target_index):
+        t = empty_task(texts=[box(0.863, 0.133, "请选择要接受卡牌的主战员")])
+        lv = [box(0.45, 0.35, "Lv"), box(0.45, 0.55, "Lv"), box(0.45, 0.75, "Lv")]
+        patches = {"recognize_cards": lambda task, region, page: [{"name": "觉悟", "description": "回合开始时"}],
+                   "_find_member_level_tags": lambda task, region, page: lv,
+                   "_find_target_member_index": lambda task, lvs, region: target_index}
+        orig = {k: getattr(utils, k) for k in patches}
+        for k, v in patches.items():
+            setattr(utils, k, v)
+        try:
+            self.assertFalse(utils.handle_card_assign(t))           # 选好人，「确认」交给通用按钮
+        finally:
+            for k, v in orig.items():
+                setattr(utils, k, v)
+        return t
+
+    def test_empty_mode_gives_card_to_teammate(self):
+        # 10-28 03:04 实录：分配页不选人直接确认，游戏默认给了第一个（目标希露德），存档多一张中立卡
+        t = self.assign(0)
+        self.assertEqual((0.756, 0.75), t.clicks[-1])
+        t = self.assign(2)
+        self.assertEqual((0.756, 0.55), t.clicks[-1])
+        t = self.assign(None)                                         # 认不出目标：按编队顺序排除第一个
+        self.assertEqual((0.756, 0.75), t.clicks[-1])
 
 
 class TestEquipmentToTarget(unittest.TestCase):
