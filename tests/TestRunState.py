@@ -497,5 +497,53 @@ class TestLedgerTiming(LedgerCase):
         self.assertEqual([(0.959, 0.051)], clicks)
 
 
+
+class TestImprintGoalStop(RunStateFileCase):
+    """用户 2026-10-27：刷刻印达成（至少 2 个目标装备，1 号位混沌之识算；3 个目标刻印）就停，不再进法典合成/刷新。
+    goal_reached 以 utils_imprint 里的实现为准（另一个分支在做），没有时用 run_state 里的占位。"""
+
+    def _task(self, imprints):
+        t = chaos_task(config={"刷刻印": True, "装备2号位优先级": ["精灵王的金冠"]}, chaos_mode=cs.MODE_TARGET)
+        run_state.begin(t, "法典")
+        t.member_status["equipment"]["names"] = ["混沌之识", "精灵王的金冠", "改良战斗强化服"]
+        t.member_status["equipment"]["imprints"] = list(imprints)
+        t.node_status.update(node_count=12, pass_final_boss_count=2)
+        t.disabled = False
+        t.disable = lambda: setattr(t, "disabled", True)
+        return t
+
+    def _settle(self, t):
+        t.all_texts = [box(0.625, 0.122, "探险结果"), box(0.928, 0.122, "完成")]
+        t.ocr = lambda *a, **k: list(t.all_texts)
+        utils.handle_expedition_result(t)
+
+    def test_reached_stops_at_codex_page(self):
+        from tests.TestImprint import SELECT_PAGE
+        t = self._task([T, T, T])
+        self.assertEqual(2, run_state.target_equipment_count(t))       # 混沌之识（1 号位）+ 精灵王的金冠
+        self._settle(t)
+        self.assertTrue(run_state.read_runs()[-1]["goal_reached"])
+        self.assertFalse(run_state.handle_goal_stop(t))                 # 还在结算后的页面：不停（存档要走完）
+        self.assertFalse(t.disabled)
+        t.all_texts = list(SELECT_PAGE)
+        self.assertTrue(run_state.handle_goal_stop(t))                  # 回到选择法典页：停，不进法典
+        self.assertTrue(t.disabled)
+
+    def test_not_reached_keeps_going(self):
+        t = self._task([T, T, ""])
+        self._settle(t)
+        self.assertFalse(run_state.read_runs()[-1]["goal_reached"])
+        self.assertIsNone(getattr(t, run_state.GOAL_STOP_ATTR, None))
+
+    def test_uses_utils_imprint_goal_reached_when_present(self):
+        t = self._task(["", "", ""])
+        utils_imprint.goal_reached = lambda task: True
+        try:
+            self.assertTrue(run_state.goal_reached(t))
+        finally:
+            del utils_imprint.goal_reached
+        self.assertFalse(run_state.goal_reached(t))
+
+
 if __name__ == "__main__":
     unittest.main()

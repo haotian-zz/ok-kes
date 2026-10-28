@@ -86,6 +86,8 @@ def summary(task, result, reason=""):
     if rec["imprint_mode"]:
         try:
             rec["target_imprints"] = utils_imprint.target_imprint_count(task)
+            rec["target_equipment"] = target_equipment_count(task)
+            rec["goal_reached"] = goal_reached(task)
         except Exception:  # noqa: BLE001
             pass
     rec["pt_cap"] = getattr(task, "chaos_pt_cap", None)
@@ -122,3 +124,73 @@ def read_runs(path=None):
             return [json.loads(line) for line in f if line.strip()]
     except (OSError, ValueError):
         return []
+
+
+# ------------------------- 刷刻印达成即停 -------------------------
+# 用户 2026-10-27 定的达成条件：至少 2 个目标装备（1 号位混沌之识算目标装备）+ 3 个目标刻印。
+# 另一个分支在 utils_imprint 里实现 goal_reached(task)；有它就用它，这里只是同名签名的占位（合并时以那边为准）。
+
+GOAL_EQUIPMENT = 2
+GOAL_IMPRINTS = 3
+
+
+def target_equipment_count(task):
+    import utils
+    import utils_imprint
+    names = (list(((getattr(task, "member_status", None) or {}).get("equipment") or {}).get("names") or [])
+             + ["", "", ""])[:3]
+    n = 0
+    for slot, name in enumerate(names):
+        if not name:
+            continue
+        if slot == 0 and utils_imprint.is_top(name):
+            n += 1
+            continue
+        matched, _ = utils._match_equipment_name(name, utils._equipment_priority(task, slot))
+        n += matched is not None
+    return n
+
+
+def _goal_reached_placeholder(task):
+    import utils_imprint
+    return (target_equipment_count(task) >= GOAL_EQUIPMENT
+            and utils_imprint.target_imprint_count(task) >= GOAL_IMPRINTS)
+
+
+def goal_reached(task):
+    import utils_imprint
+    impl = getattr(utils_imprint, "goal_reached", None)
+    return bool(impl(task) if callable(impl) else _goal_reached_placeholder(task))
+
+
+GOAL_STOP_ATTR = "imprint_goal_stop"
+
+
+def check_goal_on_success(task):
+    """结算（探险结果成功、已存档）时调用：刷刻印达成目标就记下，回到局外（零式系统/卡厄思初始页）停任务，
+    不再进法典合成/刷新消耗资源。要在 reset_mission_status 之前调（账本还在）。"""
+    import utils_imprint
+    if not utils_imprint.enabled(task) or not goal_reached(task):
+        return False
+    eq = (getattr(task, "member_status", None) or {}).get("equipment") or {}
+    msg = (f"刷刻印达成目标：目标装备 {target_equipment_count(task)} 个、目标刻印 {utils_imprint.target_imprint_count(task)} 个"
+           f"（装备 {eq.get('names')}，刻印 {eq.get('imprints')}），回到局外就停，不再进法典")
+    setattr(task, GOAL_STOP_ATTR, msg)
+    task.log_info(msg)
+    return True
+
+
+def handle_goal_stop(task):
+    """达成目标后回到局外页面（卡厄思/零式系统初始页、选择法典页）就停任务。"""
+    msg = getattr(task, GOAL_STOP_ATTR, None)
+    if not msg:
+        return False
+    import utils_chaos
+    import utils_imprint
+    if not (utils_chaos._at_chaos_initial_page(task)
+            or (utils_imprint._title(task, r"零式系统") and utils_imprint.find_text(task, r"^选择法典$"))):
+        return False
+    setattr(task, GOAL_STOP_ATTR, None)
+    task.log_info(f"{msg}；已回到局外，停止任务")
+    task.disable()
+    return True

@@ -5833,6 +5833,9 @@ def handle_expedition_result(task: TriggerTask):
         success = task.node_status['success_rounds'] > success_before
         _record_last_boss_result(task, success)
         import run_state
+        if success:
+            # 刷刻印达成即停（用户 2026-10-27）：至少 2 个目标装备 + 3 个目标刻印，回到局外就停，不再进法典合成/刷新
+            run_state.check_goal_on_success(task)
         run_state.finish(task, "通关" if success else ("逃脱" if task.node_status.get('is_escaped') else "失败"))
         reset_mission_status(task)
     return False

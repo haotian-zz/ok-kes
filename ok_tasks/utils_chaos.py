@@ -30,6 +30,7 @@ from utils import (
 )
 import utils_imprint
 import ledger_check
+import run_state
 import save_cleanup
 
 import re
@@ -1467,6 +1468,7 @@ def _at_chaos_initial_page(task: TriggerTask):
 # 卡厄思模式 PAGE_HANDLERS
 PAGE_HANDLERS = [
     handle_chaos_auto_stop,
+    run_state.handle_goal_stop, #刷刻印达成目标：回到局外（初始页/选择法典页）就停任务，要先于法典处理
     handle_chaos_disconnected, #重开游戏后「卡厄思连接意外断开。是否继续?」：点继续，不点逃脱
     handle_title_start, #标题页「点击开始」
     handle_storage_full, #存档存储满了：去分解页自动清理或停止（要先于通用确认，2026-10-25 在进入/确认间循环）
