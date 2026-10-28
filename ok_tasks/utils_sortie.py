@@ -326,68 +326,83 @@ _MEMBER_FEATURE_MAP = {
 }
 
 
+def _find_battle_member(task: TriggerTask, boxes, names):
+    """当前这一屏里按 names 顺序找第一个出现的主战员（OCR 全名匹配，认不出的用模板兜底），返回 (名次, 名字, box) 或 None。"""
+    for rank, name in enumerate(names):
+        member = next((box for box in boxes if name.strip() == box.name.strip()), None)
+        if member:
+            return rank, name, member
+        feature_name = _MEMBER_FEATURE_MAP.get(name)
+        if feature_name and task.feature_exists(feature_name):
+            search_box = task.box_of_screen(0.096, 0.097, 0.988, 0.896)
+            feature_box = task.find_one(feature_name=feature_name, box=search_box, threshold=0.5)
+            if feature_box:
+                task.log_info(f"出战主战员模板匹配成功: 配置名「{name}」 feature=「{feature_name}」 相似度={feature_box.confidence:.4f}")
+                return rank, name, feature_box
+    return None
+
+
+def _scroll_battle_members(task: TriggerTask, down=True):
+    if task.is_adb():
+        y1, y2 = (0.7, 0.3) if down else (0.3, 0.7)
+        task.swipe_relative(0.5, y1, 0.5, y2, duration=0.4, settle_time=0.3)
+    else:
+        task.move_relative(0.5, 0.5)
+        task.scroll_relative(0.5, 0.7, -3 if down else 3)
+    task.sleep(0.5)
+    task.all_texts = _simplify_texts(task.ocr())
+
+
 def _select_battle_member(task: TriggerTask, max_scrolls=5):
-    """按出战主战员优先级选择列表角色；找不到配置角色则随机选择。"""
+    """按出战主战员优先级选择列表角色：先往下翻完整个列表找排第一的，找不到再选翻到过的最靠前的那个
+    （2026-10-28 00:09 实录：海德玛丽在第二排，第一屏只有排第四的绯，原来的逻辑直接选了绯）；都没有就随机选。"""
     priority = _get_battle_member_priority(task)
     task.log_info(f"出战主战员优先级配置: {priority}")
+    best = None
+    prev_names = None
+    pages = 0
     for scroll_index in range(max_scrolls + 1):
         boxes = _battle_member_boxes(task)
-        recognized_names = [box.name for box in boxes]
-        task.log_info(f"第{scroll_index + 1}次扫描, OCR识别到{len(boxes)}个主战员:")
-        for b in boxes:
-            cx = (b.x + b.width / 2) / task.width
-            cy = (b.y + b.height / 2) / task.height
-            task.log_info(f"  box: name=「{b.name}」 cx={cx:.4f} cy={cy:.4f} x={b.x} y={b.y} w={b.width} h={b.height}")
-        for name in priority:
-            member = next(
-                (box for box in boxes if name.strip() == box.name.strip()),
-                None,
-            )
-            if member:
-                cx = (member.x + member.width / 2) / task.width
-                cy = (member.y + member.height / 2) / task.height
-                task.log_info(f"出战主战员优先级匹配成功: 配置名「{name}」-> OCR名「{member.name}」 cx={cx:.4f} cy={cy:.4f} x={member.x} y={member.y} w={member.width} h={member.height}")
+        names = [box.name for box in boxes]
+        task.log_info(f"第{scroll_index + 1}屏 OCR 到 {len(boxes)} 个名字: {names}")
+        found = _find_battle_member(task, boxes, priority if best is None else priority[:best[0]])
+        if found:
+            rank, name, member = found
+            if rank == 0:
+                task.log_info(f"出战主战员优先级匹配成功: 「{name}」（第{scroll_index + 1}屏）")
                 task.click_box(member)
                 task.sleep(0.5)
                 return _confirm_battle_member_selection(task)
-            else:
-                # OCR 未匹配到，尝试用模板匹配兜底
-                feature_name = _MEMBER_FEATURE_MAP.get(name)
-                if feature_name and task.feature_exists(feature_name):
-                    task.log_info(f"出战主战员OCR未匹配到「{name}」，尝试模板匹配 feature=「{feature_name}」")
-                    search_box = task.box_of_screen(0.096, 0.097, 0.988, 0.896)
-                    feature_box = task.find_one(feature_name=feature_name, box=search_box, threshold=0.5)
-                    if feature_box:
-                        cx = (feature_box.x + feature_box.width / 2) / task.width
-                        cy = (feature_box.y + feature_box.height / 2) / task.height
-                        task.log_info(f"出战主战员模板匹配成功: 配置名「{name}」 feature=「{feature_name}」 cx={cx:.4f} cy={cy:.4f}, 相似度={feature_box.confidence:.4f}")
-                        task.click_box(feature_box)
-                        task.sleep(0.5)
-                        return _confirm_battle_member_selection(task)
-                    else:
-                        task.log_info(f"出战主战员模板匹配失败: 「{name}」(feature=「{feature_name}」) 未找到")
-                else:
-                    task.log_info(f"出战主战员优先级匹配失败: 「{name}」未在当前列出的{len(boxes)}个主战员中")
+            best = (rank, name)
+            task.log_info(f"第{scroll_index + 1}屏找到优先级第{rank + 1}的「{name}」，继续往下找更靠前的")
+        pages = scroll_index
+        if prev_names is not None and sorted(names) == prev_names:
+            task.log_info("主战员列表已到底")
+            break
+        prev_names = sorted(names)
         if scroll_index < max_scrolls:
-            task.log_info(f"第{scroll_index + 1}次未匹配到任何优先级角色, 向下滚动重试")
-            if task.is_adb():
-                task.log_info("ADB从(0.500, 0.700)滑动到(0.500, 0.300)，向下浏览主战员")
-                task.swipe_relative(
-                    0.5, 0.7, 0.5, 0.3, duration=0.4, settle_time=0.3
-                )
-            else:
-                task.move_relative(0.5, 0.5)
-                task.scroll_relative(0.5, 0.7, -3)
-            task.sleep(0.5)
-            task.all_texts = _simplify_texts(task.ocr())
+            _scroll_battle_members(task, down=True)
+    if best:
+        rank, name = best
+        task.log_info(f"整份列表没有更靠前的，回到顶部重新找「{name}」")
+        for _ in range(pages + 1):
+            _scroll_battle_members(task, down=False)
+        for scroll_index in range(max_scrolls + 1):
+            found = _find_battle_member(task, _battle_member_boxes(task), [name])
+            if found:
+                task.log_info(f"出战主战员优先级匹配成功: 「{name}」（优先级第{rank + 1}）")
+                task.click_box(found[2])
+                task.sleep(0.5)
+                return _confirm_battle_member_selection(task)
+            if scroll_index < max_scrolls:
+                _scroll_battle_members(task, down=True)
+        task.log_info(f"回头没再找到「{name}」，随机选择")
     boxes = _battle_member_boxes(task)
     if not boxes:
         task.log_info("出战主战员列表为空，无法选择")
         return False
     member = random.choice(boxes)
-    cx = (member.x + member.width / 2) / task.width
-    cy = (member.y + member.height / 2) / task.height
-    task.log_info(f"未找到配置中的出战主战员，随机选择「{member.name}」 cx={cx:.4f} cy={cy:.4f} x={member.x} y={member.y} w={member.width} h={member.height}")
+    task.log_info(f"未找到配置中的出战主战员，随机选择「{member.name}」")
     task.click_box(member)
     task.sleep(0.5)
     return _confirm_battle_member_selection(task)

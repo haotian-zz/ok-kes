@@ -26,6 +26,7 @@ def sortie_task(config=None, texts=()):
     t = types.SimpleNamespace(name="自动出击模式", node_status=utils._initial_node_status(), config=dict(config or {}),
                               width=1920, height=1080, all_texts=list(texts), frame=None, enabled=True,
                               log_info=lambda *a, **k: logs.append(a[0]), log_error=lambda *a, **k: logs.append(a[0]),
+                              log_debug=lambda *a, **k: None,
                               sleep=lambda s: None, move_relative=lambda x, y: None,
                               click=lambda x, y, **k: clicks.append((round(x, 3), round(y, 3))),
                               click_box=lambda b, **k: clicks.append(b.name))
@@ -157,6 +158,54 @@ class TestSortieSpeedrun(unittest.TestCase):
         t.node_status["pass_final_boss_count"] = 1
         self.assertTrue(us.handle_boss_selection(t))
         self.assertFalse(us.handle_speedrun_exit(t))
+
+
+class TestBattleMemberSelect(unittest.TestCase):
+    """实录 2026-10-28 00:09：海德玛丽在第二排，第一屏只有排第四的绯，原来直接选了绯。"""
+
+    def _list_task(self, pages, priority):
+        t = sortie_task({"出战主战员优先级": priority})
+        t.pos = 0
+
+        def ocr():
+            return [box(0.2 + 0.15 * i, 0.48, n) for i, n in enumerate(pages[t.pos])]
+
+        def scroll_relative(x, y, n):
+            t.pos = min(len(pages) - 1, t.pos + 1) if n < 0 else max(0, t.pos - 1)
+
+        t.ocr, t.scroll_relative = ocr, scroll_relative
+        t.is_adb = lambda: False
+        t.feature_exists = lambda name: False
+        t.all_texts = ocr()
+        return t
+
+    def _run(self, t):
+        orig = us._confirm_battle_member_selection
+        us._confirm_battle_member_selection = lambda task: True
+        try:
+            self.assertTrue(us._select_battle_member(t))
+        finally:
+            us._confirm_battle_member_selection = orig
+
+    def test_top_priority_on_later_page(self):
+        pages = [["凛", "罗丝薇瑟", "绯"], ["绯", "海德玛丽", "黛安娜"], ["蒂菲拉", "米卡"]]
+        t = self._list_task(pages, ["海德玛丽", "九", "力", "绯"])
+        self._run(t)
+        self.assertEqual(t.clicks, ["海德玛丽"])
+
+    def test_fallback_scrolls_back_to_lower_priority(self):
+        pages = [["凛", "罗丝薇瑟", "绯"], ["黛安娜", "雨果"], ["蒂菲拉", "米卡"]]
+        t = self._list_task(pages, ["海德玛丽", "九", "力", "绯"])
+        self._run(t)
+        self.assertEqual(t.clicks, ["绯"])
+        self.assertEqual(t.pos, 0)
+
+    def test_first_page_top_priority_no_scroll(self):
+        pages = [["海德玛丽", "绯"], ["米卡"]]
+        t = self._list_task(pages, ["海德玛丽", "绯"])
+        self._run(t)
+        self.assertEqual(t.clicks, ["海德玛丽"])
+        self.assertEqual(t.pos, 0)
 
 
 class TestSortieSanity(unittest.TestCase):
