@@ -2160,7 +2160,9 @@ def _ensure_auto_play_fast(task: TriggerTask, context=""):
     True 表示点了一下（下一帧再看）；False 表示已经两档或 60 秒内点够次数。"""
     found = _auto_play_level(task)
     if not found:
-        return None
+        # 认出过这种按钮就不再交给旧的模板逻辑：某帧 OCR 漏了「Ctrl」时旧逻辑会把两档点乱（2026-10-28 00:47:05 实录）
+        return False if getattr(task, "_auto_play_seen", False) else None
+    task._auto_play_seen = True
     level, lb, rb, (x, y) = found
     now = time.time()
     if level is None:

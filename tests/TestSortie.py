@@ -259,6 +259,13 @@ class TestAutoPlayFast(unittest.TestCase):
         self.assertFalse(utils._ensure_auto_play_fast(t))
         self.assertEqual(t.clicks, [])
 
+    def test_missed_ctrl_after_seen_does_not_fall_back(self):
+        # 实录 00:47:05：前一帧认出两档，下一帧 OCR 漏了 Ctrl，旧模板逻辑又点了一下
+        t = self._task(True, True)
+        self.assertFalse(utils._ensure_auto_play_fast(t))
+        t.all_texts = []
+        self.assertFalse(utils._ensure_auto_play_fast(t))
+
     def test_no_ctrl_label_falls_back(self):
         t = self._task(True, True)
         t.all_texts = []
