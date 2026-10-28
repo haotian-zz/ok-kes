@@ -3,6 +3,7 @@
 # 跑法：python -m unittest tests.TestEmptySave
 import os
 import sys
+import time
 import types
 import unittest
 
@@ -665,3 +666,32 @@ class TestZeroCodexInEventChaos(unittest.TestCase):
         finally:
             utils_chaos.utils_daily.go_home = old
         self.assertEqual([1], homes)
+
+
+class TestHandCardsDuringBattle(unittest.TestCase):
+    # 2026-10-28 13:22 实录：战斗中手牌「剑华：明-攻击」被 event9 误中当事件选项点了，文字规则挡不完，
+    # 改成刚认出战斗页的几秒内不处理事件页
+    def test_event_skipped_right_after_battle(self):
+        t = empty_task(texts=[])
+        t.find_feature = lambda **k: []
+        t._battle_seen_at = time.time() - 1
+        old = utils.recognize_event_options
+        utils.recognize_event_options = lambda task, page="": self.fail("战斗中不该识别事件选项")
+        try:
+            self.assertFalse(utils.handle_event_task(t))
+        finally:
+            utils.recognize_event_options = old
+        self.assertEqual([], t.clicks)
+
+    def test_event_handled_after_guard(self):
+        t = empty_task(texts=[])
+        t.find_feature = lambda **k: []
+        t._battle_seen_at = time.time() - utils.BATTLE_EVENT_GUARD_SECONDS - 1
+        seen = []
+        old = utils.recognize_event_options
+        utils.recognize_event_options = lambda task, page="": seen.append(page) or []
+        try:
+            self.assertFalse(utils.handle_event_task(t))
+        finally:
+            utils.recognize_event_options = old
+        self.assertEqual(["事件任务页面"], seen)

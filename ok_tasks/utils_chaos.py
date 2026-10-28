@@ -586,6 +586,7 @@ def handle_battle_auto_check(task: TriggerTask):
     box = find_box_at_point(task, 0.512, 0.969)
     if not (box and re.search(r'\d+/10', box.name)):
         return False
+    task._battle_seen_at = time.time()   # 事件处理据此跳过战斗中的手牌（见 utils.handle_event_task）
 
     attack_box = task.find_one(
         feature_name="start_attack_event",

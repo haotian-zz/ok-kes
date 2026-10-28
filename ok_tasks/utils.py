@@ -4831,8 +4831,15 @@ def _pick_event_by_strategy(task: TriggerTask, tasks_info, click_event_option):
     return True
 
 
+BATTLE_EVENT_GUARD_SECONDS = 5
+
+
 def handle_event_task(task: TriggerTask):
     """事件任务页面: 识别事件选项特征和描述，按任务优先级选择推进。"""
+    # 战斗中手牌会被 event9 误中，「x/10」常认不出来，按文字挡不完（2026-10-28 12:57「8基础技剑华：攻击暗」、
+    # 13:22「剑华：明-攻击」都是战斗页）。刚认出战斗页的几秒内不当事件页；战斗结束到事件之间隔着奖励页和路线页
+    if time.time() - getattr(task, "_battle_seen_at", 0) < BATTLE_EVENT_GUARD_SECONDS:
+        return False
     bottom_box = find_box_at_point(task, 0.516, 0.971)
     if bottom_box and re.search(r'\d+/\d+', bottom_box.name):
         return False
