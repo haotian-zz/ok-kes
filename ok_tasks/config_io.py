@@ -99,6 +99,22 @@ def migrate_game_language_config_file(task):
     write_json_file(config_file, data)
 
 
+def migrate_renamed_config_keys(task, renames):
+    """配置项改名：加载前把文件里的旧键改成新键（框架加载时会丢掉默认配置里没有的键）。renames: {旧键: 新键}。"""
+    config_file = get_relative_path(Config.config_folder, f"{task.__class__.__name__}.json")
+    data = read_json_file(config_file)
+    if not isinstance(data, dict):
+        return
+    changed = False
+    for old_key, new_key in renames.items():
+        if old_key in data:
+            value = data.pop(old_key)
+            data.setdefault(new_key, value)
+            changed = True
+    if changed:
+        write_json_file(config_file, data)
+
+
 def _export_config_to_text(task):
     """将任务的用户配置导出为 base64 编码文本。"""
     config_file = task.config.config_file

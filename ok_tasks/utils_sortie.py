@@ -26,12 +26,20 @@ from utils import (
     # handle_stage_clear,
     _finish_only_first_layer,
     handle_auto_stop,
+    _sortie_speedrun, is_route_selection_page,
 )
 from utils_chaos import handle_archive_target_member
 
 import re
 import random
+import time
 import cv2
+
+SORTIE_LEVEL = "出击难度(LV，0为不调整)"
+USE_SANITY = "使用理智领取奖励"
+SANITY_REFILL = "理智不足时用体力补充"
+LEVEL_DOWN, LEVEL_UP = (0.318, 0.500), (0.686, 0.500)   # 出击入口页中间难度圈左右的箭头（2026-10-27 实机：V=LV.80 最高档，IV=LV.65）
+LEVEL_MAX_CLICKS = 8
 
 
 # ------------------------- 出击模式独有工具 -------------------------
@@ -402,9 +410,98 @@ def handle_boss_selection(task: TriggerTask):
     boss = random.choice(bosses)
     task.log_info(f"首领选择: 随机选择「{boss['name']}」")
     _move_and_click(task, boss["x"], boss["y"])
+    if _sortie_speedrun(task) and task.node_status.get("pass_final_boss_count", 0) >= 1:
+        task.node_status["speedrun_exit"] = True
+        task.log_info("出击速刷：第二层首领已选，回到路线页就退出")
     task.sleep(1)
     # _move_and_click(task, 0.919, 0.930)
     return True
+
+
+def handle_speedrun_exit(task: TriggerTask):
+    """出击速刷：第二层首领选完、回到路线页就点右上角退出，交给 handle_escape 点「逃脱」。退出时记一次成功。"""
+    ns = task.node_status
+    if not ns.get("speedrun_exit") or ns.get("is_escaped") or not is_route_selection_page(task):
+        return False
+    if time.time() - ns.get("speedrun_exit_clicked_at", 0) < 3:
+        task.sleep(1)       # 刚点过退出，菜单还没出来
+        return True
+    if not ns.get("speedrun_exit_clicked_at"):
+        ns["success_rounds"] += 1
+        ns["escape_reason"] = "出击速刷"
+        task.log_info(f"出击速刷：第一层通关、第二层首领已选，退出（成功次数 {ns['success_rounds']}）")
+    ns["speedrun_exit_clicked_at"] = time.time()
+    _move_and_click(task, 0.959, 0.051)
+    task.sleep(1)
+    return True
+
+
+def _read_sortie_level(task: TriggerTask):
+    """出击入口页中间难度圈上的「LV.80」，读不到返回 None。"""
+    box = find_box_at_point(task, 0.499, 0.457)
+    m = re.search(r"LV\.?\s*(\d+)", box.name, re.I) if box else None
+    return int(m.group(1)) if m else None
+
+
+def _sortie_target_level(task: TriggerTask):
+    try:
+        return int(_get_config_value(task, SORTIE_LEVEL, 0) or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def handle_sortie_lobby(task: TriggerTask):
+    """出击入口页（中间难度圈 LV.xx + 下方「进入」）：按「出击难度」点左右箭头调到目标等级再交给 handle_enter 进入。
+    点了等级不变（到头/没解锁）或跨过目标（目标不是整档）就停在不超过目标的那档；理智用完又不能补就停任务。"""
+    level = _read_sortie_level(task)
+    enter = find_box_at_point(task, 0.499, 0.900)
+    if level is None or not (enter and _clean_match(enter.name, "进入")):
+        return False
+    if _get_config_value(task, USE_SANITY, False) is True and getattr(task, "_sanity_exhausted", False):
+        task.log_info("理智不足又没法用体力补充，停止出击（开「理智不足时用体力补充」或等理智恢复后再开）", notify=True)
+        task.disable()
+        return True
+    target = _sortie_target_level(task)
+    st = getattr(task, "_level_adjust", None)
+    if not isinstance(st, dict):
+        st = task._level_adjust = {"last": None, "clicks": 0, "same": 0, "done": False}
+    if not target or level == target or st["done"]:
+        return False
+
+    def finish(why):
+        st["done"] = True
+        task.log_info(f"出击难度停在 LV.{level}（目标 LV.{target}）：{why}")
+        return False
+
+    last = st["last"]
+    if last is not None:
+        if level == last:
+            st["same"] += 1
+            if st["same"] >= 2:
+                return finish("点箭头等级不变，已经到头或没解锁")
+        elif (last - target) * (level - target) < 0:
+            if level < target:
+                return finish("目标不是整档，停在低一档")
+            st["done"] = True     # 从低往高跨过了目标：退回低一档
+            task.log_info(f"出击难度 LV.{level} 超过目标 LV.{target}，退回低一档")
+            _move_and_click(task, *LEVEL_DOWN)
+            task.sleep(2)
+            return True
+        else:
+            st["same"] = 0
+    if st["clicks"] >= LEVEL_MAX_CLICKS:
+        return finish(f"已点 {LEVEL_MAX_CLICKS} 次箭头")
+    st["last"] = level
+    st["clicks"] += 1
+    task.log_info(f"出击难度 LV.{level} → 目标 LV.{target}，点{'右' if level < target else '左'}箭头")
+    _move_and_click(task, *(LEVEL_UP if level < target else LEVEL_DOWN))
+    task.sleep(2)
+    return True
+
+
+def _use_sanity(task: TriggerTask):
+    """开了「使用理智领取奖励」且这次运行没碰到理智用完又补不了。"""
+    return _get_config_value(task, USE_SANITY, False) is True and not getattr(task, "_sanity_exhausted", False)
 
 
 def handle_secret_enemy(task: TriggerTask):
@@ -607,7 +704,7 @@ def handle_sortie_reward_settlement(task: TriggerTask):
     if not (title and title.name == "结算"):
         return False
     reward_box = find_box_at_point(task, 0.848, 0.389)
-    if reward_box and reward_box.name == "获得" and _get_config_value(task, "领取奖励", False):
+    if reward_box and reward_box.name == "获得" and _use_sanity(task):
         task.log_info("检测到出击模式奖励结算页面，领取奖励")
         task.click_box(reward_box)
         task.sleep(1)
@@ -621,8 +718,8 @@ def handle_sortie_reward_claim(task: TriggerTask):
     title = find_box_at_point(task, 0.503, 0.335)
     if not (title and re.search(r"卡.*思战利品", title.name)):
         return False
-    if _get_config_value(task, "领取奖励", False):
-        task.log_info("检测到出击模式奖励领取页面，领取卡厄思战利品")
+    if _use_sanity(task):
+        task.log_info("检测到出击模式奖励领取页面，用理智领取卡厄思战利品")
         _move_and_click(task, 0.567, 0.708)
         task.sleep(1)
         return True
@@ -708,8 +805,9 @@ def handle_member_selection(task: TriggerTask):
 
 
 def handle_rational_supply(task: TriggerTask):
-    """补充理性页面: 确认按钮未激活时关闭领取奖励并放弃补充。"""
-    # 在区域(0.438,0.101,0.561,0.250)内查找包含"补充理性"的文本
+    """补充理性（理智）弹窗：开了「理智不足时用体力补充」且确认可点就确认（花以太补理智）；
+    否则放弃补充，这次运行不再领奖励（不改配置），回到出击入口页再停。
+    要排在 handle_center_confirm 前面，不然中间的「确认」会被直接点掉、不看开关就花以太。"""
     x1, y1, x2, y2 = 0.438, 0.101, 0.561, 0.250
     title = next((b for b in task.all_texts
                   if x1 <= (b.x + b.width / 2) / task.width <= x2
@@ -717,17 +815,20 @@ def handle_rational_supply(task: TriggerTask):
                   and "补充理性" in b.name), None)
     if not title:
         return False
-    task.log_info("检测到补充理性页面")
     confirm_box = find_box_at_point(task, 0.664, 0.774)
-    if confirm_box and _clean_match(confirm_box.name, "确认") and not is_button_active(task, confirm_box):
-        task.log_info("确认按钮未激活，将领取奖励设置为False，点击放弃补充")
-        task.config['领取奖励'] = False
-        from ok.gui.Communicate import communicate
-        communicate.task_list_updated.emit()
-        _move_and_click(task, 0.352, 0.774)
+    can_confirm = bool(confirm_box and _clean_match(confirm_box.name, "确认") and is_button_active(task, confirm_box))
+    refill = _get_config_value(task, SANITY_REFILL, False) is True
+    if refill and can_confirm:
+        task.log_info("理智不足，用体力（以太）补充理智，点确认")
+        task.click_box(confirm_box)
         task.sleep(1)
         return True
-    return False
+    why = "体力也不够（确认不可点）" if refill else "没开「理智不足时用体力补充」"
+    task.log_info(f"理智不足，{why}：放弃补充，这次运行不再领取奖励")
+    task._sanity_exhausted = True
+    _move_and_click(task, 0.352, 0.774)
+    task.sleep(1)
+    return True
 
 
 def handle_ether_supply(task: TriggerTask):
@@ -977,6 +1078,7 @@ def handle_rest_sortie(task: TriggerTask):
 PAGE_HANDLERS = [
     handle_auto_stop,
     settle_equipment_pending, #装备页点了安装/购买后离开那一页才写装备账（要先于逃脱判断，不拦截）
+    handle_speedrun_exit, #速刷：第二层首领选完回到路线页就退出（先于选路）
     handle_route_selection,
     # handle_stage_clear,
     log_credit,
@@ -984,6 +1086,8 @@ PAGE_HANDLERS = [
     handle_stuck_log,
     handle_close_page, #点击屏幕关闭页面，优先于其他普通页面处理
 
+    handle_sortie_lobby, #出击入口页：调难度、理智用完就停（先于 handle_enter）
+    handle_rational_supply, #补充理性：按开关确认或放弃（先于中间确认按钮）
     handle_ether_supply,
     handle_refine_equipment_credit, #提炼装备信用点页面，优先于确认按钮
     handle_center_confirm,
@@ -1042,7 +1146,6 @@ PAGE_HANDLERS = [
     handle_view_original,
     handle_skip,
     handle_event_task,
-    handle_rational_supply,
     handle_weakness_info,
     handle_minimizemap,
     handle_held_cards_page,

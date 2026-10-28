@@ -7,6 +7,7 @@ from config_io import (
     make_save_local_config_callback,
     make_switch_local_config_callback,
     migrate_game_language_config_file,
+    migrate_renamed_config_keys,
 )
 from config_sync import check_upload_if_needed, show_hot_configs_dialog
 from utils import (
@@ -30,7 +31,10 @@ class SortieMode(TriggerTask):
         self.default_config["游戏语言"] = "简体中文"
         self.default_config["出战主战员优先级"] = ["海德玛丽", "九", "力", "绯"]
         self.default_config["主战员优先级"] = ["米卡", "尼娅", "蒂菲拉", "麦格纳", "卡修斯"]
-        self.default_config["领取奖励"] = False
+        self.default_config[utils_sortie.USE_SANITY] = False
+        self.default_config[utils_sortie.SANITY_REFILL] = False
+        self.default_config[utils_sortie.SORTIE_LEVEL] = 0
+        self.default_config["速刷模式"] = False
         self.default_config["出牌优先级"] = ["剑雨", "水之源", "一缕光芒", "万众英雄","极光剑", "展开极光","解放极光"]
         self.default_config["获得卡牌优先级"] = ["展开极光", "剑雨", "一缕光芒","缕光芒","凝聚极光"]
         self.default_config["移除卡牌列表"] = ["剑幕"]
@@ -82,12 +86,24 @@ class SortieMode(TriggerTask):
             '第几层boss前自动暂停': {'type': 'drop_down', 'options': ['不暂停', '1', '2', '3']},
         }
         self.config_description['游戏语言'] = "国际服请设置为繁体中文"
+        self.config_description[utils_sortie.USE_SANITY] = "每层结算时消耗理智（理性，右上角大脑图标）领取卡厄思战利品；关闭则放弃战利品"
+        self.config_description[utils_sortie.SANITY_REFILL] = (
+            "领取奖励时理智不够、弹出「补充理性」就点确认，用体力（以太）补充；关闭或体力也不够时放弃补充，回到出击入口页停止"
+        )
+        self.config_description[utils_sortie.SORTIE_LEVEL] = (
+            "出击入口页按左右箭头调到这个等级再进入（例如 80 = V 档）；目标不是整档时停在低一档，0 为不调整"
+        )
+        self.config_description["速刷模式"] = (
+            "选路尽量避开战斗（休息 > 事件 > 普通战 > 精英）；第一层首领打完进第二层，选完第二层首领就退出，算一次成功"
+        )
         self.config_description['商店刷新信用点阈值'] = (
             "德朗商店免费刷新次数用完后，仅当信用点大于该值且足够支付刷新价格时才付费刷新。"
         )
 
     def load_config(self):
         migrate_game_language_config_file(self)
+        # 「领取奖励」改名「使用理智领取奖励」（2026-10-27），沿用旧值
+        migrate_renamed_config_keys(self, {"领取奖励": utils_sortie.USE_SANITY})
         super().load_config()
 
     def enable(self):
@@ -97,6 +113,8 @@ class SortieMode(TriggerTask):
         if chaos and chaos.enabled:
             chaos.disable()
         reset_all_status(self)
+        self._level_adjust = None       # 重新开启：再按配置调一次难度
+        self._sanity_exhausted = False
         _migrate_route_boss_to_elite(self)
         super().enable()
 

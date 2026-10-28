@@ -166,8 +166,22 @@ def _migrate_route_boss_to_elite(task: TriggerTask):
         pass
 
 
+SORTIE_SPEEDRUN = "速刷模式"
+SORTIE_SPEEDRUN_PRIORITY = ["休息", "事件", "小怪", "精英"]
+# 出击速刷：选路尽量不打仗。整条路径求和，战斗节点给负分，多走一个战斗就少分；首领前那段只看非战斗节点多少
+SORTIE_SPEEDRUN_ROUTE_WEIGHTS = {"types": {"休息": 3, "事件": 2, "小怪": -4, "精英": -8, "结算": 0},
+                                 "shop": 0, "special": {"kalei_in_map": 0, "seal_in_map": 0, "hard_in_map": -4}}
+
+
+def _sortie_speedrun(task: TriggerTask):
+    """出击模式开了「速刷模式」：选路避开战斗，第一层首领打完进第二层、选完第二层首领就退出（用户 2026-10-27）。"""
+    return getattr(task, "name", "") == "自动出击模式" and _get_config_value(task, SORTIE_SPEEDRUN, False) is True
+
+
 def _get_route_priority(task: TriggerTask):
     """读取路线节点优先级配置，返回列表；解析失败使用默认顺序。"""
+    if _sortie_speedrun(task):
+        return list(SORTIE_SPEEDRUN_PRIORITY)
     value = _get_config_value(task, '路线优先级', ["休息", "事件", "小怪", "精英"])
     value = list(value) if isinstance(value, (list, tuple)) else ["休息", "事件", "小怪", "精英"]
     ns = getattr(task, 'node_status', None)
@@ -4736,6 +4750,8 @@ def handle_route_selection(task: TriggerTask):
 
 def _chaos_route_weights(task: TriggerTask):
     """当前玩法的路线权重，按本层血量和「目标装备只能靠本层事件拿」调整（chaos_strategy.route_weights）。"""
+    if _sortie_speedrun(task):
+        return SORTIE_SPEEDRUN_ROUTE_WEIGHTS
     mode = getattr(task, "chaos_mode", "")
     if mode not in chaos_strategy.ROUTE_WEIGHTS:
         return None
@@ -5878,19 +5894,21 @@ def handle_expedition_result(task: TriggerTask):
     failed_box = find_box_at_point(task, 0.296, 0.719)
     if hasattr(task, 'node_status'):
         task.node_status['total_rounds'] += 1
+    # 出击速刷也是打完第一层就退（第二层选完首领就逃脱），退出时已记过成功
+    first_layer_only = _get_config_value(task, '只打第一层', False) or _sortie_speedrun(task)
     if complete_box and "完成" in complete_box.name:
         if hasattr(task, 'node_status'):
             task.node_status['success_rounds'] += 1
             task.log_info("出击模式探险结果: 成功")
     elif complete_box and "失败" in complete_box.name:
-        if not _get_config_value(task, '只打第一层', False):
+        if not first_layer_only:
             task.log_info("出击模式探险结果: 失败")
         elif task.node_status.get('pass_final_boss_count', 0) == 0:
             task.log_info("出击模式探险结果: 失败")
     elif not complete_box and not failed_box:
-        if _get_config_value(task, '只打第一层', False) and task.node_status.get('pass_final_boss_count', 0) >= 1: # 完成第一层任务
+        if first_layer_only and task.node_status.get('pass_final_boss_count', 0) >= 1: # 完成第一层任务
             task.log_info("卡厄思模式探险结果: 成功")
-        elif not _get_config_value(task, '只打第一层', False) and not task.node_status.get('is_escaped', 0): # 完成了任务且没有逃脱
+        elif not first_layer_only and not task.node_status.get('is_escaped', 0): # 完成了任务且没有逃脱
             task.node_status['success_rounds'] += 1
             task.log_info("卡厄思模式探险结果: 成功")
         else:
@@ -6015,6 +6033,13 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
         hasattr(task, 'node_status')
         and task.node_status.get('pass_final_boss_count', 0) >= 1
     ):
+        return False
+
+    if _sortie_speedrun(task):
+        # 速刷不在第一层结算页退出：进第二层选完首领再退（handle_speedrun_exit）
+        if task.node_status.get("speedrun_wait_logged") != task.node_status.get("pass_final_boss_count", 0):
+            task.node_status["speedrun_wait_logged"] = task.node_status.get("pass_final_boss_count", 0)
+            task.log_info("出击速刷：第一层首领已打完，结算页不退出，进第二层选完首领再退出")
         return False
 
     import ledger_check
