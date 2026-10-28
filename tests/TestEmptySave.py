@@ -559,3 +559,25 @@ class TestNoFlash(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestOpeningRerollMenu(unittest.TestCase):
+    # 2026-10-28 03:17 实录：开局没刷到「移除2张」点菜单重开，菜单（卡厄思信息页）的战利品图标被认成事件选项
+    # 「获得的战利品可以在返回时带回舰船。结束」，事件处理又点菜单把它关掉，回到同一个开局事件，原地打转 100 多次
+    MENU = [box(0.179, 0.050, "卡厄思信息"), box(0.677, 0.164, "战利品"), box(0.810, 0.545, "未获得战利品。"),
+            box(0.810, 0.816, "获得的战利品可以在返回时带回舰船。"), box(0.824, 0.890, "结束"), box(0.948, 0.926, "逃脱")]
+
+    def test_menu_left_to_escape(self):
+        t = empty_task(texts=self.MENU, config={"刷空档": True})
+        t.find_feature = lambda **k: []
+        old = utils.recognize_event_options
+        utils.recognize_event_options = lambda task, page="": [
+            {"description": "获得的战利品可以在返回时带回舰船。结束", "x": 0.82, "y": 0.95,
+             "description_region": (0.7, 0.85, 0.95, 0.92)}]
+        try:
+            self.assertFalse(utils.handle_event_task(t))
+        finally:
+            utils.recognize_event_options = old
+        self.assertEqual([], t.clicks)
+        self.assertTrue(utils.handle_escape(t))
+        self.assertEqual(["逃脱"], t.clicks)

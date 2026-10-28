@@ -205,6 +205,10 @@ class TestPriorities(unittest.TestCase):
         self.assertTrue(NOT_EVENT_PAGE.search("收藏自定义"))   # 存档库页被当成事件连点（2026-10-27 12:02）
         self.assertTrue(NOT_EVENT_PAGE.search("批量分解"))
         self.assertTrue(NOT_EVENT_PAGE.search("每周进展"))   # 赛季页补给商店被当成事件连点（2026-10-28 02:12）
+        # 局内菜单的战利品图标被当成事件，刷空档开局重开又点菜单关掉它，原地打转（2026-10-28 03:17）
+        self.assertTrue(NOT_EVENT_PAGE.search("卡厄思信息"))
+        self.assertTrue(NOT_EVENT_PAGE.search("获得的战利品可以在返回时带回舰船。"))
+        self.assertFalse(NOT_EVENT_PAGE.search("洗清罪孽期间异形生命值变为1移除1张所选卡牌，普通战斗3次"))
         from utils import at_save_library
         page = lambda *names: SimpleNamespace(all_texts=[SimpleNamespace(name=n) for n in names])
         self.assertTrue(at_save_library(page("存储数据", "批量分解", "收藏自定义", "装备")))
