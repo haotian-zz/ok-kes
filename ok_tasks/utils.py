@@ -2310,12 +2310,13 @@ def _dialogue_line(task: TriggerTask):
         if sum(len(b.name) for b in near) >= 4:
             return max(near, key=lambda b: len(b.name))
     # 画面中间的单行气泡对白，Space 提示太小 OCR 认不出（2026-10-28 01:18 实录「除掉……不适格者……」
-    # 被拆成「除掉…」「·不适格者」两段，卡了 2 分多钟）：顶栏以外只有同一行的一到三段中文，带对白标点或够长
+    # 被拆成「除掉…」「·不适格者」两段，卡了 2 分多钟；01:29 两行气泡「骰子，心理 / 研究。」）：
+    # 顶栏以外只有一到三段中文、挤在一个气泡大小的范围里（最多两行），带对白标点或够长
     if 1 <= len(texts) <= 3:
-        ys = [center(b)[1] for b in texts]
-        joined = "".join(b.name.strip() for b in sorted(texts, key=lambda b: b.x))
+        xs, ys = [center(b)[0] for b in texts], [center(b)[1] for b in texts]
+        joined = "".join(b.name.strip() for b in sorted(texts, key=lambda b: (round(center(b)[1], 2), b.x)))
         cjk = len(re.findall(r"[\u4e00-\u9fff]", joined))
-        if (max(ys) - min(ys) <= 0.03 and 0.2 <= min(ys) and max(ys) <= 0.92
+        if (max(ys) - min(ys) <= 0.06 and max(xs) - min(xs) <= 0.3 and 0.2 <= min(ys) and max(ys) <= 0.92
                 and cjk >= 4 and (cjk >= 6 or re.search(r"[…，。！？、·!?]|\.\.", joined))):
             return max(texts, key=lambda b: len(b.name))
     return None

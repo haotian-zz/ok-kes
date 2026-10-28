@@ -230,6 +230,9 @@ class TestDialogueLine(unittest.TestCase):
         self.assertEqual("·不适格者", line.name)
         # 只有一两个字、或者分散在不同高度的不算
         self.assertIsNone(_dialogue_line(SimpleNamespace(width=W, height=H, all_texts=top + [box("加载", 0.5, 0.5)])))
+        # 01:29 两行气泡
+        two = top + [box("骰子，", 0.374, 0.395), box("心理", 0.415, 0.394), box("研究。", 0.373, 0.434)]
+        self.assertIsNotNone(_dialogue_line(SimpleNamespace(width=W, height=H, all_texts=two)))
         spread = top + [box("剩余回合", 0.3, 0.3), box("敌人行动中", 0.6, 0.6)]
         self.assertIsNone(_dialogue_line(SimpleNamespace(width=W, height=H, all_texts=spread)))
 
