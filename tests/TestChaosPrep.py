@@ -158,6 +158,16 @@ class TestAtLobby(unittest.TestCase):
         # 法典合成好后的零式系统初始页（有「进入」）要交给页面流程，不算局外
         self.assertIsNone(ChaosMode._out_of_run_page(page("零式系统", "裁决之沼", "进入")))
 
+    def test_same_team_tolerates_one_char(self):
+        # 2026-10-28 12:06：「海德马丽」当成编队不一致，重开主战员列表时断网跑进了存储数据页
+        from utils_chaos_prep import same_team
+        want = ["罗丝薇瑟", "米卡", "海德玛丽"]
+        self.assertTrue(same_team(["罗丝薇瑟", "米卡", "海德马丽"], want))
+        self.assertFalse(same_team(["罗丝薇瑟", "米卡", "海德"], want))
+        self.assertFalse(same_team(["罗丝薇瑟", "米米", "海德玛丽"], want))     # 两字名不放宽
+        self.assertFalse(same_team(["罗丝薇瑟", None, "海德玛丽"], want))
+        self.assertFalse(same_team(["蒂菲拉", "米卡", "海德玛丽"], want))
+
     def test_lobby_start_reads_preset_before_entering(self):
         # 2026-10-28 11:02：停在难度页启动，回主页后没读预设就进了卡厄思，删卡/闪光列表全空
         from unittest import mock

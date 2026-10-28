@@ -466,6 +466,20 @@ def _leave_member_list(task: BaseTask):
         click_rel(task, *SAVE_TEAM_CANCEL, after=3, reason="不保存编队")
 
 
+def same_team(current, members):
+    """编队一致：逐位比名字，3 字以上的名字允许 OCR 错一个字（2026-10-28 12:06 实录「海德马丽」当成不一致，
+    重开主战员列表时断网，脚本跑进了存储数据页连点）。"""
+    if len(current) != len(members):
+        return False
+    for got, want in zip(current, members):
+        got, want = norm(got or ""), norm(want)
+        if got == want:
+            continue
+        if len(want) < 3 or len(got) != len(want) or sum(a != b for a, b in zip(got, want)) > 1:
+            return False
+    return True
+
+
 def setup_team(task: BaseTask, members):
     """在配置队伍页把三个主战员换成 members（顺序即槽位顺序）。已经一致就什么都不点。"""
     db = get_db()
@@ -474,7 +488,7 @@ def setup_team(task: BaseTask, members):
         return False
     current = read_team(task)
     task.log_info(f"当前编队：{current}，目标：{members}")
-    if [norm(n or "") for n in current] == [norm(m) for m in members]:
+    if same_team(current, members):
         return True
     click_rel(task, *TEAM_SLOTS[0], after=4, reason="打开主战员列表")
     if not wait_text(task, r"主战员列表", timeout=8):
@@ -502,7 +516,7 @@ def setup_team(task: BaseTask, members):
     if not wait_text(task, r"^配置队伍$", region=(0, 0, 0.3, 0.1), timeout=8):
         return False
     final = read_team(task)
-    ok = [norm(n or "") for n in final] == [norm(m) for m in members]
+    ok = same_team(final, members)
     task.log_info(f"编队结果：{final}（{'正确' if ok else '不符'}）")
     return ok
 
