@@ -3017,7 +3017,7 @@ def handle_equipment(task: TriggerTask):
                     # 带刻印或目标装备提炼掉不可撤回：留当时画面，事后核对刻印有没有认错
                     import chaos_trace
                     chaos_trace.step(task, "refine", f"{slot + 1}号位提炼「{new_equipment['name']}」", task.frame,
-                                     imprint=new_equipment.get("imprint"), kind=imprint_kind,
+                                     imprint=new_equipment.get("imprint"), icon=imprint_kind,
                                      reason=install_reason, desc=new_equipment.get("description"))
                 task.click_box(refine_box)
                 task.sleep(1)
