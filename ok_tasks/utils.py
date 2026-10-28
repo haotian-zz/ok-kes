@@ -2157,9 +2157,12 @@ def _ensure_auto_play_fast(task: TriggerTask, context=""):
     if not found:
         return None
     level, lb, rb, (x, y) = found
-    if level == 2:
-        return False
     now = time.time()
+    if level == 2:
+        if now - getattr(task, "_auto_play_ok_logged", 0) > 120:
+            task._auto_play_ok_logged = now
+            task.log_info(f"{context}自动播放已在两档（左箭头亮 {lb}、右箭头亮 {rb}）")
+        return False
     clicks = [t for t in getattr(task, "_auto_play_clicks", []) if now - t < 60]
     if len(clicks) >= AUTO_PLAY_MAX_CLICKS or (clicks and now - clicks[-1] < 1.5):
         task._auto_play_clicks = clicks
