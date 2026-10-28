@@ -201,6 +201,22 @@ class TestCloseMap(unittest.TestCase):
         self.assertEqual((0, []), (st["keys"], st["clicks"]))
 
 
+class TestEmptySpot(unittest.TestCase):
+    def test_empty_spot_clear_of_ui(self):
+        # 825281f：点空白处原来在 (0.62, 0.9)，路线页的节点大图从 0.52 起、左边小地图到 0.42，节点大图状态下点上去不回来
+        # （2026-10-27 09:33）；挪到 (0.5, 0.96)：两者中间、全屏地图最下一行节点和左下角缩放按钮之外
+        x, y = cm.EMPTY_SPOT
+        self.assertTrue(0.42 < x < 0.52, x)
+        self.assertGreater(y * cm.REF_H, cm.MAP_BOTTOM)
+        zx1, zy1, zx2, zy2 = cm.ZOOM_REGION
+        self.assertFalse(zx1 <= x <= zx2 and zy1 <= y <= zy2)
+        for name in ("layer1_b0.png", "drag_hit_node.jpg"):
+            frame = cv2.imread(os.path.join(FIX, name))
+            h, w = frame.shape[:2]
+            for n in cm.detect_nodes(frame):
+                self.assertGreater(abs(n["y"] - y * h) + abs(n["x"] - x * w), 120 * cm._scale(frame), (name, n))
+
+
 class TestDragHeight(unittest.TestCase):
     def test_drag_between_rows(self):
         # 按在节点上拖会被当成点节点、全屏地图关掉（2026-10-27 实录 0.55 在第 3 行节点下尖角）
@@ -269,8 +285,40 @@ class TestDragHeight(unittest.TestCase):
         self.assertNotIn(("up",), ev)
         self.assertTrue(all(e[3] == cm.MK_LBUTTON for e in ev[2:-1]))
 
-    def _closing_task(self, m_reopens, swallow=0):
-        """拍到第 2 帧后再拖，地图关回路线页；m_reopens=False 时按 M 也不响应（打不开）。"""
+    def test_slow_drag_holds_long_enough(self):
+        # 641c8b7：框架 swipe_relative(duration=1.0) 实际 10 步 × 10ms，0.1 秒的甩动，游戏一卡帧按下和松开落在同一帧
+        # 就成了点击（08:15/08:31/08:37 地图被关）。慢拖：按住至少 0.5 秒、至少 10 步移到终点
+        ev, now = [], [0.0]
+
+        class Inter:
+            def move(self, x, y, down_btn=0):
+                ev.append(("move", now[0], down_btn))
+                return (x, y)
+            def post(self, msg, wparam, lparam): ev.append(("post", now[0], msg))
+
+        class T:
+            width, height = 1920, 1080
+            executor = type("E", (), {"interaction": Inter()})()
+            def mouse_down(self, x, y): ev.append(("down", now[0]))
+            def mouse_up(self): ev.append(("up", now[0]))
+            def swipe_relative(self, *a, **k): ev.append(("swipe", now[0]))
+
+        old = cm.time.sleep
+        cm.time.sleep = lambda s: now.__setitem__(0, now[0] + s)
+        try:
+            cm._drag(T(), 0.6, cm.DRAG_Y, 0.42)
+        finally:
+            cm.time.sleep = old
+        self.assertNotIn("swipe", [e[0] for e in ev])
+        down = next(e[1] for e in ev if e[0] == "down")
+        up = next(e[1] for e in ev if e[0] in ("post", "up"))
+        self.assertGreaterEqual(up - down, 0.5)
+        self.assertGreaterEqual(sum(1 for e in ev if e[0] == "move" and e[2] == cm.MK_LBUTTON), 10)
+
+    def _closing_task(self, m_reopens, swallow=0, stay_preview=True, route_delay=0.0, swallow_m=0):
+        """拍到第 2 帧后再拖，地图关回路线页；m_reopens=False 时按 M 也不响应（打不开）。
+        stay_preview=False：关掉后直接是转场、不停在节点大图状态；route_delay：关掉后过这么多秒（task.sleep 累计）路线页才认得出；
+        swallow_m：地图被拖动关掉后，头几下 M 不响应（2026-10-27 08:31 刚关上马上按 M 没反应），之后照常。"""
         import numpy as np
         good = cv2.imread(os.path.join(FIX, "drag_hit_node.jpg"))
         moved = good.copy()
@@ -279,23 +327,39 @@ class TestDragHeight(unittest.TestCase):
         views = [good, moved]
         route = cv2.resize(cv2.imread(os.path.join(FIX, "route_page.jpg")), (good.shape[1], good.shape[0]))
         preview = np.random.default_rng(1).integers(0, 255, good.shape, dtype=np.uint8)   # 不带顶栏的节点大图
+        # 关地图转场：路线页淡入、小地图（「放大」按钮）还没出来。画面不动，_settle 马上认为停稳（全黑帧相位相关是 nan，会等满 6 秒）
+        fading = route.copy()
+        x1, y1, x2, y2 = cm.ZOOM_IN_REGION
+        fading[int(y1 * route.shape[0]):int(y2 * route.shape[0]), int(x1 * route.shape[1]):int(x2 * route.shape[1])] = 0
         st = {"open": False, "pos": 0, "swipes": 0, "keys": 0, "logs": [], "preview": False, "clicks": 0,
-              "swallow": swallow}
+              "swallow": swallow, "swallow_m": swallow_m, "t": 0.0, "closed_at": None, "click_pos": [], "click_t": []}
 
         class T:
             frame = None
             def send_key(self, k):
                 st["keys"] += 1
+                if st["closed_at"] is not None and st["swallow_m"] > 0:
+                    st["swallow_m"] -= 1
+                    return
                 if st["open"]:
                     st["open"] = False
                 elif st["keys"] == 1 or m_reopens:
                     st["open"] = True
-            def sleep(self, s): pass
+            def sleep(self, s): st["t"] += s
             def log_info(self, msg, *a, **k): st["logs"].append(msg)
             def next_frame(self):
-                self.frame = views[st["pos"]] if st["open"] else preview if st["preview"] else route
+                if st["open"]:
+                    self.frame = views[st["pos"]]
+                elif st["preview"]:
+                    self.frame = preview
+                elif st["closed_at"] is not None and st["t"] - st["closed_at"] < route_delay:
+                    self.frame = fading
+                else:
+                    self.frame = route
             def click(self, x, y):
                 st["clicks"] += 1
+                st["click_pos"].append((x, y))
+                st["click_t"].append(st["t"])
                 if st["preview"] and st["swallow"]:      # 落在关地图转场里的点击被吞掉
                     st["swallow"] -= 1
                     return
@@ -306,7 +370,8 @@ class TestDragHeight(unittest.TestCase):
                     st["pos"] = 1
                 elif st["swipes"] == 3:
                     st["open"] = False
-                    st["preview"] = True
+                    st["preview"] = stay_preview
+                    st["closed_at"] = st["t"]
 
         return T(), st
 
@@ -318,7 +383,36 @@ class TestDragHeight(unittest.TestCase):
         self.assertFalse(any("放弃这次扫描" in m for m in st["logs"]))
         self.assertEqual(3, st["keys"])                      # 打开、重开、扫完关掉
         self.assertEqual(1, st["clicks"])                    # 节点大图状态先点空白处才按 M（2026-10-27 09:33）
+        self.assertEqual([cm.EMPTY_SPOT], st["click_pos"])
         self.assertFalse(st["open"])
+
+    def test_gives_up_on_route_page_without_pressing_m_again(self):
+        # 4dc924b：重开那下 M 没响应、放弃扫描时已经在路线页，不能再按 M（这时 M 有效，会把地图打开，接着点路线节点点到地图上）
+        t, st = self._closing_task(m_reopens=True, swallow_m=1)
+        self.assertIsNone(cm.scan_layer(t, max_frames=3))
+        self.assertTrue(any("按 M 重新打开" in m for m in st["logs"]))
+        self.assertTrue(any("放弃这次扫描" in m for m in st["logs"]))
+        self.assertEqual(2, st["keys"])
+        self.assertFalse(st["open"])
+
+    def test_reopen_waits_for_slow_route_page(self):
+        # feaabf5：2026-10-27 09:05 拖完地图关了，路线页转场 3.5 秒还没出小地图；原来固定等 3 秒就判断、没认出就放弃。
+        # 按认出路线页为准：转场 5 秒也要等到、按 M 重开
+        t, st = self._closing_task(m_reopens=True, stay_preview=False, route_delay=5.0)
+        cm.scan_layer(t, max_frames=3)
+        self.assertTrue(any("按 M 重新打开" in m for m in st["logs"]))
+        self.assertFalse(any("放弃这次扫描" in m for m in st["logs"]))
+        self.assertEqual(3, st["keys"])
+
+    def test_reopen_wait_bounded_and_clicks_every_two_seconds(self):
+        # 路线页一直认不出：最多等 8 秒就放弃（不卡死），期间每 2 秒点一次空白处（fb3968c），点的都是空白处（825281f）
+        t, st = self._closing_task(m_reopens=True, stay_preview=False, route_delay=1e9)
+        self.assertIsNone(cm.scan_layer(t, max_frames=3))
+        self.assertTrue(any("放弃这次扫描" in m for m in st["logs"]))
+        self.assertFalse(any("按 M 重新打开" in m for m in st["logs"]))
+        waits = st["click_t"][:4]
+        self.assertEqual([2.0, 2.0, 2.0], [b - a for a, b in zip(waits, waits[1:])])
+        self.assertTrue(all(p == cm.EMPTY_SPOT for p in st["click_pos"][:4]))
 
     def test_reopen_clicks_again_when_first_click_swallowed(self):
         # 2026-10-27 11:31：点一次空白处没回来、等满 8 秒放弃；每 2 秒再点一次
