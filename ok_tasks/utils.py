@@ -6305,6 +6305,19 @@ def forced_god_variant(cards, god_cards):
     return chaos_strategy.pick_flash_variant(cards[0]["name"], cards, god_cards, min_sim=0.01)
 
 
+def god_card_in_preset(cards, god_cards):
+    """神闪三选一这张卡是不是目标预设里要神闪的卡。游戏的图钉按卡主人自己的预设钉，队友的卡也会钉
+    （2026-10-28 14:25 实录：海德玛丽刷刻印，罗丝薇瑟的剑刃破晓被按图钉选了，PT 多记 20）。"""
+    names = {c.get("name") for c in god_cards}
+    db = chaos_strategy.get_db()
+    for card in cards:
+        name = chaos_strategy.base_card_name(card["name"])
+        found = db.find_card(name) if db else None
+        if (found["name"] if found else name) in names:
+            return True
+    return False
+
+
 def _god_spark_pick(task: TriggerTask, x, y):
     """选定神闪：一页只记一次 PT，记下位置供确认那下重点。"""
     task.node_status["god_spark_count"] = task.node_status.get("god_spark_count", 0) + 1
@@ -6352,7 +6365,7 @@ def handle_view_original(task: TriggerTask):
         if cards and not god_dropped_unique:
             # 描述 OCR 会把行序打乱（2026-10-26 实录「生成3张剑穗加入手牌下一次明暗…」没对上），
             # 游戏给预设那张钉了图钉（target），PT 够就按图钉选
-            target_boxes, target_click_positions = find_target_card(task)
+            target_boxes, target_click_positions = find_target_card(task) if god_card_in_preset(cards, god_cards) else ([], [])
             if target_boxes:
                 task.log_info("神闪变体页：描述没对上，但游戏钉了预设那张，PT 账够，选它")
                 _god_spark_pick(task, *target_click_positions[0])

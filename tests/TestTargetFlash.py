@@ -90,3 +90,14 @@ class TestForcedGodVariant(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestGodCardInPreset(unittest.TestCase):
+    # 2026-10-28 14:25 实录：海德玛丽刷刻印，队友罗丝薇瑟的剑刃破晓（OCR「剑刀破晓」）神闪页按游戏图钉选了，PT 多记 20
+    def test_teammate_card_not_preset(self):
+        cards = [{"name": "剑刃破晓"}, {"name": "剑刀破晓"}, {"name": "剑奶破晓"}]
+        self.assertFalse(utils.god_card_in_preset(cards, [{"name": "展开极光", "god_spark": "x"}]))
+
+    def test_preset_card(self):
+        cards = [{"name": "剑刀破晓"}]
+        self.assertTrue(utils.god_card_in_preset(cards, [{"name": "剑刃破晓", "god_spark": "x"}]))
