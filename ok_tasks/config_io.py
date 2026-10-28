@@ -115,6 +115,32 @@ def migrate_renamed_config_keys(task, renames):
         write_json_file(config_file, data)
 
 
+def _int_from_text(value):
+    """旧版把数字存成字符串（「生命值大于多少优先闪光(百分比)」以前是 "60"）：能读成整数就返回整数，否则 None。"""
+    if isinstance(value, bool) or not isinstance(value, str):
+        return None
+    try:
+        return int(value.strip())
+    except ValueError:
+        return None
+
+
+def migrate_numeric_string_keys(task, keys):
+    """加载前把文件里这些键的数字字符串改成整数（框架按默认值类型校验，类型不对会被重置成默认值）。"""
+    config_file = get_relative_path(Config.config_folder, f"{task.__class__.__name__}.json")
+    data = read_json_file(config_file)
+    if not isinstance(data, dict):
+        return
+    changed = False
+    for key in keys:
+        number = _int_from_text(data.get(key))
+        if number is not None:
+            data[key] = number
+            changed = True
+    if changed:
+        write_json_file(config_file, data)
+
+
 def _export_config_to_text(task):
     """将任务的用户配置导出为 base64 编码文本。"""
     config_file = task.config.config_file
@@ -166,6 +192,9 @@ def _import_config_from_text(task, encoded_text):
             ignored_keys.append(key)
             continue
         default_value = allowed_config[key]
+        if isinstance(default_value, int) and not isinstance(default_value, bool) \
+                and _int_from_text(value) is not None:
+            value = _int_from_text(value)     # 旧版分享的数字字符串
         if type(value) is not type(default_value):
             ignored_keys.append(key)
             continue

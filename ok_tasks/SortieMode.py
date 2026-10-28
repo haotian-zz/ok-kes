@@ -7,6 +7,7 @@ from config_io import (
     make_save_local_config_callback,
     make_switch_local_config_callback,
     migrate_game_language_config_file,
+    migrate_numeric_string_keys,
     migrate_renamed_config_keys,
 )
 from config_sync import check_upload_if_needed, show_hot_configs_dialog
@@ -17,6 +18,9 @@ from utils import (
     _migrate_route_boss_to_elite,
     _simplify_texts,
 )
+
+
+FLASH_HP_KEY = "生命值大于多少优先闪光(百分比)"
 
 
 class SortieMode(TriggerTask):
@@ -54,11 +58,11 @@ class SortieMode(TriggerTask):
         self.default_config["优先移除基础牌"] = True
         self.default_config["几轮后停止(0为不停止)"] = 0
         self.default_config["卡牌奖励优先级"] = ["梦之边境", "装备包"]
-        self.default_config["丢弃卡牌优先级"] = ["展开极光", "极光剑", "凝聚极光"]
         self.default_config["任务优先级"] = ["选取随机3条命运","信用点增加", "移除"]
         self.default_config["拉黑任务"] = ["咒术卡牌", "压力"]
         self.default_config["拉黑主战员"] = ["黛安娜", "阿黛尔海特"]
-        self.default_config["生命值大于多少优先闪光(百分比)"] = "60"
+        # 以前默认值是字符串 "60"，load_config 会把旧文件里的数字字符串迁成整数
+        self.default_config[FLASH_HP_KEY] = 60
         self.default_config["路线优先级"] = ["休息", "事件", "小怪", "精英"]
         self.default_config["第几层boss前自动暂停"] = "不暂停"
         # self.default_config["从右往左出牌"] = True
@@ -90,6 +94,7 @@ class SortieMode(TriggerTask):
             },
             '第几层boss前自动暂停': {'type': 'drop_down', 'options': ['不暂停', '1', '2', '3']},
         }
+        self._declare_ui_config()
         self.config_description['游戏语言'] = "国际服请设置为繁体中文"
         self.config_description[utils_sortie.USE_SANITY] = "每层结算时消耗理智（理性，右上角大脑图标）领取卡厄思战利品；关闭则放弃战利品"
         self.config_description[utils_sortie.SANITY_REFILL] = (
@@ -112,8 +117,58 @@ class SortieMode(TriggerTask):
             "德朗商店免费刷新次数用完后，仅当信用点大于该值且足够支付刷新价格时才付费刷新。"
         )
 
+    def _declare_ui_config(self):
+        """界面用的声明：数字范围、列表选择器和之前缺的说明（default_config 不变）。"""
+        tag = lambda suggest=None, options=None: {
+            'widget': 'tag_list', **({'suggest': suggest} if suggest else {}), **({'options': options} if options else {})}
+        self.config_type.update({
+            FLASH_HP_KEY: {'min': 0, 'max': 100},
+            utils_sortie.SORTIE_LEVEL: {'min': 0, 'max': 999},
+            '商店刷新信用点阈值': {'min': 0, 'max': 9999},
+            '几轮后停止(0为不停止)': {'min': 0, 'max': 9999},
+            '出战主战员优先级': tag('members'),
+            '主战员优先级': tag('members'),
+            '拉黑主战员': tag('members'),
+            '出牌优先级': tag('cards'),
+            '获得卡牌优先级': tag('cards'),
+            '移除卡牌列表': tag('cards'),
+            '复制卡牌列表': tag('cards'),
+            '闪光卡牌列表': tag('cards'),
+            '卡牌奖励优先级': tag('cards'),
+            '装备1号位优先级': tag('equipment1'),
+            '装备2号位优先级': tag('equipment2'),
+            '装备3号位优先级': tag('equipment3'),
+            '任务优先级': tag(),
+            '拉黑任务': tag(),
+            '路线优先级': tag(options=["休息", "事件", "小怪", "精英"]),
+        })
+        self.config_description.update({
+            '出战主战员优先级': "选人页按顺序选出战主战员（先翻完整个列表找第一个，找不到再选翻到过的最靠前的）",
+            '主战员优先级': "选队友（辅助主战员）时按这个顺序",
+            '拉黑主战员': "选人时不选这些主战员",
+            '出牌优先级': "战斗中手牌按这个顺序出（名字包含即可）",
+            '获得卡牌优先级': "获得卡牌页按顺序选",
+            '移除卡牌列表': "移除卡牌时按顺序找这些卡",
+            '复制卡牌列表': "复制时按顺序找这些卡",
+            '闪光卡牌列表': "闪光时按顺序找这些卡",
+            '装备1号位优先级': "1 号位（武器）想要的装备，按顺序",
+            '装备2号位优先级': "2 号位（防具）想要的装备，按顺序",
+            '装备3号位优先级': "3 号位（饰品）想要的装备，按顺序",
+            '只打第一层': "第一层首领打完就退出，算一轮成功",
+            '进入商店': "路线页经过德朗商店时进去",
+            '优先移除基础牌': "移除卡牌时先删基础牌",
+            '几轮后停止(0为不停止)': "成功几轮后停任务，0＝不停",
+            '卡牌奖励优先级': "卡牌奖励页按顺序选（「梦之边境」「装备包」这类奖励名也行）",
+            '任务优先级': "事件任务选项里包含这些文字的按顺序优先选",
+            '拉黑任务': "事件任务选项里包含这些文字的不选",
+            FLASH_HP_KEY: "休息点：生命值百分比不低于这个数、信用点够就闪光，否则休息",
+            '路线优先级': "选路时节点类型的优先顺序",
+            '第几层boss前自动暂停': "到这一层首领前暂停任务，方便手动接管",
+        })
+
     def load_config(self):
         migrate_game_language_config_file(self)
+        migrate_numeric_string_keys(self, [FLASH_HP_KEY])
         # 「领取奖励」改名「使用理智领取奖励」（2026-10-27），沿用旧值
         migrate_renamed_config_keys(self, {"领取奖励": utils_sortie.USE_SANITY})
         super().load_config()

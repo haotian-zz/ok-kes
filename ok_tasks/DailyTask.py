@@ -57,8 +57,14 @@ class DailyTask(BaseTask):
         self.config_type = {
             "咖啡点单": {"type": "drop_down", "options": ["自动", "堂食", "外带"]},
             "清体力分类": {"type": "drop_down", "options": ["成长", "主战员", "辅战员", "潜能", "记忆碎片"]},
-            "清体力战斗效率": {"type": "drop_down", "options": [1, 2, 3, 4, 5, 6]},
+            # 原来是整数选项的下拉框：ok 原生的下拉控件会拿选项去翻译，整数会让主窗口建不起来；改成 1～6 的数字框，存的还是整数
+            "清体力战斗效率": {"min": 1, "max": 6},
             "疗愈中心治疗方式": {"type": "drop_down", "options": list(utils_daily.HEAL_PLANS)},
+            "清体力保留以太": {"min": 0, "max": 99999},
+            # 各项的细分设置只在这一项打开时显示（新界面按 sub_configs 隐藏）
+            "喝咖啡": {"sub_configs": {True: ["咖啡点单"]}},
+            "清体力": {"sub_configs": {True: ["清体力分类", "清体力关卡", "清体力战斗效率", "清体力保留以太"]}},
+            "疗愈中心": {"sub_configs": {True: ["疗愈中心治疗方式"]}},
         }
 
     def _step_kwargs(self, fn_name):

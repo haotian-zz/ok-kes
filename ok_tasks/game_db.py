@@ -250,6 +250,27 @@ class GameDB:
                 names += [v for v in vals if v not in names]
         return names
 
+    def equipment_names(self, slot=None, mode=None):
+        """界面选择器用：装备名（国服名在前，再加国际服名、gamekee 名），slot 给了只要这个位置，mode="出击" 只要出击装备、"卡厄思" 不要出击专用的。"""
+        names = []
+        for e in self.equipment:
+            if slot is not None and e.get("slot") != slot:
+                continue
+            if mode == "出击" and e.get("mode") != "出击":
+                continue
+            if mode == "卡厄思" and e.get("mode") == "出击":
+                continue
+            for k in self.EQUIPMENT_NAME_KEYS:
+                v = e.get(k)
+                if v and v not in names:
+                    names.append(v)
+        return names
+
+    def card_names(self, include_neutral=True):
+        """界面选择器用：所有卡名（角色卡 + 中立卡），去重保序。"""
+        pool = self.cards + (self.neutral_cards if include_neutral else [])
+        return list(dict.fromkeys(c["name"] for c in pool if c.get("name")))
+
     # ---------------- 工具 ----------------
 
     @staticmethod
@@ -280,6 +301,15 @@ def _strip_common(text, base):
         if tag in ("insert", "replace"):
             keep.append(text[j1:j2])
     return "".join(keep)
+
+
+@lru_cache(maxsize=1)
+def combatant_names():
+    """主战员国服名（只读 characters.json，不建整个库），给配置下拉框用。"""
+    try:
+        return [c["name"] for c in _load("characters.json")["combatants"] if c.get("name")]
+    except (OSError, ValueError, KeyError):
+        return []
 
 
 @lru_cache(maxsize=1)

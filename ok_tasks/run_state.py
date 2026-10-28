@@ -82,6 +82,8 @@ def summary(task, result, reason=""):
            "layers": ns.get("pass_final_boss_count", 0), "nodes": ns.get("node_count", 0),
            "equipment": names, "imprints": (list(eq.get("imprints") or []) + ["", "", ""])[:3],
            "imprint_peak": ns.get("imprint_peak", 0), "chaos_core": ns.get("chaos_core_got") or "",
+           # 本局遇没遇到章鱼哥（首页统计用；旧记录没有这一项）
+           "octopus_seen": bool(ns.get("octopus_seen")),
            "mode": getattr(task, "chaos_mode", ""), "imprint_mode": utils_imprint.enabled(task)}
     if rec["imprint_mode"]:
         try:

@@ -154,6 +154,7 @@ class ChaosMode(TriggerTask):
             utils_imprint.SLOT_KEY: {'min': 1, 'max': 3},
             utils_imprint.DIFF_KEY: {'min': 1, 'max': 15},
         }
+        self._declare_ui_config()
         self.config_description['游戏语言'] = "国际服请设置为繁体中文"
         self.config_description['卡厄思玩法'] = (
             "探索度：优先没见过的事件选项；刷存档-空存：删光目标主战员的卡，避开闪光/获得卡；"
@@ -250,6 +251,80 @@ class ChaosMode(TriggerTask):
         self.config_description['商店刷新信用点阈值'] = (
             "德朗商店免费刷新次数用完后，仅当信用点大于该值且足够支付刷新价格时才付费刷新。"
         )
+
+    def _declare_ui_config(self):
+        """界面用的声明：数字范围、角色/地图下拉、列表选择器、按玩法显示（sub_configs）和之前缺的说明。
+        只加 config_type / config_description，default_config 和存储格式不变。"""
+        names = game_db.combatant_names()
+        member_pick = {'type': 'drop_down', 'options': names} if names else {}
+        tag = lambda suggest=None, options=None: {
+            'widget': 'tag_list', **({'suggest': suggest} if suggest else {}), **({'options': options} if options else {})}
+        self.config_type.update({
+            '目标主战员': dict(member_pick),
+            '刷存档主战员': dict(member_pick),
+            '队友': tag('members'),
+            utils.EMPTY_TARGETS: tag('members'),
+            '探索度达到多少级后改刷目标卡组': {'min': 0, 'max': 100},
+            '保留大于多少TB的存档': {'min': 0, 'max': 999999},
+            '多少信用点以上冥想': {'min': 0, 'max': 9999},
+            '商店刷新信用点阈值': {'min': 0, 'max': 9999},
+            '几轮后停止(0为不停止)': {'min': 0, 'max': 9999},
+            utils_imprint.MAP_KEY: {'type': 'drop_down', 'options': list(utils_imprint.MAP_NAMES)},
+            utils_imprint.RARE_KEY: {'min': 0, 'max': 999},
+            utils_imprint.MAX_SYNTH_KEY: {'min': 1, 'max': 999},
+            utils_imprint.BAN_KEY: tag(options=[t for t in utils_imprint.CODEX_TRAITS if t != "疎忽"]),
+            utils_imprint.TARGET_IMPRINT_KEY: tag(),
+            '装备1号位优先级': tag('equipment1'),
+            '装备2号位优先级': tag('equipment2'),
+            '装备3号位优先级': tag('equipment3'),
+            '移除卡牌列表': tag('cards'),
+            '闪光卡牌列表': tag('cards'),
+            '复制卡牌列表': tag('cards'),
+            '需要冥想的卡牌': tag('cards'),
+            '卡牌奖励优先级': tag('cards'),
+            '闪光优先级': tag(),
+            '任务优先级': tag(),
+            '拉黑任务': tag(),
+            '路线优先级': tag(options=["休息", "事件", "小怪", "精英"]),
+        })
+        for key, rules in scheme_sub_configs().items():
+            self.config_type.setdefault(key, {})['sub_configs'] = rules
+        self.config_description.update({
+            '目标主战员': "选了玩法时：自动编队的第一个人，删卡/闪光/复制都按他来；原有逻辑下只用于存档清理时保留他的存档",
+            '刷存档主战员': "原有逻辑：局内删卡、闪光、装备都认这个主战员（选了玩法时自动用目标主战员）",
+            '自动编队': "配置队伍页核对编队＝目标主战员＋两个队友，不对就换",
+            '存储数据保存上限大于多少': (
+                "原有逻辑：观测到的存储数据上限低于这个数就「再次观测」；刷存档-空存只看是不是 0（0＝不观测），门槛按「刷存档最低PT」"),
+            '保留大于多少TB的存档': "原有逻辑：存储数据收集完成页把低于这个 TB 的存档删掉，0＝全部保留；选了玩法时一个都不删",
+            '任务优先级': "原有逻辑：事件任务选项里包含这些文字的按顺序优先选",
+            '拉黑任务': "原有逻辑：事件任务选项里包含这些文字的不选",
+            '移除卡牌列表': "原有逻辑：移除卡牌时按顺序找这些卡（名字包含即可）",
+            '闪光卡牌列表': "原有逻辑：闪光时按顺序找这些卡",
+            '复制卡牌列表': "原有逻辑：复制时按顺序找这些卡",
+            '需要冥想的卡牌': "闪光没出想要的变体时记为待冥想，篝火时有钱就冥想重闪",
+            '多少信用点以上冥想': "有待冥想的卡时，信用点高于这个数才冥想（目标卡组钱够冥想就冥想，不看这个数）",
+            '装备1号位优先级': "目标主战员 1 号位（武器）想要的装备，按顺序；国服名、国际服名都认",
+            '装备2号位优先级': "目标主战员 2 号位（防具）想要的装备，按顺序",
+            '装备3号位优先级': "目标主战员 3 号位（饰品）想要的装备，按顺序",
+            '卡牌奖励优先级': "原有逻辑：卡牌奖励页按顺序选（「梦之边境」「装备包」这类奖励名也行）",
+            '指定记忆卡牌': "加工记忆 / 记忆卡牌选择页优先选这张；目标卡组的预设里有赛季记忆卡时按预设",
+            '优先使用金币治疗': "创伤中心：开了就用金币治疗，否则优先用旅行券",
+            '治疗崩溃': "精神崩溃发生页：治疗崩溃",
+            '优先移除基础牌': "原有逻辑：移除卡牌时先删基础牌",
+            '进入商店': "路线页经过德朗商店时进去（最后一个商店不管这项都会进去花钱）",
+            '指定面具卡牌': "人格面具页想要的卡牌描述（包含即可），留空直接跳过",
+            '面具卡牌刻印': "面具卡牌刻印页想要的刻印描述（包含即可）",
+            '只打第一层': "第一层首领打完就退出，算一轮成功",
+            '路线优先级': "原有逻辑：选路时节点类型的优先顺序（选了玩法时按整层路线规划）",
+            '几轮后停止(0为不停止)': "成功几轮后停任务，0＝不停",
+            '第几层boss前自动暂停': "到这一层首领前暂停任务，方便手动接管",
+            '队友': "自动编队时目标主战员之外的两个人（按槽位顺序）",
+            utils_imprint.MAP_KEY: "刷刻印：零式系统法典要的地图",
+            utils_imprint.DIFF_KEY: "刷刻印：法典要的难度",
+            utils_imprint.TRAIT_KEY: "刷刻印：法典要带的赛季特性（文字要一致）",
+            utils_imprint.RARE_KEY: "刷刻印：法典的稀有命运加成至少多少",
+            utils_imprint.BAN_KEY: "刷刻印：法典带这些词条就不要，刷新重新合成",
+        })
 
     def load_config(self):
         migrate_flash_priority_config_file(self)
@@ -501,6 +576,40 @@ class ChaosMode(TriggerTask):
                 return
         # 帧末尾检查是否需要上传配置
         self._check_upload_if_needed()
+
+
+# 卡厄思玩法 → 只在这个玩法下才读（或才有意义）的配置项；没列出的项所有玩法都读。
+# 按读取处核对过（2026-10-28）：选了玩法时 chaos_strategy.config_overrides 覆盖的项只给原有逻辑；
+# 自动编队/地图/难度/零式升级只在选了玩法的入场流程里读；空档几项、章鱼哥速刷、刷刻印按用户 2026-10-28 的决定绑玩法。
+SCHEME_KEYS = {
+    chaos_strategy.MODE_LEGACY: [
+        '刷存档主战员', '存储数据保存上限大于多少', '保留大于多少TB的存档', '任务优先级', '拉黑任务', '闪光优先级',
+        '移除卡牌列表', '闪光卡牌列表', '复制卡牌列表', '需要冥想的卡牌', '卡牌奖励优先级', '首层刷特定闪光', '刷空档',
+        '优先移除基础牌', '进入商店', '刷初始卡牌', '路线优先级'],
+    chaos_strategy.MODE_EXPLORE: [
+        '目标预设', '自动编队', '卡厄思地图', '探索度达到多少级后改刷目标卡组', '需要冥想的卡牌', '进入商店',
+        utils.FLASH_EQUIP_NOT_TARGET],
+    chaos_strategy.MODE_EMPTY: [
+        '自动编队', '卡厄思地图', '刷存档难度', '刷存档最低PT', '调整零式升级', '存储数据保存上限大于多少', '需要冥想的卡牌',
+        utils.EMPTY_FLASH_LIMIT, utils.EMPTY_TARGETS, utils.NEUTRAL_SKIP, utils.EQUIP_TARGET_FIRST,
+        utils.FLASH_EQUIP_NOT_TARGET],
+    chaos_strategy.MODE_TARGET: [
+        '目标预设', '自动编队', '卡厄思地图', '刷存档难度', '刷存档最低PT', '刷存档开梦境模式', '调整零式升级', '闪光优先级',
+        '首层刷特定闪光', utils.FLASH_EQUIP_NOT_TARGET, utils.OCTOPUS_RUSH, utils_imprint.IMPRINT_KEY],
+}
+IMPRINT_SUB_KEYS = [utils_imprint.SPEEDRUN_KEY, utils_imprint.MAP_KEY, utils_imprint.DIFF_KEY, utils_imprint.TRAIT_KEY,
+                    utils_imprint.RARE_KEY, utils_imprint.BAN_KEY, utils_imprint.SLOT_KEY, utils_imprint.MAX_SYNTH_KEY,
+                    utils_imprint.TARGET_IMPRINT_KEY, ledger_check.LEDGER_KEY]
+
+
+def scheme_sub_configs():
+    """config_type 里的 sub_configs：{父项: {父项取值: [子项]}}。同一子项可以挂在父项的几个取值下（界面按「任一取值」显示）。"""
+    return {
+        '卡厄思玩法': {mode: list(keys) for mode, keys in SCHEME_KEYS.items()},
+        '自动编队': {True: ['队友']},
+        utils.OCTOPUS_RUSH: {True: [utils.OCTOPUS_CORE_ONLY]},
+        utils_imprint.IMPRINT_KEY: {True: list(IMPRINT_SUB_KEYS)},
+    }
 
 
 TARGET_DECK_FILE = os.path.join("configs", "chaos_target_deck.json")
