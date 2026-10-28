@@ -372,7 +372,7 @@ class TestRoute(unittest.TestCase):
         from utils import find_best_map_route_by_priority
         prio = ["休息", "事件", "小怪", "精英"]
         r = find_best_map_route_by_priority(self.map_info, prio, cs.ROUTE_WEIGHTS[cs.MODE_EMPTY])
-        # 空存：精英1+休息4+商店2=7，事件5+小怪2=7，同分时商店多的优先
+        # 空存：精英1+休息4+商店4=9 > 事件5+小怪2=7
         self.assertEqual([0, 2, 4, 5], r["route"])
 
     def test_explore_mode_prefers_event(self):

@@ -26,8 +26,9 @@ SEEN_FILE = os.path.join("configs", "chaos_seen.json")
 ROUTE_WEIGHTS = {
     MODE_EXPLORE: {"types": {"事件": 6, "休息": 3, "小怪": 3, "精英": 4, "结算": 0},
                    "shop": -1, "special": {"kalei_in_map": 1, "seal_in_map": 1, "hard_in_map": 1}},
+    # 刷空档先去商店花信用点删卡、再去问号事件（用户 2026-10-28）：商店 4+4 > 事件 5
     MODE_EMPTY: {"types": {"事件": 5, "休息": 4, "小怪": 2, "精英": 3, "结算": 0},
-                 "shop": 2, "special": {"kalei_in_map": 1, "seal_in_map": 0, "hard_in_map": -2}},
+                 "shop": 4, "special": {"kalei_in_map": 1, "seal_in_map": 0, "hard_in_map": -2}},
     MODE_TARGET: {"types": {"事件": 4, "休息": 3, "小怪": 2, "精英": 5, "结算": 0},
                   "shop": 1, "special": {"kalei_in_map": 1, "seal_in_map": 0, "hard_in_map": -1}},
 }
@@ -305,7 +306,8 @@ def score_effects(effects, mode, state=None):
             add(15, "移除全部咒术")
         if effects.get("transform_card"):
             add(-10, "转换卡")
-        for k, v, reason in (("spark", -25, "闪光"), ("god_spark", -30, "神闪"), ("neutral_card", -20, "中立卡"),
+        # 闪光选项一律不选（用户 2026-10-28：目标的卡局内最多闪 2 张，事件里的闪光是可以避开的）
+        for k, v, reason in (("spark", -500, "闪光"), ("god_spark", -500, "神闪"), ("neutral_card", -20, "中立卡"),
                              ("copy_card", -20, "复制"), ("curse_card", -15, "咒术卡"), ("event_card", -15, "获得卡"),
                              ("card_choice", -15, "选卡"), ("lumen_card", -10, "获得卡"), ("desire_card", -10, "获得卡")):
             if effects.get(k):

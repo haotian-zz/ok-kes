@@ -195,22 +195,25 @@ def sortie_leader(task: TriggerTask):
     return priority[0] if isinstance(priority, (list, tuple)) and priority else None
 
 
-def sortie_card_side(task: TriggerTask, name):
-    """卡牌归属（出击模式拿牌/删牌规则，用户 2026-10-28）：
-    leader=出战主战员的，other=别的角色的，neutral=中立卡，unknown=卡库对不上（OCR 错太多）。"""
-    leader = sortie_leader(task)
+def card_side(name, member):
+    """卡牌归属：leader=member 的，other=别的角色的，neutral=中立卡，unknown=卡库对不上（OCR 错太多）。"""
     try:
         db = game_db.get_db()
-        card = db.find_card(chaos_strategy.base_card_name(name), owner=leader)
+        card = db.find_card(chaos_strategy.base_card_name(name), owner=member)
         if not card:
             return "unknown"
         owner = db.card_owner(card)
         if owner is None:
             return "neutral"
-        lead = db.combatant(leader) if leader else None
+        lead = db.combatant(member) if member else None
     except Exception:  # noqa: BLE001
         return "unknown"
     return "leader" if lead and owner["id"] == lead["id"] else "other"
+
+
+def sortie_card_side(task: TriggerTask, name):
+    """卡牌归属（出击模式拿牌/删牌规则，用户 2026-10-28），按出战主战员算，见 card_side。"""
+    return card_side(name, sortie_leader(task))
 
 
 def sortie_pick_leader_card(task: TriggerTask, cards, priority, page):
@@ -1459,6 +1462,8 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
     )
     # 出击模式（用户 2026-10-28）：先把别的角色的卡删光，整副翻完都没有了才按移除列表/基础牌删
     remove_others_first = action == "移除" and _sortie_flag(task, SORTIE_REMOVE_OTHERS_FIRST)
+    # 刷空档（用户 2026-10-28）：局内不能闪目标的卡，不得不闪时闪队友的
+    avoid_target_flash = action in ("闪光", "灵光") and empty_mode(task)
     base_card_type = _get_game_text(task, "基础")
     target_member_box = task.box_of_screen(0.079, 0.092, 0.209, 0.675)
     flash_priority = (
@@ -1569,6 +1574,13 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
         return click_cards(cards, lambda card: sortie_card_side(task, card["name"]) == "other",
                            f"优先移除不是{sortie_leader(task)}的角色卡，点击")
 
+    def click_non_target_cards(cards):
+        if not avoid_target_flash or selected >= count:
+            return False
+        target = empty_target(task)
+        return click_cards(cards, lambda card: card_side(card["name"], target) == "other",
+                           f"刷空档：闪光不给{target}，点击队友的卡")
+
     def click_target_member_row_cards(cards):
         """刷空档时优先移除目标主战员同一排的卡牌。"""
         if not prefer_target_member_row or selected >= count:
@@ -1642,7 +1654,8 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
             task.log_info(f"{page}: 已选中{selected}/{count}张卡牌")
             return True
         click_other_member_cards(cards)
-        if not remove_others_first:
+        click_non_target_cards(cards)
+        if not remove_others_first and not avoid_target_flash:
             click_priority_cards(cards)
         if selected >= count:
             task.log_info(f"{page}: 已选中{selected}/{count}张卡牌")
@@ -1769,6 +1782,8 @@ def select_card(task: TriggerTask, card_names, count=1, action=""):
         key=lambda card: (card["y"], card["x"]),
         reverse=True,
     )
+    if avoid_target_flash:
+        fallback_cards.sort(key=lambda card: card_side(card["name"], empty_target(task)) == "leader")
     click_cards(fallback_cards, lambda card: True, "兜底补选卡牌，点击")
     task.log_info(f"{page}: 兜底处理完成，已选中{selected}/{count}张卡牌")
     return True
@@ -2482,7 +2497,13 @@ def handle_main_member_flash(task: TriggerTask):
     prioritized = _prioritize_target_member_click(
         task, click_positions, (0.173, 0.232, 0.858, 0.508)
     )
-    if prioritized != click_positions:
+    if empty_mode(task):
+        # 刷空档：闪光给队友，目标放最后（认不出目标时按自动编队的位置，目标在第 1 位）
+        target_pos = prioritized[0] if prioritized != click_positions else click_positions[0]
+        prioritized = [p for p in click_positions if p != target_pos] + [target_pos]
+        task.log_info("刷空档：主战员闪光先给队友，目标放最后")
+        task.sleep(1)
+    elif prioritized != click_positions:
         # 认出了目标主战员：先在她身上多点两次再退到别人。点击有动画，2 秒内没出确认就换人，
         # 2026-10-25 实录两次闪光分别给了凛和米卡（罗丝薇瑟在第 1 位）
         prioritized = [prioritized[0]] * 3 + prioritized[1:]
@@ -3513,6 +3534,156 @@ FATE_NEUTRAL_TITLES = {"领导"}
 def _avoid_god_spark(task: TriggerTask):
     """刷存档（目标卡组/空存）局内一律不神闪：神闪闪错卡会「爆存档」，局外也撤销不了（用户 2026-10-24）。"""
     return getattr(task, "chaos_mode", "") in (chaos_strategy.MODE_TARGET, chaos_strategy.MODE_EMPTY)
+
+
+# ---------------- 刷空档（用户 2026-10-28） ----------------
+# 一个存档最多移除 5 张＝目标主战员 3 张初始卡 + 2 张闪光卡，所以局内目标的卡最多闪 2 张；
+# 点了进场删一张的天赋时战斗里只能再闪 1 张（把「刷空档闪光几张就重开」改成 1）。
+# 过第一个航点（卡厄思奖励结算页）存档就存下了，到那就逃脱，没删完的局外改存档补；没到航点就闪够了张数，直接逃脱重开。
+EMPTY_FLASH_LIMIT = "刷空档闪光几张就重开"
+EMPTY_TARGETS = "刷空档目标顺序"
+
+
+def empty_mode(task: TriggerTask):
+    return getattr(task, "chaos_mode", "") == chaos_strategy.MODE_EMPTY
+
+
+def empty_target(task: TriggerTask):
+    return _get_config_value(task, "刷存档主战员", "") or _get_config_value(task, "目标主战员", "")
+
+
+def _empty_flash_limit(task: TriggerTask):
+    try:
+        return max(1, int(_get_config_value(task, EMPTY_FLASH_LIMIT, 2)))
+    except (TypeError, ValueError):
+        return 2
+
+
+def _canonical_member(name):
+    """配置里的角色名换成卡库里的名字（市长→海德玛丽、玛丽贝尔→玛丽贝儿）。"""
+    try:
+        info = game_db.get_db().combatant(name)
+    except Exception:  # noqa: BLE001
+        info = None
+    return info["name"] if info else name
+
+
+def empty_keep_members(task: TriggerTask):
+    """存档清理要保留的角色：当前目标 + 刷空档目标顺序里的（换了目标后前面存好的空档不能被分解）。"""
+    names = [_get_config_value(task, "目标主战员", "")]
+    if empty_mode(task):
+        names += list(_get_config_value(task, EMPTY_TARGETS, []) or [])
+    return {_canonical_member(n) for n in names if isinstance(n, str) and n}
+
+
+def record_empty_flash(task: TriggerTask, cards):
+    """刷空档：闪光三选一页是目标主战员的卡就记一次（同一页连着几帧只记一次）。返回是否记了。
+    三个变体同名，有一张认得出是目标的就算；三张都认不出归属也按目标的算（宁可多重开，不存坏档）。"""
+    if not empty_mode(task) or not cards:
+        return False
+    ns = task.node_status
+    target = empty_target(task)
+    name = chaos_strategy.base_card_name(cards[0]["name"])
+    key = [ns.get("node_count", 0), name]
+    last = ns.get("empty_flash_key") or [None, None, 0]
+    ns["empty_flash_key"] = key + [time.time()]
+    if last[:2] == key and time.time() - last[2] < 15:
+        return False
+    sides = [card_side(c["name"], target) for c in cards]
+    if "leader" not in sides and not all(side == "unknown" for side in sides):
+        task.log_info(f"刷空档：闪光的「{name}」不是{target}的卡（归属 {sides}），不计数")
+        return False
+    ns["empty_flashes"] = ns.get("empty_flashes", 0) + 1
+    why = "" if "leader" in sides else "（认不出归属，按目标的卡算）"
+    task.log_info(f"刷空档：{target}的卡「{name}」闪光{why}，本局第 {ns['empty_flashes']} 张"
+                  f"（{_empty_flash_limit(task)} 张就逃脱重开）")
+    return True
+
+
+def _escape_via_menu(task: TriggerTask, stamp_key, reason):
+    """局内逃脱：逃脱页就点「逃脱」；右上角菜单（Q）在、或在路线页就点开菜单，3 秒内不重复点。战斗中不动。"""
+    if handle_escape(task):
+        return True
+    hand = find_box_at_point(task, 0.512, 0.969)
+    if hand and re.search(r"\d+/10", hand.name):
+        return False
+    menu = find_box_at_point(task, 0.959, 0.080)
+    if not (menu and menu.name.strip() == "Q") and not is_route_selection_page(task):
+        return False
+    ns = task.node_status
+    if time.time() - ns.get(stamp_key, 0) < 3:
+        task.sleep(1)       # 刚点过菜单，等页面切过去
+        return True
+    if not ns.get(stamp_key):
+        ns["escape_reason"] = reason
+        task.log_info(reason)
+    ns[stamp_key] = time.time()
+    _move_and_click(task, 0.959, 0.051)
+    task.sleep(1)
+    return True
+
+
+def handle_empty_flash_escape(task: TriggerTask):
+    """刷空档：还没到第一个航点，目标的卡就闪够了张数 → 逃脱重开（没过航点，什么都不存）。"""
+    ns = getattr(task, "node_status", None)
+    if not empty_mode(task) or not isinstance(ns, dict) or ns.get("is_escaped") \
+            or ns.get("empty_flashes", 0) < _empty_flash_limit(task):
+        return False
+    return _escape_via_menu(task, "empty_escape_at",
+                            f"刷空档：没到第一个航点，{empty_target(task)}的卡已经闪了 {ns['empty_flashes']} 张，逃脱重开")
+
+
+def empty_waypoint_escape(task: TriggerTask):
+    """刷空档：到了第一个航点（卡厄思奖励结算页）就逃脱。过航点存档已经存下，没删完的局外改存档补（用户 2026-10-28）。
+    结算页上直接点右上角菜单（刷刻印速刷、首层刷特定闪光也是这么退的），逃脱页交给 handle_escape。"""
+    ns = task.node_status
+    if not empty_mode(task) or ns.get("is_escaped"):
+        return False
+    if time.time() - ns.get("empty_escape_at", 0) < 3:
+        task.sleep(1)
+        return True
+    if not ns.get("empty_escape_at"):
+        flashes = ns.get("empty_flashes", 0)
+        good = flashes < _empty_flash_limit(task)
+        ns["empty_saved"] = good
+        if good:
+            ns["success_rounds"] = ns.get("success_rounds", 0) + 1
+        ns["escape_reason"] = "刷空档：到第一个航点" + ("" if good else "（闪光超了）")
+        task.log_info(f"刷空档：到第一个航点，存档已存下；本局移除 {ns.get('removed_card_count', 0)} 张、"
+                      f"{empty_target(task)}的卡闪光 {flashes} 张，逃脱"
+                      + ("" if good else "（闪光超了，这个存档不算，不换目标）"))
+    ns["empty_escape_at"] = time.time()
+    _move_and_click(task, 0.959, 0.051)
+    task.sleep(1)
+    return True
+
+
+def empty_rotate_target(task: TriggerTask):
+    """刷空档存好一个档（到航点逃脱、闪光没超）就换「刷空档目标顺序」里的下一个；都存好了回到局外就停。
+    返回 True 表示换了目标（调用方要在重置状态后让下一局重新认目标头像）。"""
+    ns = getattr(task, "node_status", None) or {}
+    if not empty_mode(task) or not ns.get("empty_saved"):
+        return False
+    order = [n.strip() for n in (_get_config_value(task, EMPTY_TARGETS, []) or []) if isinstance(n, str) and n.strip()]
+    current = _get_config_value(task, "目标主战员", "")
+    if not order:
+        task.log_info(f"刷空档：{current}的空档已存（没配目标顺序，继续刷{current}）")
+        return False
+    names = [_canonical_member(n) for n in order]
+    cur = _canonical_member(current)
+    idx = names.index(cur) if cur in names else -1
+    if idx + 1 >= len(order):
+        import run_state
+        msg = f"刷空档：{'、'.join(order)} 的空档都存好了"
+        setattr(task, run_state.GOAL_STOP_ATTR, msg)
+        task.log_info(f"{msg}，回到局外就停")
+        return False
+    nxt = order[idx + 1]
+    task.log_info(f"刷空档：{current}的空档已存，换下一个目标「{nxt}」（下一局重新编队）")
+    task.config["目标主战员"] = nxt
+    if callable(getattr(task, "setup_strategy", None)):
+        task.setup_strategy()
+    return True
 
 
 # ---------------- 本局 PT 账（刷存档局内绝不爆 PT，用户 2026-10-25） ----------------
@@ -5223,7 +5394,10 @@ def _find_golden_card(task: TriggerTask):
 
 
 def click_golden_card(task: TriggerTask, frames=1):
-    """休息区主战员头上的金色卡牌气泡＝灵光一闪，看到就点（用户 2026-10-25）。frames>1 时连看几帧（气泡有明暗动画）。"""
+    """休息区主战员头上的金色卡牌气泡＝灵光一闪，看到就点（用户 2026-10-25）。frames>1 时连看几帧（气泡有明暗动画）。
+    刷空档不点：点了就是闪一张卡，可能闪到目标身上（用户 2026-10-28：局内不能闪卡）。"""
+    if empty_mode(task):
+        return False
     for i in range(frames):
         if i:
             task.sleep(0.4)
@@ -5605,6 +5779,11 @@ def handle_shop(task: TriggerTask):
                 task.log_info("handle_shop: 移除卡牌费用读取失败，继续挑选其他商品")
             task.node_status['shop'] = False
 
+        if empty_mode(task):
+            # 信用点只留着删卡（用户 2026-10-28），到第一个航点就逃脱，买装备、刷新都没用
+            task.log_info("德朗商店: 刷空档信用点只用来删卡，不买别的、不刷新")
+            return False
+
         current_credit = _get_current_credit(task)
         task.log_info(f"德朗商店挑选商品: 当前信用点={current_credit}")
         credit_icons = sorted(
@@ -5906,6 +6085,7 @@ def handle_view_original(task: TriggerTask):
             return True
     task.node_status["flash_page_waits"] = 0
     _dump_card_page(task, "view_original")
+    record_empty_flash(task, cards)
     cards, dropped_unique = _drop_unique_if_copy_pending(task, cards)
     cards, dropped_neutral = _drop_neutral_variants(task, cards)
 
@@ -6121,7 +6301,10 @@ def handle_expedition_result(task: TriggerTask):
             # 刷刻印达成即停（用户 2026-10-27）：至少 2 个目标装备 + 3 个目标刻印，回到局外就停，不再进法典合成/刷新
             run_state.check_goal_on_success(task)
         run_state.finish(task, "通关" if success else ("逃脱" if task.node_status.get('is_escaped') else "失败"))
+        rotated = empty_rotate_target(task)
         reset_mission_status(task)
+        if rotated:
+            task.node_status['save_target_member'] = False     # 下一局重新认新目标的头像
     return False
 
 
@@ -6350,7 +6533,9 @@ RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "
                   "octopus_seen", "target_equip_got", "chaos_core_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger",
                   "save_member_index", "imprint_peak", "escape_reason",
                   # 刷刻印对账（ledger_check）：对过账的节点、哪一层不逃脱、层结束/首领前对过没有
-                  "ledger_checks", "escape_veto", "ledger_layer_end", "ledger_boss")
+                  "ledger_checks", "escape_veto", "ledger_layer_end", "ledger_boss",
+                  # 刷空档：目标的卡闪了几张、到航点存好了没有、逃脱菜单点过没有
+                  "empty_flashes", "empty_flash_key", "empty_saved", "empty_escape_at")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = dev_out("chaos_run_state.json")

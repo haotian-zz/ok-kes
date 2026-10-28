@@ -8,7 +8,7 @@ import time
 
 import chaos_trace
 import game_db
-from utils import _get_config_value, _move_and_click, _simplify_texts, find_box_at_point, find_text
+from utils import _get_config_value, _move_and_click, _simplify_texts, empty_keep_members, find_box_at_point, find_text
 
 DEV_START_FILE = os.path.join("dev_out", "save_cleanup_now")
 FREE_SLOTS = 50          # 每次腾出的位置（用户 2026-10-25：一次可以删 50 个）
@@ -110,15 +110,18 @@ def owners_of(names, db=None):
 
 
 def keep_reason(tb, pt, owners, target, keep_blank=True):
-    """返回保留原因；None 表示可以分解。keep_blank=False：空白存档也可以分解（目标主战员的照样保留）。"""
+    """返回保留原因；None 表示可以分解。keep_blank=False：空白存档也可以分解（目标主战员的照样保留）。
+    target 可以是一个名字，也可以是一组（刷空档轮换目标时，前面几个人存好的空档也要留）。"""
     if tb is None or pt is None:
         return "TB/PT 读不准"
     if pt == 0 and keep_blank:
         return "空白存档（0PT）"
     if not owners:
         return "认不出角色"
-    if target and target in owners:
-        return f"目标主战员{target}"
+    targets = {target} if isinstance(target, str) else set(target or ())
+    hit = sorted(t for t in targets if t and t in owners)
+    if hit:
+        return f"目标主战员{'/'.join(hit)}"
     return None
 
 
@@ -360,7 +363,7 @@ def _on_detail(task, st):
         _click(task, CLOSE_DETAIL, 2)
         return True
     owners = owners_of(names)
-    reason = keep_reason(tb, pt, owners, _get_config_value(task, '目标主战员', ''),
+    reason = keep_reason(tb, pt, owners, empty_keep_members(task),
                          keep_blank=_get_config_value(task, KEEP_BLANK, True) is not False)
     dec.append({"tb": tb, "pt": pt, "owners": sorted(owners), "delete": reason is None})
     st["viewed"] = len(dec)

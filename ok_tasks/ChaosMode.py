@@ -90,6 +90,8 @@ class ChaosMode(TriggerTask):
         self.default_config['指定记忆卡牌'] = ""
         self.default_config['首层刷特定闪光'] = False
         self.default_config['刷空档'] = False
+        self.default_config[utils.EMPTY_FLASH_LIMIT] = 2
+        self.default_config[utils.EMPTY_TARGETS] = []
         self.default_config['优先使用金币治疗'] = True
         self.default_config['治疗崩溃'] = True
         self.default_config['优先移除基础牌'] = True
@@ -133,6 +135,7 @@ class ChaosMode(TriggerTask):
             '卡厄思地图': {'type': 'drop_down', 'options': ['活动卡厄思', '常驻（探索度→卡厄思具象，刷存档→零式系统）']},
             '刷存档难度': {'min': 0, 'max': 15},
             '刷存档最低PT': {'min': 30, 'max': 180},
+            utils.EMPTY_FLASH_LIMIT: {'min': 1, 'max': 5},
             '配置操作': {
                 'type': 'button',
                 'buttons': [
@@ -182,6 +185,14 @@ class ChaosMode(TriggerTask):
         )
         self.config_description['刷空档'] = (
             "初始任务必须包含“移除2张”，否则重新开始；不能与“刷初始卡牌”同时使用。"
+        )
+        self.config_description[utils.EMPTY_FLASH_LIMIT] = (
+            "刷存档-空存：目标主战员的卡在第一个航点前闪了这么多张就逃脱重开。一个存档最多移除 5 张＝3 张初始卡 + 2 张闪光卡，"
+            "默认 2；点了进场删一张的天赋时改成 1。到第一个航点（结算页）存档已存下，直接逃脱，没删完的局外改存档补"
+        )
+        self.config_description[utils.EMPTY_TARGETS] = (
+            "刷存档-空存按顺序换目标主战员：当前目标到航点存好一个档就换下一个（下一局重新自动编队），最后一个存好就停。"
+            "留空就一直刷当前目标。存档清理会保留这些人的存档"
         )
         self.config_description['存档清理保留空白存档'] = (
             "自动清理存档时保留空白存档（0PT）。关掉后空白存档也会被分解；目标主战员的存档始终保留"
