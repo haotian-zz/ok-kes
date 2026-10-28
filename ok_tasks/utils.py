@@ -4520,9 +4520,12 @@ def handle_route_selection(task: TriggerTask):
         task.sleep(2)
         return True
     if not nodes:
+        import ledger_check
         import utils_imprint
+        if ledger_check.boss_checkpoint(task):
+            return True              # 刷刻印第二层首领前对账（没有整层路线计划时走这里），下一帧再判断
         reason = utils_imprint.rush_escape_reason(task, boss_next=True)
-        if reason:
+        if reason and ledger_check.escape_allowed(task, reason):
             # 刷刻印：首领前目标刻印不够就不打（没有整层路线计划时走这里，有计划时 handle_rush_escape 先处理了）
             task.log_info(f"刷刻印速刷：{reason}，不打首领，逃脱重开（法典保留）")
             utils_imprint.audit_escape(task, reason)
@@ -5942,9 +5945,15 @@ def _finish_only_first_layer(task: TriggerTask) -> bool:
     ):
         return False
 
+    import ledger_check
     import utils_imprint
     reason = utils_imprint.rush_escape_reason(task)
-    if reason:
+    if reason and ledger_check.enabled(task):
+        # 结算页打不开主战员面板，没法在逃脱前对账：先不逃，回到路线页对完账由 handle_rush_escape 再判断（逃脱后法典照样保留）
+        if task.node_status.get("ledger_defer_logged") != task.node_status.get("pass_final_boss_count", 0):
+            task.node_status["ledger_defer_logged"] = task.node_status.get("pass_final_boss_count", 0)
+            task.log_info(f"刷刻印速刷：{reason}；结算页先不逃脱，回路线页对完账再决定")
+    elif reason:
         task.log_info(f"刷刻印速刷：{reason}，退出重开（法典保留）")
         utils_imprint.audit_escape(task, reason)
         _move_and_click(task, 0.959, 0.051)
@@ -6045,7 +6054,9 @@ def reset_layer_status(task: TriggerTask):
 
 RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "meditate_count", "flash_ok", "god_ok",
                   "octopus_seen", "target_equip_got", "chaos_core_got", "octopus_rush_kept_logged", "pt_game", "pt_game_ledger",
-                  "save_member_index", "imprint_peak", "escape_reason")
+                  "save_member_index", "imprint_peak", "escape_reason",
+                  # 刷刻印对账（ledger_check）：对过账的节点、哪一层不逃脱、层结束/首领前对过没有
+                  "ledger_checks", "escape_veto", "ledger_layer_end", "ledger_boss")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = dev_out("chaos_run_state.json")

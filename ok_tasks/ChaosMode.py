@@ -9,6 +9,7 @@ import game_restart
 import game_speed
 import utils_imprint
 import game_db
+import ledger_check
 import utils
 import utils_chaos
 import utils_chaos_prep
@@ -102,6 +103,7 @@ class ChaosMode(TriggerTask):
         self.default_config[game_speed.SPEED_KEY] = True
         for key, value in utils_imprint.DEFAULTS.items():
             self.default_config[key] = value
+        self.default_config[ledger_check.LEDGER_KEY] = True
         # 路线节点优先级 (列表), 越靠前优先级越高
         self.default_config['路线优先级'] = ["休息", "事件", "小怪", "精英"]
         self.default_config['几轮后停止(0为不停止)'] = 0
@@ -202,6 +204,10 @@ class ChaosMode(TriggerTask):
             "第二层首领打完还没凑齐三个就逃脱重开。逃脱后法典还在，继续用同一个法典"
         )
         self.config_description[utils_imprint.SLOT_KEY] = "刷刻印用零式系统里第几号法典槽位"
+        self.config_description[ledger_check.LEDGER_KEY] = (
+            "刷刻印：层结束、第二层首领前、逃脱前从路线页打开主战员面板，逐个点刷存档主战员的装备格读名字和刻印，"
+            "和脚本记的账对不上以游戏为准；游戏里目标刻印/混沌之识比记的多就不逃脱。结算页不逃脱，回路线页对完账再决定"
+        )
         self.config_description[utils_imprint.TARGET_IMPRINT_KEY] = (
             "目标装备刻印：描述里这些关键词都有才算（默认对应「友军使用能力生成5张以上卡牌时，自身额外攻击伤害量+30%」）"
         )

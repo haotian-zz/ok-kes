@@ -1543,7 +1543,8 @@ class TestRouteClickSettle(unittest.TestCase):
         ns = {"enter_new_node": False, "node_count": 8, "pass_final_boss_count": 1,
               "route_clicked_at": time.time() - clicked_ago,
               "full_route": {"layer": 1, "steps": [{"type": "精英"}, {"type": "首领"}], "done": 1}}
-        t = types.SimpleNamespace(node_status=ns, config={"刷刻印": True, "刷刻印速刷": True},
+        # 只测路线页过渡等待：逃脱前对账（ledger_check）关掉，对账在 tests/TestRunState.py 测
+        t = types.SimpleNamespace(node_status=ns, config={"刷刻印": True, "刷刻印速刷": True, "刷刻印对账": False},
                                   member_status={"equipment": {"imprints": ["", "", ""]}},
                                   log_info=logs.append, sleep=lambda s: None,
                                   move_relative=lambda x, y: None, click=lambda x, y: logs.append(("click", x, y)))

@@ -29,6 +29,7 @@ from utils import (
     handle_storage_full,
 )
 import utils_imprint
+import ledger_check
 import save_cleanup
 
 import re
@@ -1474,6 +1475,7 @@ PAGE_HANDLERS = [
     utils_imprint.handle_codex_select, #刷刻印：零式系统选择法典页（槽位/合格检查/刷新），要先于通用合成、确认、进入
     utils_imprint.handle_codex_synth, #刷刻印：合成法典页（地图、难度、赛季特性）
     utils_imprint.handle_codex_pick, #刷刻印：获得法典三选一（要先于 handle_discovery_select）
+    ledger_check.handle_route_ledger, #刷刻印对账：层结束、第二层首领前在路线页读主战员面板装备（要先于逃脱判断和路线选择）
     utils_imprint.handle_rush_escape, #刷刻印速刷：结算页没退出成时，回路线页逃脱（要先于路线选择）
     handle_octopus_miss_escape, #只认混沌之识：章鱼哥没掉混沌之识，回路线页就逃脱重开（要先于路线选择）
     handle_route_selection,

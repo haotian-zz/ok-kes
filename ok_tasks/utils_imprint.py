@@ -642,6 +642,9 @@ def handle_rush_escape(task):
     if time.time() - ns.get("imprint_escape_at", 0) < 5:
         task.sleep(1)
         return True
+    import ledger_check
+    if not ledger_check.escape_allowed(task, reason):
+        return False                 # 对账发现游戏里比账本多：账已改，这一层不逃脱
     ns["imprint_escape_at"] = time.time()
     task.log_info(f"刷刻印速刷：{reason}，回到路线页逃脱重开（法典保留）")
     audit_escape(task, reason)

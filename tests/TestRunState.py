@@ -326,5 +326,176 @@ class TestImprintIgnoresCrossRunSeen(unittest.TestCase):
         self.assertEqual(0, self._bonus(imprint=False))             # 别的玩法照旧认跨局「拿过」
 
 
+
+import ledger_check  # noqa: E402
+
+IMPRINT_LINES = ("己方主动生成5张或更多卡牌时，自身额外攻击", "伤害量+30% (每回合1次)")
+
+
+class FakeGame:
+    """路线页 + 主战员面板 + 装备详情的假画面（2026-10-27 17:59 实机：点 (0.30, 0.075) 开面板，装备格 y≈0.90，
+    点格子弹详情，ESC 把详情和面板一起关；右上角 (0.959, 0.051) 面板开着时是 X，没开时是逃脱按钮）。
+    slots：刷存档主战员（海德玛丽，第 2 列）三个装备格 (名字, 带不带目标刻印)，名字空＝空格子（点了不弹详情）。"""
+
+    def __init__(self, slots, panel_opens=True):
+        self.slots, self.panel_opens = slots, panel_opens
+        self.panel, self.detail = False, None
+        self.escape_clicks, self.esc_on_route, self.slot_clicks = 0, 0, []
+
+    def click(self, x, y, **k):
+        if abs(x - 0.30) < 0.01 and abs(y - 0.075) < 0.01:
+            self.panel = self.panel or self.panel_opens
+        elif abs(x - 0.959) < 0.01 and abs(y - 0.05) < 0.01:
+            if self.panel:
+                self.panel, self.detail = False, None
+            else:
+                self.escape_clicks += 1
+        elif self.panel and abs(y - 0.90) < 0.02:
+            slot = round((x - (0.41 + 0.047)) / 0.0805)
+            self.slot_clicks.append(slot)
+            if 0 <= slot < 3 and self.slots[slot][0]:
+                self.detail = slot
+
+    def key(self, k):
+        if k == "esc":
+            if not (self.panel or self.detail is not None):
+                self.esc_on_route += 1
+            self.panel, self.detail = False, None
+
+    def ocr(self, *a, **k):
+        texts = [box(0.80, 0.70, "无法接收到梦境号")]
+        if self.panel:
+            texts += [box(0.27, 0.36, "罗丝薇瑟"), box(0.54, 0.36, "海德玛丽"), box(0.81, 0.36, "米卡")]
+            for x0 in (0.20, 0.47, 0.74):
+                texts += [box(x0, 0.45, "模糊的记忆"), box(x0 + 0.12, 0.45, "40/150")]
+        if self.detail is not None:
+            name, imprint = self.slots[self.detail]
+            texts += [box(0.50, 0.25, name), box(0.50, 0.32, "攻击力增加")]
+            if imprint:
+                texts += [box(0.52, 0.40, IMPRINT_LINES[0]), box(0.45, 0.44, IMPRINT_LINES[1])]
+        return texts
+
+
+def ledger_task(game, names=("", "", ""), imprints=("", "", ""), layer=1, **ns):
+    t = chaos_task(config={"刷刻印": True, "刷刻印速刷": True, "刷存档主战员": "海德玛丽"}, chaos_mode=cs.MODE_TARGET)
+    t.click = game.click
+    t.send_key = game.key
+    t.ocr = game.ocr
+    t.member_status["equipment"]["names"] = list(names)
+    t.member_status["equipment"]["imprints"] = list(imprints)
+    t.node_status.update(pass_final_boss_count=layer, node_count=0, **ns)
+    t.run_state = run_state.RunState(source="测试")
+    return t
+
+
+class LedgerCase(RunStateFileCase):
+    def setUp(self):
+        super().setUp()
+        self.orig = utils.is_route_selection_page
+        utils.is_route_selection_page = lambda task: True
+
+    def tearDown(self):
+        utils.is_route_selection_page = self.orig
+        super().tearDown()
+
+
+T = utils_imprint.TARGET
+
+
+class TestLedgerReconcile(LedgerCase):
+    """复盘 4.4：逃脱前、层结束、第二层首领前从主战员面板逐格读装备，对不上以游戏为准。"""
+
+    def test_consistent(self):
+        game = FakeGame([("混沌之识", True), ("精灵王的金冠", True), ("", False)])
+        t = ledger_task(game, ("混沌之识", "精灵王的金冠", ""), (T, T, ""), imprint_peak=2, chaos_core_got="混沌之识")
+        r = ledger_check.reconcile(t, "层结束")
+        self.assertEqual(([], [], [], 2), (r["more"], r["less"], r["renamed"], r["read"]))
+        self.assertEqual([0, 1, 2], game.slot_clicks)                  # 三个格子各点一次（每次重新开面板）
+        self.assertEqual((0, 0), (game.escape_clicks, game.esc_on_route))
+        self.assertFalse(game.panel)                                    # 读完面板关着
+        self.assertEqual([T, T, ""], t.member_status["equipment"]["imprints"])
+        self.assertIn("一致", "".join(x for x in t.logs if isinstance(x, str)))
+        self.assertIs(r, ledger_check.reconcile(t, "逃脱前"))           # 同一个节点不重复对账
+        self.assertEqual([0, 1, 2], game.slot_clicks)
+
+    def test_game_has_more_blocks_escape(self):
+        """账本里 0 个目标刻印（比如装备页淡入读成空槽清掉了），游戏里混沌之识 + 2 个目标刻印：改账、这一层不逃脱。"""
+        game = FakeGame([("混沌之识", True), ("精灵王的金冠", True), ("", False)])
+        t = ledger_task(game)
+        self.assertIsNotNone(utils_imprint.rush_escape_reason(t))      # 按账本该逃脱
+        self.assertFalse(utils_imprint.handle_rush_escape(t))
+        self.assertEqual(0, game.escape_clicks)
+        self.assertEqual(["混沌之识", "精灵王的金冠", ""], t.member_status["equipment"]["names"])
+        self.assertEqual([T, T, ""], t.member_status["equipment"]["imprints"])
+        self.assertEqual("混沌之识", t.node_status["chaos_core_got"])
+        self.assertEqual(2, utils_imprint.target_imprint_count(t))
+        self.assertEqual(1, t.node_status["escape_veto"])
+        self.assertTrue(any(isinstance(x, str) and "不逃脱" in x for x in t.logs))
+        _, ok = self.restart()                                          # 改过的账已落盘
+        self.assertTrue(ok)
+
+    def test_game_more_but_still_short_still_no_escape_this_layer(self):
+        """游戏比账本多但仍不够（1 个）：账本证明不可靠，这一层也不逃脱（用户 2026-10-27 定的规则）。"""
+        game = FakeGame([("欺骗暗影的匕首", True), ("", False), ("", False)])
+        t = ledger_task(game)
+        self.assertIsNotNone(utils_imprint.rush_escape_reason(t))
+        self.assertFalse(ledger_check.escape_allowed(t, "第一层打完目标刻印只有 1 个"))
+        t.node_status["node_count"] = 3                                 # 同一层后面的节点也不逃
+        self.assertFalse(ledger_check.escape_allowed(t, "第一层打完目标刻印只有 1 个"))
+        self.assertEqual(0, game.escape_clicks)
+
+    def test_game_has_less_follows_game(self):
+        """账本记了 2 个目标刻印，游戏里 1 号位那件没有刻印：以游戏为准（刻印最高值也改），记日志。"""
+        game = FakeGame([("欺骗暗影的匕首", False), ("精灵王的金冠", True), ("", False)])
+        t = ledger_task(game, ("欺骗暗影的匕首", "精灵王的金冠", ""), (T, T, ""), imprint_peak=2)
+        r = ledger_check.reconcile(t, "层结束")
+        self.assertEqual((["1号位目标刻印"], []), (r["less"], r["more"]))
+        self.assertEqual(["", T, ""], t.member_status["equipment"]["imprints"])
+        self.assertEqual(1, utils_imprint.target_imprint_count(t))
+        self.assertEqual([0, 0, 1, 2], game.slot_clicks)               # 少了的格子再读一遍确认
+        self.assertTrue(ledger_check.escape_allowed(t, "第一层打完目标刻印只有 1 个"))
+        self.assertTrue(any(isinstance(x, str) and "以游戏为准" in x for x in t.logs))
+
+    def test_panel_not_open_never_clicks_top_right(self):
+        """面板没打开：不点右上角（路线页那里是逃脱按钮），也不按 ESC（会开菜单），账本不变。"""
+        game = FakeGame([("混沌之识", True), ("", False), ("", False)], panel_opens=False)
+        t = ledger_task(game, ("", "", ""), ("", "", ""))
+        r = ledger_check.reconcile(t, "逃脱前")
+        self.assertEqual(0, r["read"])
+        self.assertEqual((0, 0, []), (game.escape_clicks, game.esc_on_route, game.slot_clicks))
+        self.assertEqual(["", "", ""], t.member_status["equipment"]["imprints"])
+
+
+class TestLedgerTiming(LedgerCase):
+    def test_layer_end_and_boss_checkpoints(self):
+        game = FakeGame([("", False)] * 3)
+        t = ledger_task(game, layer=0)
+        self.assertFalse(ledger_check.handle_route_ledger(t))           # 第一层：不对账
+        t.node_status["pass_final_boss_count"] = 1
+        self.assertTrue(ledger_check.handle_route_ledger(t))            # 首领结算后第一次回路线页：层结束
+        self.assertEqual("层结束", t.node_status["ledger_checks"]["1-0"]["when"])
+        self.assertFalse(ledger_check.handle_route_ledger(t))
+        t.node_status.update(node_count=6, full_route={"layer": 1, "steps": [{"type": "商店"}, {"type": "首领"}], "done": 1})
+        self.assertTrue(ledger_check.handle_route_ledger(t))            # 第二层下一步首领：首领前
+        self.assertEqual("首领前", t.node_status["ledger_checks"]["1-6"]["when"])
+        self.assertFalse(ledger_check.handle_route_ledger(t))
+        self.assertEqual(0, game.escape_clicks)
+
+    def test_settlement_page_defers_escape_to_route_page(self):
+        """结算页打不开主战员面板：刷刻印速刷不在结算页逃脱，回路线页对完账再决定。"""
+        game = FakeGame([("", False)] * 3)
+        t = ledger_task(game, layer=1)
+        clicks = []
+        orig = utils._move_and_click
+        utils._move_and_click = lambda task, x, y: clicks.append((x, y))
+        try:
+            self.assertFalse(utils._finish_only_first_layer(t))
+            t.config["刷刻印对账"] = False                              # 关掉对账：照旧在结算页逃脱
+            self.assertTrue(utils._finish_only_first_layer(t))
+        finally:
+            utils._move_and_click = orig
+        self.assertEqual([(0.959, 0.051)], clicks)
+
+
 if __name__ == "__main__":
     unittest.main()
