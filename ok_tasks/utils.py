@@ -3286,11 +3286,11 @@ def _decide_install(task, view, equipment, imprint_mode):
     if imprint_mode:
         # 刷刻印：刻印优先于装备，三件目标装备都是传说，不管「一个主战员只装一件传说」
         should, reason = utils_imprint.install_decision(task, eq, slot, should, reason, current_name)
-    elif empty_mode(task):
-        # 刷空档：装备优先直接给目标（用户 2026-10-28），只有目标这个位置装着品质更高的才不换；不管「一人只装一件传说」
+    elif _get_config_value(task, EQUIP_TARGET_FIRST, False) is True:
+        # 设置「装备优先给目标」（刷空档，用户 2026-10-28）：只有目标这个位置装着品质更高的才不换；不管「一人只装一件传说」
         if not should and _EQUIPMENT_QUALITY_RANKS.get(eq.get("quality") or "", 0) \
                 >= _EQUIPMENT_QUALITY_RANKS.get(equipment["qualities"][slot] or "", 0):
-            should, reason = True, f"刷空档装备优先给目标（{reason}）"
+            should, reason = True, f"装备优先给目标（{reason}）"
     elif eq["quality"] == "传说" and any(q == "传说" and s != slot for s, q in enumerate(view.live)):
         task.log_info("目标主战员已安装传说装备，新传说装备改由其他主战员安装")
         should, reason = False, "该主战员其他装备位已有传说装备"
@@ -3596,6 +3596,10 @@ def _avoid_god_spark(task: TriggerTask):
 EMPTY_FLASH_LIMIT = "刷空档闪光几张就重开"
 EMPTY_TARGETS = "刷空档目标顺序"
 EMPTY_SAVE_REMOVALS = 5      # 一个存档最多记 5 次移除（官方规则，超过的不记）
+# 下面三条是设置项，不跟玩法绑：刷空档的配置里打开，切到要中立卡的玩法关掉（用户 2026-10-28）
+NEUTRAL_SKIP = "中立卡不拿"
+EQUIP_TARGET_FIRST = "装备优先给目标"
+FLASH_EQUIP_NOT_TARGET = "会触发闪光的装备不给目标"
 
 
 def empty_mode(task: TriggerTask):
@@ -3739,9 +3743,10 @@ def empty_should_remove(task: TriggerTask):
 
 
 def empty_flash_equipment(task: TriggerTask, eq):
-    """刷空档：描述带「闪光」的装备（时间调节器「佩戴的主战员触发闪光」）不给目标戴，返回原因；别的返回 None。"""
-    if empty_mode(task) and "闪光" in ((eq or {}).get("description") or ""):
-        return "刷空档：这件装备会让佩戴的主战员闪光，不给目标"
+    """设置「会触发闪光的装备不给目标」：描述带「闪光」的装备（时间调节器「佩戴的主战员触发闪光」）不给目标戴，
+    返回原因；别的返回 None。"""
+    if _get_config_value(task, FLASH_EQUIP_NOT_TARGET, False) is True and "闪光" in ((eq or {}).get("description") or ""):
+        return "这件装备会让佩戴的主战员闪光，不给目标"
     return None
 
 
@@ -6952,13 +6957,27 @@ def handle_card_assign(task: TriggerTask):
         None,
     )
     give_teammate = False
-    if matched_card_name:
-        task.log_info(f"卡牌「{card_name}」命中奖励优先级「{matched_card_name}」")
-    elif empty_mode(task) and not is_purchase_page:
-        # 刷空档：这页点「确认」游戏就默认给第一个主战员（目标），存档里多一张中立卡要多删一次
-        # （10-28 03:04 实录开局「觉悟」进了希露德卡组，PT 60＝删 2 张 40 + 中立卡 20）→ 明确发给队友
+    if _get_config_value(task, NEUTRAL_SKIP, False) is True:
+        # 设置「中立卡不拿」（刷空档，用户 2026-10-28）：这页点「确认」游戏就默认给第一个主战员（目标），
+        # 10-28 03:04 实录开局命运的「觉悟」进了希露德卡组（PT 60＝删 2 张 40 + 中立卡 20），要多删一次
+        if is_purchase_page:
+            task.log_info(f"中立卡不拿：购买卡牌「{card_name}」点「取消」")
+            task.click_box(cancel_box)
+            task.sleep(1)
+            return True
+        if skip_box:
+            task.log_info(f"中立卡不拿：卡牌「{card_name}」点「跳过」")
+            task.click_box(skip_box)
+            task.sleep(1)
+            return True
+        # 「跳过」贴着屏幕底边常 OCR 不到：留底看位置，这次发给队友（不给目标）
+        chaos_trace.step(task, "card", "卡牌分配页没找到跳过", task.frame,
+                         bottom=[b.name for b in bottom_boxes], card=card_name)
         give_teammate = True
-        task.log_info(f"刷空档：卡牌「{card_name}」不给{empty_target(task)}，发给队友")
+        task.log_info(f"中立卡不拿：卡牌分配页没找到「跳过」（底部文字 {[b.name for b in bottom_boxes]}），"
+                      f"「{card_name}」发给队友，不给目标")
+    elif matched_card_name:
+        task.log_info(f"卡牌「{card_name}」命中奖励优先级「{matched_card_name}」")
     else:
         task.log_info(f"卡牌「{card_name}」未命中奖励优先级")
         if (not is_purchase_page and getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) in SAVE_MODES

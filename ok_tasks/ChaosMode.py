@@ -92,6 +92,9 @@ class ChaosMode(TriggerTask):
         self.default_config['刷空档'] = False
         self.default_config[utils.EMPTY_FLASH_LIMIT] = 2
         self.default_config[utils.EMPTY_TARGETS] = []
+        self.default_config[utils.NEUTRAL_SKIP] = False
+        self.default_config[utils.EQUIP_TARGET_FIRST] = False
+        self.default_config[utils.FLASH_EQUIP_NOT_TARGET] = False
         self.default_config['优先使用金币治疗'] = True
         self.default_config['治疗崩溃'] = True
         self.default_config['优先移除基础牌'] = True
@@ -195,6 +198,18 @@ class ChaosMode(TriggerTask):
         self.config_description[utils.EMPTY_TARGETS] = (
             "刷存档-空存按顺序换目标主战员：当前目标到航点存好一个档就换下一个（下一局重新自动编队），最后一个存好就停。"
             "留空就一直刷当前目标。存档清理会保留这些人的存档"
+        )
+        self.config_description[utils.NEUTRAL_SKIP] = (
+            "卡牌分配页（命运、事件给的中立卡/怪物卡）点「跳过」，购买卡牌页点「取消」，谁都不给。"
+            "刷空档要开（10-28 开局命运的「觉悟」被默认发给了目标）；要中立卡的玩法关掉"
+        )
+        self.config_description[utils.EQUIP_TARGET_FIRST] = (
+            "装备优先直接给目标主战员：同品质也换上，不管「一个主战员只装一件传说」，只有目标那个位置装着品质更高的才给队友。"
+            "刷空档要开（用户 2026-10-28）"
+        )
+        self.config_description[utils.FLASH_EQUIP_NOT_TARGET] = (
+            "描述里带「闪光」的装备（时间调节器「佩戴的主战员触发闪光」）不给目标主战员，按原规则给队友。"
+            "刷空档要开：闪光会往目标卡组里塞新卡"
         )
         self.config_description['存档清理保留空白存档'] = (
             "自动清理存档时保留空白存档（0PT）。关掉后空白存档也会被分解；目标主战员的存档始终保留"

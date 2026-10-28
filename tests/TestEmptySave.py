@@ -33,7 +33,9 @@ def card(name, x=0.3, y=0.5):
 
 def empty_task(target="希露德", texts=(), mode=cs.MODE_EMPTY, config=None):
     logs, clicks = [], []
-    cfg = {"目标主战员": target, utils.EMPTY_TARGETS: list(ORDER)}
+    cfg = {"目标主战员": target, utils.EMPTY_TARGETS: list(ORDER),
+           # 刷空档配置里打开的三个设置（用户 2026-10-28：要能通过设置切换，不跟玩法绑）
+           utils.NEUTRAL_SKIP: True, utils.EQUIP_TARGET_FIRST: True, utils.FLASH_EQUIP_NOT_TARGET: True}
     cfg.update(config or {})
     t = types.SimpleNamespace(name="卡厄思模式", node_status=utils._initial_node_status(), config=cfg,
                               width=1920, height=1080, all_texts=list(texts), frame=None, chaos_mode=mode,
@@ -124,7 +126,7 @@ class TestFlashCount(unittest.TestCase):
         eq = {"name": "时间调节器", "description": "佩戴的主战员触发闪光"}
         self.assertIn("闪光", utils.empty_flash_equipment(empty_task(), eq))
         self.assertIsNone(utils.empty_flash_equipment(empty_task(), {"name": "截骨机", "description": "攻击力增加"}))
-        self.assertIsNone(utils.empty_flash_equipment(empty_task(mode=cs.MODE_TARGET), eq))
+        self.assertIsNone(utils.empty_flash_equipment(empty_task(config={utils.FLASH_EQUIP_NOT_TARGET: False}), eq))
 
     def test_other_modes_ignored(self):
         t = empty_task(mode=cs.MODE_TARGET)
@@ -253,8 +255,8 @@ class TestRemovalLedger(unittest.TestCase):
 
 
 class TestCardAssign(unittest.TestCase):
-    def assign(self, target_index):
-        t = empty_task(texts=[box(0.863, 0.133, "请选择要接受卡牌的主战员")])
+    def assign(self, target_index, texts=(), config=None):
+        t = empty_task(texts=[box(0.863, 0.133, "请选择要接受卡牌的主战员"), *texts], config=config)
         lv = [box(0.45, 0.35, "Lv"), box(0.45, 0.55, "Lv"), box(0.45, 0.75, "Lv")]
         patches = {"recognize_cards": lambda task, region, page: [{"name": "觉悟", "description": "回合开始时"}],
                    "_find_member_level_tags": lambda task, region, page: lv,
@@ -278,10 +280,32 @@ class TestCardAssign(unittest.TestCase):
         t = self.assign(None)                                         # 认不出目标：按编队顺序排除第一个
         self.assertEqual((0.756, 0.75), t.clicks[-1])
 
+    def test_neutral_skip_clicks_skip(self):
+        t = empty_task(texts=[box(0.863, 0.133, "请选择要接受卡牌的主战员"), box(0.62, 0.94, "跳过")])
+        orig = utils.recognize_cards
+        utils.recognize_cards = lambda task, region, page: [{"name": "觉悟", "description": ""}]
+        try:
+            self.assertTrue(utils.handle_card_assign(t))
+        finally:
+            utils.recognize_cards = orig
+        self.assertEqual(["跳过"], t.clicks)
+
+    def test_setting_off_keeps_old_rule(self):
+        # 设置关掉（要中立卡的玩法）：不跳过，按原来的规则走（存档模式交给卡牌奖励页）
+        t = empty_task(texts=[box(0.863, 0.133, "请选择要接受卡牌的主战员"), box(0.62, 0.94, "跳过")],
+                       config={utils.NEUTRAL_SKIP: False})
+        orig = utils.recognize_cards
+        utils.recognize_cards = lambda task, region, page: [{"name": "觉悟", "description": ""}]
+        try:
+            self.assertFalse(utils.handle_card_assign(t))
+        finally:
+            utils.recognize_cards = orig
+        self.assertEqual([], t.clicks)
+
 
 class TestEquipmentToTarget(unittest.TestCase):
-    def decide(self, mode, new_quality, cur_quality, live=(None, None, None)):
-        t = empty_task(mode=mode)
+    def decide(self, on, new_quality, cur_quality, live=(None, None, None)):
+        t = empty_task(config={utils.EQUIP_TARGET_FIRST: on})
         eq = {"slot": 0, "quality": new_quality, "priority": [], "rank": None, "name": "新装备", "description": ""}
         view = types.SimpleNamespace(eq=eq, preferred=0, live=list(live))
         equipment = {"names": ["旧装备" if cur_quality else "", "", ""], "qualities": [cur_quality, "", ""],
@@ -290,11 +314,12 @@ class TestEquipmentToTarget(unittest.TestCase):
 
     def test_empty_mode_gives_target_first(self):
         # 用户 2026-10-28：刷空档装备优先直接给目标，同品质也换；品质更低不换
-        self.assertTrue(self.decide(cs.MODE_EMPTY, "史诗", "史诗"))
-        self.assertFalse(self.decide(cs.MODE_TARGET, "史诗", "史诗"))
-        self.assertFalse(self.decide(cs.MODE_EMPTY, "普通", "史诗"))
+        self.assertTrue(self.decide(True, "史诗", "史诗"))
+        self.assertFalse(self.decide(False, "史诗", "史诗"))       # 设置关掉照原规则
+        self.assertFalse(self.decide(True, "普通", "史诗"))
         # 不管「一人只装一件传说」
-        self.assertTrue(self.decide(cs.MODE_EMPTY, "传说", "", live=(None, "传说", None)))
+        self.assertTrue(self.decide(True, "传说", "", live=(None, "传说", None)))
+        self.assertFalse(self.decide(False, "传说", "", live=(None, "传说", None)))
 
 
 class TestFlashEscape(unittest.TestCase):
