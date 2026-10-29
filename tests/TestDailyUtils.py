@@ -123,6 +123,26 @@ class TestGoHome(unittest.TestCase):
         self.assertEqual([("click",) + p for p in utils_daily.HOME_WAKE_POINTS], task.actions)
 
 
+    def test_leftover_tower_run_escapes(self):
+        # 2026-10-29：登录弹「此前进行的哀嚎螺旋塔相关信息仍然保留着。是否继续？」，ESC 关不掉，日常全部失败。
+        # 用户定的点逃脱 → 战斗失败结算页点确认 → TIP 页点下一步 → 主页
+        prompt = [box("此前进行的哀嚎螺旋塔相关信息仍然保留着。", 0.5, 0.43), box("是否继续？", 0.5, 0.47),
+                  box("哀嚎螺旋塔", 0.37, 0.55), box("逃脱", 0.4, 0.767), box("继续", 0.65, 0.767)]
+        result = [box("战斗失败", 0.3, 0.71), box("奖励", 0.6, 0.73), box("重来", 0.75, 0.917), box("确认", 0.9, 0.917)]
+        tip = [box("TIP", 0.5, 0.29), box("可通过以下方式提升战员。", 0.5, 0.6), box("下一步", 0.9, 0.917)]
+        task = FakeTask([(prompt, 128), (result, 128), (tip, 128), (HOME, 128)])
+        self.assertTrue(utils_daily.go_home(task, timeout=5))
+        self.assertEqual([("click", 0.4, 0.767), ("click", 0.9, 0.917), ("click", 0.9, 0.917)], task.actions)
+
+    def test_leftover_other_run_never_escapes(self):
+        # 别的玩法（比如卡厄思，局里可能有目标卡组）的保留弹窗：不点逃脱也不点继续，停下交给人
+        prompt = [box("此前进行的卡厄思相关信息仍然保留着。", 0.5, 0.43), box("是否继续？", 0.5, 0.47),
+                  box("逃脱", 0.4, 0.767), box("继续", 0.65, 0.767)]
+        task = FakeTask([(prompt, 128)])
+        self.assertFalse(utils_daily.go_home(task, timeout=5))
+        self.assertEqual([], task.actions)
+
+
 class TestClaimAll(unittest.TestCase):
     def test_clicks_only_claim_all_in_region(self):
         mail = [box("邮箱", 0.107, 0.091), box("全部领取", 0.194, 0.902), box("删除已读邮件", 0.391, 0.904)]

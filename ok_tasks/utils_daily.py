@@ -181,6 +181,14 @@ def go_home(task: BaseTask, timeout=60.0):
         refresh(task)
         if is_home(task):
             return True
+        if has_text(task, r"仍然保留"):
+            # 登录时「此前进行的<玩法>相关信息仍然保留着。是否继续？」（2026-10-29 实录：哀嚎螺旋塔 131-135区域 1/5，
+            # 日常每项都按 ESC 失败）。用户定的：哀嚎螺旋塔点逃脱；别的玩法（卡厄思局里可能有目标卡组）不放弃，停下交给人
+            if has_text(task, r"哀嚎螺旋塔") and click_text(task, r"^逃脱$", timeout=2):
+                task.log_info("未完成的哀嚎螺旋塔：点「逃脱」放弃")
+                continue
+            task.log_info("登录弹出未完成的玩法（不是哀嚎螺旋塔），不自动放弃，停止", notify=True)
+            return False
         if has_text(task, r"卡厄思信息") or has_text(task, r"^逃脱$", region=(0.8, 0.85, 1, 1)):
             task.log_info("当前在出击/卡厄思局内，局内没有回主页入口（只能逃脱），不自动处理")
             return False
@@ -195,6 +203,11 @@ def go_home(task: BaseTask, timeout=60.0):
         box = find_text(task, r"^确认$", region=(0.7, 0.85, 1, 1))
         if box and (has_text(task, r"奖励") or has_text(task, r"出击记录")):
             click_text_box(task, box, after=3, reason="结算页确认")
+            continue
+        # 逃脱螺旋塔后的「TIP 推荐等级 / 可通过以下方式提升战员」页：右下「下一步」，ESC 无效
+        box = find_text(task, r"^下一步$", region=(0.7, 0.85, 1, 1))
+        if box and has_text(task, r"提升战员"):
+            click_text_box(task, box, after=2, reason="TIP 页下一步")
             continue
         if has_text(task, r"^\d+元$"):
             # 付费推荐弹窗（如 F2 先弹的「特殊资料 68元 / 零之资料 128元」）：ESC 关不掉，点右上角 X，绝不点价格按钮
