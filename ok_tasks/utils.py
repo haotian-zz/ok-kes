@@ -3608,6 +3608,8 @@ EMPTY_TARGETS = "刷空档目标顺序"
 EMPTY_SAVE_REMOVALS = 5      # 一个存档最多记 5 次移除（官方规则，超过的不记）
 # 到航点时局外还要删的张数上限（0～5）：超过就不算存好、不换目标，接着刷（用户 2026-10-30：刷特蕾莎那批要求最多局外删 1 张）
 EMPTY_OUT_LEFT = "刷空档局外最多删几张"
+# 存好空档的角色自动记进这里，存档清理永远保留（换了「刷空档目标顺序」，上一批的空档也不会被分解，用户 2026-10-30）
+SAVE_KEEP_MEMBERS = "存档清理保留角色"
 # 下面三条是设置项，不跟玩法绑：刷空档的配置里打开，切到要中立卡的玩法关掉（用户 2026-10-28）
 NEUTRAL_SKIP = "中立卡不拿"
 EQUIP_TARGET_FIRST = "装备优先给目标"
@@ -3651,6 +3653,7 @@ def empty_keep_members(task: TriggerTask):
     早上存好的四个空档差点被分解（定名单阶段就停了）。"""
     names = [_get_config_value(task, "目标主战员", "")]
     names += list(_get_config_value(task, EMPTY_TARGETS, []) or [])
+    names += list(_get_config_value(task, SAVE_KEEP_MEMBERS, []) or [])
     return {_canonical_member(n) for n in names if isinstance(n, str) and n}
 
 
@@ -3850,6 +3853,10 @@ def empty_rotate_target(task: TriggerTask):
         return False
     order = [n.strip() for n in (_get_config_value(task, EMPTY_TARGETS, []) or []) if isinstance(n, str) and n.strip()]
     current = _get_config_value(task, "目标主战员", "")
+    keep = [n for n in (_get_config_value(task, SAVE_KEEP_MEMBERS, []) or []) if isinstance(n, str)]
+    if current and _canonical_member(current) not in {_canonical_member(n) for n in keep}:
+        task.config[SAVE_KEEP_MEMBERS] = keep + [current]
+        task.log_info(f"刷空档：{current}记进「{SAVE_KEEP_MEMBERS}」，以后存档清理都保留")
     if not order:
         task.log_info(f"刷空档：{current}的空档已存（没配目标顺序，继续刷{current}）")
         return False

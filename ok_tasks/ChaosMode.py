@@ -93,6 +93,7 @@ class ChaosMode(TriggerTask):
         self.default_config[utils.EMPTY_FLASH_LIMIT] = 2
         self.default_config[utils.EMPTY_TARGETS] = []
         self.default_config[utils.EMPTY_OUT_LEFT] = 5
+        self.default_config[utils.SAVE_KEEP_MEMBERS] = []
         self.default_config[utils.NEUTRAL_SKIP] = False
         self.default_config[utils.EQUIP_TARGET_FIRST] = False
         self.default_config[utils.FLASH_EQUIP_NOT_TARGET] = False
@@ -199,6 +200,10 @@ class ChaosMode(TriggerTask):
         self.config_description[utils.EMPTY_OUT_LEFT] = (
             "刷存档-空存：到第一个航点时，目标卡组里还要局外改存档补删的张数不超过这个数才算存好（换下一个目标），"
             "超过就逃脱接着刷同一个人。0～5，默认 5（只要已删次数 + 剩下的不超过 5 就算）"
+        )
+        self.config_description[utils.SAVE_KEEP_MEMBERS] = (
+            "存档清理永远保留这些角色的存档（和目标主战员、刷空档目标顺序一样）。刷空档存好一个人的空档会自动加进来，"
+            "换了目标顺序上一批的空档也不会被分解"
         )
         self.config_description[utils.EMPTY_TARGETS] = (
             "刷存档-空存按顺序换目标主战员：当前目标到航点存好一个档就换下一个（下一局重新自动编队），最后一个存好就停。"

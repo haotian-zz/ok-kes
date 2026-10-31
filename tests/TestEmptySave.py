@@ -507,6 +507,19 @@ class TestRotateTarget(unittest.TestCase):
         self.assertEqual("玛丽贝尔", utils.empty_target(t))
         self.assertIn("庇护打击", t.chaos_overrides["移除卡牌列表"])   # 删卡列表换成新目标的卡
 
+    def test_saved_target_is_kept_by_cleanup_after_order_changes(self):
+        # 用户 2026-10-30：换了目标顺序，上一批存好的空档也不能被分解
+        t = empty_task("希露德")
+        t.node_status["empty_saved"] = True
+        utils.empty_rotate_target(t)
+        self.assertEqual(["希露德"], t.config[utils.SAVE_KEEP_MEMBERS])
+        t.config[utils.EMPTY_TARGETS] = ["特蕾莎"]
+        t.config["目标主战员"] = "特蕾莎"
+        self.assertEqual({"希露德", "特莱莎"}, utils.empty_keep_members(t))
+        t.config["目标主战员"] = "希露德"                 # 已经记过的不重复记
+        utils.empty_rotate_target(t)
+        self.assertEqual(["希露德"], t.config[utils.SAVE_KEEP_MEMBERS])
+
     def test_alias_matches_order(self):
         t = empty_task("玛丽贝儿")            # 卡库名和配置里的「玛丽贝尔」是同一个人
         t.node_status["empty_saved"] = True
