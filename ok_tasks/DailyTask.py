@@ -74,6 +74,7 @@ class DailyTask(BaseTask):
 
     def run(self):
         results = []
+        setattr(self, utils_daily.LEFTOVER_RUN_ATTR, False)
         for key, fn_name in self.steps:
             if not self.config.get(key):
                 continue
@@ -88,4 +89,7 @@ class DailyTask(BaseTask):
             results.append(f"{key}：{'完成' if ok else '未完成'}")
             self.info_set(key, "完成" if ok else "未完成")
             go_home(self)
+            if getattr(self, utils_daily.LEFTOVER_RUN_ATTR, False):
+                results.append("后面的项没做（登录弹出未完成的玩法，要人决定继续还是逃脱）")
+                break
         self.log_info("一键日常结束：" + "；".join(results), notify=True)

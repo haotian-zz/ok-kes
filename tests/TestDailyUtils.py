@@ -142,6 +142,15 @@ class TestGoHome(unittest.TestCase):
         self.assertFalse(utils_daily.go_home(task, timeout=5))
         self.assertEqual([], task.actions)
 
+    def test_chaos_disconnect_prompt_never_escapes(self):
+        # 2026-10-31：卡厄思局中途关了游戏，登录弹「卡厄思连接意外断开。是否继续？」，日常 7 项都按 ESC 失败
+        prompt = [box("卡厄思连接意外断开。", 0.5, 0.444), box("是否继续？", 0.5, 0.475), box("卡厄思", 0.36, 0.553),
+                  box("天幕", 0.646, 0.553), box("逃脱", 0.408, 0.69), box("继续", 0.606, 0.69)]
+        task = FakeTask([(prompt, 128)])
+        self.assertFalse(utils_daily.go_home(task, timeout=5))
+        self.assertEqual([], task.actions)
+        self.assertTrue(getattr(task, utils_daily.LEFTOVER_RUN_ATTR))
+
 
 class TestClaimAll(unittest.TestCase):
     def test_clicks_only_claim_all_in_region(self):

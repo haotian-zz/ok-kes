@@ -57,6 +57,10 @@ _template_cache = {}
 
 # ------------------------- OCR / 点击 -------------------------
 
+
+# go_home 碰到未完成玩法的保留弹窗（不自动放弃）时设上，一键日常看到就整个停下，别每项都去按 ESC
+LEFTOVER_RUN_ATTR = "leftover_run_blocked"
+
 def refresh(task: BaseTask, frame=True):
     """取最新一帧并 OCR（繁体转简体），结果存到 task.all_texts。"""
     if frame:
@@ -181,14 +185,17 @@ def go_home(task: BaseTask, timeout=60.0):
         refresh(task)
         if is_home(task):
             return True
-        if has_text(task, r"仍然保留"):
+        if has_text(task, r"仍然保留|连接意外断开"):
             # 登录时「此前进行的<玩法>相关信息仍然保留着。是否继续？」（2026-10-29 实录：哀嚎螺旋塔 131-135区域 1/5，
-            # 日常每项都按 ESC 失败）。用户定的：哀嚎螺旋塔点逃脱；别的玩法（卡厄思局里可能有目标卡组）不放弃，停下交给人
+            # 日常每项都按 ESC 失败）。用户定的：哀嚎螺旋塔点逃脱；别的玩法（卡厄思局里可能有目标卡组）不放弃，停下交给人。
+            # 卡厄思局中途关游戏，登录弹的是「卡厄思连接意外断开。是否继续？」（2026-10-31 实录，刷空档的局还差一点就存好），同样停下
             box = find_text(task, r"^逃脱$")
             if has_text(task, r"哀嚎螺旋塔") and box:
                 click_text_box(task, box, after=3, reason="未完成的哀嚎螺旋塔：点「逃脱」放弃")
                 continue
-            task.log_info("登录弹出未完成的玩法（不是哀嚎螺旋塔），不自动放弃，停止", notify=True)
+            if not getattr(task, LEFTOVER_RUN_ATTR, False):
+                task.log_info("登录弹出未完成的玩法（不是哀嚎螺旋塔），不自动放弃，停止", notify=True)
+            setattr(task, LEFTOVER_RUN_ATTR, True)
             return False
         if has_text(task, r"卡厄思信息") or has_text(task, r"^逃脱$", region=(0.8, 0.85, 1, 1)):
             task.log_info("当前在出击/卡厄思局内，局内没有回主页入口（只能逃脱），不自动处理")
