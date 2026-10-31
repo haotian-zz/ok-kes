@@ -1,7 +1,7 @@
 from ok import TriggerTask
 
 from utils import (
-    handle_dialogue,
+    handle_dialogue, _dialogue_line,
     _move_and_click, _simplify_texts, _get_config_value, _get_card_list, _get_route_priority, _get_game_text, _get_region_text, _get_current_hp_percent, _finish_only_first_layer,
     find_box_at_point, find_text, recognize_cards, find_target_card,
     _card_has_type_below, select_card,
@@ -1439,6 +1439,9 @@ def handle_stamina_refill(task: TriggerTask):
     """体力不足弹窗：按配置只用免费道具补充，否则取消。"""
     texts = _dialog_texts(task)
     if "体力" not in texts or not re.search(r"体力不足|补充体力|恢复体力", texts):
+        return False
+    if _dialogue_line(task) is not None:
+        # 剧情对白「众人吃着递来的东西补充体力。」（10-30 18:23 实录）：当成弹窗按 ESC、找免费道具，卡了 1 分多钟。交给对白处理
         return False
     task.log_info(f"检测到体力补充弹窗：{texts[:160]}")
     chaos_trace.step(task, "page", "体力补充弹窗", task.frame, texts=texts[:300])

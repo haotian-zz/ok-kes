@@ -711,3 +711,26 @@ class TestHandCardsDuringBattle(unittest.TestCase):
         finally:
             utils.recognize_event_options = old
         self.assertEqual(["事件任务页面"], seen)
+
+
+class TestStaminaRefillVsDialogue(unittest.TestCase):
+    def test_dialogue_mentioning_stamina_is_not_popup(self):
+        # 10-30 18:23 实录：剧情对白「众人吃着递来的东西补充体力。」被当成体力补充弹窗，按 ESC、找免费道具原地打转
+        texts = [box(0.66, 0.05, "2113/2113"), box(0.70, 0.05, "6"), box(0.80, 0.05, "468"),
+                 box(0.88, 0.08, "Ctrl"), box(0.96, 0.08, "Q"),
+                 box(0.5, 0.837, "众人吃着递来的东西补充体力。", w=600),
+                 box(0.5, 0.878, "稍作休息并交谈后，众人在使徒的送别下离开了那里。", w=800),
+                 box(0.935, 0.91, "Space")]
+        t = empty_task(texts=texts)
+        keys = []
+        t.send_key = lambda k, **kw: keys.append(k)
+        self.assertFalse(utils_chaos.handle_stamina_refill(t))
+        self.assertEqual(([], []), (t.clicks, keys))
+
+    def test_real_popup_still_cancels(self):
+        texts = [box(0.5, 0.40, "体力不足"), box(0.5, 0.48, "是否补充体力？"), box(0.35, 0.70, "取消"),
+                 box(0.65, 0.70, "确认")]
+        t = empty_task(texts=texts)
+        t.send_key = lambda k, **kw: None
+        self.assertTrue(utils_chaos.handle_stamina_refill(t))
+        self.assertEqual(["取消"], t.clicks)
