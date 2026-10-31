@@ -350,12 +350,15 @@ class ChaosMode(TriggerTask):
         # 冻结时没生效的「进入」被记成了新的一局，重启后当成局内、把赛季页的补给商店当事件连点（2026-10-28 02:12 实录）
         if utils.at_season_hub(task):
             return "卡厄思赛季页"
+        texts = [b.name for b in getattr(task, "all_texts", None) or []]
+        # 主战员详细信息页（左侧能力值/卡牌/存储数据/养成指南）：用户在这里看完存档就启动了脚本，没认出来、原地等了 3 分钟（2026-10-30 20:43 实录）
+        if any("详细信息" in t for t in texts) and any("养成指南" in t for t in texts):
+            return "主战员详细信息页"
         # 跨过每日刷新回到主页时先弹「死灵之书每日礼物 / 点击以领取补给」（2026-10-27 12:19 实录），go_home 会点掉
         if utils_daily.has_text(task, r"^点击以领取"):
             return "每日礼物弹窗"
         # 卡厄思大厅（卡厄思具象 / 零式系统两个入口）、零式系统首页：上一轮从主页进卡厄思走到一半被停（2026-10-28 03:12 实录），
         # 重启后「零式系统」被当成事件选项点了，接着走法典合成开错了图
-        texts = [b.name for b in getattr(task, "all_texts", None) or []]
         if any("零式系统" in t for t in texts):
             if any("卡厄思具象" in t for t in texts):
                 return "卡厄思大厅页"
@@ -395,7 +398,7 @@ class ChaosMode(TriggerTask):
             return False
         if out_page:
             self.log_info(f"停在{out_page}（局外），先回主页再按玩法准备")
-        if at_lobby or out_page in ("存储数据页", "卡厄思赛季页"):
+        if at_lobby or out_page in ("存储数据页", "卡厄思赛季页", "主战员详细信息页"):
             # 难度页 → ESC → 活动页 → ESC → 主页；切页有动画，每次 ESC 后等够再判断，免得在主页多按一次 ESC
             if at_lobby:
                 self.log_info("停在卡厄思难度选择页（局外），按 ESC 回主页再按玩法准备")

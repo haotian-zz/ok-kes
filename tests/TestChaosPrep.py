@@ -148,6 +148,9 @@ class TestAtLobby(unittest.TestCase):
         # 2026-10-28 12:21：存档清理中途重启，停在分解勾选页被当成局内
         self.assertEqual("存储数据页", ChaosMode._out_of_run_page(page(
             "√ 分解存储数据", "全部", "等级61", "6000 TB", "总数量 302/300", "选择数量1/100", "自动选择", "详细信息", "批量分解")))
+        # 2026-10-30 20:43：停在主战员详细信息页（存储数据分页）启动，没认出来原地等
+        self.assertEqual("主战员详细信息页", ChaosMode._out_of_run_page(page(
+            "详细信息", "存储数据帮助", "基础存储数据", "能力值", "卡牌", "辅战员", "存储数据", "编辑存储数据", "养成指南", "下载数据", "替换")))
         self.assertEqual("每日礼物弹窗", ChaosMode._out_of_run_page(page("死灵之书每日礼物", "剩余天数：25天", "点击以领取补给")))
         # 2026-10-28 02:12：赛季页的补给商店被当成事件连点
         self.assertEqual("卡厄思赛季页", ChaosMode._out_of_run_page(page(
