@@ -184,8 +184,9 @@ def go_home(task: BaseTask, timeout=60.0):
         if has_text(task, r"仍然保留"):
             # 登录时「此前进行的<玩法>相关信息仍然保留着。是否继续？」（2026-10-29 实录：哀嚎螺旋塔 131-135区域 1/5，
             # 日常每项都按 ESC 失败）。用户定的：哀嚎螺旋塔点逃脱；别的玩法（卡厄思局里可能有目标卡组）不放弃，停下交给人
-            if has_text(task, r"哀嚎螺旋塔") and click_text(task, r"^逃脱$", timeout=2):
-                task.log_info("未完成的哀嚎螺旋塔：点「逃脱」放弃")
+            box = find_text(task, r"^逃脱$")
+            if has_text(task, r"哀嚎螺旋塔") and box:
+                click_text_box(task, box, after=3, reason="未完成的哀嚎螺旋塔：点「逃脱」放弃")
                 continue
             task.log_info("登录弹出未完成的玩法（不是哀嚎螺旋塔），不自动放弃，停止", notify=True)
             return False

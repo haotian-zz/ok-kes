@@ -4006,7 +4006,10 @@ def _empty_deck_count(task: TriggerTask, texts, target):
         if not nums and callable(getattr(task, "ocr", None)):
             # 整屏 OCR 会漏掉这两位小数字（10-28 04:29 蒂菲拉那栏的「03」），单独认那一小块就认得出
             cy = y - 0.283
-            nums = numbers(task.ocr(0.09, max(0.0, cy - 0.055), 0.145, min(1.0, cy + 0.055)), y)
+            top, bottom = max(0.0, cy - 0.055), min(1.0, cy + 0.055)
+            # 往下滚后排在第一栏的目标张数滚出画面顶上（10-30 18:14 艾米尔名字 y≈0.23 → 张数 y<0），框高 ≤0 会让 ocr 抛异常停掉任务
+            if bottom - top >= 0.02:
+                nums = numbers(task.ocr(0.09, top, 0.145, bottom), y)
         if nums:
             return min(nums)[1]
     return None

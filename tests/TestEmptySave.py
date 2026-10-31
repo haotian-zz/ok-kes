@@ -267,6 +267,22 @@ class TestRemovalLedger(unittest.TestCase):
         self.assertEqual(7, utils._read_empty_deck(t2, "蒂菲拉", 2))
         self.assertEqual([], t2.scrolls)
 
+    def test_deck_count_scrolled_off_top_does_not_crash(self):
+        # 10-30 18:14 实录：往下滚后艾米尔（编队第一栏）名字在 y≈0.228，张数那块在画面上方，
+        # 单独 OCR 的框高 ≤0，ok 抛「width and height must be greater than zero」整个任务停了。读不到就返回 None
+        texts = [box(0.26, 0.228, "艾米尔"), box(0.37, 0.50, "钢铁护盾")]
+        t = self.deck_task("艾米尔", [])
+        calls = []
+
+        def ocr(*a, **k):
+            calls.append(a)
+            if a and a[3] - a[1] <= 0:
+                raise ValueError("width and height must be greater than zero")
+            return []
+        t.ocr = ocr
+        self.assertIsNone(utils._empty_deck_count(t, texts, "艾米尔"))
+        self.assertEqual([], calls)
+
     def test_deck_count_name_one_char_off_and_small_digits(self):
         # 10-28 04:29 下滚后：名字读成「带菲拉」，整屏 OCR 漏了栏上「03」，单独认那一小块认得出
         full = [box(0.377, 0.637, "展开屏障"), box(0.545, 0.639, "量子晶种"), box(0.707, 0.638, "形态凝聚"),
