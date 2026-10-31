@@ -260,14 +260,15 @@ class GameDB:
         best, best_score = None, 0.0
         for it in items:
             for k in keys:
-                v = it.get(k)
-                if not v:
-                    continue
-                if norm(v) == target:
-                    return it
-                s = similarity(v, target)
-                if s > best_score:
-                    best, best_score = it, s
+                # 昵称可以有多个，用逗号隔开（「黄毛,双马尾」）
+                for v in str(it.get(k) or "").split(","):
+                    if not v:
+                        continue
+                    if norm(v) == target:
+                        return it
+                    s = similarity(v, target)
+                    if s > best_score:
+                        best, best_score = it, s
         return best if best_score >= min_score else None
 
 

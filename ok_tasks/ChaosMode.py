@@ -92,6 +92,7 @@ class ChaosMode(TriggerTask):
         self.default_config['刷空档'] = False
         self.default_config[utils.EMPTY_FLASH_LIMIT] = 2
         self.default_config[utils.EMPTY_TARGETS] = []
+        self.default_config[utils.EMPTY_OUT_LEFT] = 5
         self.default_config[utils.NEUTRAL_SKIP] = False
         self.default_config[utils.EQUIP_TARGET_FIRST] = False
         self.default_config[utils.FLASH_EQUIP_NOT_TARGET] = False
@@ -194,6 +195,10 @@ class ChaosMode(TriggerTask):
             "刷存档-空存：目标卡组里多出这么多张闪光卡（主战员闪光、天赋进场送的、装备给的；三选一卡牌闪光不加新卡不算）"
             "就在第一个航点前逃脱重开，默认 2。另外每个选路页读主战员面板的移除次数和卡组：已删次数 + 卡组里还剩的目标卡"
             "超过 5（一个存档最多记 5 次移除，4 张初始卡也要删）就直接重开。到第一个航点（结算页）存档已存下，直接逃脱，没删完的局外改存档补"
+        )
+        self.config_description[utils.EMPTY_OUT_LEFT] = (
+            "刷存档-空存：到第一个航点时，目标卡组里还要局外改存档补删的张数不超过这个数才算存好（换下一个目标），"
+            "超过就逃脱接着刷同一个人。0～5，默认 5（只要已删次数 + 剩下的不超过 5 就算）"
         )
         self.config_description[utils.EMPTY_TARGETS] = (
             "刷存档-空存按顺序换目标主战员：当前目标到航点存好一个档就换下一个（下一局重新自动编队），最后一个存好就停。"

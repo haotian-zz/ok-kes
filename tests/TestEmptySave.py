@@ -468,6 +468,22 @@ class TestWaypointEscape(unittest.TestCase):
         self.assertTrue(self.settlement(t))
         self.assertTrue(t.node_status["empty_saved"])
 
+    def test_out_of_run_limit(self):
+        # 用户 2026-10-30：局外最多删 1 张。删了 2 次还剩 2 张（2+2≤5）也不算存好、不换目标
+        t = empty_task("玛丽贝儿", config={utils.EMPTY_OUT_LEFT: 1})
+        removed(t, "庇护飞踢", "庇护防御")
+        self.assertTrue(self.settlement(t))
+        self.assertFalse(t.node_status["empty_saved"])
+        self.assertFalse(utils.empty_rotate_target(t))
+        t = empty_task("玛丽贝儿", config={utils.EMPTY_OUT_LEFT: 1})
+        removed(t, "庇护飞踢", "庇护防御", "庇护坚守")
+        self.assertTrue(self.settlement(t))
+        self.assertTrue(t.node_status["empty_saved"])
+
+    def test_out_of_run_limit_clamped(self):
+        for raw, want in ((9, 5), (-1, 0), ("x", 5), (1, 1)):
+            self.assertEqual(want, utils._empty_out_left(empty_task(config={utils.EMPTY_OUT_LEFT: raw})))
+
     def test_other_modes_do_not_escape_at_waypoint(self):
         t = empty_task(mode=cs.MODE_TARGET)
         self.assertFalse(self.settlement(t))

@@ -3606,6 +3606,8 @@ def _avoid_god_spark(task: TriggerTask):
 EMPTY_FLASH_LIMIT = "刷空档闪光几张就重开"
 EMPTY_TARGETS = "刷空档目标顺序"
 EMPTY_SAVE_REMOVALS = 5      # 一个存档最多记 5 次移除（官方规则，超过的不记）
+# 到航点时局外还要删的张数上限（0～5）：超过就不算存好、不换目标，接着刷（用户 2026-10-30：刷特蕾莎那批要求最多局外删 1 张）
+EMPTY_OUT_LEFT = "刷空档局外最多删几张"
 # 下面三条是设置项，不跟玩法绑：刷空档的配置里打开，切到要中立卡的玩法关掉（用户 2026-10-28）
 NEUTRAL_SKIP = "中立卡不拿"
 EQUIP_TARGET_FIRST = "装备优先给目标"
@@ -3625,6 +3627,13 @@ def _empty_flash_limit(task: TriggerTask):
         return max(1, int(_get_config_value(task, EMPTY_FLASH_LIMIT, 2)))
     except (TypeError, ValueError):
         return 2
+
+
+def _empty_out_left(task: TriggerTask):
+    try:
+        return min(EMPTY_SAVE_REMOVALS, max(0, int(_get_config_value(task, EMPTY_OUT_LEFT, EMPTY_SAVE_REMOVALS))))
+    except (TypeError, ValueError):
+        return EMPTY_SAVE_REMOVALS
 
 
 def _canonical_member(name):
@@ -3809,17 +3818,24 @@ def empty_waypoint_escape(task: TriggerTask):
         task.sleep(1)
         return True
     if not ns.get("empty_escape_at"):
-        # 存档能不能做成空档：已删次数 + 还要删的张数不超过 5（局外改存档补删）
+        # 存档能不能做成空档：已删次数 + 还要删的张数不超过 5，且局外要补删的不超过设置的张数
         removed, left = empty_removal_state(task)
-        good = removed + left <= EMPTY_SAVE_REMOVALS
+        out_max = _empty_out_left(task)
+        if removed + left > EMPTY_SAVE_REMOVALS:
+            bad = f"（{removed}+{left} 超过 {EMPTY_SAVE_REMOVALS} 次，做不成空档，不换目标）"
+        elif left > out_max:
+            bad = f"（局外最多删 {out_max} 张，不算存好，不换目标）"
+        else:
+            bad = ""
+        good = not bad
         ns["empty_saved"] = good
         if good:
             ns["success_rounds"] = ns.get("success_rounds", 0) + 1
-        ns["escape_reason"] = "刷空档：到第一个航点" + ("" if good else "（删卡次数不够）")
+        ns["escape_reason"] = "刷空档：到第一个航点" + ("" if good else "（没做成空档）")
         cards = "、".join(ns.get("empty_flash_cards") or []) or "无"
         task.log_info(f"刷空档：到第一个航点，存档已存下；{empty_target(task)}已删 {removed} 次，"
                       f"卡组里多了闪光卡 {ns.get('empty_flashes', 0)} 张（{cards}），局外还要删 {left} 张，逃脱"
-                      + ("" if good else f"（{removed}+{left} 超过 {EMPTY_SAVE_REMOVALS} 次，做不成空档，不换目标）"))
+                      + bad)
     ns["empty_escape_at"] = time.time()
     _move_and_click(task, 0.959, 0.051)
     task.sleep(1)

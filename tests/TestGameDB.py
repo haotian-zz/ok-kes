@@ -22,6 +22,11 @@ class TestText(unittest.TestCase):
 class TestCards(unittest.TestCase):
     db = get_db()
 
+    def test_nickname_aliases(self):
+        # 用户口头叫法（2026-10-30 刷空档名单）：昵称可以多个、逗号隔开
+        for alias, name in (("特蕾莎", "特莱莎"), ("小刀", "特莱莎"), ("雷伊", "蕾伊"), ("双马尾", "蒂菲拉"), ("市长", "海德玛丽")):
+            self.assertEqual(name, self.db.combatant(alias)["name"])
+
     def test_rosweisse_cards(self):
         names = [c["name"] for c in self.db.cards_of("罗丝薇瑟")]
         for n in ("斩念", "入鞘", "明灭剑", "剑鸣九霄", "剑刃破晓", "循环之刃", "基尔肯的神眷者"):
