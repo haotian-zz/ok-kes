@@ -63,7 +63,9 @@ class DailyTask(BaseTask):
 
     def _step_kwargs(self, fn_name):
         if fn_name == "drink_coffee":
-            return {"choice": self.config.get("咖啡点单", "自动")}
+            # 只有后面还会清体力、且这次不是清完体力回来的那一次，才能「先清体力再来」
+            return {"choice": self.config.get("咖啡点单", "自动"),
+                    "can_wait": bool(self.config.get("清体力")) and not self._coffee_waited}
         if fn_name == "farm_stamina":
             return {"category": self.config.get("清体力分类", "成长"), "stage": self.config.get("清体力关卡", "单元币"),
                     "efficiency": int(self.config.get("清体力战斗效率", 6)),
@@ -75,7 +77,10 @@ class DailyTask(BaseTask):
     def run(self):
         results = []
         setattr(self, utils_daily.LEFTOVER_RUN_ATTR, False)
-        for key, fn_name in self.steps:
+        self._coffee_waited = False
+        steps = list(self.steps)
+        while steps:
+            key, fn_name = steps.pop(0)
             if not self.config.get(key):
                 continue
             self.log_info(f"开始：{key}")
@@ -86,6 +91,13 @@ class DailyTask(BaseTask):
                 self.log_error(f"{key} 出错: {e}\n{traceback.format_exc()}")
                 self.screenshot(f"daily_error_{fn_name}")
                 ok = False
+            if ok == utils_daily.COFFEE_LATER:
+                # 清完体力回来堂食，再清一次把这 120 以太也用掉
+                self._coffee_waited = True
+                steps += [("喝咖啡", "drink_coffee"), ("清体力", "farm_stamina")]
+                self.info_set(key, "清完体力再点")
+                go_home(self)
+                continue
             results.append(f"{key}：{'完成' if ok else '未完成'}")
             self.info_set(key, "完成" if ok else "未完成")
             go_home(self)

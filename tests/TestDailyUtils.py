@@ -180,16 +180,30 @@ class TestDrinkCoffee(unittest.TestCase):
     SHOP = [box("庭院咖啡店", 0.13, 0.044), box("点单", 0.776, 0.912)]
     POPUP = [box("获得道具", 0.5, 0.377), box("点击屏幕可关闭", 0.5, 0.934)]
 
-    def board(self, ether):
+    def board(self, ether, supply="0/4"):
         return [box("菜单板", 0.736, 0.167), box("堂食", 0.627, 0.267), box("外带", 0.845, 0.267),
-                box(ether, 0.943, 0.048), box("0/4", 0.833, 0.049), box("点单", 0.737, 0.875)]
+                box(ether, 0.943, 0.048), box(supply, 0.833, 0.049), box("点单", 0.737, 0.875)]
 
-    def run_coffee(self, ether, choice="自动"):
+    def run_coffee(self, ether, choice="自动", supply="0/4", can_wait=False, expect=True):
         pages = [(self.HOME_CITY, 128), (self.HOME_CITY, 128), (self.CITY, 128), (self.SHOP, 128),
-                 (self.board(ether), 128), ([box("跳过", 0.941, 0.05)], 128), (self.POPUP, 128), (self.SHOP, 128)]
+                 (self.board(ether, supply), 128), ([box("跳过", 0.941, 0.05)], 128), (self.POPUP, 128), (self.SHOP, 128)]
         task = FakeTask(pages)
-        self.assertTrue(utils_daily.drink_coffee(task, choice))
+        self.assertEqual(expect, utils_daily.drink_coffee(task, choice, can_wait=can_wait))
         return task.actions
+
+    def test_supply_full_and_ether_full_waits_for_stamina(self):
+        # 2026-11-04/05：补充货币 4/4 时外带点了没反应，喝咖啡未完成；清体力还没跑就先等，不点单
+        actions = self.run_coffee("265/265+", supply="4/4", can_wait=True, expect=utils_daily.COFFEE_LATER)
+        self.assertNotIn(("click",) + utils_daily.COFFEE_ORDER_BOARD, actions)
+
+    def test_supply_full_and_ether_full_no_wait_skips(self):
+        actions = self.run_coffee("265/265+", supply="4/4", can_wait=False, expect=False)
+        self.assertNotIn(("click",) + utils_daily.COFFEE_ORDER_BOARD, actions)
+
+    def test_supply_full_low_ether_dines_in_even_if_takeout_chosen(self):
+        actions = self.run_coffee("85/265", choice="外带", supply="4/4")
+        self.assertIn(("click",) + utils_daily.COFFEE_DINE_IN, actions)
+        self.assertNotIn(("click",) + utils_daily.COFFEE_TAKEOUT, actions)
 
     def test_full_ether_takes_out(self):
         actions = self.run_coffee("265/265+")

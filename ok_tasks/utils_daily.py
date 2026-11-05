@@ -46,6 +46,8 @@ COFFEE_DINE_IN = (0.627, 0.45)
 COFFEE_TAKEOUT = (0.846, 0.45)
 COFFEE_ORDER_BOARD = (0.737, 0.875)
 COFFEE_DINE_IN_ETHER = 120
+# drink_coffee 返回它表示「先清体力再回来堂食」（外带的以太补充货币存满、以太又满，现在两种都不划算）
+COFFEE_LATER = "later"
 # 模拟 → 战斗训练 → 配置队伍：战斗效率 -/+、进入；每次消耗 20×效率 以太
 TRAINING_EFF_MINUS = (0.695, 0.832)
 TRAINING_EFF_PLUS = (0.969, 0.832)
@@ -406,10 +408,20 @@ def read_ether(task: BaseTask):
     return int(cur), int(cap)
 
 
-def drink_coffee(task: BaseTask, choice="自动"):
+def read_ether_supply(task: BaseTask):
+    """菜单板右上角以太补充货币「持有/上限」（以太左边那个，如 4/4），读不到返回 (None, None)。"""
+    box = find_text(task, r"^\d+\s*/\s*\d+$", region=(0.78, 0.0, 0.88, 0.1))
+    if not box:
+        return None, None
+    held, cap = re.match(r"(\d+)\s*/\s*(\d+)", box.name).groups()
+    return int(held), int(cap)
+
+
+def drink_coffee(task: BaseTask, choice="自动", can_wait=False):
     """方舟城市 → 庭院咖啡店 → 点单（每天一杯）。
 
     choice：堂食（立即 +120 以太）/ 外带（存一个以太补充货币）/ 自动（以太加 120 会超上限就外带，否则堂食）。
+    外带存满（4/4）时点不了外带：以太不会溢出就改堂食；会溢出且 can_wait 就返回 COFFEE_LATER，让日常清完体力再来堂食。
     """
     if not open_home_entry(task, "方舟城市"):
         return False
@@ -442,9 +454,21 @@ def drink_coffee(task: BaseTask, choice="自动"):
             return False
         task.sleep(0.5)
     cur, cap = read_ether(task)
+    overflow = cur is None or cur + COFFEE_DINE_IN_ETHER > cap
     if choice == "自动":
-        choice = "外带" if cur is None or cur + COFFEE_DINE_IN_ETHER > cap else "堂食"
-    task.log_info(f"以太 {cur}/{cap}，点{choice}")
+        choice = "外带" if overflow else "堂食"
+    held, held_cap = read_ether_supply(task)
+    if choice == "外带" and held is not None and held >= held_cap:
+        # 2026-11-04/05 实录：以太补充货币存满 4/4 后外带点单没反应（没有剧情也没有获得道具），喝咖啡连着两天未完成
+        if not overflow:
+            choice = "堂食"
+        elif can_wait:
+            task.log_info(f"以太补充货币已存满 {held}/{held_cap}，以太 {cur}/{cap} 堂食会溢出，先清体力再回来堂食")
+            return COFFEE_LATER
+        else:
+            task.log_info(f"以太补充货币已存满 {held}/{held_cap}，以太 {cur}/{cap} 堂食会溢出，今天不点")
+            return False
+    task.log_info(f"以太 {cur}/{cap}，补充货币 {held}/{held_cap}，点{choice}")
     click_rel(task, *(COFFEE_DINE_IN if choice == "堂食" else COFFEE_TAKEOUT), after=1.5, reason=f"选择{choice}")
     click_rel(task, *COFFEE_ORDER_BOARD, after=3, reason="点单")
     if click_text(task, r"跳过", region=(0.85, 0.0, 1.0, 0.12), timeout=6, after=2):
