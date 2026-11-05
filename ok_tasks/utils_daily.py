@@ -27,6 +27,8 @@ HOME_WAKE_POINTS = (HOME_WAKE_POINT, (0.12, 0.45), (0.10, 0.20))
 HOME_ICON_REGION = (0.84, 0.0, 0.96, 0.13)
 BACK_ICON_REGION = (0.0, 0.0, 0.08, 0.12)
 PAY_POPUP_CLOSE = (0.937, 0.05)
+# 登录后的「资讯速递」公告弹窗：右上角 X（2026-11-04 实录，ESC 关不掉，日常每项都失败）
+NEWS_POPUP_CLOSE = (0.945, 0.042)
 
 # 主页右上角 ≡ 菜单（第一次点击可能只是唤醒隐藏的 UI）
 MENU_POINT = (0.959, 0.05)
@@ -220,6 +222,9 @@ def go_home(task: BaseTask, timeout=60.0):
         if has_text(task, r"^\d+元$"):
             # 付费推荐弹窗（如 F2 先弹的「特殊资料 68元 / 零之资料 128元」）：ESC 关不掉，点右上角 X，绝不点价格按钮
             click_rel(task, *PAY_POPUP_CLOSE, after=2, reason="关闭付费推荐弹窗")
+            continue
+        if has_text(task, r"资讯速递"):
+            click_rel(task, *NEWS_POPUP_CLOSE, after=2, reason="关闭资讯速递")
             continue
         _, home = match_template(task, "home_icon", HOME_ICON_REGION, 0.8)
         if home:

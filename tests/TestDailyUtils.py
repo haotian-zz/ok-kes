@@ -111,6 +111,13 @@ class TestGoHome(unittest.TestCase):
         self.assertTrue(utils_daily.go_home(task, timeout=5))
         self.assertEqual([("click",) + utils_daily.PAY_POPUP_CLOSE], task.actions)
 
+    def test_news_popup_closes_with_x(self):
+        # 2026-11-04：登录后弹「资讯速递」公告，ESC 关不掉，日常每项都「连续按 ESC 仍未回到主页」
+        popup = [box("资讯速递", 0.315, 0.1), box("网页活动|异常观测指南", 0.155, 0.38), box("常驻战员营救", 0.6, 0.55)]
+        task = FakeTask([(popup, 128), (HOME, 128)])
+        self.assertTrue(utils_daily.go_home(task, timeout=5))
+        self.assertEqual([("click",) + utils_daily.NEWS_POPUP_CLOSE], task.actions)
+
     def test_in_run_gives_up(self):
         task = FakeTask([([box("卡厄思信息", 0.1, 0.05), box("逃脱", 0.9, 0.93)], 128)])
         self.assertFalse(utils_daily.go_home(task, timeout=5))
