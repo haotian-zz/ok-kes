@@ -200,6 +200,33 @@ class TestAtLobby(unittest.TestCase):
         self.assertFalse(task.entry_checked)     # 读完预设下一帧再按玩法进卡厄思
 
 
+    def test_lobby_stops_when_rounds_reached(self):
+        # 2026-11-06：中途重启后一局打完回到难度页，补查零式升级直接回主页又开了一局，几轮后停止=1 没生效
+        from unittest import mock
+        from ChaosMode import ChaosMode
+        import chaos_strategy
+        import utils_daily
+        calls = []
+        task = SimpleNamespace(chaos_mode=chaos_strategy.MODE_EXPLORE, entry_checked=False, chaos_plan=None,
+                               all_texts=[SimpleNamespace(name=n) for n in ("每周进展", "8000/8000", "进入")],
+                               config={"几轮后停止(0为不停止)": 1}, node_status={"total_rounds": 1},
+                               log_info=lambda *a: None, send_key=lambda *a: calls.append("esc"), sleep=lambda *a: None,
+                               disable=lambda: calls.append("disable"))
+        task._at_lobby = lambda: True
+        task._out_of_run_page = ChaosMode._out_of_run_page
+        task._prepare_target_deck = lambda: calls.append("preset") or True
+        with mock.patch.object(utils_daily, "is_home", return_value=False), \
+                mock.patch.object(utils_daily, "go_home", lambda t: calls.append("go_home") or True), \
+                mock.patch.object(utils_daily, "refresh", lambda t: None):
+            self.assertTrue(ChaosMode._enter_chaos_from_home(task))
+            self.assertEqual(["disable"], calls)
+            # 轮数没到照旧回主页准备下一局
+            calls.clear()
+            task.entry_checked, task.node_status["total_rounds"] = False, 0
+            self.assertTrue(ChaosMode._enter_chaos_from_home(task))
+        self.assertNotIn("disable", calls)
+        self.assertIn("preset", calls)
+
 class TestCardNameOneCharOff(unittest.TestCase):
     def test_one_char_ocr_error(self):
         import game_db

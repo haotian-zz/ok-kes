@@ -401,6 +401,10 @@ class ChaosMode(TriggerTask):
             if not utils_chaos._at_chaos_initial_page(self):
                 utils.restore_run_state(self)     # 停在局内：读回 PT 账（中途重启不丢）
             return False
+        # 局外要开新的一局前先看轮数：一局打完回到难度页时可能先走到这里（中途重启后补查零式升级），
+        # PAGE_HANDLERS 里的 handle_chaos_auto_stop 来不及看（2026-11-06 几轮后停止=1 又开了一局）
+        if utils.handle_auto_stop(self):
+            return True
         if out_page:
             self.log_info(f"停在{out_page}（局外），先回主页再按玩法准备")
         if at_lobby or out_page in ("存储数据页", "卡厄思赛季页", "主战员详细信息页"):
