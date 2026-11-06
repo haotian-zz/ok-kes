@@ -102,6 +102,7 @@ class ChaosMode(TriggerTask):
         self.default_config['治疗崩溃'] = True
         self.default_config['优先移除基础牌'] = True
         self.default_config['进入商店'] = False
+        self.default_config[utils.SHOP_BUY_QUOTA] = 0
         self.default_config['指定面具卡牌'] = "丢弃最多2张卡牌"
         self.default_config['面具卡牌刻印'] = "自身攻击卡牌伤害总量提升30%"
         self.default_config['刷初始卡牌'] = ""
@@ -260,6 +261,7 @@ class ChaosMode(TriggerTask):
         self.config_description['首层刷特定闪光'] = (
             "默认刷闪光优先级第一张，可刷神闪，第一层没刷出自动逃脱"
         )
+        self.config_description[utils.SHOP_BUY_QUOTA] = "每局在德朗商店至少买这么多件（凑任务次数）：没命中配置的也买，装备优先、挑最便宜的；0＝不凑"
         self.config_description['商店刷新信用点阈值'] = (
             "德朗商店免费刷新次数用完后，仅当信用点大于该值且足够支付刷新价格时才付费刷新。"
         )

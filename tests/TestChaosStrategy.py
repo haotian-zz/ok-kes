@@ -586,6 +586,15 @@ class TestTrace(unittest.TestCase):
         task.node_status.update(pass_final_boss_count=2)
         plan.update(layer=2, done=0)                           # 后面还有节点
         self.assertFalse(_is_last_shop(task))
+    def test_shop_quota_pick(self):
+        # 用户 2026-11-06：商店要买够 4 次，没命中配置的也买：装备优先、最便宜的；买不起就不买
+        import utils
+        a, b, c = object(), object(), object()
+        items = [(a, "泰坦型战斗强化服", 96, False), (b, "精英猎手", 67, False), (c, "钱治百病", 35, True)]
+        self.assertIs(b, utils._quota_pick(items, 408)[0])
+        self.assertIs(c, utils._quota_pick(items, 60)[0])           # 装备都买不起才买卡
+        self.assertIsNone(utils._quota_pick(items, 35))             # 余额要大于价格
+
     def test_last_shop_pick(self):
         import utils
         box = lambda x, y, name: SimpleNamespace(x=x * 1920, y=y * 1080, width=0, height=0, name=name)

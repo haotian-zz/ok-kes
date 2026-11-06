@@ -6051,6 +6051,19 @@ def _last_shop_pick(task: TriggerTask, shop_items, credit):
     return None
 
 
+SHOP_BUY_QUOTA = "商店每局至少买几件"
+
+
+def _quota_pick(shop_items, credit):
+    """凑「商店每局至少买几件」：买得起的里装备优先、再挑最便宜的。返回 (图标, 名称, 价格, 是否卡牌) 或 None。"""
+    affordable = [item for item in shop_items if item[2] < credit]
+    return min(affordable, key=lambda item: (item[3], item[2])) if affordable else None
+
+
+def _count_shop_buy(task):
+    task.node_status["shop_bought"] = task.node_status.get("shop_bought", 0) + 1
+
+
 def handle_shop(task: TriggerTask):
     """德朗商店: 优先移除卡牌，其次按配置购买卡牌或装备，最后尝试免费或付费刷新。"""
     import utils_imprint
@@ -6220,6 +6233,7 @@ def handle_shop(task: TriggerTask):
             )
             if imprint_mode:
                 utils_imprint.mark_shop_seen(task, credit_icon)
+            _count_shop_buy(task)
             task.click_box(credit_icon)
             task.sleep(1)
             return True
@@ -6229,6 +6243,20 @@ def handle_shop(task: TriggerTask):
             if pick:
                 credit_icon, item_name, price, reason = pick
                 task.log_info(f"德朗商店（最后一个）: 装备「{item_name}」价格{price}，当前{current_credit}，{reason}，买下")
+                _count_shop_buy(task)
+                task.click_box(credit_icon)
+                task.sleep(1)
+                return True
+
+        # 用户 2026-11-06：要在卡厄思商店买够 4 次（任务），没命中配置的也买：装备优先、挑最便宜的
+        quota = int(_get_config_value(task, SHOP_BUY_QUOTA, 0) or 0)
+        bought = task.node_status.get("shop_bought", 0)
+        if bought < quota and not imprint_mode:
+            pick = _quota_pick(shop_items, current_credit)
+            if pick:
+                credit_icon, item_name, price, is_card = pick
+                task.log_info(f"德朗商店: 本局买了 {bought}/{quota} 件，凑数买{'卡牌' if is_card else '装备'}「{item_name}」价格{price}，当前{current_credit}")
+                _count_shop_buy(task)
                 task.click_box(credit_icon)
                 task.sleep(1)
                 return True
