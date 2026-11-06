@@ -152,6 +152,11 @@ class TestAtLobby(unittest.TestCase):
         self.assertEqual("主战员详细信息页", ChaosMode._out_of_run_page(page(
             "详细信息", "存储数据帮助", "基础存储数据", "能力值", "卡牌", "辅战员", "存储数据", "编辑存储数据", "养成指南", "下载数据", "替换")))
         self.assertEqual("每日礼物弹窗", ChaosMode._out_of_run_page(page("死灵之书每日礼物", "剩余天数：25天", "点击以领取补给")))
+        # 2026-11-06 14:46：停在 F2 阿基亚农补给（赛季任务页、30 级选辅战员页）启动，被当成事件连点
+        self.assertEqual("阿基亚农补给页", ChaosMode._out_of_run_page(page(
+            "阿基亚农补给", "剩余时间", "4天01小时", "每日任务", "每周任务", "赛季任务", "完成5次模拟")))
+        self.assertEqual("阿基亚农补给页", ChaosMode._out_of_run_page(page(
+            "阿基亚农补给", "达到30级后，可选择1名辅战员作为奖励。", "普莉希拉", "持有数量0", "战员信息", "招募辅战员")))
         # 2026-10-28 02:12：赛季页的补给商店被当成事件连点
         self.assertEqual("卡厄思赛季页", ChaosMode._out_of_run_page(page(
             "银河系灾害", "银河徽章", "挑战任务", "卡厄思", "每周进展", "8000/8000", "补给商店", "环境变量", "赛季信息")))
