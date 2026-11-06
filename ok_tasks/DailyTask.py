@@ -2,6 +2,7 @@ import traceback
 
 from ok import BaseTask
 
+import game_speed
 import utils_daily
 from utils_daily import go_home
 
@@ -29,6 +30,7 @@ class DailyTask(BaseTask):
             "疗愈中心": True,
             "疗愈中心治疗方式": "不处理",
         })
+        game_speed.add_config(self)
         self.config_description.update({
             "检查快捷键显示": "设置→键盘→快捷键显示保持 ON（出击/卡厄思识别手牌要用卡牌上的按键提示）",
             "领取日常活跃奖励": "F3 日常 → 每日任务的日程进度奖励",
@@ -78,6 +80,8 @@ class DailyTask(BaseTask):
         results = []
         setattr(self, utils_daily.LEFTOVER_RUN_ATTR, False)
         self._coffee_waited = False
+        utils_daily.refresh(self)
+        game_speed.ensure_speed(self)    # 清体力的战斗也用 3 倍速
         steps = list(self.steps)
         while steps:
             key, fn_name = steps.pop(0)

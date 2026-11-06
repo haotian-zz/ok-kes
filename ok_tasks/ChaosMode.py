@@ -109,7 +109,6 @@ class ChaosMode(TriggerTask):
         self.default_config['只打第一层'] = False
         self.default_config['章鱼哥速刷'] = False
         self.default_config['章鱼哥速刷只认混沌之识'] = False
-        self.default_config[game_speed.SPEED_KEY] = True
         for key, value in utils_imprint.DEFAULTS.items():
             self.default_config[key] = value
         self.default_config[ledger_check.LEDGER_KEY] = True
@@ -254,10 +253,7 @@ class ChaosMode(TriggerTask):
             "目标装备刻印：描述里这些关键词都有才算（默认对应「友军使用能力生成5张以上卡牌时，自身额外攻击伤害量+30%」）"
         )
         self.config_description[utils_imprint.MAX_SYNTH_KEY] = "一次任务里最多合成多少次法典，到了还没刷到合格的就停下"
-        self.config_description[game_speed.SPEED_KEY] = (
-            "国服自带变速：任务开始（和游戏重开后）按一次 F8 唤出「变速功能」浮窗，点 3.0x 再关掉。"
-            "F8 只认真实按键，会把游戏切到前台一下再切回原来的窗口"
-        )
+        game_speed.add_config(self)
         self.config_description['首层刷特定闪光'] = (
             "默认刷闪光优先级第一张，可刷神闪，第一层没刷出自动逃脱"
         )

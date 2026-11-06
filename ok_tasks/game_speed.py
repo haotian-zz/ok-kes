@@ -11,6 +11,16 @@ CLOSE_POS = (0.263, 0.051)                # 「F8 / ESC 关闭 ×」的 ×
 TRIES = 3
 
 
+DESCRIPTION = ("国服自带变速：任务开始（和游戏重开后）按一次 F8 唤出「变速功能」浮窗，点 3.0x 再关掉。"
+               "F8 只认真实按键，会把游戏切到前台一下再切回原来的窗口")
+
+
+def add_config(task):
+    """各任务（卡厄思/出击/剧情/一键日常）都带「三倍速」开关，默认开（用户 2026-11-06：脚本默认要打开三倍速）。"""
+    task.default_config[SPEED_KEY] = True
+    task.config_description[SPEED_KEY] = DESCRIPTION
+
+
 def parse_rate(text):
     """大字 OCR 常丢小数点（「30x」「20x」），按 1.0/1.5/2.0/3.0 四档还原。"""
     digits = re.sub(r"\D", "", text or "")

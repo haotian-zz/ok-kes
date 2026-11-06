@@ -1,5 +1,6 @@
 from ok import TriggerTask, og
 
+import game_speed
 import utils_sortie
 from config_io import (
     make_export_callback,
@@ -91,6 +92,7 @@ class SortieMode(TriggerTask):
             '第几层boss前自动暂停': {'type': 'drop_down', 'options': ['不暂停', '1', '2', '3']},
         }
         self.config_description['游戏语言'] = "国际服请设置为繁体中文"
+        game_speed.add_config(self)
         self.config_description[utils_sortie.USE_SANITY] = "每层结算时消耗理智（理性，右上角大脑图标）领取卡厄思战利品；关闭则放弃战利品"
         self.config_description[utils_sortie.SANITY_REFILL] = (
             "领取奖励时理智不够、弹出「补充理性」就点确认，用体力（以太）补充；关闭或体力也不够时放弃补充，回到出击入口页停止"
@@ -139,6 +141,8 @@ class SortieMode(TriggerTask):
 
     def run(self):
         self.all_texts = _simplify_texts(self.ocr())
+        if game_speed.ensure_speed(self):
+            return
         for handle_page in utils_sortie.PAGE_HANDLERS:
             if handle_page(self):
                 return

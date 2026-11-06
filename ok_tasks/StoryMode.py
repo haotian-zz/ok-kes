@@ -1,5 +1,6 @@
 from ok import TriggerTask, og
 
+import game_speed
 import utils_story
 from utils import _simplify_texts
 
@@ -14,6 +15,7 @@ class StoryMode(TriggerTask):
         self.all_texts = []
         # 默认关闭，由用户在界面中手动启停，保持 TriggerTask 自己作为主任务运行
         self.default_config['_enabled'] = False
+        game_speed.add_config(self)
 
     def enable(self):
         """开启剧情模式时自动禁用出击和卡厄思模式。"""
@@ -30,6 +32,8 @@ class StoryMode(TriggerTask):
     def run(self):
         # 每帧执行一次 OCR 并转简体, 供各页面处理函数复用
         self.all_texts = _simplify_texts(self.ocr())
+        if game_speed.ensure_speed(self):
+            return
         # 依次尝试各页面处理函数, 命中(返回 True)即结束本次循环
         for handle_page in utils_story.PAGE_HANDLERS:
             if handle_page(self):

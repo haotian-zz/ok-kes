@@ -23,6 +23,20 @@ TASK = SimpleNamespace(width=1920, height=1080)
 
 
 class TestGameSpeed(unittest.TestCase):
+    def test_add_config_defaults_on(self):
+        # 用户 2026-11-06：脚本默认要打开三倍速（卡厄思/出击/剧情/一键日常都用同一个开关）
+        task = SimpleNamespace(default_config={}, config_description={})
+        gs.add_config(task)
+        self.assertIs(True, task.default_config[gs.SPEED_KEY])
+        self.assertIn("F8", task.config_description[gs.SPEED_KEY])
+
+    def test_tasks_register_speed_switch(self):
+        root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ok_tasks")
+        for name in ("ChaosMode", "SortieMode", "StoryMode", "DailyTask"):
+            src = open(os.path.join(root, f"{name}.py"), encoding="utf-8").read()
+            self.assertIn("game_speed.add_config(self)", src, name)
+            self.assertIn("game_speed.ensure_speed(self)", src, name)
+
     def test_parse_rate(self):
         self.assertEqual(3.0, gs.parse_rate("30x"))
         self.assertEqual(2.0, gs.parse_rate("20x"))
