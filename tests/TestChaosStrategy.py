@@ -534,6 +534,10 @@ class TestTrace(unittest.TestCase):
         self.assertEqual([], cs.parse_modifiers("[欺诈]威胁他退下"))      # 事件选项的方括号不算词条
         self.assertEqual(8, cs.observe_start_difficulty(None))          # 用户 2026-10-25：锁定 Ⅷ
         self.assertEqual(10, cs.observe_start_difficulty(10))
+        # 用户 2026-11-06：探索度难度都开了就一直打 Ⅷ；0＝最高难度
+        self.assertEqual(8, cs.explore_difficulty(None))
+        self.assertEqual(8, cs.explore_difficulty(8))
+        self.assertIsNone(cs.explore_difficulty(0))
         self.assertEqual(130, cs.config_overrides(cs.MODE_TARGET, "罗丝薇瑟", {})["存储数据保存上限大于多少"])
 
     def test_pt_ledger(self):

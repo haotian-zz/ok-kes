@@ -50,6 +50,7 @@ class ChaosMode(TriggerTask):
         self.default_config['自动编队'] = True
         self.default_config['卡厄思地图'] = "活动卡厄思"
         self.default_config['刷存档难度'] = 8
+        self.default_config['探索度难度'] = 8
         self.default_config['探索度达到多少级后改刷目标卡组'] = 30
         self.default_config['记录流程追踪'] = True
         self.default_config['调整零式升级'] = True
@@ -139,6 +140,7 @@ class ChaosMode(TriggerTask):
             '目标预设': {'min': 1, 'max': 3},
             '卡厄思地图': {'type': 'drop_down', 'options': ['活动卡厄思', '常驻（探索度→卡厄思具象，刷存档→零式系统）']},
             '刷存档难度': {'min': 0, 'max': 15},
+            '探索度难度': {'min': 0, 'max': 15},
             '刷存档最低PT': {'min': 30, 'max': 180},
             utils.EMPTY_FLASH_LIMIT: {'min': 1, 'max': 5},
             '配置操作': {
@@ -169,7 +171,7 @@ class ChaosMode(TriggerTask):
         self.config_description['刷存档开梦境模式'] = ("刷存档-目标卡组在配置队伍页打开梦境模式（存档 +1 阶、PT 上限 +10），要队伍里有经历过深层创伤的主战员。"
                                                  "刷存档-空存一律关掉梦境（会提高闪光几率）")
         self.config_description['卡厄思地图'] = (
-            "活动卡厄思：主页右下角活动横幅 → 卡厄思（如 2026-10 的「天幕」），探索度打最高难度，刷存档按「刷存档难度」；"
+            "活动卡厄思：主页右下角活动横幅 → 卡厄思（如 2026-10 的「天幕」），探索度按「探索度难度」（默认 Ⅷ），刷存档按「刷存档难度」；"
             "常驻：探索度去卡厄思具象探索度最低的区域，刷存档去零式系统法典"
         )
         self.config_description['记录流程追踪'] = (
@@ -178,6 +180,7 @@ class ChaosMode(TriggerTask):
         self.config_description['探索度达到多少级后改刷目标卡组'] = (
             "玩法是探索度时，开局在卡厄思入口页读左下角「探索度 等级N」，到这个级数就把玩法改成目标卡组并回主页重新进；0=不切换")
         self.config_description['刷存档难度'] = "活动卡厄思刷存档锁定第几档难度（左侧罗马数字，Ⅰ=1），默认 Ⅷ"
+        self.config_description['探索度难度'] = "活动卡厄思探索度打第几档难度（左侧罗马数字，Ⅰ=1），默认 Ⅷ；0＝已解锁的最高难度"
         self.config_description['刷存档最低PT'] = "刷存档时存储数据上限（含梦境 +10）至少多少才进；带出去用过编辑道具上限会变 180。局内按这个上限记 PT 账，绝不爆 PT"
         self.config_description['调整零式升级'] = (
             "刷存档玩法从主页进零式系统时，先把升级调好：高维启示 0 级；认知闪光空存 0 级、目标卡组满级。"
@@ -423,7 +426,7 @@ class ChaosMode(TriggerTask):
         elif self.config.get('卡厄思地图', '活动卡厄思') == '活动卡厄思':
             if want_zero or want_max:
                 utils_chaos_prep.enter_zero_system(self, want_zero, want_max)
-            difficulty = None if mode == chaos_strategy.MODE_EXPLORE else \
+            difficulty = chaos_strategy.explore_difficulty(self.config.get('探索度难度')) if mode == chaos_strategy.MODE_EXPLORE else \
                 chaos_strategy.observe_start_difficulty(self.config.get('刷存档难度'))
             ok = utils_chaos_prep.enter_event_chaos(self, difficulty)
             if ok == "restart":

@@ -806,6 +806,13 @@ def judge_modifiers(mods):
     return not why, why
 
 
+def explore_difficulty(configured):
+    """活动卡厄思探索度打第几档：0＝已解锁的最高难度（返回 None）。
+    用户 2026-11-06：难度都开了就一直打 Ⅷ（最高难度推荐等级 130，第一个精英就全灭）。"""
+    value = 8 if configured is None or configured == "" else int(configured)
+    return value if value > 0 else None
+
+
 def observe_start_difficulty(configured):
     """刷存档锁定配置的难度（默认 Ⅷ），不自动升降。"""
     return max(int(configured or 8), 1)
