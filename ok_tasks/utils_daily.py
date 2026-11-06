@@ -317,10 +317,17 @@ def open_menu(task: BaseTask, tries=3):
 
 def claim_daily_activity(task: BaseTask):
     """F3「日常」→「每日任务」页签 → 全部领取活跃度奖励。"""
-    if not go_home(task):
-        return False
-    task.send_key("f3")
-    if not wait_text(task, r"成长指南|每日任务|模拟训练|作战|达成手册", region=(0.08, 0.05, 0.35, 0.17), timeout=8):
+    for attempt in range(3):
+        if not go_home(task):
+            return False
+        task.send_key("f3")
+        if wait_text(task, r"成长指南|每日任务|模拟训练|作战|达成手册", region=(0.08, 0.05, 0.35, 0.17), timeout=6):
+            break
+        # 2026-11-06 实录：主页 UI 自动隐藏的时候 F3 没反应，两遍日常都「没有打开日常窗口」；唤醒 UI 再按
+        if attempt < 2:
+            task.log_info("F3 没打开日常窗口，唤醒主页 UI 后重试")
+            click_rel(task, *HOME_WAKE_POINT, after=1.5, reason="唤醒主页 UI")
+    else:
         task.log_info("没有打开日常窗口")
         return False
     click_rel(task, *DAILY_TASK_TAB, after=2, reason="切到每日任务")
@@ -639,10 +646,20 @@ def _enter_heal_center(task: BaseTask, timeout=30.0):
     if not open_home_entry(task, "方舟城市"):
         return False
     end = time.time() + timeout
+    idle = reenter = 0
     while time.time() < end:
         refresh(task)
         if match_template(task, "heal_center", HEAL_CENTER_REGION)[1] or has_text(task, r"^疗愈中心$"):
             return True
+        # 2026-11-06 实录：点方舟城市那一下被吞（主页 UI 正好自动隐藏），一直停在主页，30 秒后「没有进入疗愈中心」。
+        # 连续几帧还在主页（或只剩立绘、没字也不是黑屏加载）就重新进一次方舟城市
+        idle = idle + 1 if is_home(task) or not (task.all_texts or is_black(task)) else 0
+        if idle >= 5 and reenter < 2:
+            idle, reenter = 0, reenter + 1
+            task.log_info("还停在主页，重新进方舟城市")
+            if not open_home_entry(task, "方舟城市"):
+                return False
+            continue
         box = find_text(task, r"^(创伤中心|疗愈中心)$", region=(0.3, 0.85, 0.7, 0.97))
         if box:
             click_text_box(task, box, after=3, reason="进入创伤中心")

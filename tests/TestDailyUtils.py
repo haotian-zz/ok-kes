@@ -2,6 +2,7 @@
 import os
 import sys
 import unittest
+from unittest import mock
 from types import SimpleNamespace
 
 import numpy as np
@@ -222,6 +223,27 @@ class TestDrinkCoffee(unittest.TestCase):
         self.assertNotIn(("click",) + utils_daily.COFFEE_ORDER_BOARD, task.actions)
 
 
+class TestClaimDailyActivity(unittest.TestCase):
+    def test_f3_retries_after_waking_home_ui(self):
+        # 2026-11-06：主页 UI 自动隐藏时 F3 没反应；唤醒 UI 后再按
+        window = [box("每日任务", 0.2, 0.1), box("60/100", 0.2, 0.62)]
+        calls = []
+
+        def fake_wait(task, pattern, region=None, timeout=10.0, interval=0.5):
+            calls.append(pattern)
+            if len(calls) == 1:
+                return None
+            utils_daily.refresh(task)
+            return utils_daily.find_text(task, pattern, region) or box("每日任务", 0.2, 0.1)
+
+        task = FakeTask([(HOME, 128), (HOME, 128), (window, 128)])
+        with mock.patch.object(utils_daily, "wait_text", fake_wait), \
+                mock.patch.object(utils_daily, "claim_all", lambda *a, **k: True):
+            self.assertTrue(utils_daily.claim_daily_activity(task))
+        self.assertEqual(2, task.actions.count(("key", "f3")))
+        self.assertIn(("click",) + utils_daily.HOME_WAKE_POINT, task.actions)
+
+
 class TestFarmStaminaHelpers(unittest.TestCase):
     def test_reads_fixed_cost_on_enter_button(self):
         # 2026-11-06：记忆碎片-光辉与雪花 Ⅹ 一次 60（不是 20×效率），按钮上红字 60
@@ -265,6 +287,13 @@ class TestTreatPatients(unittest.TestCase):
         task = FakeTask([(self.HOME_CITY, 128), (self.HOME_CITY, 128), self.CITY, self.TRAUMA, self.ward(False)])
         self.assertTrue(utils_daily.treat_patients(task, "记忆消除"))
         self.assertNotIn(("click",) + utils_daily.HEAL_PLAN_BUTTON["记忆消除"], task.actions)
+
+    def test_city_click_swallowed_reenters(self):
+        # 2026-11-06：点方舟城市被吞，一直停在主页；连续几帧还在主页就重新进
+        stay = [(self.HOME_CITY, 128)] * 6
+        task = FakeTask([(self.HOME_CITY, 128)] + stay + [self.CITY, self.TRAUMA, self.ward(False)])
+        self.assertTrue(utils_daily.treat_patients(task, "不处理"))
+        self.assertEqual(2, task.actions.count(("click", 0.883, 0.521)))
 
     def test_memory_erase(self):
         selected = ([box("确认", 0.6625, 0.706)], 128, [("heal_selected", 0.535, 0.235)])
