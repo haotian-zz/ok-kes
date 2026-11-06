@@ -6064,6 +6064,13 @@ def _count_shop_buy(task):
     task.node_status["shop_bought"] = task.node_status.get("shop_bought", 0) + 1
 
 
+def _shop_no_remove_reason(task):
+    """钱够却不付费移除的原因：开了「进入商店」说明这家店已经删过一张（每家店只删一次），否则是只为最后一个商店进来的。"""
+    if task.config.get("进入商店"):
+        return "这家店已经付费移除过一张"
+    return "没开「进入商店」（只因最后一个商店进来）"
+
+
 def handle_shop(task: TriggerTask):
     """德朗商店: 优先移除卡牌，其次按配置购买卡牌或装备，最后尝试免费或付费刷新。"""
     import utils_imprint
@@ -6101,7 +6108,7 @@ def handle_shop(task: TriggerTask):
                     task.node_status['shop'] = False
                     return True
                 elif cost <= current_credit:
-                    task.log_info("德朗商店: 没开「进入商店」（只因最后一个商店进来），不付费移除，只买装备")
+                    task.log_info(f"德朗商店: {_shop_no_remove_reason(task)}，不再付费移除，接着看商品")
                 else:
                     task.log_info(f"德朗商店: 移除卡牌需{cost}信用点，当前{current_credit}，不足，继续挑选其他商品")
             else:

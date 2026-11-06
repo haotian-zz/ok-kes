@@ -586,6 +586,14 @@ class TestTrace(unittest.TestCase):
         task.node_status.update(pass_final_boss_count=2)
         plan.update(layer=2, done=0)                           # 后面还有节点
         self.assertFalse(_is_last_shop(task))
+    def test_shop_no_remove_reason(self):
+        # 2026-11-06 实录：开着「进入商店」删完一张后回到商品页，日志却说「没开进入商店」
+        import utils
+        t = SimpleNamespace(config={"进入商店": True})
+        self.assertEqual("这家店已经付费移除过一张", utils._shop_no_remove_reason(t))
+        t.config["进入商店"] = False
+        self.assertIn("没开「进入商店」", utils._shop_no_remove_reason(t))
+
     def test_shop_quota_pick(self):
         # 用户 2026-11-06：商店要买够 4 次，没命中配置的也买：装备优先、最便宜的；买不起就不买
         import utils
