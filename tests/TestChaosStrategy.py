@@ -586,6 +586,17 @@ class TestTrace(unittest.TestCase):
         task.node_status.update(pass_final_boss_count=2)
         plan.update(layer=2, done=0)                           # 后面还有节点
         self.assertFalse(_is_last_shop(task))
+    def test_shop_quota_counts_whole_run(self):
+        # 2026-11-06 实录：第 1 层商店凑够 2/2，换层后 shop_bought 被清，第 2 层又从 0/2 凑起
+        import utils
+        t = SimpleNamespace(node_status=utils._initial_node_status())
+        utils._count_shop_buy(t)
+        utils._count_shop_buy(t)
+        utils.reset_layer_status(t)
+        self.assertEqual(2, t.node_status.get("shop_bought"))
+        utils.reset_mission_status(t)                  # 新的一局才清零
+        self.assertEqual(0, t.node_status.get("shop_bought", 0))
+
     def test_shop_no_remove_reason(self):
         # 2026-11-06 实录：开着「进入商店」删完一张后回到商品页，日志却说「没开进入商店」
         import utils

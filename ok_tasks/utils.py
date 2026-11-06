@@ -6915,7 +6915,9 @@ RUN_LEVEL_KEYS = ("copy_count", "copy_key", "god_spark_count", "shop_visited", "
                   # 刷空档：卡组里多了哪些闪光卡、删了哪些目标卡（含点中待确认的）、面板上的移除次数、卡组读出的一共要删几次、
                   # 到航点存好了没有、逃脱菜单点过没有
                   "empty_flashes", "empty_flash_cards", "empty_flash_key", "empty_removed", "empty_remove_pending",
-                  "empty_panel_removed", "empty_deck_need", "empty_saved", "empty_escape_at")
+                  "empty_panel_removed", "empty_deck_need", "empty_saved", "empty_escape_at",
+                  # 「商店每局至少买几件」按整局数：换层清掉的话每层都会再凑一遍（2026-11-06 第 2 层又从 0/2 数起）
+                  "shop_bought")
 
 # 局内状态落盘：中途重启（改代码、卡死）后 PT 上限、移除/复制次数、闪对/待冥想都还在，不会因为账没了就爆 PT
 RUN_STATE_FILE = dev_out("chaos_run_state.json")
