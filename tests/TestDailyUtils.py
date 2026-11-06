@@ -222,6 +222,28 @@ class TestDrinkCoffee(unittest.TestCase):
         self.assertNotIn(("click",) + utils_daily.COFFEE_ORDER_BOARD, task.actions)
 
 
+class TestFarmStaminaHelpers(unittest.TestCase):
+    def test_reads_fixed_cost_on_enter_button(self):
+        # 2026-11-06：记忆碎片-光辉与雪花 Ⅹ 一次 60（不是 20×效率），按钮上红字 60
+        task = FakeTask([([box("进入", 0.715, 0.915), box("60", 0.946, 0.916), box("30/265+", 0.943, 0.048)], 128)])
+        utils_daily.refresh(task)
+        self.assertEqual(60, utils_daily._training_cost(task))
+
+    def test_ether_refill_popup_cancels_never_confirms(self):
+        popup = [box("以太补充", 0.5, 0.21), box("请选择补充方法。", 0.5, 0.29), box("使用30个后，补充30以太。", 0.5, 0.62),
+                 box("取消", 0.351, 0.805), box("确认", 0.65, 0.805)]
+        task = FakeTask([(popup, 128)])
+        utils_daily.refresh(task)
+        self.assertTrue(utils_daily.close_ether_refill(task))
+        self.assertEqual([("click", 0.351, 0.805)], task.actions)
+
+    def test_no_refill_popup(self):
+        task = FakeTask([([box("进入", 0.715, 0.915)], 128)])
+        utils_daily.refresh(task)
+        self.assertFalse(utils_daily.close_ether_refill(task))
+        self.assertEqual([], task.actions)
+
+
 class TestTreatPatients(unittest.TestCase):
     HOME_CITY = HOME + [box("方舟城市", 0.883, 0.521)]
     CITY = ([box("方舟城市", 0.122, 0.046), box("庭院咖啡店", 0.444, 0.921)], 128, [("heal_city_enter", 0.555, 0.86)])

@@ -53,6 +53,7 @@ TRAINING_EFF_MINUS = (0.695, 0.832)
 TRAINING_EFF_PLUS = (0.969, 0.832)
 TRAINING_ENTER = (0.72, 0.913)
 TRAINING_COST_PER_EFF = 20
+TRAINING_COST_REGION = (0.88, 0.87, 1.0, 0.96)      # 「进入」按钮右边的以太消耗（不够时是红字）
 # 战斗页右上角自动战斗按钮（关闭时按钮中心是纯白，开启后变成 X 图标）
 BATTLE_AUTO_POINT = (0.880, 0.056)
 
@@ -508,6 +509,26 @@ def _click_training_stage(task: BaseTask, stage, scrolls=4):
     return False
 
 
+def _training_cost(task: BaseTask):
+    """「进入」按钮上的以太消耗，读不到返回 None。
+    有的关卡是固定价、不按 20×战斗效率（2026-11-06 实录：记忆碎片-光辉与雪花 Ⅹ 一次 60，以太 28 按效率 1 算成 20 进去，弹了以太补充卡 8 分钟）。"""
+    box = find_text(task, r"^\d{2,3}$", region=TRAINING_COST_REGION)
+    return int(box.name) if box else None
+
+
+def close_ether_refill(task: BaseTask):
+    """以太不够时进战斗会弹「以太补充 / 请选择补充方法」（用钻石或补充货币换以太）：只点「取消」，绝不确认。返回是否弹了。"""
+    if not has_text(task, r"请选择补充方法|^以太补充$"):
+        return False
+    box = find_text(task, r"^取消$")
+    if box:
+        click_text_box(task, box, after=2, reason="以太补充：取消")
+    else:
+        task.send_key("esc")
+        task.sleep(2)
+    return True
+
+
 def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficiency=6, keep_ether=0, max_runs=20,
                  next_difficulty=True):
     """模拟 → 战斗训练 → 分类 → 关卡，按战斗效率连续打到以太不够（保留 keep_ether）。
@@ -542,14 +563,22 @@ def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficienc
             break
         click_rel(task, *(TRAINING_EFF_PLUS if eff < target else TRAINING_EFF_MINUS), after=0.8)
         refresh(task)
-    cost = target * TRAINING_COST_PER_EFF
-    task.log_info(f"以太 {cur}，战斗效率 {target}，每次 {cost}")
+    refresh(task)
+    shown = _training_cost(task)
+    cost = shown or target * TRAINING_COST_PER_EFF
+    task.log_info(f"以太 {cur}，战斗效率 {target}，每次 {cost}" + ("" if shown else "（按钮上没读到消耗，按效率估算）"))
+    if cur - cost < keep_ether:
+        task.log_info(f"以太 {cur}，保留 {keep_ether}，每次 {cost}，不够打一次")
+        return True
     click_rel(task, *TRAINING_ENTER, after=5, reason="进入战斗")
     runs = 1
     end = time.time() + 15 * 60
     last_known = time.time()
     while time.time() < end:
         refresh(task)
+        if close_ether_refill(task):
+            task.log_info(f"以太不够打下一次，清体力结束，共 {runs - 1} 次")
+            return True
         if has_text(task, r"确定要进入当前难度"):
             # 有更高难度解锁时进入前会弹「高阶难度已经解锁。确定要进入当前难度吗？」（Maa_Kes issue #15）
             click_text(task, r"^入场$", region=(0.55, 0.7, 0.8, 0.8), timeout=2, after=5)
