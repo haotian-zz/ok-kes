@@ -171,8 +171,19 @@ class TestClaimAll(unittest.TestCase):
     def test_supply_never_clicks_unlock(self):
         page = [box("全部领取", 0.646, 0.919), box("解锁额外数据", 0.868, 0.918)]
         task = FakeTask([(page, 128)])
-        utils_daily.claim_all(task, region=(0.55, 0.86, 0.75, 0.97))
+        utils_daily.claim_all(task, region=utils_daily.SUPPLY_CLAIM_REGION)
         self.assertEqual([("click", 0.646, 0.919)], task.actions)
+
+    def test_supply_claim_button_on_right(self):
+        # 2026-11-08 实录：没有解锁按钮时「全部领取」在右下 x≈0.88，旧区域 0.55～0.75 找不到，补给经验从 11-06 起一直 500/1000
+        page = [box("每周任务经验值上限：0/10000", 0.728, 0.142), box("全部领取", 0.884, 0.918)]
+        task = FakeTask([(page, 128)])
+        utils_daily.claim_all(task, region=utils_daily.SUPPLY_CLAIM_REGION)
+        self.assertEqual([("click", 0.884, 0.918)], task.actions)
+
+    def test_claim_all_missing_button_is_none(self):
+        task = FakeTask([([box("阿基亚农补给", 0.153, 0.042)], 128)])
+        self.assertIsNone(utils_daily.claim_all(task, region=utils_daily.SUPPLY_CLAIM_REGION, timeout=1))
 
 
 class TestDrinkCoffee(unittest.TestCase):

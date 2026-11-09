@@ -39,6 +39,9 @@ DAILY_TASK_TAB = (0.057, 0.229)
 # F2「阿基亚农补给」左侧页签：第 1 个奖励、第 2 个任务
 SUPPLY_REWARD_TAB = (0.053, 0.15)
 SUPPLY_TASK_TAB = (0.053, 0.255)
+# 「全部领取」：有付费的「解锁额外数据」时在中间偏左（x≈0.65，右边是解锁按钮），没有时在右下（x≈0.88，2026-11-08 实录）。
+# 只按文字精确匹配「全部领取」点，不会点到解锁按钮
+SUPPLY_CLAIM_REGION = (0.55, 0.86, 1.0, 0.97)
 # 设置 → 左侧「键盘」页签
 SETTINGS_KEYBOARD_TAB = (0.048, 0.327)
 # 庭院咖啡店菜单板：堂食（立即 +120 以太）、外带（以太补充货币 +1，最多 4 个）、点单按钮
@@ -294,9 +297,9 @@ def close_reward_popup(task: BaseTask, timeout=4.0):
 
 
 def claim_all(task: BaseTask, region, timeout=5.0):
-    """点区域内的「全部领取」（没有可领的时候按钮是灰的，点了也不会有弹窗），返回是否领到东西。"""
+    """点区域内的「全部领取」（没有可领的时候按钮是灰的，点了也不会有弹窗），返回是否领到东西；按钮都没找到返回 None。"""
     if not click_text(task, r"^全部领取$", region=region, timeout=timeout, after=1.5):
-        return False
+        return None
     got = close_reward_popup(task)
     task.log_info("领到奖励" if got else "没有可领取的奖励")
     return got
@@ -360,12 +363,15 @@ def claim_supply(task: BaseTask):
         task.sleep(0.5)
     exp_before = _supply_exp(task)
     # 任务页签领经验不弹「获得道具」，用经验值前后对比确认
+    found = False
     for name, point in (("任务", SUPPLY_TASK_TAB), ("奖励", SUPPLY_REWARD_TAB)):
         click_rel(task, *point, after=2, reason=f"切到补给{name}页签")
-        claim_all(task, region=(0.55, 0.86, 0.75, 0.97))
+        found = claim_all(task, region=SUPPLY_CLAIM_REGION) is not None or found
     refresh(task)
     task.log_info(f"补给经验 {exp_before} → {_supply_exp(task)}")
-    return True
+    if not found:
+        task.log_info("补给两个页签都没找到「全部领取」按钮，没领到")
+    return found
 
 
 def _supply_exp(task: BaseTask):
