@@ -7,6 +7,19 @@ import utils_daily
 from utils_daily import go_home
 
 
+# 这几项做完会涨日常活跃 / 补给任务进度，可领取的放在它们前面，收尾时要再领一次
+POINT_STEPS = ("treat_patients", "drink_coffee", "farm_stamina")
+CLAIM_STEPS = ("claim_daily_activity", "claim_supply")
+
+
+def final_claims(steps, config, ran):
+    """收尾补领：前面的领取步骤开着、且后面跑过会涨点数的项，就把领取再跑一遍。
+    2026-11-09 实录：一键日常先领活跃和补给、后清体力喝咖啡，这些点数要到第二天才领到（赛季最后一天会白丢）。"""
+    if not any(fn in ran for fn in POINT_STEPS):
+        return []
+    return [(key, fn) for key, fn in steps if fn in CLAIM_STEPS and config.get(key)]
+
+
 class DailyTask(BaseTask):
     """一键日常：按开关依次执行各项日常，单项失败只记录并回主页，不影响后面的项。"""
 
@@ -83,7 +96,17 @@ class DailyTask(BaseTask):
         utils_daily.refresh(self)
         game_speed.ensure_speed(self)    # 清体力的战斗也用 3 倍速
         steps = list(self.steps)
-        while steps:
+        ran = set()
+        finishing = False
+        while True:
+            if not steps:
+                if finishing:
+                    break
+                finishing = True
+                steps = final_claims(self.steps, self.config, ran)
+                if not steps:
+                    break
+                self.log_info("收尾：清体力/喝咖啡/疗愈中心涨了活跃和补给进度，再领一次")
             key, fn_name = steps.pop(0)
             if not self.config.get(key):
                 continue
@@ -102,7 +125,8 @@ class DailyTask(BaseTask):
                 self.info_set(key, "清完体力再点")
                 go_home(self)
                 continue
-            results.append(f"{key}：{'完成' if ok else '未完成'}")
+            ran.add(fn_name)
+            results.append(f"{key}{'（收尾补领）' if finishing else ''}：{'完成' if ok else '未完成'}")
             self.info_set(key, "完成" if ok else "未完成")
             go_home(self)
             if getattr(self, utils_daily.LEFTOVER_RUN_ATTR, False):

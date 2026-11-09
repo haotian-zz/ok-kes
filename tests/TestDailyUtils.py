@@ -507,3 +507,18 @@ class TestDialogueLine(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestDailyFinalClaims(unittest.TestCase):
+    def test_reclaim_after_point_steps(self):
+        # 2026-11-09 实录：一键日常先领活跃和补给、后清体力喝咖啡，这些点数要到第二天才领到
+        from DailyTask import final_claims
+        steps = [("检查快捷键显示", "ensure_hotkey_display"), ("领取日常活跃奖励", "claim_daily_activity"),
+                 ("领取阿基亚农补给", "claim_supply"), ("领取邮箱", "claim_mail"), ("清体力", "farm_stamina")]
+        config = {"领取日常活跃奖励": True, "领取阿基亚农补给": True, "领取邮箱": True}
+        self.assertEqual([("领取日常活跃奖励", "claim_daily_activity"), ("领取阿基亚农补给", "claim_supply")],
+                         final_claims(steps, config, {"claim_supply", "farm_stamina"}))
+        self.assertEqual([], final_claims(steps, config, {"claim_supply", "claim_mail"}))   # 没跑涨点数的项
+        config["领取阿基亚农补给"] = False
+        self.assertEqual([("领取日常活跃奖励", "claim_daily_activity")],
+                         final_claims(steps, config, {"drink_coffee"}))
