@@ -614,6 +614,32 @@ class TestTrace(unittest.TestCase):
         self.assertIs(c, utils._quota_pick(items, 60)[0])           # 装备都买不起才买卡
         self.assertIsNone(utils._quota_pick(items, 35))             # 余额要大于价格
 
+    def test_shop_quota_pick_skips_tried_and_neutral_cards(self):
+        # 2026-11-08 实录：开着「中立卡不拿」凑数挑了卡「战略重构」，买卡页被取消，又挑同一张再取消
+        import utils
+        a, b, c = object(), object(), object()
+        items = [(a, "命令：108号", 67, False), (b, "战略重构", 35, True), (c, "毁灭", 35, True)]
+        self.assertIs(b, utils._quota_pick(items, 645, tried={"命令：108号"})[0])
+        self.assertIs(c, utils._quota_pick(items, 645, tried={"命令：108号", "战略重构"})[0])
+        self.assertIsNone(utils._quota_pick(items, 645, tried={"命令：108号"}, skip_cards=True))
+        self.assertIs(a, utils._quota_pick(items, 645, skip_cards=True)[0])
+
+    def test_shop_buy_counted_only_on_purchase_click(self):
+        # 2026-11-08 实录：点商品图标就记一件，买卡页取消、没进购买页也算，两局记 6 件实际 3 件
+        import utils
+        from unittest import mock
+        clicks = []
+        t = SimpleNamespace(node_status={}, height=1080, click_box=clicks.append, sleep=lambda s: None)
+        lv = SimpleNamespace(y=500, height=20)
+        view = SimpleNamespace(lv_texts=[lv], is_purchase=False, btn=SimpleNamespace(purchase="buy"))
+        with mock.patch.object(utils, "_move_and_click"), mock.patch.object(utils, "_set_equipment_pending"):
+            utils._click_member(t, view, 0, "install", True)
+            self.assertEqual(0, t.node_status.get("shop_bought", 0))
+            view.is_purchase = True
+            utils._click_member(t, view, 0, "buy", True)
+        self.assertEqual(1, t.node_status.get("shop_bought"))
+        self.assertEqual(["buy"], clicks)
+
     def test_last_shop_pick(self):
         import utils
         box = lambda x, y, name: SimpleNamespace(x=x * 1920, y=y * 1080, width=0, height=0, name=name)

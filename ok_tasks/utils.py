@@ -3314,6 +3314,7 @@ def _click_member(task, view, index, action, target):
     task.sleep(1)
     if view.is_purchase:
         task.click_box(view.btn.purchase)
+        _count_shop_buy(task)
         task.sleep(1)
 
 
@@ -5893,6 +5894,7 @@ def handle_rest(task: TriggerTask):
     if shop_box and "德朗商店" in shop_box.name and _want_shop(task):
         task.log_info("检测到德朗商店，进入商店" + ("（最后一个商店，钱全部花掉）" if _is_last_shop(task) else ""))
         task.node_status['shop_visited'] = _shop_key(task)
+        task._shop_quota_tried = set()
         task.click_box(shop_box)
         task.sleep(2)
         return True
@@ -6054,14 +6056,25 @@ def _last_shop_pick(task: TriggerTask, shop_items, credit):
 SHOP_BUY_QUOTA = "商店每局至少买几件"
 
 
-def _quota_pick(shop_items, credit):
-    """凑「商店每局至少买几件」：买得起的里装备优先、再挑最便宜的。返回 (图标, 名称, 价格, 是否卡牌) 或 None。"""
-    affordable = [item for item in shop_items if item[2] < credit]
+def _quota_pick(shop_items, credit, tried=(), skip_cards=False):
+    """凑「商店每局至少买几件」：买得起的里装备优先、再挑最便宜的。返回 (图标, 名称, 价格, 是否卡牌) 或 None。
+    tried＝这家店凑数点过的（没买成也不再点，免得同一件反复点）；skip_cards＝开了「中立卡不拿」，买卡页会被取消。"""
+    affordable = [item for item in shop_items
+                  if item[2] < credit and item[1] not in tried and not (skip_cards and item[3])]
     return min(affordable, key=lambda item: (item[3], item[2])) if affordable else None
 
 
 def _count_shop_buy(task):
+    """真的点了购买页的「购买」才算一件（2026-11-08 实录：点商品时就记账，「中立卡不拿」把买卡页取消了、
+    点了图标没进购买页，都被算成买了，两局记 6 件实际只买到 3 件）。"""
     task.node_status["shop_bought"] = task.node_status.get("shop_bought", 0) + 1
+
+
+def _shop_quota_tried(task):
+    tried = getattr(task, "_shop_quota_tried", None)
+    if tried is None:
+        tried = task._shop_quota_tried = set()
+    return tried
 
 
 def _shop_no_remove_reason(task):
@@ -6240,7 +6253,6 @@ def handle_shop(task: TriggerTask):
             )
             if imprint_mode:
                 utils_imprint.mark_shop_seen(task, credit_icon)
-            _count_shop_buy(task)
             task.click_box(credit_icon)
             task.sleep(1)
             return True
@@ -6250,7 +6262,6 @@ def handle_shop(task: TriggerTask):
             if pick:
                 credit_icon, item_name, price, reason = pick
                 task.log_info(f"德朗商店（最后一个）: 装备「{item_name}」价格{price}，当前{current_credit}，{reason}，买下")
-                _count_shop_buy(task)
                 task.click_box(credit_icon)
                 task.sleep(1)
                 return True
@@ -6259,11 +6270,13 @@ def handle_shop(task: TriggerTask):
         quota = int(_get_config_value(task, SHOP_BUY_QUOTA, 0) or 0)
         bought = task.node_status.get("shop_bought", 0)
         if bought < quota and not imprint_mode:
-            pick = _quota_pick(shop_items, current_credit)
+            tried = _shop_quota_tried(task)
+            pick = _quota_pick(shop_items, current_credit, tried,
+                               skip_cards=_get_config_value(task, NEUTRAL_SKIP, False) is True)
             if pick:
                 credit_icon, item_name, price, is_card = pick
                 task.log_info(f"德朗商店: 本局买了 {bought}/{quota} 件，凑数买{'卡牌' if is_card else '装备'}「{item_name}」价格{price}，当前{current_credit}")
-                _count_shop_buy(task)
+                tried.add(item_name)
                 task.click_box(credit_icon)
                 task.sleep(1)
                 return True
@@ -7253,6 +7266,7 @@ def handle_card_assign(task: TriggerTask):
         )
         task.click_box(purchase_box)
         _record_neutral_card(task)
+        _count_shop_buy(task)
         task.sleep(1)
         return True
     if not chaos_strategy.memory_name(card_name):   # 赛季记忆卡也走分配页，不算中立牌
