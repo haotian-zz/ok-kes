@@ -9,6 +9,7 @@ TITLE = "变速功能"
 RATE_BOX = (0.10, 0.09, 0.21, 0.17)      # 「3.0x 当前运行倍率」的大字
 CLOSE_POS = (0.263, 0.051)                # 「F8 / ESC 关闭 ×」的 ×
 TRIES = 3
+PANEL_WAIT = 4        # 按 F8 后最多等几秒浮窗出来：浮窗有时 1 秒后才出，马上再按 F8 会把它又关掉（2026-11-08 实录）
 
 
 DESCRIPTION = ("国服自带变速：任务开始（和游戏重开后）按一次 F8 唤出「变速功能」浮窗，点 3.0x 再关掉。"
@@ -120,8 +121,11 @@ def ensure_speed(task):
     for attempt in range(TRIES):
         if not _panel_open(task, boxes):
             _press_f8_foreground(hwnd)
-            task.sleep(1)
-            boxes = _texts(task)
+            for _ in range(PANEL_WAIT):
+                task.sleep(1)
+                boxes = _texts(task)
+                if _panel_open(task, boxes):
+                    break
             if not _panel_open(task, boxes):
                 continue
         rate = _rate(task, boxes)
@@ -143,4 +147,17 @@ def ensure_speed(task):
             task.sleep(1)
         return True
     task.log_info("按了 F8 没唤出变速浮窗，这次不设 3 倍速")
+    # 最后一次 F8 的浮窗可能晚出来；开着会吃掉 F2/F3 等按键（2026-11-08 一键周常打不开补给），再看一眼关掉
+    task.sleep(2)
+    close_panel(task, _texts(task))
+    return True
+
+
+def close_panel(task, boxes):
+    """「变速功能」浮窗开着就点右上角 × 关掉，返回是否关过。"""
+    if not _panel_open(task, boxes):
+        return False
+    task.log_info("变速功能浮窗开着，关掉")
+    _click(task, *CLOSE_POS)
+    task.sleep(1)
     return True

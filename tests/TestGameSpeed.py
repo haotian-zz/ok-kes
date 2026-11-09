@@ -32,10 +32,19 @@ class TestGameSpeed(unittest.TestCase):
 
     def test_tasks_register_speed_switch(self):
         root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ok_tasks")
-        for name in ("ChaosMode", "SortieMode", "StoryMode", "DailyTask"):
+        for name in ("ChaosMode", "SortieMode", "StoryMode", "DailyTask", "WeeklyTask"):
             src = open(os.path.join(root, f"{name}.py"), encoding="utf-8").read()
             self.assertIn("game_speed.add_config(self)", src, name)
             self.assertIn("game_speed.ensure_speed(self)", src, name)
+
+    def test_go_home_closes_late_speed_panel(self):
+        # 2026-11-08 实录：F8 浮窗晚出来一直开着，一键周常按 F2 打不开补给
+        import utils_daily
+        from tests.TestDailyUtils import FakeTask, box, HOME
+        panel = [box("变速功能", 0.10, 0.10), box("3.0x", 0.155, 0.13), box("F8 / ESC 关闭", 0.21, 0.05)]
+        task = FakeTask([(panel, 128), (HOME, 128)])
+        self.assertTrue(utils_daily.go_home(task, timeout=5))
+        self.assertEqual([("click",) + gs.CLOSE_POS], task.actions)
 
     def test_parse_rate(self):
         self.assertEqual(3.0, gs.parse_rate("30x"))

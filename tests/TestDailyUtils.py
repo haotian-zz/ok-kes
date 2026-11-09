@@ -186,6 +186,132 @@ class TestClaimAll(unittest.TestCase):
         self.assertIsNone(utils_daily.claim_all(task, region=utils_daily.SUPPLY_CLAIM_REGION, timeout=1))
 
 
+class TestWeekly(unittest.TestCase):
+    # 2026-11-08 实录：F2 补给 → 任务 → 每周任务（OCR 原样）
+    WEEK = [box("每日任务", 0.411, 0.305), box("在方舟城市[庭院咖啡店]中点3次咖啡", 0.620, 0.270), box("1/3", 0.495, 0.302),
+            box("1500", 0.877, 0.319), box("0/3", 0.494, 0.427), box("在方舟城市[星光餐厅]点餐3次", 0.606, 0.396),
+            box("500", 0.880, 0.446), box("每周任务", 0.410, 0.516), box("0/1", 0.494, 0.552),
+            box("1通关1次模拟[挑战]", 0.567, 0.520), box("0/3", 0.494, 0.676), box("通关3次模拟[挑战]", 0.569, 0.645),
+            box("在德朗的商店购买8件商品", 0.584, 0.769), box("0/8", 0.495, 0.802), box("全部领取", 0.884, 0.918)]
+    CITY = [box("方舟城市", 0.122, 0.046), box("政策室", 0.219, 0.920), box("星光餐厅", 0.331, 0.919),
+            box("庭院咖啡店", 0.444, 0.921)]
+    MAIN = [box("星光餐厅", 0.122, 0.045), box("13047K", 0.956, 0.047), box("点单", 0.776, 0.912)]
+    BOARD = [box("星光餐厅", 0.122, 0.046), box("菜单板", 0.778, 0.145), box("巧克力面包", 0.728, 0.221),
+             box("10,000", 0.926, 0.219), box("微甜照烧串", 0.728, 0.581), box("10,000", 0.917, 0.581)]
+    EAT = BOARD + [box("好！就吃这个吧！", 0.255, 0.721)]
+    SKIP = [box("跳过！", 0.941, 0.051), box("点击即可食用。", 0.501, 0.950)]
+    BUFF = [box("巧克力面包", 0.491, 0.412), box("进入卡厄思任务时使用：2次", 0.542, 0.645), box("点击屏幕可关闭", 0.5, 0.934)]
+
+    def test_open_supply_retries_after_waking_home(self):
+        # 2026-11-08 实录：主页 UI 隐藏时 F2 没反应，一键周常「没有打开阿基亚农补给」
+        supply = [box("阿基亚农补给", 0.153, 0.042), box("全部领取", 0.884, 0.918)]
+        task = FakeTask([(HOME, 128), (supply, 128)])
+        with mock.patch.object(utils_daily, "go_home", return_value=True), \
+                mock.patch.object(utils_daily.time, "time", side_effect=[0, 0, 100, 100, 100, 100, 100]):
+            self.assertTrue(utils_daily.open_supply(task))
+        self.assertEqual([("key", "f2"), ("click",) + utils_daily.HOME_WAKE_POINT, ("key", "f2")], task.actions)
+
+    def test_mission_progress(self):
+        task = FakeTask([(self.WEEK, 128)])
+        task.next_frame()
+        task.all_texts = task.ocr()
+        self.assertEqual((0, 3), utils_daily._mission_progress(task, r"星光餐厅.*点餐"))
+        self.assertEqual((0, 1), utils_daily._mission_progress(task, r"通关1次模拟"))
+        self.assertEqual((0, 3), utils_daily._mission_progress(task, r"通关3次模拟"))
+        self.assertEqual((0, 8), utils_daily._mission_progress(task, r"德朗的商店购买"))
+        self.assertIsNone(utils_daily._mission_progress(task, r"通关2次卡厄思"))
+
+    def test_weekly_progress_rereads_while_scrolling(self):
+        # 2026-11-08 实录：列表还在滚时「通关2次卡厄思」读成 7/2；要两帧一致且不超过目标
+        name = box("通关2次卡厄思", 0.545, 0.799)
+        moving = [box("每周任务", 0.410, 0.516), name, box("7/2", 0.494, 0.829)]
+        still = [box("每周任务", 0.410, 0.516), name, box("0/2", 0.494, 0.829)]
+        task = FakeTask([(still, 128)])
+        with mock.patch.object(utils_daily, "open_supply", return_value=True), \
+                mock.patch.object(utils_daily, "click_text", return_value=True):
+            task.pages = [(moving, 128), (still, 128), (still, 128)]
+            self.assertEqual((0, 2), utils_daily.weekly_mission_progress(task, r"通关2次卡厄思", scrolls=0))
+
+    def test_order_restaurant_once(self):
+        home = HOME + [box("方舟城市", 0.883, 0.521)]
+        task = FakeTask([(home, 128), (home, 128), (self.CITY, 128), (self.MAIN, 128), (self.BOARD, 128),
+                         (self.BOARD, 128), (self.EAT, 128), (self.SKIP, 128), (self.BUFF, 128), (self.MAIN, 128)])
+        self.assertTrue(utils_daily.order_restaurant(task, "巧克力面包", times=1))
+        clicks = [a for a in task.actions if a[0] == "click"]
+        for point in ((0.331, 0.919), (0.776, 0.912), (0.728, 0.221), (0.255, 0.721), (0.941, 0.051), (0.5, 0.934)):
+            self.assertIn(("click",) + point, clicks)
+        self.assertNotIn(("click", 0.926, 0.219), clicks)          # 价格不点
+
+    def test_order_restaurant_replaces_active_buff(self):
+        # 2026-11-08 实录：第二次点餐弹「之前的食物效果仍在生效…确定要点单新食物吗？」，没点确认就等不到跳过
+        prompt = self.EAT + [box("之前的食物效果仍在生效。", 0.495, 0.422),
+                             box("如果食用新的食物，之前的食物效果将会消失。确定要点单新食物吗？", 0.497, 0.462),
+                             box("取消", 0.347, 0.631), box("确认", 0.666, 0.631)]
+        home = HOME + [box("方舟城市", 0.883, 0.521)]
+        task = FakeTask([(home, 128), (home, 128), (self.CITY, 128), (self.MAIN, 128), (self.BOARD, 128),
+                         (self.BOARD, 128), (self.EAT, 128), (prompt, 128), (prompt, 128), (self.SKIP, 128),
+                         (self.BUFF, 128), (self.MAIN, 128)])
+        self.assertTrue(utils_daily.order_restaurant(task, "巧克力面包", times=1))
+        self.assertIn(("click", 0.666, 0.631), task.actions)
+        self.assertNotIn(("click", 0.347, 0.631), task.actions)
+
+    def test_order_restaurant_zero_does_nothing(self):
+        task = FakeTask([(HOME, 128)])
+        self.assertTrue(utils_daily.order_restaurant(task, times=0))
+        self.assertEqual([], task.actions)
+
+
+class TestChallenge(unittest.TestCase):
+    # 2026-11-08 实录：挑战「哀嚎的浪子」配置队伍页和结算页（OCR 原样）
+    TEAM = [box("配置队伍", 0.121, 0.043), box("挑战", 0.697, 0.101), box("哀嚎的浪子", 0.734, 0.152),
+            box("进入", 0.719, 0.911), box("免费进入3/3", 0.897, 0.914)]
+
+    @staticmethod
+    def result(left):
+        return [box("挑战", 0.651, 0.237), box("剩余奖励次数", 0.631, 0.357), box(f"{left}/3", 0.931, 0.356),
+                box("下个难度", 0.508, 0.918), box("重来", 0.723, 0.917), box("确认", 0.931, 0.916)]
+
+    def test_replays_until_times(self):
+        # click_text 也会取一帧：结算页各放两帧（循环读一次、点按钮时再读一次）
+        task = FakeTask([(self.TEAM, 128), (self.result(2), 128), (self.result(2), 128),
+                         (self.result(1), 128), (self.result(1), 128), (self.TEAM, 128)])
+        self.assertTrue(utils_daily._challenge_from_team(task, "哀嚎的浪子", 2))
+        clicks = [a for a in task.actions if a[0] == "click"]
+        self.assertEqual([("click",) + utils_daily.TRAINING_ENTER, ("click", 0.723, 0.917), ("click", 0.931, 0.916)], clicks)
+
+    def test_stops_when_rewards_used_up(self):
+        task = FakeTask([(self.TEAM, 128), (self.result(0), 128), (self.result(0), 128), (self.TEAM, 128)])
+        self.assertTrue(utils_daily._challenge_from_team(task, "哀嚎的浪子", 3))
+        self.assertNotIn(("click", 0.723, 0.917), task.actions)       # 不再重来
+
+    def test_used_up_on_training_page(self):
+        # 2026-11-08 实录：免费次数用完后左边「挑战 0/3」，首领卡片上是以太价格 30，配置队伍页没有「免费进入」
+        sim = [box("模拟", 0.103, 0.046), box("战斗训练", 0.144, 0.688), box("挑战", 0.144, 0.754), box("0/3", 0.145, 0.794)]
+        train = [box("战斗训练", 0.122, 0.045), box("哀嚎的浪子", 0.706, 0.306), box("30", 0.954, 0.310),
+                 box("挑战", 0.114, 0.721), box("0/3", 0.250, 0.720)]
+        # 等「每周3次机会」说明弹窗只等一帧（真实是 3 秒），其余照常
+        real_wait = utils_daily.wait_text
+
+        def wait_text(t, pattern, region=None, timeout=10.0, interval=0.5):
+            return real_wait(t, pattern, region, timeout=0 if "每周3次机会" in pattern else timeout, interval=interval)
+
+        task = FakeTask([(sim, 128), (sim, 128), (train, 128)])
+        with mock.patch.object(utils_daily, "open_home_entry", return_value=True), \
+                mock.patch.object(utils_daily, "wait_text", wait_text):
+            self.assertTrue(utils_daily.challenge_training(task, "哀嚎的浪子", 3))
+        self.assertIn(("click", 0.144, 0.688), task.actions)          # 战斗训练
+        self.assertNotIn(("click", 0.706, 0.306), task.actions)       # 不点首领
+
+    def test_no_free_entries_never_enters(self):
+        team = [b for b in self.TEAM if not b.name.startswith("免费")] + [box("免费进入0/3", 0.897, 0.914)]
+        task = FakeTask([(team, 128)])
+        self.assertTrue(utils_daily._challenge_from_team(task, "哀嚎的浪子", 3))
+        self.assertEqual([], task.actions)
+        task = FakeTask([([b for b in self.TEAM if not b.name.startswith("免费")], 128)])
+        self.assertFalse(utils_daily._challenge_from_team(task, "哀嚎的浪子", 3))   # 看不到免费次数也不点
+        self.assertEqual([], task.actions)
+
+
 class TestDrinkCoffee(unittest.TestCase):
     HOME_CITY = HOME + [box("方舟城市", 0.883, 0.521)]
     CITY = [box("方舟城市", 0.122, 0.046), box("庭院咖啡店", 0.444, 0.921)]

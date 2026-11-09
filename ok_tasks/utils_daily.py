@@ -232,6 +232,10 @@ def go_home(task: BaseTask, timeout=60.0):
         if has_text(task, r"资讯速递"):
             click_rel(task, *NEWS_POPUP_CLOSE, after=2, reason="关闭资讯速递")
             continue
+        import game_speed
+        if game_speed.close_panel(task, task.all_texts or []):
+            # WeGame 变速浮窗晚出来留在画面上，会吃掉 F2/F3（2026-11-08 实录）
+            continue
         _, home = match_template(task, "home_icon", HOME_ICON_REGION, 0.8)
         if home:
             click_rel(task, *home, after=3, reason="点击主页按钮")
@@ -250,7 +254,8 @@ def go_home(task: BaseTask, timeout=60.0):
             click_rel(task, *HOME_WAKE_POINTS[wakes % len(HOME_WAKE_POINTS)], after=1.5, reason="唤醒主页 UI")
             wakes += 1
             continue
-        if esc_count >= 3:
+        # 星光餐厅弹窗 → 菜单板 → 餐厅 → 方舟城市 → 主页要按 4 次（2026-11-08 实录 3 次就放弃了）；主页上不会再按（先判 is_home）
+        if esc_count >= 5:
             task.log_info("连续按 ESC 仍未回到主页，停止")
             return False
         esc_count += 1
@@ -344,23 +349,36 @@ def claim_daily_activity(task: BaseTask):
     return True
 
 
+def open_supply(task: BaseTask, attempts=3):
+    """回主页按 F2 打开「阿基亚农补给」，付费推荐弹窗点右上角关掉（不点任何价格按钮）。
+
+    主页 UI 自动隐藏时 F2 没反应（同 F3，2026-11-08 一键周常「没有打开阿基亚农补给」）：唤醒 UI 再按，最多 attempts 次。
+    """
+    for attempt in range(attempts):
+        if not go_home(task):
+            return False
+        task.send_key("f2")
+        end = time.time() + 8
+        while time.time() < end:
+            refresh(task)
+            if has_text(task, r"^阿基亚农补给$", region=(0.05, 0.0, 0.3, 0.1)):
+                return True
+            if has_text(task, r"^\d+元$"):
+                click_rel(task, *PAY_POPUP_CLOSE, after=2, reason="关闭付费推荐弹窗")
+                end = time.time() + 8
+                continue
+            task.sleep(0.5)
+        if attempt < attempts - 1:
+            task.log_info("F2 没打开阿基亚农补给，唤醒主页 UI 后重试")
+            click_rel(task, *HOME_WAKE_POINT, after=1.5, reason="唤醒主页 UI")
+    task.log_info("没有打开阿基亚农补给")
+    return False
+
+
 def claim_supply(task: BaseTask):
     """F2「阿基亚农补给」：先关掉付费推荐弹窗，再在任务页签、奖励页签各点一次全部领取。"""
-    if not go_home(task):
+    if not open_supply(task):
         return False
-    task.send_key("f2")
-    end = time.time() + 12
-    while True:
-        refresh(task)
-        if has_text(task, r"^阿基亚农补给$", region=(0.05, 0.0, 0.3, 0.1)):
-            break
-        if has_text(task, r"^\d+元$"):
-            click_rel(task, *PAY_POPUP_CLOSE, after=2, reason="关闭付费推荐弹窗")
-            continue
-        if time.time() > end:
-            task.log_info("没有打开阿基亚农补给")
-            return False
-        task.sleep(0.5)
     exp_before = _supply_exp(task)
     # 任务页签领经验不弹「获得道具」，用经验值前后对比确认
     found = False
@@ -626,6 +644,215 @@ def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficienc
             last_known = time.time()
         task.sleep(2)
     task.log_info("清体力超时")
+    return False
+
+
+# ------------------------- 周常 -------------------------
+SUPPLY_WEEKLY_CATEGORY = r"^每周任务$"
+SUPPLY_CATEGORY_REGION = (0.36, 0.25, 0.47, 0.8)          # 任务页签左边一列：每日任务 / 每周任务 / 赛季任务
+SUPPLY_LIST_SCROLL = (0.75, 0.6)
+PROGRESS_RE = r"^(\d+)\s*/\s*(\d+)$"
+
+
+def _mission_progress(task: BaseTask, pattern):
+    """在当前任务列表里找名字匹配 pattern 的一行，读它下面的进度「n/m」（名字下方约 0.03、x≈0.49）。"""
+    import re
+    for name_box in task.all_texts or []:
+        if not re.search(pattern, name_box.name):
+            continue
+        nx, ny = rel_center(task, name_box)
+        best = None
+        for b in task.all_texts:
+            m = re.match(PROGRESS_RE, b.name.replace(" ", ""))
+            if not m:
+                continue
+            bx, by = rel_center(task, b)
+            if 0.44 <= bx <= 0.55 and 0.0 < by - ny < 0.06 and (best is None or by - ny < best[0]):
+                best = (by - ny, int(m.group(1)), int(m.group(2)))
+        if best:
+            return best[1], best[2]
+    return None
+
+
+def weekly_mission_progress(task: BaseTask, pattern, scrolls=3):
+    """F2 补给 → 任务页签 → 每周任务，找名字匹配 pattern 的任务，返回 (已完成, 目标)；找不到返回 None。"""
+    if not open_supply(task):
+        return None
+    click_rel(task, *SUPPLY_TASK_TAB, after=2, reason="切到补给任务页签")
+    if not click_text(task, SUPPLY_WEEKLY_CATEGORY, region=SUPPLY_CATEGORY_REGION, timeout=5, after=2):
+        return None
+    for i in range(scrolls + 1):
+        refresh(task)
+        got = _mission_progress(task, pattern)
+        # 列表刚滚完还在动时会读错（2026-11-08「通关2次卡厄思」读成 7/2）：连着两帧一致、且不超过目标才算
+        for _ in range(3):
+            if not got:
+                break
+            task.sleep(0.8)
+            refresh(task)
+            again = _mission_progress(task, pattern)
+            if again == got and got[0] <= got[1]:
+                return got
+            got = again
+        if i < scrolls:
+            task.scroll_relative(*SUPPLY_LIST_SCROLL, -5)
+            task.sleep(1.5)
+    task.log_info(f"每周任务里没找到「{pattern}」")
+    return None
+
+
+RESTAURANT_BOARD_REGION = (0.58, 0.1, 1.0, 1.0)          # 右边的菜单板
+RESTAURANT_EAT_REGION = (0.1, 0.65, 0.45, 0.8)           # 选中菜后左边的「好！就吃这个吧！」
+RESTAURANT_REPLACE_CONFIRM_REGION = (0.55, 0.58, 0.75, 0.68)   # 「之前的食物效果仍在生效」弹窗的确认（取消在左边 x≈0.35）
+
+
+def _open_restaurant_board(task: BaseTask, timeout=20.0):
+    """星光餐厅里打开菜单板：第一次进店的说明弹窗点确认，然后点右下「点单」。"""
+    end = time.time() + timeout
+    while time.time() < end:
+        refresh(task)
+        if has_text(task, r"^菜单板$"):
+            return True
+        if has_text(task, r"食用星光餐厅的食物"):
+            click_text(task, r"^确认$", region=(0.4, 0.85, 0.6, 0.97), timeout=2, after=3)
+            continue
+        box = find_text(task, r"^点单$", region=(0.65, 0.85, 0.9, 0.97))
+        if box:
+            click_text_box(task, box, after=2, reason="打开菜单板")
+            continue
+        task.sleep(0.5)
+    task.log_info("没有打开星光餐厅菜单板")
+    return False
+
+
+def order_restaurant(task: BaseTask, dish="巧克力面包", times=1):
+    """方舟城市 → 星光餐厅 → 点单 → 菜单板选菜 →「好！就吃这个吧！」→ 跳过 → 关掉增益说明，连点 times 次。
+
+    周常「在方舟城市[星光餐厅]点餐3次」。每次花 8000～15000 单元币，增益是进卡厄思任务时用 2 次；有增益时还能再点（2026-11-08 实机）。
+    """
+    if times <= 0:
+        return True
+    if not open_home_entry(task, "方舟城市"):
+        return False
+    if not click_text(task, r"^星光餐厅$", region=(0.2, 0.85, 0.45, 0.97), timeout=8, after=3):
+        return False
+    for i in range(1, times + 1):
+        if not _open_restaurant_board(task):
+            return False
+        if not click_text(task, f"^{dish}$", region=RESTAURANT_BOARD_REGION, timeout=4, after=1.5):
+            task.log_info(f"菜单板上没有「{dish}」")
+            return False
+        if not click_text(task, r"就吃这个吧", region=RESTAURANT_EAT_REGION, timeout=4, after=2):
+            task.log_info(f"选了「{dish}」后没有出现点餐按钮")
+            return False
+        # 上一顿的增益还在时先问「之前的食物效果仍在生效…确定要点单新食物吗？」，周常要点够次数，点确认换成新的（2026-11-08 实录）；
+        # 没有增益时直接是吃饭动画（右上「跳过！」）
+        box = wait_text(task, r"之前的食物效果仍在生效|确定要点单新食物|^跳过", timeout=8)
+        if box and not box.name.startswith("跳过"):
+            click_text(task, r"^确认$", region=RESTAURANT_REPLACE_CONFIRM_REGION, timeout=2, after=2)
+            click_text(task, r"^跳过", region=(0.85, 0.0, 1.0, 0.12), timeout=8, after=2)
+        elif box:
+            click_text_box(task, box, after=2)
+        if not close_reward_popup(task, timeout=8):
+            task.log_info("点餐后没有看到增益说明")
+            return False
+        task.log_info(f"星光餐厅点了「{dish}」（{i}/{times}）")
+    return True
+
+
+CHALLENGE_BOSSES = ("哀嚎的浪子", "直面恐惧")
+CHALLENGE_FREE_REGION = (0.8, 0.86, 1.0, 0.97)            # 配置队伍页右下「进入 / 免费进入 3/3」
+CHALLENGE_LEFT_COUNT_REGION = (0.15, 0.68, 0.32, 0.76)    # 战斗训练左边「挑战 3/3」
+CHALLENGE_REWARD_LEFT_REGION = (0.85, 0.32, 1.0, 0.40)    # 结算页「剩余奖励次数 2/3」
+CHALLENGE_REPLAY_REGION = (0.6, 0.85, 0.82, 0.97)         # 挑战结算页「重来」在 x≈0.72（战斗训练的区域只到 0.70）
+CHALLENGE_CONFIRM_REGION = (0.85, 0.85, 1, 0.97)
+
+
+def _count_in(task: BaseTask, region):
+    """区域里形如「…n/m」的次数，返回 (n, m)。"""
+    import re
+    for b in task.all_texts or []:
+        if in_region(task, b, region):
+            m = re.search(r"(\d+)\s*/\s*(\d+)\s*$", b.name.replace(" ", ""))
+            if m:
+                return int(m.group(1)), int(m.group(2))
+    return None
+
+
+def challenge_training(task: BaseTask, boss="哀嚎的浪子", times=3):
+    """模拟 → 战斗训练 → 挑战 → boss，用每周 3 次免费次数打，结算后「重来」接着打，打够 times 次或免费次数用完为止。
+
+    周常「通关1次/3次模拟[挑战]」。只在看到「免费进入」还有次数时才点进入，不花以太；战斗失败就停。
+    结算页和战斗训练一样是「下个难度 / 重来 / 确认」，多一行「剩余奖励次数 n/3」（2026-11-08 实机，难度 5 三倍速约 10 秒一场）。
+    """
+    if times <= 0:
+        return True
+    if not open_home_entry(task, "模拟"):
+        return False
+    if wait_text(task, r"每周3次机会|这里是模拟", timeout=3):
+        click_text(task, r"^确认$", region=(0.4, 0.85, 0.6, 0.97), timeout=2, after=2)
+    if not click_text(task, r"^战斗训练$", region=(0.05, 0.6, 0.25, 0.75), timeout=6, after=3):
+        return False
+    if not click_text(task, r"^挑战$", region=(0.0, 0.65, 0.3, 0.8), timeout=6, after=2):
+        return False
+    # 左边「挑战 n/3」是本周剩余免费次数；用完后首领卡片上显示以太价格（30），不进（2026-11-08 实录）
+    refresh(task)
+    left = _count_in(task, CHALLENGE_LEFT_COUNT_REGION)
+    if left and left[0] <= 0:
+        task.log_info(f"本周免费挑战次数已用完（{left[0]}/{left[1]}）")
+        return True
+    if not click_text(task, f"^{boss}$", region=(0.6, 0.15, 1.0, 0.8), timeout=6, after=3):
+        return False
+    if not wait_text(task, r"^配置队伍$", region=(0.05, 0.0, 0.3, 0.1), timeout=8):
+        task.log_info("没有进入挑战的配置队伍页面")
+        return False
+    return _challenge_from_team(task, boss, times)
+
+
+def _challenge_from_team(task: BaseTask, boss, times):
+    """挑战的配置队伍页：有免费次数才进入，结算页按剩余奖励次数决定重来还是确认。"""
+    free = None
+    if wait_text(task, r"免费进入", region=CHALLENGE_FREE_REGION, timeout=3):
+        free = _count_in(task, CHALLENGE_FREE_REGION)
+    if not free:
+        task.log_info("没看到「免费进入」次数，不点进入（免得花别的资源）")
+        return False
+    if free[0] <= 0:
+        task.log_info(f"本周免费挑战次数已用完（{free[0]}/{free[1]}）")
+        return True
+    task.log_info(f"挑战「{boss}」，免费次数 {free[0]}/{free[1]}，最多打 {times} 次")
+    click_rel(task, *TRAINING_ENTER, after=5, reason="进入挑战")
+    runs = 1
+    end = time.time() + 10 * 60
+    last_known = time.time()
+    while time.time() < end:
+        refresh(task)
+        if has_text(task, r"确定要进入当前难度"):
+            click_text(task, r"^入场$", region=(0.55, 0.7, 0.8, 0.8), timeout=2, after=5)
+            last_known = time.time()
+            continue
+        if has_text(task, r"^重来$", region=CHALLENGE_REPLAY_REGION) and has_text(task, r"^确认$", region=CHALLENGE_CONFIRM_REGION):
+            last_known = time.time()
+            failed = has_text(task, r"失败")
+            left = _count_in(task, CHALLENGE_REWARD_LEFT_REGION)
+            task.log_info(f"第 {runs} 次挑战{'失败' if failed else '结束'}，剩余奖励次数 {left[0] if left else '?'}")
+            if failed or not left or left[0] <= 0 or runs >= times:
+                click_text(task, r"^确认$", region=CHALLENGE_CONFIRM_REGION, timeout=2, after=3)
+                task.log_info(f"挑战结束，共 {runs} 次" + ("（战斗失败，不再继续）" if failed else ""))
+                return not failed
+            runs += 1
+            click_text(task, r"^重来$", region=CHALLENGE_REPLAY_REGION, timeout=2, after=5)
+            continue
+        if find_text(task, r"^\d+\s*/\s*10$", region=(0.45, 0.94, 0.58, 1.0)):
+            last_known = time.time()
+            if battle_auto_off(task):
+                click_rel(task, *BATTLE_AUTO_POINT, after=1, reason="开启自动战斗")
+                continue
+        elif time.time() - last_known > 60:
+            task.log_info("挑战：超过 60 秒没识别到战斗/结算页面：" + " | ".join(b.name for b in (task.all_texts or [])[:8]))
+            last_known = time.time()
+        task.sleep(2)
+    task.log_info("挑战超时")
     return False
 
 
