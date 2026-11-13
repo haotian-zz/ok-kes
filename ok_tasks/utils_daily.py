@@ -562,6 +562,10 @@ def close_ether_refill(task: BaseTask):
 
 # 结算页的「重来」按钮：2026-11-12 游戏更新后叫「再来一次」，OCR 读成「再来-」+「一次」两个框
 RETRY_RE = r"^(重来$|再来)"
+# 「存储空间不足 / 目前无法进入，因为记忆碎片已超出持有限制。」弹窗：左「前往」（去清理）右「确认」（2026-11-12 实录）
+STORAGE_FULL_RE = r"存储空间不足|超出持有限制"
+STORAGE_FULL_CONFIRM_REGION = (0.55, 0.58, 0.8, 0.7)
+STORAGE_FULL = "storage_full"
 
 
 def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficiency=6, keep_ether=0, max_runs=20,
@@ -615,6 +619,11 @@ def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficienc
         if close_ether_refill(task):
             task.log_info(f"以太不够打下一次，清体力结束，共 {runs - 1} 次")
             return True
+        if has_text(task, STORAGE_FULL_RE):
+            # 掉落物持有到上限，游戏不让进；只点「确认」关掉，不点「前往」，分解哪些要人定
+            click_text(task, r"^确认$", region=STORAGE_FULL_CONFIRM_REGION, timeout=2, after=2)
+            task.log_info(f"「{category}」持有到上限（存储空间不足），这一类刷不了，共打了 {runs - 1} 次", notify=True)
+            return STORAGE_FULL
         if has_text(task, r"确定要进入当前难度"):
             # 有更高难度解锁时进入前会弹「高阶难度已经解锁。确定要进入当前难度吗？」（Maa_Kes issue #15）
             click_text(task, r"^入场$", region=(0.55, 0.7, 0.8, 0.8), timeout=2, after=5)

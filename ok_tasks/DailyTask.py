@@ -10,6 +10,7 @@ from utils_daily import go_home
 # 这几项做完会涨日常活跃 / 补给任务进度，可领取的放在它们前面，收尾时要再领一次
 POINT_STEPS = ("treat_patients", "drink_coffee", "farm_stamina")
 CLAIM_STEPS = ("claim_daily_activity", "claim_supply")
+FALLBACK_FARM_CATEGORY, FALLBACK_FARM_STAGE = "成长", "单元币"
 
 
 def final_claims(steps, config, ran):
@@ -40,6 +41,7 @@ class DailyTask(BaseTask):
             "清体力关卡": "单元币",
             "清体力战斗效率": 6,
             "清体力保留以太": 0,
+            "存储满了改刷单元币": True,
             "疗愈中心": True,
             "疗愈中心治疗方式": "不处理",
         })
@@ -56,6 +58,7 @@ class DailyTask(BaseTask):
             "清体力关卡": "分类里的关卡名（按画面文字点，如 单元币）",
             "清体力战斗效率": "每次消耗 20×效率 以太，以太不够时自动降到打得起的效率",
             "清体力保留以太": "留这么多以太不用（比如留给卡厄思）",
+            "存储满了改刷单元币": "清体力分类的掉落持有到上限（游戏弹「存储空间不足」）时，剩下的以太改打 成长 → 单元币；关掉就停下不刷",
             "疗愈中心": "方舟城市 → 创伤中心，查看卡厄思里精神崩溃住院的战斗员（住院期间不能出战）",
             "疗愈中心治疗方式": "不处理＝只提示；记忆消除花单元币；咨询花旅行券，对话自动选左边回答后批准出院",
         })
@@ -89,6 +92,18 @@ class DailyTask(BaseTask):
             return {"plan": self.config.get("疗愈中心治疗方式", "不处理")}
         return {}
 
+    def _farm_fallback(self, key):
+        """清体力的分类持有到上限（2026-11-12 记忆碎片满了）：按开关改打 成长 → 单元币 把以太用掉。"""
+        kwargs = self._step_kwargs("farm_stamina")
+        fallback = (FALLBACK_FARM_CATEGORY, FALLBACK_FARM_STAGE)
+        if not self.config.get("存储满了改刷单元币", True) or (kwargs["category"], kwargs["stage"]) == fallback:
+            self.info_set(key, f"{kwargs['category']}满了，没刷完")
+            return False
+        self.log_info(f"{kwargs['category']}满了，剩下的以太改刷 {FALLBACK_FARM_CATEGORY} → {FALLBACK_FARM_STAGE}")
+        go_home(self)
+        kwargs.update(category=FALLBACK_FARM_CATEGORY, stage=FALLBACK_FARM_STAGE)
+        return utils_daily.farm_stamina(self, **kwargs) is True
+
     def run(self):
         results = []
         setattr(self, utils_daily.LEFTOVER_RUN_ATTR, False)
@@ -118,6 +133,8 @@ class DailyTask(BaseTask):
                 self.log_error(f"{key} 出错: {e}\n{traceback.format_exc()}")
                 self.screenshot(f"daily_error_{fn_name}")
                 ok = False
+            if ok == utils_daily.STORAGE_FULL:
+                ok = self._farm_fallback(key)
             if ok == utils_daily.COFFEE_LATER:
                 # 清完体力回来堂食，再清一次把这 120 以太也用掉
                 self._coffee_waited = True

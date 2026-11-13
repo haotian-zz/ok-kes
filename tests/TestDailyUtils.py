@@ -422,6 +422,46 @@ class TestFarmStaminaHelpers(unittest.TestCase):
         utils_daily.refresh(task)
         self.assertEqual(["重来"], [b.name for b in task.all_texts if __import__("re").search(utils_daily.RETRY_RE, b.name)])
 
+    def test_storage_full_popup_confirms_and_stops(self):
+        # 2026-11-12 实录：记忆碎片持有到上限，「再来一次」后弹「存储空间不足」，旧脚本 60 秒报一次一直干等
+        page = [box("战斗训练", 0.144, 0.688), box("配置队伍", 0.121, 0.043), box("记忆碎片", 0.126, 0.610),
+                box("105/265+", 0.945, 0.049), box("战斗效率6", 0.8, 0.79), box("60", 0.946, 0.916),
+                box("存储空间不足", 0.501, 0.357), box("目前无法进入，因为记忆碎片已超出持有限制。", 0.497, 0.468),
+                box("前往", 0.347, 0.637), box("Enter", 0.536, 0.601), box("确认", 0.666, 0.637)]
+        real_wait = utils_daily.wait_text
+
+        def wait_text(t, pattern, region=None, timeout=10.0, interval=0.5):
+            return real_wait(t, pattern, region, timeout=0 if "每周3次机会" in pattern else timeout, interval=interval)
+
+        task = FakeTask([(page, 128)])
+        with mock.patch.object(utils_daily, "open_home_entry", return_value=True), \
+                mock.patch.object(utils_daily, "wait_text", wait_text), \
+                mock.patch.object(utils_daily, "_click_training_stage", return_value=True):
+            got = utils_daily.farm_stamina(task, "记忆碎片", "光辉与雪花", 6)
+        self.assertEqual(utils_daily.STORAGE_FULL, got)
+        self.assertIn(("click", 0.666, 0.637), task.actions)          # 确认
+        self.assertNotIn(("click", 0.347, 0.637), task.actions)       # 不点「前往」
+
+    def test_storage_full_falls_back_to_unit_coin(self):
+        from DailyTask import DailyTask
+        calls = []
+
+        def farm(task, **kw):
+            calls.append((kw["category"], kw["stage"]))
+            return True
+
+        cfg = {"清体力分类": "记忆碎片", "清体力关卡": "光辉与雪花", "清体力战斗效率": 6, "清体力保留以太": 0}
+        fake = SimpleNamespace(config=dict(cfg), log_info=lambda *a, **k: None, info_set=lambda *a: None)
+        fake._step_kwargs = lambda fn: DailyTask._step_kwargs(fake, fn)
+        with mock.patch.object(utils_daily, "farm_stamina", farm), mock.patch("DailyTask.go_home", return_value=True):
+            self.assertTrue(DailyTask._farm_fallback(fake, "清体力"))
+            self.assertEqual([("成长", "单元币")], calls)
+            fake.config["存储满了改刷单元币"] = False                       # 关掉就不改刷
+            self.assertFalse(DailyTask._farm_fallback(fake, "清体力"))
+            fake.config.update({"存储满了改刷单元币": True, "清体力分类": "成长", "清体力关卡": "单元币"})
+            self.assertFalse(DailyTask._farm_fallback(fake, "清体力"))     # 单元币本身满了不再重复刷
+        self.assertEqual(1, len(calls))
+
     def test_no_refill_popup(self):
         task = FakeTask([([box("进入", 0.715, 0.915)], 128)])
         utils_daily.refresh(task)
