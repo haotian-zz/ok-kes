@@ -1138,6 +1138,16 @@ class TestTreasureRoom(unittest.TestCase):
         t, keys = self._task([("F1", 0.799, 0.430), ("Enter", 0.947, 0.924)])
         self.assertTrue(utils.handle_treasure_room(t))
 
+    def test_registered_in_chaos_and_sortie(self):
+        # 2026-11-12 22:38 实录：出击里也有宝库，只加在卡厄思的处理列表里，出击卡了 4 分钟
+        import utils
+        import utils_chaos
+        import utils_sortie
+        self.assertIn(utils.handle_treasure_room, utils_chaos.PAGE_HANDLERS)
+        self.assertIn(utils.handle_treasure_room, utils_sortie.PAGE_HANDLERS)
+        for handlers in (utils_chaos.PAGE_HANDLERS, utils_sortie.PAGE_HANDLERS):
+            self.assertLess(handlers.index(utils.handle_treasure_room), handlers.index(utils.handle_stuck_log))
+
     def test_not_battle_or_dialogue(self):
         import utils
         # 开完三个以后是对白（Space），不按

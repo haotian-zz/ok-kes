@@ -18,7 +18,7 @@ from utils import (
     handle_card_assign, handle_non_battle_page,
     handle_remove, handle_three_choice_card_remove, handle_flash, handle_reflash, handle_grant_flash, handle_copy, handle_convert, handle_equipment_recast, handle_weakness_info, handle_minimizemap,
     handle_held_cards_page,
-    handle_stuck_log, is_button_active, _clean_match,
+    handle_stuck_log, is_button_active, _clean_match, handle_treasure_room,
     handle_shop, handle_expedition_result,
     handle_escape,
     _get_current_credit, _get_current_hp_percent, _get_region_text,
@@ -1180,6 +1180,7 @@ PAGE_HANDLERS = [
     # handle_stage_clear,
     log_credit,
     log_node_status,
+    handle_treasure_room, #宝库三个宝箱按 F1 开箱（2026-11-12 出击里也碰到，画面卡住 4 分钟）
     handle_stuck_log,
     handle_close_page, #点击屏幕关闭页面，优先于其他普通页面处理
 
