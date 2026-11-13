@@ -276,7 +276,7 @@ def _get_current_credit(task: TriggerTask):
     credit = 0
     for box in task.all_texts or []:
         name = box.name.replace(",", "").strip()
-        if not name.isdigit():
+        if not re.fullmatch(r"[0-9]+", name):      # 「①」isdigit() 也是 True，int() 会抛异常（11-12 20:51 任务因此中断）
             continue
         cx = (box.x + box.width / 2) / task.width
         cy = (box.y + box.height / 2) / task.height

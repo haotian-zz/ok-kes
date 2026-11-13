@@ -1050,6 +1050,9 @@ class TestCurrentCredit(unittest.TestCase):
         # 商品价格（y≈0.59）不算
         task.all_texts = [box("96", 0.75, 0.59)]
         self.assertEqual(0, utils._get_current_credit(task))
+        # 2026-11-12 20:51 实录：OCR 读出「①」，isdigit() 为真、int() 抛异常，任务中断
+        task.all_texts = [box("①", 0.74, 0.05), box("522", 0.762, 0.050)]
+        self.assertEqual(522, utils._get_current_credit(task))
 
 
 class TestIdleStuck(unittest.TestCase):
