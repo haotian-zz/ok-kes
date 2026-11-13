@@ -82,7 +82,9 @@ def _click(task, x, y):
 
 
 def _panel_open(task, boxes):
-    return any(TITLE in b.name for b in boxes)
+    """浮窗是半透明的，压在战斗/对白画面上时标题「变速功能」会被认成「受迷以」（2026-11-12 23:21 实录，
+    出击里浮窗没关掉、空格被吃掉干等 9 分钟）；底部「F8 唤出或关闭加速面板」那行认得稳，两个都算。"""
+    return any(TITLE in b.name or "加速面板" in b.name for b in boxes)
 
 
 def _rate(task, boxes):

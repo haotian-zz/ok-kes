@@ -58,6 +58,14 @@ class TestGameSpeed(unittest.TestCase):
         self.assertEqual(3.0, gs._rate(TASK, PANEL))
         self.assertFalse(gs._panel_open(TASK, [box(0.122, 0.045, "零式系统")]))
 
+    def test_panel_title_misread_over_battle(self):
+        # 2026-11-12 23:21 实录：浮窗压在出击对白上，标题认成「受迷以」「能」，只有底部那行认对
+        texts = [box(0.214, 0.037, "214./342"), box(0.050, 0.071, "受迷以"), box(0.088, 0.065, "能"),
+                 box(0.122, 0.245, "1.5x"), box(0.249, 0.244, "3.0x"), box(0.161, 0.425, "暂停"),
+                 box(0.152, 0.494, "F8 唤出或关闭加速面板"), box(0.488, 0.833, "在战斗时，")]
+        self.assertTrue(gs._panel_open(TASK, texts))
+        self.assertFalse(gs._panel_open(TASK, [box(0.488, 0.833, "在战斗时，"), box(0.934, 0.912, "Space")]))
+
     def test_button_is_top_row(self):
         b = gs._button_3x(TASK, PANEL)
         self.assertAlmostEqual(0.244, b.y / 1080, places=3)
