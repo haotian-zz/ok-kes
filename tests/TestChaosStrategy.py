@@ -1159,6 +1159,22 @@ class TestTreasureRoom(unittest.TestCase):
         self.assertEqual([], keys)
 
 
+class TestCoordTeleport(unittest.TestCase):
+    def test_coord_teleport_is_next_step(self):
+        # 2026-11-12 23:03 实录：出击第 3 层商店后右下「坐标传送」（Enter），被当对白按空格干等 2 分钟
+        import types
+        import utils
+        W, H = 1920, 1080
+        clicks = []
+        boxes = [types.SimpleNamespace(name=n, x=cx * W - 30, y=cy * H - 10, width=60, height=20)
+                 for n, cx, cy in [("1760/1760", 0.212, 0.039), ("1218", 0.694, 0.050), ("Q", 0.958, 0.080),
+                                   ("Enter", 0.835, 0.878), ("坐标传送", 0.929, 0.917)]]
+        t = types.SimpleNamespace(width=W, height=H, all_texts=boxes, log_info=lambda *a, **k: None,
+                                  click_box=lambda b: clicks.append(b.name), sleep=lambda s: None)
+        self.assertTrue(utils.handle_next_step(t))
+        self.assertEqual(["坐标传送"], clicks)
+
+
 class TestDiceReroll(unittest.TestCase):
     """掷骰子失败页（实机 2026-10-27 03:00）：「再次滚动」消耗 2，右上角资源 30/30。用户：骰子失败了可以重投。"""
 

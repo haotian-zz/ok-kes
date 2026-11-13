@@ -5678,13 +5678,14 @@ def handle_leave(task: TriggerTask):
             return False
     return False
 def handle_next_step(task: TriggerTask):
-    """通用"下一步"按钮: 在区域(0.833,0.885,0.954,0.957)内检测文本，编辑距离<=2即匹配。"""
+    """通用"下一步"按钮: 在区域(0.833,0.885,0.954,0.957)内检测文本，编辑距离<=2即匹配。
+    同一位置的「坐标传送」（2026-11-12 出击第 3 层最后一个商店后，点了进「强敌消散之处」对白）也按下一步处理。"""
     x1, y1, x2, y2 = 0.833, 0.885, 0.954, 0.957
     for b in task.all_texts:
         cx = (b.x + b.width / 2) / task.width
         cy = (b.y + b.height / 2) / task.height
         if x1 <= cx <= x2 and y1 <= cy <= y2:
-            if _edit_distance(b.name, "下一步", max_dist=2):
+            if _edit_distance(b.name, "下一步", max_dist=2) or "坐标传送" in b.name:
                 task.log_info(f"检测到下一步按钮「{b.name}」，点击")
                 task.click_box(b)
                 task.sleep(1)
