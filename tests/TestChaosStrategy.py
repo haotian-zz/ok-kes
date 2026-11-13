@@ -1110,6 +1110,42 @@ class TestHiddenHomeWake(unittest.TestCase):
         self.assertEqual([(0.45, 0.42), (0.45, 0.42)], clicks)
 
 
+class TestTreasureRoom(unittest.TestCase):
+    @staticmethod
+    def _task(texts):
+        import types
+        W, H = 1920, 1080
+        keys = []
+        boxes = [types.SimpleNamespace(name=n, x=cx * W - 20, y=cy * H - 10, width=40, height=20) for n, cx, cy in texts]
+        t = types.SimpleNamespace(width=W, height=H, all_texts=boxes, log_info=lambda *a, **k: None,
+                                  send_key=lambda k: keys.append(k), sleep=lambda s: None)
+        return t, keys
+
+    def test_opens_chest_with_f1(self):
+        # 2026-11-12 实录 OCR（原样）：三个宝箱时 F2/F3 认出来、F1 没认出；开过两个后剩一个提示 F1
+        import utils
+        page = [("1160/1160", 0.212, 0.039), ("476", 0.762, 0.050), ("R", 0.830, 0.078), ("Ctrl", 0.894, 0.079),
+                ("门那边是一个塞满了宝物的奢华空间。", 0.496, 0.228), ("F2", 0.683, 0.333), ("F3", 0.801, 0.432),
+                ("Enter", 0.947, 0.924)]
+        t, keys = self._task(page)
+        self.assertTrue(utils.handle_treasure_room(t))
+        self.assertEqual(["f1"], keys)
+        t, keys = self._task([("E1", 0.683, 0.333), ("F2", 0.801, 0.431), ("Enter", 0.947, 0.924)])
+        self.assertTrue(utils.handle_treasure_room(t))
+        t, keys = self._task([("F1", 0.799, 0.430), ("Enter", 0.947, 0.924)])
+        self.assertTrue(utils.handle_treasure_room(t))
+
+    def test_not_battle_or_dialogue(self):
+        import utils
+        # 开完三个以后是对白（Space），不按
+        t, keys = self._task([("众人在宝库中行动了起来。", 0.487, 0.835), ("Space", 0.935, 0.913)])
+        self.assertFalse(utils.handle_treasure_room(t))
+        # 战斗页：左下 F1～F3 是主战员技能，底部有手牌数
+        t, keys = self._task([("F1", 0.066, 0.75), ("F2", 0.066, 0.84), ("07/10", 0.501, 0.971), ("E", 0.888, 0.953)])
+        self.assertFalse(utils.handle_treasure_room(t))
+        self.assertEqual([], keys)
+
+
 class TestDiceReroll(unittest.TestCase):
     """掷骰子失败页（实机 2026-10-27 03:00）：「再次滚动」消耗 2，右上角资源 30/30。用户：骰子失败了可以重投。"""
 

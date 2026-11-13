@@ -18,7 +18,7 @@ from utils import (
     handle_card_assign, handle_non_battle_page, handle_minimizemap, handle_held_cards_page, handle_craft,
     handle_remove, handle_three_choice_card_remove, handle_flash, handle_reflash, handle_grant_flash, handle_copy, handle_convert,
     handle_equipment_recast,
-    handle_stuck_log, handle_expedition_result,
+    handle_stuck_log, handle_expedition_result, handle_treasure_room,
     is_button_active, is_subsequence, _clean_match,
     handle_shop,
     handle_escape,
@@ -1526,6 +1526,7 @@ PAGE_HANDLERS = [
     # handle_stage_clear,
     log_credit,
     log_node_status,
+    handle_treasure_room, #宝库三个宝箱：按 F1 开箱（2026-11-12 新赛季，没处理时画面不动被当成卡死重开）
     handle_stuck_log, #画面卡住检测及兜底处理
     handle_close_page, #点击屏幕关闭页面，优先于其他普通页面处理
     handle_training_select, #休息页点了训练后的选战斗员（要先于通用确认，没选人前别点确认）

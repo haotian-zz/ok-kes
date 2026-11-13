@@ -2078,6 +2078,26 @@ def handle_stuck_log(task: TriggerTask):
     return False
 
 
+TREASURE_LABEL_REGION = (0.45, 0.25, 0.9, 0.55)     # 宝箱上方 F1/F2/F3 提示（OCR 偶尔把 F1 读成 E1）
+TREASURE_ENTER_REGION = (0.88, 0.88, 1.0, 0.96)     # 右下角交叉剑「Enter」
+
+
+def handle_treasure_room(task: TriggerTask):
+    """卡厄思「宝库」页（2026-11-12 新赛季实录）：「门那边是一个塞满了宝物的奢华空间。」，三个宝箱上方 F1/F2/F3，右下角 Enter。
+    按 F1 开最左边剩下的宝箱（信用点 +45 左右，或者一件装备 → 装备页交给 handle_equipment），回到这页提示重新编号，
+    三个开完进对白「众人在宝库中行动了起来」。以前没人管这页，画面不动 5 分钟后自动重开游戏，重开回来还是这页。"""
+    hand = find_box_at_point(task, 0.512, 0.969)    # 战斗里底部有手牌数，左下也有 F1～F3，别当成宝库
+    if hand and re.search(r"\d+/10", hand.name):
+        return False
+    label = find_text_in_region(task, r"^[FE][123]$", TREASURE_LABEL_REGION)
+    if not label or not find_text_in_region(task, r"^Enter$", TREASURE_ENTER_REGION):
+        return False
+    task.log_info(f"宝库：按 F1 开最左边的宝箱（还剩提示 {label.name}）")
+    task.send_key("f1")
+    task.sleep(3)
+    return True
+
+
 HIDDEN_WAKE_AFTER = 20
 HIDDEN_WAKE_EVERY = 20
 
