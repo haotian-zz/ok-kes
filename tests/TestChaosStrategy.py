@@ -1007,6 +1007,28 @@ class TestStorageFull(unittest.TestCase):
         t.all_texts = [box("进入")]
         self.assertFalse(utils.handle_storage_full(t))
 
+    def test_memory_fragment_full_never_goes_to_inventory(self):
+        # 2026-11-12 实录：「存储空间不足 / 目前无法进入，因为记忆碎片已超出持有限制。」被当成存档满了点「前往」进了背包
+        import types
+        import tempfile
+        import utils
+        import chaos_trace
+        box = lambda n: types.SimpleNamespace(name=n, x=0, y=0, width=1, height=1)
+        state = {"disabled": False, "clicks": []}
+        t = types.SimpleNamespace(config={"存档满了自动清理": True}, frame=None,
+                                  all_texts=[box("存储空间不足"), box("目前无法进入，因为记忆碎片已超出持有限制。"),
+                                             box("请清理后再重新进入。"), box("前往"), box("确认")],
+                                  log_info=lambda *a, **k: None, click_box=lambda b: state["clicks"].append(b.name),
+                                  disable=lambda: state.update(disabled=True))
+        with tempfile.TemporaryDirectory() as tmp:
+            old_root, chaos_trace.TRACE_ROOT = chaos_trace.TRACE_ROOT, tmp
+            try:
+                self.assertTrue(utils.handle_storage_full(t))
+            finally:
+                chaos_trace.TRACE_ROOT = old_root
+        self.assertEqual(["确认"], state["clicks"])
+        self.assertTrue(state["disabled"])
+
 
 class TestDiceReroll(unittest.TestCase):
     """掷骰子失败页（实机 2026-10-27 03:00）：「再次滚动」消耗 2，右上角资源 30/30。用户：骰子失败了可以重投。"""

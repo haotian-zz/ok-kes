@@ -7307,6 +7307,17 @@ def handle_storage_full(task: TriggerTask):
     if not any("存储空间不足" in b.name or "超出存储数据的保留限制" in b.name for b in task.all_texts or []):
         return False
     chaos_trace.step(task, "page", "存储空间不足", task.frame)
+    if any("持有限制" in b.name for b in task.all_texts):
+        # 同一个标题的另一种弹窗：「目前无法进入，因为记忆碎片已超出持有限制。」（2026-11-12 实录，背包记忆碎片 1001/1000）。
+        # 以前当成存档满了点「前往」，进了背包，又把记忆碎片当事件选项点开详情页（详情页左上角就是丢弃）。
+        # 分解哪些记忆碎片要人定：只点「确认」，通知并停止
+        box = next((b for b in task.all_texts if _clean_match(b.name, "确认")), None)
+        if box:
+            task.click_box(box)
+        task.log_info("记忆碎片超出持有上限（背包 记忆碎片 总数量超过 1000），进不去卡厄思：请先分解一些记忆碎片，停止任务",
+                      notify=True)
+        task.disable()
+        return True
     import save_cleanup
     go = next((b for b in task.all_texts if _clean_match(b.name, "前往")), None)
     if save_cleanup.enabled(task) and go and getattr(task, "save_cleanup_last", None) != 0:
