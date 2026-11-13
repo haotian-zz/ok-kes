@@ -279,6 +279,17 @@ class TestChallenge(unittest.TestCase):
         clicks = [a for a in task.actions if a[0] == "click"]
         self.assertEqual([("click",) + utils_daily.TRAINING_ENTER, ("click", 0.723, 0.917), ("click", 0.931, 0.916)], clicks)
 
+    def test_replays_with_renamed_button(self):
+        # 2026-11-12 起结算页按钮叫「再来一次」（OCR「再来-」「一次」）
+        def result(left):
+            return [box("挑战", 0.651, 0.237), box("剩余奖励次数", 0.631, 0.357), box(f"{left}/3", 0.931, 0.356),
+                    box("再来-", 0.664, 0.918), box("一次", 0.704, 0.918), box("确认", 0.931, 0.916)]
+        task = FakeTask([(self.TEAM, 128), (result(2), 128), (result(2), 128),
+                         (result(1), 128), (result(1), 128), (self.TEAM, 128)])
+        self.assertTrue(utils_daily._challenge_from_team(task, "哀嚎的浪子", 2))
+        clicks = [a for a in task.actions if a[0] == "click"]
+        self.assertEqual([("click",) + utils_daily.TRAINING_ENTER, ("click", 0.664, 0.918), ("click", 0.931, 0.916)], clicks)
+
     def test_stops_when_rewards_used_up(self):
         task = FakeTask([(self.TEAM, 128), (self.result(0), 128), (self.result(0), 128), (self.TEAM, 128)])
         self.assertTrue(utils_daily._challenge_from_team(task, "哀嚎的浪子", 3))
@@ -395,6 +406,21 @@ class TestFarmStaminaHelpers(unittest.TestCase):
         utils_daily.refresh(task)
         self.assertTrue(utils_daily.close_ether_refill(task))
         self.assertEqual([("click", 0.351, 0.805)], task.actions)
+
+    def test_retry_button_renamed(self):
+        # 2026-11-12 实录：游戏更新后结算页「重来」变成「再来一次」，OCR 拆成「再来-」「一次」；旧脚本只认「重来」，在结算页干等
+        page = [box("等级56", 0.618, 0.112), box("记忆碎片", 0.667, 0.238), box("奖励", 0.595, 0.625),
+                box("F1", 0.593, 0.887), box("Enter", 0.807, 0.887), box("再来-", 0.614, 0.918),
+                box("一次", 0.654, 0.918), box("60", 0.736, 0.918), box("确认", 0.931, 0.916)]
+        task = FakeTask([(page, 128)])
+        utils_daily.refresh(task)
+        self.assertTrue(utils_daily.has_text(task, utils_daily.RETRY_RE, region=(0.55, 0.85, 0.7, 0.97)))
+        self.assertTrue(utils_daily.click_text(task, utils_daily.RETRY_RE, region=(0.55, 0.85, 0.7, 0.97), timeout=1))
+        self.assertEqual([("click", 0.614, 0.918)], task.actions)
+        # 旧版「重来」照样认，别的字不认
+        task = FakeTask([([box("重来", 0.62, 0.917), box("重来一下吗", 0.3, 0.5)], 128)])
+        utils_daily.refresh(task)
+        self.assertEqual(["重来"], [b.name for b in task.all_texts if __import__("re").search(utils_daily.RETRY_RE, b.name)])
 
     def test_no_refill_popup(self):
         task = FakeTask([([box("进入", 0.715, 0.915)], 128)])

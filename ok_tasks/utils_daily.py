@@ -560,11 +560,16 @@ def close_ether_refill(task: BaseTask):
     return True
 
 
+# 结算页的「重来」按钮：2026-11-12 游戏更新后叫「再来一次」，OCR 读成「再来-」+「一次」两个框
+RETRY_RE = r"^(重来$|再来)"
+
+
 def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficiency=6, keep_ether=0, max_runs=20,
                  next_difficulty=True):
     """模拟 → 战斗训练 → 分类 → 关卡，按战斗效率连续打到以太不够（保留 keep_ether）。
 
     结算页优先「下个难度」（next_difficulty），不可用时「重来」；战斗失败就停止，不在打不过的难度上继续消耗以太。
+    2026-11-12 起结算页「重来」改叫「再来一次」（OCR 拆成「再来-」「一次」两个框），两种都认（RETRY_RE）。
     """
     if not open_home_entry(task, "模拟"):
         return False
@@ -615,7 +620,7 @@ def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficienc
             click_text(task, r"^入场$", region=(0.55, 0.7, 0.8, 0.8), timeout=2, after=5)
             last_known = time.time()
             continue
-        if has_text(task, r"^重来$", region=(0.55, 0.85, 0.7, 0.97)) and has_text(task, r"^确认$", region=(0.85, 0.85, 1, 0.97)):
+        if has_text(task, RETRY_RE, region=(0.55, 0.85, 0.7, 0.97)) and has_text(task, r"^确认$", region=(0.85, 0.85, 1, 0.97)):
             last_known = time.time()
             cur, _ = read_ether(task)
             failed = has_text(task, r"失败")
@@ -627,12 +632,12 @@ def farm_stamina(task: BaseTask, category="成长", stage="单元币", efficienc
             runs += 1
             if next_difficulty and click_text(task, r"^下个难度$", region=(0.45, 0.85, 0.56, 0.97), timeout=2, after=4):
                 refresh(task)
-                if not has_text(task, r"^重来$", region=(0.55, 0.85, 0.7, 0.97)):
+                if not has_text(task, RETRY_RE, region=(0.55, 0.85, 0.7, 0.97)):
                     continue
                 # 点了没反应：已经是最高难度（或下个难度未解锁），之后只重来
                 task.log_info("下个难度不可用，改为重来")
                 next_difficulty = False
-            click_text(task, r"^重来$", region=(0.55, 0.85, 0.7, 0.97), timeout=2, after=5)
+            click_text(task, RETRY_RE, region=(0.55, 0.85, 0.7, 0.97), timeout=2, after=5)
             continue
         if find_text(task, r"^\d+\s*/\s*10$", region=(0.45, 0.94, 0.58, 1.0)):
             last_known = time.time()
@@ -831,7 +836,7 @@ def _challenge_from_team(task: BaseTask, boss, times):
             click_text(task, r"^入场$", region=(0.55, 0.7, 0.8, 0.8), timeout=2, after=5)
             last_known = time.time()
             continue
-        if has_text(task, r"^重来$", region=CHALLENGE_REPLAY_REGION) and has_text(task, r"^确认$", region=CHALLENGE_CONFIRM_REGION):
+        if has_text(task, RETRY_RE, region=CHALLENGE_REPLAY_REGION) and has_text(task, r"^确认$", region=CHALLENGE_CONFIRM_REGION):
             last_known = time.time()
             failed = has_text(task, r"失败")
             left = _count_in(task, CHALLENGE_REWARD_LEFT_REGION)
@@ -841,7 +846,7 @@ def _challenge_from_team(task: BaseTask, boss, times):
                 task.log_info(f"挑战结束，共 {runs} 次" + ("（战斗失败，不再继续）" if failed else ""))
                 return not failed
             runs += 1
-            click_text(task, r"^重来$", region=CHALLENGE_REPLAY_REGION, timeout=2, after=5)
+            click_text(task, RETRY_RE, region=CHALLENGE_REPLAY_REGION, timeout=2, after=5)
             continue
         if find_text(task, r"^\d+\s*/\s*10$", region=(0.45, 0.94, 0.58, 1.0)):
             last_known = time.time()
