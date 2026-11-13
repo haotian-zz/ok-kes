@@ -1088,6 +1088,28 @@ class TestIdleStuck(unittest.TestCase):
                 chaos_trace.TRACE_ROOT = old_root
 
 
+class TestHiddenHomeWake(unittest.TestCase):
+    def test_wake_only_textless_non_black(self):
+        # 2026-11-12 19:37 实录：主页 UI 藏着（只有立绘，没有字），任务一直「画面卡住」不唤醒
+        import types
+        import numpy as np
+        from unittest import mock
+        import utils
+        clicks = []
+        t = types.SimpleNamespace(all_texts=[], frame=np.full((1080, 1920, 3), 180, np.uint8), width=1920, height=1080,
+                                  log_info=lambda *a, **k: None, sleep=lambda s: None)
+        with mock.patch.object(utils, "_move_and_click", lambda task, x, y: clicks.append((x, y))):
+            self.assertFalse(utils.hidden_home_wake(t, 10, now=100))          # 还没到 20 秒
+            self.assertTrue(utils.hidden_home_wake(t, 25, now=100))
+            self.assertFalse(utils.hidden_home_wake(t, 30, now=110))          # 20 秒内只点一次
+            self.assertTrue(utils.hidden_home_wake(t, 50, now=121))
+            t.all_texts = [types.SimpleNamespace(name="出击")]
+            self.assertFalse(utils.hidden_home_wake(t, 80, now=200))          # 有字就不是藏 UI
+            t.all_texts, t.frame = [], np.zeros((1080, 1920, 3), np.uint8)
+            self.assertFalse(utils.hidden_home_wake(t, 80, now=300))          # 黑屏加载不点
+        self.assertEqual([(0.45, 0.42), (0.45, 0.42)], clicks)
+
+
 class TestDiceReroll(unittest.TestCase):
     """掷骰子失败页（实机 2026-10-27 03:00）：「再次滚动」消耗 2，右上角资源 30/30。用户：骰子失败了可以重投。"""
 

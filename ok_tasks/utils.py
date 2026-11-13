@@ -2034,6 +2034,8 @@ def handle_stuck_log(task: TriggerTask):
         task.log_info(f"画面已经 {stuck_seconds} 秒没有任何变化，自动重开 {restarts} 次后仍不行，停止任务", notify=True)
         task.disable()
         return True
+    if hidden_home_wake(task, stuck_seconds):
+        return True
     close_page = task.find_one(
         feature_name="close_page",
         box=task.box_of_screen(0.921, 0.003, 0.998, 0.100),
@@ -2074,6 +2076,29 @@ def handle_stuck_log(task: TriggerTask):
     # _move_and_click(task, click_x, click_y)
     task.log_info(f"画面卡住，已持续{stuck_seconds}秒")
     return False
+
+
+HIDDEN_WAKE_AFTER = 20
+HIDDEN_WAKE_EVERY = 20
+
+
+def hidden_home_wake(task, stuck_seconds, now=None):
+    """整帧一个字都没有、也不是黑屏、画面已经 HIDDEN_WAKE_AFTER 秒不动：多半是主页闲置把 UI 藏了，点一下唤醒
+    （每 HIDDEN_WAKE_EVERY 秒最多一次）。UI 出来后 handle_non_battle_page 认出主页，重新从主页进卡厄思。
+    2026-11-12 19:37 实录：重启任务时主页 UI 是藏着的，启动判断那一帧带着变速浮窗的字被当成局内，之后一直「画面卡住」。"""
+    if stuck_seconds < HIDDEN_WAKE_AFTER or task.all_texts:
+        return False
+    import utils_daily
+    if utils_daily.is_black(task):
+        return False
+    now = time.time() if now is None else now
+    if now - getattr(task, "_hidden_wake_at", 0) < HIDDEN_WAKE_EVERY:
+        return False
+    task._hidden_wake_at = now
+    task.log_info(f"画面 {stuck_seconds} 秒不动且没有任何文字，可能是主页闲置隐藏了 UI，点一下唤醒")
+    _move_and_click(task, *utils_daily.HOME_WAKE_POINT)
+    task.sleep(1.5)
+    return True
 
 
 IDLE_RESTART_SECONDS = 300
