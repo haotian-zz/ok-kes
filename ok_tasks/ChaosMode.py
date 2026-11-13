@@ -517,10 +517,17 @@ class ChaosMode(TriggerTask):
                 utils.note_octopus(self)
         frame = self.frame
         chaos_trace.begin_frame(self)
+        handled = False
         for handle_page in utils_chaos.PAGE_HANDLERS:
             if handle_page(self):
                 chaos_trace.page(self, handle_page.__name__, frame)
-                return
+                handled = True
+                break
+        # 画面在动但一直没有能处理的页面（界面没出来的战斗等）：几分钟后按卡死重开
+        if utils.idle_stuck_step(self, handled):
+            utils.handle_idle_stuck(self)
+        if handled:
+            return
         # 帧末尾检查是否需要上传配置
         self._check_upload_if_needed()
 

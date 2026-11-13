@@ -2076,6 +2076,40 @@ def handle_stuck_log(task: TriggerTask):
     return False
 
 
+IDLE_RESTART_SECONDS = 300
+
+
+def idle_stuck_step(task, handled, now=None):
+    """记录最近一次有页面处理命中的时间；连续 IDLE_RESTART_SECONDS 秒一个都没命中返回 True。
+    2026-11-12 18:31 实录：战斗开场后界面没出来，只剩我方三人站着（雪花、待机动作一直在动），像素判定永远不算卡住，
+    17 分钟里没有任何页面处理命中，也没触发自动重开。"""
+    now = time.time() if now is None else now
+    if handled or not hasattr(task, "_last_handled_at"):
+        task._last_handled_at = now
+        return False
+    return now - task._last_handled_at >= IDLE_RESTART_SECONDS
+
+
+def handle_idle_stuck(task: TriggerTask):
+    """长时间没有可处理的页面：和画面不动一样走自动重开（玩法模式，本次运行最多 GAME_RESTART_MAX 次），再不行就停。"""
+    if getattr(task, "chaos_mode", chaos_strategy.MODE_LEGACY) == chaos_strategy.MODE_LEGACY:
+        return False
+    idle = int(time.time() - task._last_handled_at)
+    chaos_trace.step(task, "page", "长时间没有页面可处理", task.frame)
+    restarts = getattr(task, "game_restarts", 0)
+    if restarts < GAME_RESTART_MAX:
+        import game_restart
+        task.game_restarts = restarts + 1
+        ok = game_restart.restart_game(task, f"{idle} 秒没有任何页面可处理（画面在动但没有界面）")
+        task._last_handled_at = time.time()
+        if ok:
+            task.entry_checked = False
+            return True
+    task.log_info(f"{idle} 秒没有任何页面可处理，自动重开 {restarts} 次后仍不行，停止任务", notify=True)
+    task.disable()
+    return True
+
+
 # ------------------------- 页面处理函数（通用） -------------------------
 # 约定: 每个函数处理一种页面, 处理成功返回 True, 未命中返回 False。
 

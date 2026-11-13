@@ -1052,6 +1052,42 @@ class TestCurrentCredit(unittest.TestCase):
         self.assertEqual(0, utils._get_current_credit(task))
 
 
+class TestIdleStuck(unittest.TestCase):
+    def test_idle_step(self):
+        # 2026-11-12 实录：界面没出来的战斗里 17 分钟没有任何页面处理命中
+        import types
+        import utils
+        t = types.SimpleNamespace()
+        self.assertFalse(utils.idle_stuck_step(t, False, now=1000))          # 第一次只记时间
+        self.assertFalse(utils.idle_stuck_step(t, False, now=1000 + utils.IDLE_RESTART_SECONDS - 1))
+        self.assertTrue(utils.idle_stuck_step(t, False, now=1000 + utils.IDLE_RESTART_SECONDS))
+        self.assertFalse(utils.idle_stuck_step(t, True, now=2000))           # 有页面命中就重新计时
+        self.assertFalse(utils.idle_stuck_step(t, False, now=2000 + utils.IDLE_RESTART_SECONDS - 1))
+
+    def test_idle_restart_then_stop(self):
+        import types
+        import tempfile
+        from unittest import mock
+        import utils
+        import chaos_trace
+        import chaos_strategy
+        import game_restart
+        state = {"disabled": False}
+        t = types.SimpleNamespace(chaos_mode=chaos_strategy.MODE_EXPLORE, frame=None, _last_handled_at=0,
+                                  log_info=lambda *a, **k: None, disable=lambda: state.update(disabled=True))
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(game_restart, "restart_game", return_value=True) as rg:
+            old_root, chaos_trace.TRACE_ROOT = chaos_trace.TRACE_ROOT, tmp
+            try:
+                for _ in range(utils.GAME_RESTART_MAX):
+                    self.assertTrue(utils.handle_idle_stuck(t))
+                self.assertEqual(utils.GAME_RESTART_MAX, rg.call_count)
+                self.assertFalse(state["disabled"])
+                self.assertTrue(utils.handle_idle_stuck(t))                  # 重开次数用完就停
+                self.assertTrue(state["disabled"])
+            finally:
+                chaos_trace.TRACE_ROOT = old_root
+
+
 class TestDiceReroll(unittest.TestCase):
     """掷骰子失败页（实机 2026-10-27 03:00）：「再次滚动」消耗 2，右上角资源 30/30。用户：骰子失败了可以重投。"""
 
