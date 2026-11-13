@@ -1030,6 +1030,28 @@ class TestStorageFull(unittest.TestCase):
         self.assertTrue(state["disabled"])
 
 
+class TestCurrentCredit(unittest.TestCase):
+    def test_reads_credit_in_old_and_new_hud(self):
+        import types
+        import utils
+        W, H = 1920, 1080
+
+        def box(n, cx, cy):
+            return types.SimpleNamespace(name=n, x=cx * W - 20, y=cy * H - 10, width=40, height=20)
+
+        task = types.SimpleNamespace(width=W, height=H, all_texts=[])
+        # 2026-11-09 旧版：信用点在 x≈0.794
+        task.all_texts = [box("1045/1045", 0.212, 0.039), box("480", 0.794, 0.054)]
+        self.assertEqual(480, utils._get_current_credit(task))
+        # 2026-11-12 新赛季：多了「R」按钮，左边还有梦境结晶「5」（x≈0.671），信用点在 x≈0.762
+        task.all_texts = [box("1045/1045", 0.212, 0.039), box("5", 0.671, 0.051), box("760", 0.762, 0.050),
+                          box("R", 0.831, 0.079), box("Ctrl", 0.895, 0.079)]
+        self.assertEqual(760, utils._get_current_credit(task))
+        # 商品价格（y≈0.59）不算
+        task.all_texts = [box("96", 0.75, 0.59)]
+        self.assertEqual(0, utils._get_current_credit(task))
+
+
 class TestDiceReroll(unittest.TestCase):
     """掷骰子失败页（实机 2026-10-27 03:00）：「再次滚动」消耗 2，右上角资源 30/30。用户：骰子失败了可以重投。"""
 

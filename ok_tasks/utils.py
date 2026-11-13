@@ -265,15 +265,23 @@ def _get_route_priority(task: TriggerTask):
 
 # ------------------------- 通用工具 -------------------------
 
+# 右上角信用点数字所在的一条：旧版在 x≈0.794（另一种布局 0.734）；2026-11-12 新赛季右上角多了「R」按钮，
+# 整排左移到 x≈0.762，按固定点读一直是 0，商店什么都不买。改成在这一条里找纯数字取最大
+CREDIT_BAND = (0.69, 0.02, 0.83, 0.09)
+
+
 def _get_current_credit(task: TriggerTask):
-    """读取当前信用点数，从两个可能位置取最大值。"""
+    """读取当前信用点数：右上角 CREDIT_BAND 里的纯数字取最大（左边 x≈0.67 的梦境结晶数不在范围内）。"""
+    x0, y0, x1, y1 = CREDIT_BAND
     credit = 0
-    for pos_x, pos_y in [(0.794, 0.054), (0.734, 0.053)]:
-        box = find_box_at_point(task, pos_x, pos_y)
-        if box and box.name.isdigit():
-            val = int(box.name)
-            if val > credit:
-                credit = val
+    for box in task.all_texts or []:
+        name = box.name.replace(",", "").strip()
+        if not name.isdigit():
+            continue
+        cx = (box.x + box.width / 2) / task.width
+        cy = (box.y + box.height / 2) / task.height
+        if x0 <= cx <= x1 and y0 <= cy <= y1:
+            credit = max(credit, int(name))
     return credit
 
 
